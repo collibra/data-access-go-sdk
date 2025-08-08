@@ -1,0 +1,304 @@
+fragment AccessProvider on AccessProvider {
+    id
+    isSample
+    createdAt
+    modifiedAt
+    name
+    namingHint
+    state
+    action
+
+    category {
+        ...GrantCategory
+    }
+
+    description
+    policyRule
+    external
+    whatType
+    whatAbacRule {
+        ... WhatAbacRule
+    }
+
+    whoType
+    whoAbacRule {
+        ... WhoAbacRule
+    }
+
+    notInternalizable
+    complete
+    locks {
+        ...AccessProviderLocks
+    }
+
+    syncData {
+       ...SyncData
+    }
+}
+
+fragment SyncData on SyncData {
+    dataSource {
+       ...DataSource
+    }
+    accessProviderType {
+		type
+	}
+    actualName
+    maskType {
+        ... MaskType
+    }
+    syncStatus
+}
+
+fragment AccessProviderLocks on AccessProviderLockData {
+    lockKey
+    details {
+        ... AccessProviderLockDetails
+    }
+}
+
+fragment AccessProviderLockDetails on AccessProviderLockDetails {
+    reason
+}
+
+fragment WhoAbacRule on WhoAbacRule {
+    promiseDuration
+    type
+    ruleJson
+
+}
+
+fragment WhatAbacRule on WhatAbacRule {
+    permissions
+    globalPermissions
+    doTypes
+    ruleJson
+}
+
+fragment AccessProviderPage on PagedResult {
+    pageInfo {
+        ... PageInfo
+    }
+    edges {
+        cursor
+        node {
+                ... AccessProvider
+        }
+    }
+}
+
+fragment AccessProviderWhatListItem on AccessWhatItem {
+    dataObject {
+        ...DataObject
+    }
+    globalPermissions
+    permissions
+}
+
+fragment AccessWhatAccessProviderItem on AccessWhatAccessProviderItem {
+    accessProvider {
+        ... AccessProvider
+    }
+    expiresAt
+}
+
+fragment AccessProviderWhatList on PagedResult {
+    pageInfo {
+        ...PageInfo
+    }
+    edges {
+        cursor
+        node {
+                ...AccessProviderWhatListItem
+        }
+    }
+}
+
+fragment AccessProviderWhatAccessProviderList on PagedResult {
+    pageInfo {
+       ...PageInfo
+    }
+    edges {
+        cursor
+        node {
+            ...AccessWhatAccessProviderItem
+        }
+    }
+}
+
+fragment AccessProviderWhoListItem on AccessWhoItem {
+    expiresAfter
+    expiresAt
+    promiseDuration
+    type
+    item {
+        ... on AccessProvider {
+            id
+            name
+        }
+        ... on Group {
+            name
+            id
+            identityStore {
+                id
+                name
+            }
+        }
+        ... on User {
+            ...User
+        }
+    }
+}
+
+fragment AccessProviderWhoList on PagedResult {
+    pageInfo {
+        ...PageInfo
+    }
+    edges {
+        cursor
+        node {
+            ...AccessProviderWhoListItem
+        }
+    }
+}
+
+fragment AccessProviderWhatAbacScopeList on PagedResult {
+    pageInfo {
+        ...PageInfo
+    }
+    edges {
+        cursor
+        node {
+           ...DataObject
+        }
+    }
+}
+
+mutation CreateAccessProvider($ap: AccessProviderInput!) {
+    createAccessProvider(input: $ap, enableAdditionalAccessRequests: false) {
+        __typename
+        ... AccessProvider
+        ... on AccessProviderWithOptionalAccessRequests {
+            accessProvider {
+                ...AccessProvider
+            }
+        }
+        ... PermissionDeniedError
+        ... InvalidInputError
+    }
+}
+
+mutation UpdateAccessProvider($id: ID!, $ap: AccessProviderInput!, $overrideLocks: Boolean) {
+    updateAccessProvider(id: $id, input: $ap, enableAdditionalAccessRequests: false, overrideLocks: $overrideLocks) {
+        __typename
+        ...AccessProvider
+        ... on AccessProviderWithOptionalAccessRequests {
+            accessProvider {
+                ...AccessProvider
+            }
+        }
+        ... PermissionDeniedError
+        ... InvalidInputError
+        ... NotFoundError
+    }
+}
+
+mutation DeleteAccessProvider($id: ID!, $overrideLocks: Boolean) {
+    deleteAccessProvider(id: $id, overrideLocks: $overrideLocks) {
+        __typename
+        ...AccessProvider
+        ... NotFoundError
+        ... PermissionDeniedError
+        ... InvalidInputError
+    }
+}
+
+mutation ActivateAccessProvider($id: ID!) {
+    activateAccessProvider(id: $id) {
+        ...AccessProvider
+        ...NotFoundError
+        ...PermissionDeniedError
+        ...InvalidInputError
+    }
+}
+
+mutation DeactivateAccessProvider($id: ID!) {
+    deactivateAccessProvider(id: $id) {
+        ...AccessProvider
+        ...NotFoundError
+        ...PermissionDeniedError
+        ...InvalidInputError
+    }
+}
+
+query GetAccessProvider($id: ID!) {
+    accessProvider(id: $id) {
+        __typename
+        ... AccessProvider
+        ... PermissionDeniedError
+        ... NotFoundError
+        ... InvalidInputError
+    }
+}
+
+query ListAccessProviders($after: String, $limit: Int, $filter: AccessProviderFilterInput, $order: [AccessProviderOrderByInput!]) {
+    accessProviders(after: $after, limit: $limit, filter: $filter, order: $order) {
+        ... AccessProviderPage
+        ... PermissionDeniedError
+    }
+}
+
+query GetAccessProviderWhatDataObjectList($id: ID!, $after: String, $limit: Int, $filter: AccessWhatFilterInput, $order: [AccessWhatOrderByInput!]) {
+    accessProvider(id: $id) {
+        ... on AccessProvider {
+            whatDataObjects(after: $after, limit: $limit, filter: $filter, order: $order) {
+                __typename
+                ...AccessProviderWhatList
+                ... PermissionDeniedError
+            }
+        }
+        ... PermissionDeniedError
+        ... NotFoundError
+    }
+}
+
+query GetAccessProviderWhatAccessProviders($id: ID!, $after: String, $limit: Int, $search: String, $order: [AccessWhatOrderByInput!], $filter: AccessProviderWhatAccessProviderFilterInput) {
+    accessProvider(id: $id) {
+        ... on AccessProvider {
+            whatAccessProviders(after: $after, limit: $limit, search: $search, filter: $filter, order: $order) {
+                __typename
+                ...AccessProviderWhatAccessProviderList
+                ...PermissionDeniedError
+            }
+        }
+        ...PermissionDeniedError
+        ...NotFoundError
+    }
+}
+
+query GetAccessProviderWhoList($id: ID!, $after: String, $limit: Int, $search: String, $order: [AccessProviderWhoOrderByInput!]) {
+    accessProvider(id: $id) {
+        ... on AccessProvider {
+            whoList(after: $after, limit: $limit, search: $search, order: $order) {
+                __typename
+                ...AccessProviderWhoList
+                ... PermissionDeniedError
+            }
+        }
+        ... PermissionDeniedError
+        ... NotFoundError
+    }
+}
+
+query ListAccessProviderAbacWhatScope($id: ID!, $after: String, $limit: Int, $search: String, $order: [AccessWhatOrderByInput!]) {
+    accessProvider(id: $id) {
+        ... on AccessProvider {
+            whatAbacScope(after: $after, limit: $limit, search: $search, order: $order) {
+                ... AccessProviderWhatAbacScopeList
+                ... PermissionDeniedError
+            }
+        }
+        ... PermissionDeniedError
+        ... NotFoundError
+    }
+}

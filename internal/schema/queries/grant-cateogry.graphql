@@ -1,0 +1,94 @@
+query GetGrantCategory($id: ID!) {
+    grantCategory(id: $id) {
+        ... GrantCategoryDetails
+        ... PermissionDeniedError
+        ... NotFoundError
+        ... InvalidInputError
+    }
+}
+
+query ListGrantCategories {
+    grantCategories {
+        ... GrantCategoryDetails
+    }
+}
+
+fragment GrantCategory on GrantCategory {
+    id
+    name
+    isSystem
+    isDefault
+}
+
+fragment GrantCategoryDetails on GrantCategory {
+    id
+    createdAt
+    modifiedAt
+    isSystem
+    name
+    description
+    icon
+    isDefault
+    canCreate
+    allowDuplicateNames
+    multiDataSource
+    defaultTypePerDataSource {
+        ... GrantCategoryTypeForDataSource
+    }
+
+    allowedWhoItems {
+        ... GrantCategoryAllowedWhoItems
+    }
+    allowedWhatItems {
+        ...GrantCategoryAllowedWhatItems
+    }
+}
+
+fragment GrantCategoryTypeForDataSource on GrantCategoryTypeForDataSource {
+    DataSource
+    Type
+}
+
+fragment GrantCategoryAllowedWhoItems on GrantCategoryAllowedWhoItems {
+    user
+    group
+    inheritance
+    self
+    categories
+}
+
+fragment GrantCategoryAllowedWhatItems on GrantCategoryAllowedWhatItems {
+    dataObject
+}
+
+mutation CreateGrantCategory($input: GrantCategoryInput!) {
+    createGrantCategory(input: $input) {
+        ... GrantCategoryDetails
+        ... PermissionDeniedError
+        ... NotFoundError
+        ... InvalidInputError
+    }
+}
+
+mutation UpdateGrantCategory($id: ID!, $input: GrantCategoryInput!) {
+    updateGrantCategory(id: $id, input: $input) {
+        ... GrantCategoryDetails
+        ... PermissionDeniedError
+        ... NotFoundError
+        ... InvalidInputError
+    }
+}
+
+mutation DeleteGrantCategory($id: ID!) {
+    deleteGrantCategory(id: $id) {
+        ...DeleteGrantCategoryResult
+        ... PermissionDeniedError
+        ... NotFoundError
+        ... InvalidInputError
+    }
+}
+
+fragment DeleteGrantCategoryResult on DeleteGrantCategory {
+    success
+}
+

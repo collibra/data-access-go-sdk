@@ -1,0 +1,33 @@
+name: Release Raito SDK
+run-name: Running Release for Raito SDK
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v4
+
+      - name: Get tag
+        id: tag
+        uses: dawidd6/action-get-tag@v1
+
+      - name: Current tag
+        run: echo "Current tag ${{steps.tag.outputs.tag}}"
+
+      - name: Install Go
+        uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+          cache: true
+          cache-dependency-path: go.sum
+
+      - name: Mod Tidy
+        run: go mod tidy
+
+      - name: Publish package
+        run: GOPROXY=proxy.golang.org go list -m github.com/raito-io/sdk-go@${{steps.tag.outputs.tag}}

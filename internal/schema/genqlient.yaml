@@ -1,0 +1,19 @@
+# Default genqlient config; for full documentation see:
+# https://github.com/Khan/genqlient/blob/main/docs/genqlient.yaml
+schema: schema.graphql
+operations:
+- queries/*.graphql
+generated: generated.go
+
+# create pointer type for the optional inputs
+optional: pointer_omitempty
+
+bindings:
+  Time:
+    type: time.Time
+  AccessProviderState:
+    type: github.com/raito-io/sdk-go/types/models.AccessProviderState
+  AccessProviderAction:
+    type: github.com/raito-io/sdk-go/types/models.AccessProviderAction
+  Duration:
+    type: int64

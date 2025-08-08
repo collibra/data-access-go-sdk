@@ -1,0 +1,31 @@
+fragment Group on Group {
+    id
+    name
+    displayName
+    description
+    deleted
+}
+
+fragment GroupPage on PagedResult {
+    pageInfo {
+        ...PageInfo
+    }
+    edges {
+        cursor
+        node {
+            ...Group
+        }
+    }
+}
+
+query GetGroup($id: ID!) {
+    group(id: $id) {
+        ...Group
+    }
+}
+
+query ListGroups($after: String, $limit: Int, $filter: GroupFilterInput, $order: [GroupOrderByInput!]) {
+    groups(after: $after, limit: $limit, filter: $filter, order: $order) {
+        ... GroupPage
+    }
+}

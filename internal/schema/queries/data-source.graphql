@@ -1,0 +1,119 @@
+fragment DataSource on DataSource {
+    id
+    name
+    type
+    description
+    createdAt
+    modifiedAt
+    description
+    syncMethod
+    parent {
+        id
+    }
+}
+
+fragment MaskType on MaskType {
+    externalId
+    displayName
+    description
+    dataTypes
+}
+
+fragment MaskingMetadata on MaskingMetadata {
+    defaultMaskExternalName
+    maskTypes {
+        ... MaskType
+    }
+}
+
+fragment DataSourcePage on PagedResult {
+    pageInfo {
+        ... PageInfo
+    }
+    edges {
+        cursor
+        node {
+            ... DataSource
+        }
+    }
+}
+
+query GetDataSource($id: ID!) {
+    dataSource(id: $id) {
+        ... DataSource
+        ... PermissionDeniedError
+        ... NotFoundError
+    }
+}
+
+query ListDataSources($after: String, $limit: Int, $filter: DataSourceFilterInput, $search: String, $order: [DataSourceOrderByInput!]) {
+    dataSources(after: $after, limit: $limit, filter: $filter, order: $order, search: $search) {
+        ... DataSourcePage
+        ... PermissionDeniedError
+    }
+}
+
+query DataSourceIdentityStores($id: ID!) {
+    dataSource(id: $id) {
+        ... on DataSource {
+            identityStores {
+                ... IdentityStore
+            }
+        }
+        ...PermissionDeniedError
+        ... NotFoundError
+    }
+}
+
+query DataSourceMaskInformation($id: ID!) {
+    dataSource(id: $id) {
+        ... on DataSource {
+            maskingMetadata {
+                ...MaskingMetadata
+            }
+        }
+        ... PermissionDeniedError
+        ... NotFoundError
+    }
+}
+
+mutation CreateDataSource($input: DataSourceInput!) {
+    createDataSource(input: $input) {
+        ... PermissionDeniedError
+        ... NotFoundError
+        ...DataSource
+    }
+}
+
+mutation UpdateDataSource($id: ID!, $input: DataSourceInput!) {
+    updateDataSource(id: $id, input: $input) {
+        ... PermissionDeniedError
+        ... NotFoundError
+        ... DataSource
+    }
+}
+
+mutation DeleteDataSource($id: ID!) {
+    deleteDataSource(id: $id) {
+        ... PermissionDeniedError
+        ... on DeleteDataSource {
+            success
+        }
+    }
+}
+
+mutation AddIdentityStoreToDataSource($dsId: ID! $isId: ID!) {
+    addIdentityStoreToDataSource(dsId: $dsId, isId: $isId) {
+        ...DataSource
+        ...PermissionDeniedError
+        ...NotFoundError
+    }
+}
+
+mutation RemoveIdentityStoreFromDataSource($dsId: ID! $isId: ID!) {
+    removeIdentityStoreFromDataSource(dsId: $dsId, isId:$isId) {
+        ...DataSource
+        ...PermissionDeniedError
+        ...NotFoundError
+    }
+}

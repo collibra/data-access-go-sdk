@@ -1,0 +1,74 @@
+fragment IdentityStore on IdentityStore {
+    id
+    name
+    type
+    description
+    createdAt
+    modifiedAt
+    master
+    native
+}
+
+fragment IdentityStorePage on PagedResult {
+    pageInfo {
+        ... PageInfo
+    }
+    edges {
+        cursor
+        node {
+            ... IdentityStore
+        }
+    }
+}
+
+query GetIdentityStore($id: ID!) {
+    identityStore(id: $id) {
+        ... IdentityStore
+        ... NotFoundError
+        ... PermissionDeniedError
+        ... AlreadyExistsError
+    }
+}
+
+query ListIdentityStores($after: String, $limit: Int, $search: String, $filter: IdentityStoreFilterInput, $order: [IdentityStoreOrderByInput!]) {
+    identityStores(after: $after, limit: $limit, search: $search, filter:$filter, order: $order) {
+        ... PermissionDeniedError
+        ...IdentityStorePage
+    }
+}
+
+mutation CreateIdentityStore($input: IdentityStoreInput!) {
+    createIdentityStore(input: $input) {
+        ... PermissionDeniedError
+        ... NotFoundError
+        ... AlreadyExistsError
+        ... IdentityStore
+    }
+}
+
+mutation UpdateIdentityStore($id: ID!, $input: IdentityStoreInput!) {
+    updateIdentityStore(id: $id, input: $input) {
+        ... PermissionDeniedError
+        ... NotFoundError
+        ... AlreadyExistsError
+        ... IdentityStore
+    }
+}
+
+mutation DeleteIdentityStore($id: ID!) {
+    deleteIdentityStore(id: $id) {
+        ... PermissionDeniedError
+        ... on DeleteIdentityStore {
+            success
+        }
+    }
+}
+
+mutation UpdateIdentityStoreMasterFlag($id: ID!, $master: Boolean!) {
+    updateIdentityStoreMasterFlag(id: $id, master: $master) {
+        ... PermissionDeniedError
+        ... NotFoundError
+        ... AlreadyExistsError
+        ... IdentityStore
+    }
+}

@@ -1,0 +1,49 @@
+fragment DataObject on DataObject {
+    id
+    name
+    fullName
+    type
+    dataType
+    deleted
+    description
+    dataSource {
+        id
+    }
+}
+
+fragment DataObjectPage on PagedResult {
+    pageInfo {
+        ... PageInfo
+    } edges {
+        cursor
+        node {
+            ... DataObject
+        }
+    }
+}
+
+query GetDataObject($dataObjectId: ID!) {
+    dataObject(id: $dataObjectId) {
+        ... DataObject
+    }
+}
+
+query ListDataObjects($after: String, $limit: Int, $filter: DataObjectFilterInput, $order: [DataObjectOrderByInput!]) {
+    dataObjects(after: $after, limit: $limit, filter: $filter, order: $order) {
+        ... DataObjectPage
+    }
+}
+
+query DataObjectByExternalId($fullname: String!, $dataSourceId: ID!, $includeDataSource: Boolean!) {
+    dataObjects(filter: {
+        fullNames: [$fullname]
+        dataSources: [$dataSourceId]
+        includeDataSource: $includeDataSource
+    }) {
+        edges {
+            node {
+                ... DataObject
+            }
+        }
+    }
+}

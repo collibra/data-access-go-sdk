@@ -1,0 +1,53 @@
+name: Validate Raito SDK
+run-name: Validation of Raito SDK
+on:
+  push:
+    branches:
+      - 'main'
+  pull_request:
+
+jobs:
+#  generate:
+#    runs-on: ubuntu-latest
+#    steps:
+#      - uses: actions/checkout@v4
+#      - uses: actions/setup-go@v5
+#        with:
+#          go-version-file: 'go.mod'
+#          cache: true
+#      - run: go generate ./...
+#      - name: git diff
+#        run: |
+#          git diff --compact-summary --exit-code || \
+#            (echo; echo "Unexpected difference in directories after code generation. Run 'go generate ./...' command and commit."; exit 1)
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v4
+
+      - name: Install Go
+        uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+          cache: true
+          cache-dependency-path: go.sum
+
+      - name: Mod Tidy
+        run: go mod tidy
+
+      - name: Lint
+        uses: golangci/golangci-lint-action@v8
+        with:
+          version: v2.1.5
+
+      - name: Build
+        run: go build ./...
+
+      - name: Test
+        run: make test
+
+#      - uses: codecov/codecov-action@v3
+#        with:
+#          token: ${{ secrets.CODECOV_TOKEN }}
+#          file: ./coverage.txt

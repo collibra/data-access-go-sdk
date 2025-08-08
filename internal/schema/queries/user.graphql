@@ -1,0 +1,91 @@
+fragment User on User {
+    id
+    name
+    email
+    isRaitoUser
+    type
+}
+
+fragment InvalidEmailError on InvalidEmailError {
+    errEmail: email
+    message
+}
+
+query GetUser($id: ID!) {
+    user(id: $id) {
+        ...User
+        ...NotFoundError
+        ...PermissionDeniedError
+        ...InvalidEmailError
+        ...InvalidInputError
+    }
+}
+
+query CurrentUser {
+    currentUser {
+        ...User
+    }
+}
+
+query GetUserByEmail($email: String!) {
+    userByEmail(email: $email) {
+        ... User
+        ... PermissionDeniedError
+        ... NotFoundError
+        ... InvalidEmailError
+    }
+}
+
+mutation CreateUser($input: UserInput!) {
+    createUser(input: $input) {
+        ... User
+        ... PermissionDeniedError
+        ... NotFoundError
+        ... InvalidEmailError
+    }
+}
+
+mutation UpdateUser($uId: ID!, $input: UserInput!) {
+    updateUser(id: $uId, input: $input) {
+        ... User
+        ... PermissionDeniedError
+        ... NotFoundError
+        ... InvalidEmailError
+    }
+}
+
+mutation DeleteUser($uId: ID!) {
+    deleteUser(id: $uId) {
+       ... on UserDelete {
+        success
+       }
+        ... PermissionDeniedError
+    }
+}
+
+mutation InviteAsRaitoUser($uId: ID!, $noPassword: Boolean) {
+    inviteAsRaitoUser(id: $uId, noPassword: $noPassword) {
+        ... User
+        ... InvalidEmailError
+        ... NotFoundError
+        ... PermissionDeniedError
+    }
+}
+
+mutation RemoveAsRaitoUser($uId: ID!) {
+    removeAsRaitoUser(id: $uId) {
+        ... User
+        ... InvalidEmailError
+        ... NotFoundError
+        ... PermissionDeniedError
+    }
+}
+
+mutation SetUserPassword($uId: ID!, $password: String!) {
+    setPassword(id: $uId, password: $password) {
+        ...User
+        ...PermissionDeniedError
+        ...NotFoundError
+        ...InvalidEmailError
+    }
+}
