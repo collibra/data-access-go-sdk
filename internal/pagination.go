@@ -3,7 +3,7 @@ package internal
 import (
 	"context"
 
-	"github.com/raito-io/sdk-go/types"
+	"github.com/collibra/access-governance-go-sdk/types"
 )
 
 func PaginationExecutor[T any, E any](ctx context.Context, loadPageFn func(ctx context.Context, cursor *string) (*types.PageInfo, []E, error), edgeFn func(edge *E) (*string, *T, error)) <-chan types.ListItem[T] {

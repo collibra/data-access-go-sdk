@@ -1,4 +1,4 @@
-fragment AccessProvider on AccessProvider {
+fragment AccessControl on AccessControl {
     id
     isSample
     createdAt
@@ -28,7 +28,7 @@ fragment AccessProvider on AccessProvider {
     notInternalizable
     complete
     locks {
-        ...AccessProviderLocks
+        ...AccessControlLockData
     }
 
     syncData {
@@ -40,7 +40,7 @@ fragment SyncData on SyncData {
     dataSource {
        ...DataSource
     }
-    accessProviderType {
+    accessControlType {
 		type
 	}
     actualName
@@ -50,14 +50,14 @@ fragment SyncData on SyncData {
     syncStatus
 }
 
-fragment AccessProviderLocks on AccessProviderLockData {
+fragment AccessControlLockData on AccessControlLockData {
     lockKey
     details {
-        ... AccessProviderLockDetails
+        ... AccessControlLockDetails
     }
 }
 
-fragment AccessProviderLockDetails on AccessProviderLockDetails {
+fragment AccessControlLockDetails on AccessControlLockDetails {
     reason
 }
 
@@ -75,19 +75,28 @@ fragment WhatAbacRule on WhatAbacRule {
     ruleJson
 }
 
-fragment AccessProviderPage on PagedResult {
-    pageInfo {
-        ... PageInfo
-    }
-    edges {
-        cursor
-        node {
-                ... AccessProvider
+fragment AccessControlConnection on AccessControlConnection {
+    ... on AccessControlConnection {
+        pageInfo {
+            ... PageInfo
+        }
+        edges {
+            cursor
+            node {
+                ...AccessControl
+            }
         }
     }
 }
 
-fragment AccessProviderWhatListItem on AccessWhatItem {
+fragment AccessControlConnectionResult on AccessControlConnectionResult {
+    ... AccessControlConnection
+    ... PermissionDeniedError
+    ... InvalidInputError
+    ... NotFoundError
+}
+
+fragment AccessWhatDataObjectItem on AccessWhatDataObjectItem {
     dataObject {
         ...DataObject
     }
@@ -95,44 +104,50 @@ fragment AccessProviderWhatListItem on AccessWhatItem {
     permissions
 }
 
-fragment AccessWhatAccessProviderItem on AccessWhatAccessProviderItem {
-    accessProvider {
-        ... AccessProvider
+fragment AccessWhatAccessControlItem on AccessWhatAccessControlItem {
+    accessControl {
+        ... AccessControl
     }
     expiresAt
 }
 
-fragment AccessProviderWhatList on PagedResult {
+fragment AccessWhatDataObjectItemConnection on AccessWhatDataObjectItemConnection {
     pageInfo {
         ...PageInfo
     }
     edges {
         cursor
         node {
-                ...AccessProviderWhatListItem
+            ...AccessWhatDataObjectItem
         }
     }
 }
 
-fragment AccessProviderWhatAccessProviderList on PagedResult {
+fragment AccessWhatAccessControlItemConnection on AccessWhatAccessControlItemConnection {
     pageInfo {
-       ...PageInfo
+        ... PageInfo
     }
     edges {
         cursor
         node {
-            ...AccessWhatAccessProviderItem
+            ... AccessWhatAccessControlItem
         }
     }
 }
 
-fragment AccessProviderWhoListItem on AccessWhoItem {
-    expiresAfter
+fragment AccessWhatAccessControlItemConnectionResult on AccessWhatAccessControlItemConnectionResult {
+    ... AccessWhatAccessControlItemConnection
+    ... PermissionDeniedError
+    ... NotFoundError
+    ... InvalidInputError
+}
+
+fragment AccessWhoItem on AccessWhoItem {
     expiresAt
     promiseDuration
     type
     item {
-        ... on AccessProvider {
+        ... on AccessControl {
             id
             name
         }
@@ -150,37 +165,25 @@ fragment AccessProviderWhoListItem on AccessWhoItem {
     }
 }
 
-fragment AccessProviderWhoList on PagedResult {
+fragment AccessWhoItemConnection on AccessWhoItemConnection {
     pageInfo {
         ...PageInfo
     }
     edges {
         cursor
         node {
-            ...AccessProviderWhoListItem
+            ...AccessWhoItem
         }
     }
 }
 
-fragment AccessProviderWhatAbacScopeList on PagedResult {
-    pageInfo {
-        ...PageInfo
-    }
-    edges {
-        cursor
-        node {
-           ...DataObject
-        }
-    }
-}
-
-mutation CreateAccessProvider($ap: AccessProviderInput!) {
-    createAccessProvider(input: $ap, enableAdditionalAccessRequests: false) {
+mutation CreateAccessControl($ap: AccessControlInput!) {
+    createAccessControl(input: $ap, enableAdditionalAccessRequests: false) {
         __typename
-        ... AccessProvider
-        ... on AccessProviderWithOptionalAccessRequests {
-            accessProvider {
-                ...AccessProvider
+        ... AccessControl
+        ... on AccessControlWithOptionalAccessRequests {
+            accessControl {
+                ...AccessControl
             }
         }
         ... PermissionDeniedError
@@ -188,13 +191,13 @@ mutation CreateAccessProvider($ap: AccessProviderInput!) {
     }
 }
 
-mutation UpdateAccessProvider($id: ID!, $ap: AccessProviderInput!, $overrideLocks: Boolean) {
-    updateAccessProvider(id: $id, input: $ap, enableAdditionalAccessRequests: false, overrideLocks: $overrideLocks) {
+mutation UpdateAccessControl($id: ID!, $ap: AccessControlInput!, $overrideLocks: Boolean) {
+    updateAccessControl(id: $id, input: $ap, enableAdditionalAccessRequests: false, overrideLocks: $overrideLocks) {
         __typename
-        ...AccessProvider
-        ... on AccessProviderWithOptionalAccessRequests {
-            accessProvider {
-                ...AccessProvider
+        ...AccessControl
+        ... on AccessControlWithOptionalAccessRequests {
+            accessControl {
+                ... AccessControl
             }
         }
         ... PermissionDeniedError
@@ -203,57 +206,56 @@ mutation UpdateAccessProvider($id: ID!, $ap: AccessProviderInput!, $overrideLock
     }
 }
 
-mutation DeleteAccessProvider($id: ID!, $overrideLocks: Boolean) {
-    deleteAccessProvider(id: $id, overrideLocks: $overrideLocks) {
+mutation DeleteAccessControl($id: ID!, $overrideLocks: Boolean) {
+    deleteAccessControl(id: $id, overrideLocks: $overrideLocks) {
         __typename
-        ...AccessProvider
+        ...AccessControl
         ... NotFoundError
         ... PermissionDeniedError
         ... InvalidInputError
     }
 }
 
-mutation ActivateAccessProvider($id: ID!) {
-    activateAccessProvider(id: $id) {
-        ...AccessProvider
+mutation ActivateAccessControl($id: ID!) {
+    activateAccessControl(id: $id) {
+        ...AccessControl
         ...NotFoundError
         ...PermissionDeniedError
         ...InvalidInputError
     }
 }
 
-mutation DeactivateAccessProvider($id: ID!) {
-    deactivateAccessProvider(id: $id) {
-        ...AccessProvider
+mutation DeactivateAccessControl($id: ID!) {
+    deactivateAccessControl(id: $id) {
+        ...AccessControl
         ...NotFoundError
         ...PermissionDeniedError
         ...InvalidInputError
     }
 }
 
-query GetAccessProvider($id: ID!) {
-    accessProvider(id: $id) {
+query GetAccessControl($id: ID!) {
+    accessControl(id: $id) {
         __typename
-        ... AccessProvider
+        ... AccessControl
         ... PermissionDeniedError
         ... NotFoundError
         ... InvalidInputError
     }
 }
 
-query ListAccessProviders($after: String, $limit: Int, $filter: AccessProviderFilterInput, $order: [AccessProviderOrderByInput!]) {
-    accessProviders(after: $after, limit: $limit, filter: $filter, order: $order) {
-        ... AccessProviderPage
-        ... PermissionDeniedError
+query ListAccessControls($after: String, $limit: Int, $filter: AccessControlFilterInput, $order: [AccessControlOrderByInput!]) {
+    accessControls(after: $after, limit: $limit, filter: $filter, order: $order) {
+        ... AccessControlConnectionResult
     }
 }
 
-query GetAccessProviderWhatDataObjectList($id: ID!, $after: String, $limit: Int, $filter: AccessWhatFilterInput, $order: [AccessWhatOrderByInput!]) {
-    accessProvider(id: $id) {
-        ... on AccessProvider {
+query GetAccessControlWhatDataObjectList($id: ID!, $after: String, $limit: Int, $filter: AccessWhatFilterInput, $order: [AccessWhatOrderByInput!]) {
+    accessControl(id: $id) {
+        ... on AccessControl {
             whatDataObjects(after: $after, limit: $limit, filter: $filter, order: $order) {
                 __typename
-                ...AccessProviderWhatList
+                ...AccessWhatDataObjectItemConnection
                 ... PermissionDeniedError
             }
         }
@@ -262,12 +264,12 @@ query GetAccessProviderWhatDataObjectList($id: ID!, $after: String, $limit: Int,
     }
 }
 
-query GetAccessProviderWhatAccessProviders($id: ID!, $after: String, $limit: Int, $search: String, $order: [AccessWhatOrderByInput!], $filter: AccessProviderWhatAccessProviderFilterInput) {
-    accessProvider(id: $id) {
-        ... on AccessProvider {
-            whatAccessProviders(after: $after, limit: $limit, search: $search, filter: $filter, order: $order) {
+query GetAccessControlWhatAccessControls($id: ID!, $after: String, $limit: Int, $search: String, $order: [AccessWhatOrderByInput!], $filter: AccessControlWhatAccessControlFilterInput) {
+    accessControl(id: $id) {
+        ... on AccessControl {
+            whatAccessControls(after: $after, limit: $limit, search: $search, filter: $filter, order: $order) {
                 __typename
-                ...AccessProviderWhatAccessProviderList
+                ...AccessWhatAccessControlItemConnectionResult
                 ...PermissionDeniedError
             }
         }
@@ -276,12 +278,12 @@ query GetAccessProviderWhatAccessProviders($id: ID!, $after: String, $limit: Int
     }
 }
 
-query GetAccessProviderWhoList($id: ID!, $after: String, $limit: Int, $search: String, $order: [AccessProviderWhoOrderByInput!]) {
-    accessProvider(id: $id) {
-        ... on AccessProvider {
+query GetAccessControlWhoList($id: ID!, $after: String, $limit: Int, $search: String, $order: [AccessControlWhoOrderByInput!]) {
+    accessControl(id: $id) {
+        ... on AccessControl {
             whoList(after: $after, limit: $limit, search: $search, order: $order) {
                 __typename
-                ...AccessProviderWhoList
+                ...AccessWhoItemConnection
                 ... PermissionDeniedError
             }
         }
@@ -290,11 +292,11 @@ query GetAccessProviderWhoList($id: ID!, $after: String, $limit: Int, $search: S
     }
 }
 
-query ListAccessProviderAbacWhatScope($id: ID!, $after: String, $limit: Int, $search: String, $order: [AccessWhatOrderByInput!]) {
-    accessProvider(id: $id) {
-        ... on AccessProvider {
+query ListAccessControlAbacWhatScope($id: ID!, $after: String, $limit: Int, $search: String, $order: [AccessWhatOrderByInput!]) {
+    accessControl(id: $id) {
+        ... on AccessControl {
             whatAbacScope(after: $after, limit: $limit, search: $search, order: $order) {
-                ... AccessProviderWhatAbacScopeList
+                ... DataObjectConnection
                 ... PermissionDeniedError
             }
         }

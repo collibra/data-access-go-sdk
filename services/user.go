@@ -2,14 +2,13 @@ package services
 
 import (
 	"context"
-	"errors"
 	"fmt"
 
 	"github.com/Khan/genqlient/graphql"
 	"github.com/aws/smithy-go/ptr"
 
-	"github.com/raito-io/sdk-go/internal/schema"
-	"github.com/raito-io/sdk-go/types"
+	"github.com/collibra/access-governance-go-sdk/internal/schema"
+	"github.com/collibra/access-governance-go-sdk/types"
 )
 
 type UserClient struct {
@@ -125,28 +124,6 @@ func (c *UserClient) UpdateUser(ctx context.Context, id string, userInput types.
 	}
 }
 
-// DeleteUser deletes an existing user from Raito Cloud
-// Returns nil if user is deleted successfully, otherwise returns an error.
-func (c *UserClient) DeleteUser(ctx context.Context, id string) error {
-	result, err := schema.DeleteUser(ctx, c.client, id)
-	if err != nil {
-		return types.NewErrClient(err)
-	}
-
-	switch response := result.DeleteUser.(type) {
-	case *schema.DeleteUserDeleteUserUserDelete:
-		if response.Success {
-			return nil
-		} else {
-			return types.NewErrClient(errors.New("unknown user delete error"))
-		}
-	case *schema.DeleteUserDeleteUserPermissionDeniedError:
-		return types.NewErrPermissionDenied("deleteUser", response.Message)
-	default:
-		return types.NewErrClient(fmt.Errorf("unexpected response type: %T", response))
-	}
-}
-
 type InviteAsRaitoUserOptions struct {
 	NoPassword bool
 }
@@ -155,78 +132,5 @@ type InviteAsRaitoUserOptions struct {
 func WithInviteAsRaitoUserNoPassword() func(options *InviteAsRaitoUserOptions) {
 	return func(options *InviteAsRaitoUserOptions) {
 		options.NoPassword = true
-	}
-}
-
-// InviteAsRaitoUser invites an existing user as Raito User
-// id is the id of the user to invite.
-// WithInviteAsRaitoUserNoPassword can be used to add the option to not send a password to the invited user.
-func (c *UserClient) InviteAsRaitoUser(ctx context.Context, id string, ops ...func(*InviteAsRaitoUserOptions)) (*types.User, error) {
-	options := InviteAsRaitoUserOptions{}
-	for _, op := range ops {
-		op(&options)
-	}
-
-	result, err := schema.InviteAsRaitoUser(ctx, c.client, id, &options.NoPassword)
-	if err != nil {
-		return nil, types.NewErrClient(err)
-	}
-
-	switch user := result.InviteAsRaitoUser.(type) {
-	case *schema.InviteAsRaitoUserInviteAsRaitoUser:
-		return &user.User, nil
-	case *schema.InviteAsRaitoUserInviteAsRaitoUserPermissionDeniedError:
-		return nil, types.NewErrPermissionDenied("InviteRaitoUser", user.Message)
-	case *schema.InviteAsRaitoUserInviteAsRaitoUserNotFoundError:
-		return nil, types.NewErrNotFound(id, user.Typename, user.Message)
-	case *schema.InviteAsRaitoUserInviteAsRaitoUserInvalidEmailError:
-		return nil, types.NewErrInvalidEmail(user.ErrEmail, user.Message)
-	default:
-		return nil, types.NewErrClient(fmt.Errorf("unexpected response type: %T", user))
-	}
-}
-
-// RemoveAsRaitoUser removes an existing user from Raito Cloud
-// id is the id of the user to remove.
-func (c *UserClient) RemoveAsRaitoUser(ctx context.Context, id string) (*types.User, error) {
-	result, err := schema.RemoveAsRaitoUser(ctx, c.client, id)
-	if err != nil {
-		return nil, types.NewErrClient(err)
-	}
-
-	switch user := result.RemoveAsRaitoUser.(type) {
-	case *schema.RemoveAsRaitoUserRemoveAsRaitoUser:
-		return &user.User, nil
-	case *schema.RemoveAsRaitoUserRemoveAsRaitoUserPermissionDeniedError:
-		return nil, types.NewErrPermissionDenied("removeAsRaitoUser", user.Message)
-	case *schema.RemoveAsRaitoUserRemoveAsRaitoUserInvalidEmailError:
-		return nil, types.NewErrInvalidEmail(user.ErrEmail, user.Message)
-	case *schema.RemoveAsRaitoUserRemoveAsRaitoUserNotFoundError:
-		return nil, types.NewErrNotFound(id, user.Typename, user.Message)
-	default:
-		return nil, types.NewErrClient(fmt.Errorf("unexpected response type: %T", user))
-	}
-}
-
-// SetUserPassword sets the password for an existing user in Raito Cloud
-// id is the id of the user to set the password for.
-// password is the password to set for the user.
-func (c *UserClient) SetUserPassword(ctx context.Context, id string, password string) (*types.User, error) {
-	result, err := schema.SetUserPassword(ctx, c.client, id, password)
-	if err != nil {
-		return nil, types.NewErrClient(err)
-	}
-
-	switch user := result.SetPassword.(type) {
-	case *schema.SetUserPasswordSetPasswordUser:
-		return &user.User, nil
-	case *schema.SetUserPasswordSetPasswordPermissionDeniedError:
-		return nil, types.NewErrPermissionDenied("setUserPassword", user.Message)
-	case *schema.SetUserPasswordSetPasswordNotFoundError:
-		return nil, types.NewErrNotFound(id, user.Typename, user.Message)
-	case *schema.SetUserPasswordSetPasswordInvalidEmailError:
-		return nil, types.NewErrInvalidEmail(user.ErrEmail, user.Message)
-	default:
-		return nil, types.NewErrClient(fmt.Errorf("unexpected response type: %T", user))
 	}
 }

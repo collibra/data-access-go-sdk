@@ -6,8 +6,8 @@ import (
 
 	"github.com/Khan/genqlient/graphql"
 
-	"github.com/raito-io/sdk-go/internal/schema"
-	"github.com/raito-io/sdk-go/types"
+	"github.com/collibra/access-governance-go-sdk/internal/schema"
+	"github.com/collibra/access-governance-go-sdk/types"
 )
 
 type GrantCategoryClient struct {

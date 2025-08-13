@@ -6,19 +6,19 @@ import (
 
 	gql "github.com/Khan/genqlient/graphql"
 
-	"github.com/raito-io/sdk-go/internal"
-	"github.com/raito-io/sdk-go/services"
+	"github.com/collibra/access-governance-go-sdk/internal"
+	"github.com/collibra/access-governance-go-sdk/services"
 )
 
-type RaitoClient struct {
-	accessProviderClient services.AccessProviderClient
-	dataObjectClient     services.DataObjectClient
-	dataSourceClient     services.DataSourceClient
-	grantCategoryClient  services.GrantCategoryClient
-	groupClient          services.GroupClient
-	identityStoreClient  services.IdentityStoreClient
-	roleClient           services.RoleClient
-	userClient           services.UserClient
+type CollibraClient struct {
+	accessControlClient services.AccessControlClient
+	dataObjectClient    services.DataObjectClient
+	dataSourceClient    services.DataSourceClient
+	grantCategoryClient services.GrantCategoryClient
+	groupClient         services.GroupClient
+	identityStoreClient services.IdentityStoreClient
+	roleClient          services.RoleClient
+	userClient          services.UserClient
 }
 
 type ClientOptions struct {
@@ -32,8 +32,8 @@ func WithUrlOverride(urlOverride string) func(options *ClientOptions) {
 	}
 }
 
-// NewClient creates a new RaitoClient with the given credentials.
-func NewClient(ctx context.Context, domain, user, secret string, ops ...func(options *ClientOptions)) *RaitoClient {
+// NewClient creates a new CollibraClient with the given credentials.
+func NewClient(ctx context.Context, domain, user, secret string, ops ...func(options *ClientOptions)) *CollibraClient {
 	options := ClientOptions{
 		UrlOverride: internal.DefaultApiEndpoint,
 	}
@@ -56,54 +56,54 @@ func NewClient(ctx context.Context, domain, user, secret string, ops ...func(opt
 		Url:    options.UrlOverride,
 	})
 
-	return &RaitoClient{
-		accessProviderClient: services.NewAccessProviderClient(client),
-		dataObjectClient:     services.NewDataObjectClient(client),
-		dataSourceClient:     services.NewDataSourceClient(client),
-		grantCategoryClient:  services.NewGrantCategoryClient(client),
-		groupClient:          services.NewGroupClient(client),
-		identityStoreClient:  services.NewIdentityStoreClient(client),
-		roleClient:           services.NewRoleClient(client),
-		userClient:           services.NewUserClient(client),
+	return &CollibraClient{
+		accessControlClient: services.NewAccessControlClient(client),
+		dataObjectClient:    services.NewDataObjectClient(client),
+		dataSourceClient:    services.NewDataSourceClient(client),
+		grantCategoryClient: services.NewGrantCategoryClient(client),
+		groupClient:         services.NewGroupClient(client),
+		identityStoreClient: services.NewIdentityStoreClient(client),
+		roleClient:          services.NewRoleClient(client),
+		userClient:          services.NewUserClient(client),
 	}
 }
 
-// AccessProvider returns the AccessProviderClient
-func (c *RaitoClient) AccessProvider() *services.AccessProviderClient {
-	return &c.accessProviderClient
+// AccessControl returns the AccessControlClient
+func (c *CollibraClient) AccessControl() *services.AccessControlClient {
+	return &c.accessControlClient
 }
 
 // DataObject returns the DataObjectClient
-func (c *RaitoClient) DataObject() *services.DataObjectClient {
+func (c *CollibraClient) DataObject() *services.DataObjectClient {
 	return &c.dataObjectClient
 }
 
 // DataSource returns the DataSourceClient
-func (c *RaitoClient) DataSource() *services.DataSourceClient {
+func (c *CollibraClient) DataSource() *services.DataSourceClient {
 	return &c.dataSourceClient
 }
 
 // GrantCategory returns the GrantCategoryClient
-func (c *RaitoClient) GrantCategory() *services.GrantCategoryClient {
+func (c *CollibraClient) GrantCategory() *services.GrantCategoryClient {
 	return &c.grantCategoryClient
 }
 
 // Group returns the GroupClient
-func (c *RaitoClient) Group() *services.GroupClient {
+func (c *CollibraClient) Group() *services.GroupClient {
 	return &c.groupClient
 }
 
 // IdentityStore returns the IdentityStoreClient
-func (c *RaitoClient) IdentityStore() *services.IdentityStoreClient {
+func (c *CollibraClient) IdentityStore() *services.IdentityStoreClient {
 	return &c.identityStoreClient
 }
 
 // Role returns the RoleClient
-func (c *RaitoClient) Role() *services.RoleClient {
+func (c *CollibraClient) Role() *services.RoleClient {
 	return &c.roleClient
 }
 
 // User returns the UserClient
-func (c *RaitoClient) User() *services.UserClient {
+func (c *CollibraClient) User() *services.UserClient {
 	return &c.userClient
 }

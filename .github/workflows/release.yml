@@ -30,4 +30,4 @@ jobs:
         run: go mod tidy
 
       - name: Publish package
-        run: GOPROXY=proxy.golang.org go list -m github.com/raito-io/sdk-go@${{steps.tag.outputs.tag}}
+        run: GOPROXY=proxy.golang.org go list -m github.com/collibra/access-governance-go-sdk@${{steps.tag.outputs.tag}}

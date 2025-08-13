@@ -2,13 +2,14 @@ package services
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/Khan/genqlient/graphql"
 	"github.com/aws/smithy-go/ptr"
 
-	"github.com/raito-io/sdk-go/internal"
-	"github.com/raito-io/sdk-go/internal/schema"
-	"github.com/raito-io/sdk-go/types"
+	"github.com/collibra/access-governance-go-sdk/internal"
+	"github.com/collibra/access-governance-go-sdk/internal/schema"
+	"github.com/collibra/access-governance-go-sdk/types"
 )
 
 type GroupClient struct {
@@ -61,25 +62,30 @@ func (g GroupClient) ListGroups(ctx context.Context, ops ...func(options *GroupL
 		op(&options)
 	}
 
-	loadPageFn := func(ctx context.Context, cursor *string) (*types.PageInfo, []types.GroupPageEdgesEdge, error) {
+	loadPageFn := func(ctx context.Context, cursor *string) (*types.PageInfo, []types.GroupConnectionEdgesGroupEdge, error) {
 		output, err := schema.ListGroups(ctx, g.client, cursor, ptr.Int(internal.MaxPageSize), options.filter, options.order)
 		if err != nil {
 			return nil, nil, types.NewErrClient(err)
 		}
 
-		return &output.Groups.PageInfo.PageInfo, output.Groups.Edges, nil
+		switch response := (output.Groups).(type) {
+		case *schema.ListGroupsGroupsGroupConnection:
+			return &response.PageInfo.PageInfo, response.Edges, nil
+		case *schema.ListGroupsGroupsInvalidInputError:
+			return nil, nil, types.NewErrInvalidInput(response.Message)
+		case *schema.ListGroupsGroupsPermissionDeniedError:
+			return nil, nil, types.NewErrPermissionDenied("listGroups", response.Message)
+		default:
+			return nil, nil, fmt.Errorf("unexpected type '%T'", response)
+		}
 	}
 
-	edgeFn := func(edge *types.GroupPageEdgesEdge) (*string, *schema.Group, error) {
+	edgeFn := func(edge *types.GroupConnectionEdgesGroupEdge) (*string, *schema.Group, error) {
 		cursor := edge.Cursor
-
 		if edge.Node == nil {
 			return cursor, nil, nil
 		}
-
-		listItem := (*edge.Node).(*types.GroupPageEdgesEdgeNodeGroup)
-
-		return cursor, &listItem.Group, nil
+		return cursor, &edge.Node.Group, nil
 	}
 
 	return internal.PaginationExecutor(ctx, loadPageFn, edgeFn)

@@ -2,15 +2,14 @@ package services
 
 import (
 	"context"
-	"errors"
 	"fmt"
 
 	"github.com/Khan/genqlient/graphql"
 	"github.com/aws/smithy-go/ptr"
 
-	"github.com/raito-io/sdk-go/internal"
-	"github.com/raito-io/sdk-go/internal/schema"
-	"github.com/raito-io/sdk-go/types"
+	"github.com/collibra/access-governance-go-sdk/internal"
+	"github.com/collibra/access-governance-go-sdk/internal/schema"
+	"github.com/collibra/access-governance-go-sdk/types"
 )
 
 type DataSourceClient struct {
@@ -204,32 +203,30 @@ func (c *DataSourceClient) ListDataSources(ctx context.Context, ops ...func(*Dat
 		op(&options)
 	}
 
-	loadPageFn := func(ctx context.Context, cursor *string) (*types.PageInfo, []types.DataSourcePageEdgesEdge, error) {
+	loadPageFn := func(ctx context.Context, cursor *string) (*types.PageInfo, []types.DataSourceConnectionEdgesDataSourceEdge, error) {
 		output, err := schema.ListDataSources(ctx, c.client, cursor, ptr.Int(internal.MaxPageSize), options.filter, nil, options.order)
 		if err != nil {
 			return nil, nil, types.NewErrClient(err)
 		}
 
-		switch page := output.DataSources.(type) {
-		case *schema.ListDataSourcesDataSourcesPagedResult:
-			return &page.PageInfo.PageInfo, page.Edges, nil
+		switch response := output.DataSources.(type) {
+		case *schema.ListDataSourcesDataSourcesDataSourceConnection:
+			return &response.PageInfo.PageInfo, response.Edges, nil
 		case *schema.ListDataSourcesDataSourcesPermissionDeniedError:
-			return nil, nil, types.NewErrPermissionDenied("listDataSources", page.Message)
+			return nil, nil, types.NewErrPermissionDenied("listDataSources", response.Message)
+		case *schema.ListDataSourcesDataSourcesInvalidInputError:
+			return nil, nil, types.NewErrInvalidInput(response.Message)
+		default:
+			return nil, nil, fmt.Errorf("unexpected type '%T'", response)
 		}
-
-		return nil, nil, errors.New("unreachable")
 	}
 
-	edgeFn := func(edge *types.DataSourcePageEdgesEdge) (*string, *schema.DataSource, error) {
+	edgeFn := func(edge *types.DataSourceConnectionEdgesDataSourceEdge) (*string, *schema.DataSource, error) {
 		cursor := edge.Cursor
-
 		if edge.Node == nil {
 			return cursor, nil, nil
 		}
-
-		listItem := (*edge.Node).(*types.DataSourcePageEdgesEdgeNodeDataSource)
-
-		return cursor, &listItem.DataSource, nil
+		return cursor, &edge.Node.DataSource, nil
 	}
 
 	return internal.PaginationExecutor(ctx, loadPageFn, edgeFn)

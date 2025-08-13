@@ -26,7 +26,7 @@ fragment MaskingMetadata on MaskingMetadata {
     }
 }
 
-fragment DataSourcePage on PagedResult {
+fragment DataSourceConnection on DataSourceConnection {
     pageInfo {
         ... PageInfo
     }
@@ -36,6 +36,13 @@ fragment DataSourcePage on PagedResult {
             ... DataSource
         }
     }
+}
+
+fragment DataSourceConnectionResult on DataSourceConnectionResult {
+    ... DataSourceConnection
+    ... PermissionDeniedError
+    ... NotFoundError
+    ... InvalidInputError
 }
 
 query GetDataSource($id: ID!) {
@@ -48,8 +55,7 @@ query GetDataSource($id: ID!) {
 
 query ListDataSources($after: String, $limit: Int, $filter: DataSourceFilterInput, $search: String, $order: [DataSourceOrderByInput!]) {
     dataSources(after: $after, limit: $limit, filter: $filter, order: $order, search: $search) {
-        ... DataSourcePage
-        ... PermissionDeniedError
+        ... DataSourceConnectionResult
     }
 }
 

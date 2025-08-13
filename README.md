@@ -26,7 +26,7 @@ It can be used to automate basic operations.
 
 ## Installation
 ```shell
-go get -u github.com/raito-io/sdk-go
+go get -u github.com/collibra/access-governance-go-sdk
 ```
 
 ## Examples
@@ -37,22 +37,21 @@ import (
     "context"
     "fmt"
 
-    raito "github.com/raito-io/sdk-go"
+	collibra "github.com/collibra/access-governance-go-sdk"
 )
 
 func main() {
 	ctx := context.Background()
 	
 	// Create a new RaitoClient 
-	client := raito.NewClient(ctx, "your-domain", "your-user", "your-secret")
+	client := collibra.NewClient(ctx, "your-domain", "your-user", "your-secret")
 	
-	// Access the AccessProviderClient 
-	accessProviderClient := client.AccessProvider()
-	ap, err := accessProviderClient.GetAccessProvider(ctx, "ap-id")
-	if err != nil {
-	    panic("ap does not exist: " + err.Error())
+	// Access the AccessControlClient 
+	accessControlClient := client.AccessControl()
+	ac, err := accessControlClient.GetAccessControl(ctx, "ap-id")
+	if(err != nil) {
+		panic("ap does not exist: " + err.Error())
 	}
-	
-	fmt.Printf("AccessProvider: %+v\n", ap)
+	fmt.Printf("AccessControl: %+v\n", ac)
 }
 ```

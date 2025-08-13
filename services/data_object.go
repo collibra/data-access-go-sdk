@@ -3,13 +3,14 @@ package services
 import (
 	"context"
 	"errors"
+	"fmt"
 
 	"github.com/Khan/genqlient/graphql"
 	"github.com/aws/smithy-go/ptr"
 
-	"github.com/raito-io/sdk-go/internal"
-	"github.com/raito-io/sdk-go/internal/schema"
-	"github.com/raito-io/sdk-go/types"
+	"github.com/collibra/access-governance-go-sdk/internal"
+	"github.com/collibra/access-governance-go-sdk/internal/schema"
+	"github.com/collibra/access-governance-go-sdk/types"
 )
 
 type DataObjectClient struct {
@@ -62,25 +63,32 @@ func (c *DataObjectClient) ListDataObjects(ctx context.Context, ops ...func(opti
 		op(&options)
 	}
 
-	loadPageFn := func(ctx context.Context, cursor *string) (*types.PageInfo, []types.DataObjectPageEdgesEdge, error) {
+	loadPageFn := func(ctx context.Context, cursor *string) (*types.PageInfo, []types.DataObjectConnectionEdgesDataObjectEdge, error) { //nolint:dupl
 		output, err := schema.ListDataObjects(ctx, c.client, cursor, ptr.Int(internal.MaxPageSize), options.filter, options.order)
 		if err != nil {
 			return nil, nil, types.NewErrClient(err)
 		}
 
-		return &output.DataObjects.PageInfo.PageInfo, output.DataObjects.Edges, nil
+		switch response := (output.DataObjects).(type) {
+		case *schema.ListDataObjectsDataObjectsDataObjectConnection:
+			return &response.PageInfo.PageInfo, response.Edges, nil
+		case *schema.ListDataObjectsDataObjectsInvalidInputError:
+			return nil, nil, types.NewErrInvalidInput(response.Message)
+		case *schema.ListDataObjectsDataObjectsNotFoundError:
+			return nil, nil, types.NewErrNotFound("", response.Typename, response.Message)
+		case *schema.ListDataObjectsDataObjectsPermissionDeniedError:
+			return nil, nil, types.NewErrPermissionDenied("dataObjectByExternalId", response.Message)
+		default:
+			return nil, nil, fmt.Errorf("unexpected type '%T'", response)
+		}
 	}
 
-	edgeFn := func(edge *types.DataObjectPageEdgesEdge) (*string, *schema.DataObject, error) {
+	edgeFn := func(edge *types.DataObjectConnectionEdgesDataObjectEdge) (*string, *schema.DataObject, error) {
 		cursor := edge.Cursor
-
 		if edge.Node == nil {
 			return cursor, nil, nil
 		}
-
-		listItem := (*edge.Node).(*types.DataObjectPageEdgesEdgeNodeDataObject)
-
-		return cursor, &listItem.DataObject, nil
+		return cursor, &edge.Node.DataObject, nil
 	}
 
 	return internal.PaginationExecutor(ctx, loadPageFn, edgeFn)
@@ -97,20 +105,30 @@ func WithDataObjectByExternalIdIncludeDataSource() func(options *DataObjectByExt
 }
 
 // GetDataObjectIdByName returns the ID of the DataObject with the given name and dataSource.
-func (c *DataObjectClient) GetDataObjectIdByName(ctx context.Context, fullname string, dataSource string, ops ...func(options *DataObjectByExternalIdOptions)) (string, error) {
+func (c *DataObjectClient) GetDataObjectIdByName(ctx context.Context, fullName string, dataSource string, ops ...func(options *DataObjectByExternalIdOptions)) (string, error) {
 	options := DataObjectByExternalIdOptions{}
 	for _, op := range ops {
 		op(&options)
 	}
 
-	result, err := schema.DataObjectByExternalId(ctx, c.client, fullname, dataSource, options.IncludeDataSource)
+	result, err := schema.DataObjectByExternalId(ctx, c.client, fullName, dataSource, options.IncludeDataSource)
 	if err != nil {
 		return "", types.NewErrClient(err)
 	}
 
-	if len(result.DataObjects.Edges) != 1 || result.DataObjects.Edges[0].Node == nil {
-		return "", errors.New("unexpected number of results")
+	switch response := (result.DataObjects).(type) {
+	case *schema.DataObjectByExternalIdDataObjectsDataObjectConnection:
+		if len(response.Edges) != 1 || response.Edges[0].Node == nil {
+			return "", errors.New("unexpected number of results")
+		}
+		return response.Edges[0].Node.DataSource.Id, nil
+	case *schema.DataObjectByExternalIdDataObjectsInvalidInputError:
+		return "", types.NewErrInvalidInput(response.Message)
+	case *schema.DataObjectByExternalIdDataObjectsNotFoundError:
+		return "", types.NewErrNotFound("", response.Typename, response.Message)
+	case *schema.DataObjectByExternalIdDataObjectsPermissionDeniedError:
+		return "", types.NewErrPermissionDenied("dataObjectByExternalId", response.Message)
+	default:
+		return "", fmt.Errorf("unexpected type '%T'", response)
 	}
-
-	return (*result.DataObjects.Edges[0].Node).(*schema.DataObjectByExternalIdDataObjectsPagedResultEdgesEdgeNodeDataObject).Id, nil
 }

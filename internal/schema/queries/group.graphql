@@ -6,26 +6,33 @@ fragment Group on Group {
     deleted
 }
 
-fragment GroupPage on PagedResult {
+fragment GroupConnection on GroupConnection {
     pageInfo {
-        ...PageInfo
+        ... PageInfo
     }
     edges {
         cursor
         node {
-            ...Group
+            ... Group
         }
     }
 }
 
+fragment GroupConnectionResult on GroupConnectionResult {
+    ... GroupConnection
+    ... NotFoundError
+    ... InvalidInputError
+    ... PermissionDeniedError
+}
+
 query GetGroup($id: ID!) {
     group(id: $id) {
-        ...Group
+        ... Group
     }
 }
 
 query ListGroups($after: String, $limit: Int, $filter: GroupFilterInput, $order: [GroupOrderByInput!]) {
     groups(after: $after, limit: $limit, filter: $filter, order: $order) {
-        ... GroupPage
+        ... GroupConnectionResult
     }
 }

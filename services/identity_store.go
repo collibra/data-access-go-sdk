@@ -7,9 +7,9 @@ import (
 	"github.com/Khan/genqlient/graphql"
 	"github.com/aws/smithy-go/ptr"
 
-	"github.com/raito-io/sdk-go/internal"
-	"github.com/raito-io/sdk-go/internal/schema"
-	"github.com/raito-io/sdk-go/types"
+	"github.com/collibra/access-governance-go-sdk/internal"
+	"github.com/collibra/access-governance-go-sdk/internal/schema"
+	"github.com/collibra/access-governance-go-sdk/types"
 )
 
 type IdentityStoreClient struct {
@@ -163,32 +163,32 @@ func (c *IdentityStoreClient) ListIdentityStores(ctx context.Context, ops ...fun
 		op(&options)
 	}
 
-	loadPageFn := func(ctx context.Context, cursor *string) (*types.PageInfo, []types.IdentityStorePageEdgesEdge, error) {
+	loadPageFn := func(ctx context.Context, cursor *string) (*types.PageInfo, []types.IdentityStoreConnectionEdgesIdentityStoreEdge, error) {
 		output, err := schema.ListIdentityStores(ctx, c.client, cursor, ptr.Int(internal.MaxPageSize), nil, options.filter, options.order)
 		if err != nil {
 			return nil, nil, types.NewErrClient(err)
 		}
 
-		switch page := output.IdentityStores.(type) {
-		case *schema.ListIdentityStoresIdentityStoresPagedResult:
-			return &page.PageInfo.PageInfo, page.Edges, nil
+		// ListIdentityStoresIdentityStoresNotFoundError
+
+		switch result := output.IdentityStores.(type) {
+		case *schema.ListIdentityStoresIdentityStoresIdentityStoreConnection:
+			return &result.PageInfo.PageInfo, result.Edges, nil
 		case *schema.ListIdentityStoresIdentityStoresPermissionDeniedError:
-			return nil, nil, types.NewErrPermissionDenied("listIdentityStores", page.Message)
+			return nil, nil, types.NewErrPermissionDenied("listIdentityStores", result.Message)
+		case *schema.ListIdentityStoresIdentityStoresInvalidInputError:
+			return nil, nil, types.NewErrInvalidInput(result.Message)
 		default:
-			return nil, nil, fmt.Errorf("unexpected type '%T'", page)
+			return nil, nil, fmt.Errorf("unexpected type '%T'", result)
 		}
 	}
 
-	edgeFn := func(edge *types.IdentityStorePageEdgesEdge) (*string, *types.IdentityStore, error) {
+	edgeFn := func(edge *types.IdentityStoreConnectionEdgesIdentityStoreEdge) (*string, *types.IdentityStore, error) {
 		cursor := edge.Cursor
-
 		if edge.Node == nil {
 			return cursor, nil, nil
 		}
-
-		listItem := (*edge.Node).(*types.IdentityStorePageEdgesEdgeNodeIdentityStore)
-
-		return cursor, &listItem.IdentityStore, nil
+		return cursor, &edge.Node.IdentityStore, nil
 	}
 
 	return internal.PaginationExecutor(ctx, loadPageFn, edgeFn)
