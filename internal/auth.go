@@ -108,12 +108,12 @@ func (d *AuthedDoer) fetchNewToken(ctx context.Context) error {
 	}
 
 	idpClient := idp.NewFromConfig(cfg)
+
 	output, err := idpClient.InitiateAuth(context.TODO(), &idp.InitiateAuthInput{
 		AuthFlow:       "USER_PASSWORD_AUTH",
 		ClientId:       &d.clientAppId,
 		AuthParameters: map[string]string{"USERNAME": d.User, "PASSWORD": d.Secret},
 	})
-
 	if err != nil {
 		return fmt.Errorf("error while initiating authentication flow for user %q: %w", d.User, err)
 	}
@@ -133,12 +133,12 @@ func (d *AuthedDoer) refreshToken(ctx context.Context) error {
 	}
 
 	idpClient := idp.NewFromConfig(cfg)
+
 	output, err := idpClient.InitiateAuth(ctx, &idp.InitiateAuthInput{
 		AuthFlow:       "REFRESH_TOKEN_AUTH",
 		ClientId:       &d.clientAppId,
 		AuthParameters: map[string]string{"REFRESH_TOKEN": d.token.refreshToken},
 	})
-
 	if err != nil {
 		return fmt.Errorf("error while initiating authentication flow for user %q: %w", d.token.userName, err)
 	}
@@ -197,7 +197,7 @@ func fetchClientAppId(urlBase, domain string) (string, error) {
 
 	url := urlBase + "admin/org/" + domain
 
-	req, err := http.NewRequest("GET", url, http.NoBody)
+	req, err := http.NewRequest(http.MethodGet, url, http.NoBody)
 	if err != nil {
 		return "", fmt.Errorf("error while creating HTTP GET request to %q: %s", url, err.Error())
 	}
@@ -211,7 +211,7 @@ func fetchClientAppId(urlBase, domain string) (string, error) {
 
 	defer resp.Body.Close()
 
-	if resp.StatusCode != 200 {
+	if resp.StatusCode != http.StatusOK {
 		return "", fmt.Errorf("unexpected status code %d received when calling URL %q", resp.StatusCode, url)
 	}
 

@@ -9,7 +9,7 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	"github.com/raito-io/sdk-go/types"
+	"github.com/collibra/access-governance-go-sdk/types"
 )
 
 func TestPaginationExecutor(t *testing.T) {

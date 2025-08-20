@@ -11,15 +11,23 @@ fragment DataObject on DataObject {
     }
 }
 
-fragment DataObjectPage on PagedResult {
+fragment DataObjectConnection on DataObjectConnection {
     pageInfo {
-        ... PageInfo
-    } edges {
+        ...PageInfo
+    }
+    edges {
         cursor
         node {
             ... DataObject
         }
     }
+}
+
+fragment DataObjectConnectionResult on DataObjectConnectionResult {
+    ... DataObjectConnection
+    ... PermissionDeniedError
+    ... NotFoundError
+    ... InvalidInputError
 }
 
 query GetDataObject($dataObjectId: ID!) {
@@ -30,7 +38,7 @@ query GetDataObject($dataObjectId: ID!) {
 
 query ListDataObjects($after: String, $limit: Int, $filter: DataObjectFilterInput, $order: [DataObjectOrderByInput!]) {
     dataObjects(after: $after, limit: $limit, filter: $filter, order: $order) {
-        ... DataObjectPage
+        ... DataObjectConnectionResult
     }
 }
 
@@ -40,10 +48,15 @@ query DataObjectByExternalId($fullname: String!, $dataSourceId: ID!, $includeDat
         dataSources: [$dataSourceId]
         includeDataSource: $includeDataSource
     }) {
-        edges {
-            node {
-                ... DataObject
+        ... on DataObjectConnection {
+            edges {
+                node {
+                    ... DataObject
+                }
             }
         }
+        ... NotFoundError
+        ... InvalidInputError
+        ... PermissionDeniedError
     }
 }

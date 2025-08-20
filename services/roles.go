@@ -8,9 +8,9 @@ import (
 	"github.com/Khan/genqlient/graphql"
 	"github.com/aws/smithy-go/ptr"
 
-	"github.com/raito-io/sdk-go/internal"
-	"github.com/raito-io/sdk-go/internal/schema"
-	"github.com/raito-io/sdk-go/types"
+	"github.com/collibra/access-governance-go-sdk/internal"
+	"github.com/collibra/access-governance-go-sdk/internal/schema"
+	"github.com/collibra/access-governance-go-sdk/types"
 )
 
 type RoleClient struct {
@@ -64,25 +64,32 @@ func (c *RoleClient) ListRoles(ctx context.Context, ops ...func(*RoleListOptions
 		op(&options)
 	}
 
-	loadPageFn := func(ctx context.Context, cursor *string) (*types.PageInfo, []types.RolePageEdgesEdge, error) {
+	loadPageFn := func(ctx context.Context, cursor *string) (*types.PageInfo, []types.RoleConnectionEdgesRoleEdge, error) { //nolint:dupl
 		output, err := schema.ListRoles(ctx, c.client, cursor, ptr.Int(internal.MaxPageSize), options.filter, options.order)
 		if err != nil {
 			return nil, nil, types.NewErrClient(err)
 		}
 
-		return &output.Roles.PageInfo.PageInfo, output.Roles.Edges, nil
+		switch response := (output.Roles).(type) {
+		case *schema.ListRolesRolesRoleConnection:
+			return &response.PageInfo.PageInfo, response.Edges, nil
+		case *schema.ListRolesRolesInvalidInputError:
+			return nil, nil, types.NewErrInvalidInput(response.Message)
+		case *schema.ListRolesRolesNotFoundError:
+			return nil, nil, types.NewErrNotFound("", response.Typename, response.Message)
+		case *schema.ListRolesRolesPermissionDeniedError:
+			return nil, nil, types.NewErrPermissionDenied("listRoles", response.Message)
+		default:
+			return nil, nil, fmt.Errorf("unexpected type '%T'", response)
+		}
 	}
 
-	edgeFn := func(edge *types.RolePageEdgesEdge) (*string, *schema.Role, error) {
+	edgeFn := func(edge *types.RoleConnectionEdgesRoleEdge) (*string, *schema.Role, error) {
 		cursor := edge.Cursor
-
 		if edge.Node == nil {
 			return cursor, nil, nil
 		}
-
-		listItem := (*edge.Node).(*types.RolePageEdgesEdgeNodeRole)
-
-		return cursor, &listItem.Role, nil
+		return cursor, &edge.Node.Role, nil
 	}
 
 	return internal.PaginationExecutor(ctx, loadPageFn, edgeFn)
@@ -118,13 +125,24 @@ func (c *RoleClient) ListRoleAssignments(ctx context.Context, ops ...func(*RoleA
 		op(&options)
 	}
 
-	loadPageFn := func(ctx context.Context, cursor *string) (*types.PageInfo, []types.RoleAssignmentPageEdgesEdge, error) {
+	loadPageFn := func(ctx context.Context, cursor *string) (*types.PageInfo, []types.RoleAssignmentConnectionEdgesRoleAssignmentEdge, error) { //nolint:dupl
 		output, err := schema.ListRoleAssignments(ctx, c.client, cursor, ptr.Int(internal.MaxPageSize), options.filter, options.order)
 		if err != nil {
 			return nil, nil, types.NewErrClient(err)
 		}
 
-		return &output.RoleAssignments.PageInfo.PageInfo, output.RoleAssignments.Edges, nil
+		switch response := (output.RoleAssignments).(type) {
+		case *schema.ListRoleAssignmentsRoleAssignmentsRoleAssignmentConnection:
+			return &response.PageInfo.PageInfo, response.Edges, nil
+		case *schema.ListRoleAssignmentsRoleAssignmentsInvalidInputError:
+			return nil, nil, types.NewErrInvalidInput(response.Message)
+		case *schema.ListRoleAssignmentsRoleAssignmentsNotFoundError:
+			return nil, nil, types.NewErrNotFound("", response.Typename, response.Message)
+		case *schema.ListRoleAssignmentsRoleAssignmentsPermissionDeniedError:
+			return nil, nil, types.NewErrPermissionDenied("listRoleAssignments", response.Message)
+		default:
+			return nil, nil, fmt.Errorf("unexpected type '%T'", response)
+		}
 	}
 
 	return internal.PaginationExecutor(ctx, loadPageFn, roleAssignmentsEdgeFn)
@@ -141,7 +159,7 @@ func (c *RoleClient) ListRoleAssignmentsOnIdentityStore(ctx context.Context, ide
 		op(&options)
 	}
 
-	loadPageFn := func(ctx context.Context, cursor *string) (*types.PageInfo, []types.RoleAssignmentPageEdgesEdge, error) {
+	loadPageFn := func(ctx context.Context, cursor *string) (*types.PageInfo, []types.RoleAssignmentConnectionEdgesRoleAssignmentEdge, error) {
 		output, err := schema.ListRoleAssignmentsOnIdentityStore(ctx, c.client, identityId, cursor, ptr.Int(internal.MaxPageSize), options.filter, options.order)
 		if err != nil {
 			return nil, nil, types.NewErrClient(err)
@@ -149,7 +167,14 @@ func (c *RoleClient) ListRoleAssignmentsOnIdentityStore(ctx context.Context, ide
 
 		switch is := output.IdentityStore.(type) {
 		case *schema.ListRoleAssignmentsOnIdentityStoreIdentityStore:
-			return &is.RoleAssignments.PageInfo.PageInfo, is.RoleAssignments.Edges, nil
+			switch ra := (is.RoleAssignments).(type) {
+			case *schema.ListRoleAssignmentsOnIdentityStoreIdentityStoreRoleAssignmentsRoleAssignmentConnection:
+				return &ra.PageInfo.PageInfo, ra.Edges, nil
+			case *schema.ListRoleAssignmentsOnIdentityStoreIdentityStoreRoleAssignmentsPermissionDeniedError:
+				return nil, nil, types.NewErrPermissionDenied("listRoleAssignmentsOnIdentityStore", ra.Message)
+			default:
+				return nil, nil, fmt.Errorf("unexpected type '%T'", is)
+			}
 		case *schema.ListRoleAssignmentsOnIdentityStoreIdentityStoreAlreadyExistsError:
 			return nil, nil, types.NewErrAlreadyExists("listRoleAssignmentsOnIdentityStore", is.Message)
 		case *schema.ListRoleAssignmentsOnIdentityStoreIdentityStoreNotFoundError:
@@ -175,13 +200,24 @@ func (c *RoleClient) ListRoleAssignmentsOnDataObject(ctx context.Context, object
 		op(&options)
 	}
 
-	loadPageFn := func(ctx context.Context, cursor *string) (*types.PageInfo, []types.RoleAssignmentPageEdgesEdge, error) {
+	loadPageFn := func(ctx context.Context, cursor *string) (*types.PageInfo, []types.RoleAssignmentConnectionEdgesRoleAssignmentEdge, error) {
 		output, err := schema.ListRoleAssignmentsOnDataObject(ctx, c.client, objectId, cursor, ptr.Int(internal.MaxPageSize), options.filter, options.order)
 		if err != nil {
 			return nil, nil, types.NewErrClient(err)
 		}
 
-		return &output.DataObject.RoleAssignments.PageInfo.PageInfo, output.DataObject.RoleAssignments.Edges, nil
+		switch result := (output.DataObject.RoleAssignments).(type) {
+		case *schema.ListRoleAssignmentsOnDataObjectDataObjectRoleAssignmentsRoleAssignmentConnection:
+			return &result.PageInfo.PageInfo, result.Edges, nil
+		case *schema.ListRoleAssignmentsOnDataObjectDataObjectRoleAssignmentsNotFoundError:
+			return nil, nil, types.NewErrNotFound(objectId, result.Typename, result.Message)
+		case *schema.ListRoleAssignmentsOnDataObjectDataObjectRoleAssignmentsPermissionDeniedError:
+			return nil, nil, types.NewErrPermissionDenied("listRoleAssignmentsOnDataObject", result.Message)
+		case *schema.ListRoleAssignmentsOnDataObjectDataObjectRoleAssignmentsInvalidInputError:
+			return nil, nil, types.NewErrInvalidInput(result.Message)
+		default:
+			return nil, nil, types.NewErrClient(fmt.Errorf("unexpected result type: %T", result))
+		}
 	}
 
 	return internal.PaginationExecutor(ctx, loadPageFn, roleAssignmentsEdgeFn)
@@ -198,7 +234,7 @@ func (c *RoleClient) ListRoleAssignmentsOnDataSource(ctx context.Context, dataSo
 		op(&options)
 	}
 
-	loadPageFn := func(ctx context.Context, cursor *string) (*types.PageInfo, []types.RoleAssignmentPageEdgesEdge, error) {
+	loadPageFn := func(ctx context.Context, cursor *string) (*types.PageInfo, []types.RoleAssignmentConnectionEdgesRoleAssignmentEdge, error) {
 		output, err := schema.ListRoleAssignmentsOnDataSource(ctx, c.client, dataSourceId, cursor, ptr.Int(internal.MaxPageSize), options.filter, options.order)
 		if err != nil {
 			return nil, nil, types.NewErrClient(err)
@@ -206,7 +242,16 @@ func (c *RoleClient) ListRoleAssignmentsOnDataSource(ctx context.Context, dataSo
 
 		switch ds := output.DataSource.(type) {
 		case *schema.ListRoleAssignmentsOnDataSourceDataSource:
-			return &ds.RoleAssignments.PageInfo.PageInfo, ds.RoleAssignments.Edges, nil
+			switch ra := (ds.RoleAssignments).(type) {
+			case *schema.ListRoleAssignmentsOnDataSourceDataSourceRoleAssignmentsRoleAssignmentConnection:
+				return &ra.PageInfo.PageInfo, ra.Edges, nil
+			case *schema.ListRoleAssignmentsOnDataSourceDataSourceRoleAssignmentsNotFoundError:
+				return nil, nil, types.NewErrNotFound(dataSourceId, ds.Typename, ra.Message)
+			case *schema.ListRoleAssignmentsOnDataSourceDataSourceRoleAssignmentsPermissionDeniedError:
+				return nil, nil, types.NewErrPermissionDenied("listRoleAssignmentsOnDataSource", ra.Message)
+			default:
+				return nil, nil, fmt.Errorf("unexpected type '%T'", ds)
+			}
 		case *schema.ListRoleAssignmentsOnDataSourceDataSourcePermissionDeniedError:
 			return nil, nil, types.NewErrPermissionDenied("listRoleAssignmentsOnDataSource", ds.Message)
 		case *schema.ListRoleAssignmentsOnDataSourceDataSourceNotFoundError:
@@ -219,30 +264,31 @@ func (c *RoleClient) ListRoleAssignmentsOnDataSource(ctx context.Context, dataSo
 	return internal.PaginationExecutor(ctx, loadPageFn, roleAssignmentsEdgeFn)
 }
 
-// ListRoleAssignmentsOnAccessProvider returns a list of role assignments for a given role on an access provider.
+// ListRoleAssignmentsOnAccessControl returns a list of role assignments for a given role on an access control.
 // The order of the list can be specified with WithRoleAssignmentListOrder.
 // A filter can be specified with WithRoleAssignmentListFilter.
 // A channel is returned that can be used to receive the list of types.RoleAssignment.
 // To close the channel ensure to cancel the context.
-func (c *RoleClient) ListRoleAssignmentsOnAccessProvider(ctx context.Context, accessProviderId string, ops ...func(*RoleAssignmentListOptions)) <-chan types.ListItem[types.RoleAssignment] { //nolint:dupl
+func (c *RoleClient) ListRoleAssignmentsOnAccessControl(ctx context.Context, accessControlId string, ops ...func(*RoleAssignmentListOptions)) <-chan types.ListItem[types.RoleAssignment] { //nolint:dupl
 	options := RoleAssignmentListOptions{}
 	for _, op := range ops {
 		op(&options)
 	}
 
-	loadPageFn := func(ctx context.Context, cursor *string) (*types.PageInfo, []types.RoleAssignmentPageEdgesEdge, error) {
-		output, err := schema.ListRoleAssignmentsOnAccessProvider(ctx, c.client, accessProviderId, cursor, ptr.Int(internal.MaxPageSize), options.filter, options.order)
+	loadPageFn := func(ctx context.Context, cursor *string) (*types.PageInfo, []types.RoleAssignmentConnectionEdgesRoleAssignmentEdge, error) {
+		output, err := schema.ListRoleAssignmentsOnAccessControl(ctx, c.client, accessControlId, cursor, ptr.Int(internal.MaxPageSize), options.filter, options.order)
 		if err != nil {
 			return nil, nil, types.NewErrClient(err)
 		}
 
-		switch ap := output.AccessProvider.(type) {
-		case *schema.ListRoleAssignmentsOnAccessProviderAccessProvider:
-			return &ap.RoleAssignments.PageInfo.PageInfo, ap.RoleAssignments.Edges, nil
-		case *schema.ListRoleAssignmentsOnAccessProviderAccessProviderPermissionDeniedError:
-			return nil, nil, types.NewErrPermissionDenied("listRoleAssignmentsOnAccessProvider", ap.Message)
-		case *schema.ListRoleAssignmentsOnAccessProviderAccessProviderNotFoundError:
-			return nil, nil, types.NewErrNotFound(accessProviderId, ap.Typename, ap.Message)
+		switch ap := output.AccessControl.(type) {
+		case *schema.ListRoleAssignmentsOnAccessControlAccessControl:
+			roleAssignments := (ap.RoleAssignments).(*schema.ListRoleAssignmentsOnAccessControlAccessControlRoleAssignmentsRoleAssignmentConnection)
+			return &roleAssignments.PageInfo.PageInfo, roleAssignments.Edges, nil
+		case *schema.ListRoleAssignmentsOnAccessControlAccessControlPermissionDeniedError:
+			return nil, nil, types.NewErrPermissionDenied("listRoleAssignmentsOnAccessControl", ap.Message)
+		case *schema.ListRoleAssignmentsOnAccessControlAccessControlNotFoundError:
+			return nil, nil, types.NewErrNotFound(accessControlId, ap.Typename, ap.Message)
 		default:
 			return nil, nil, fmt.Errorf("unexpected type '%T'", ap)
 		}
@@ -262,7 +308,7 @@ func (c *RoleClient) ListRoleAssignmentsOnUser(ctx context.Context, userId strin
 		op(&options)
 	}
 
-	loadPageFn := func(ctx context.Context, cursor *string) (*types.PageInfo, []types.RoleAssignmentPageEdgesEdge, error) {
+	loadPageFn := func(ctx context.Context, cursor *string) (*types.PageInfo, []types.RoleAssignmentConnectionEdgesRoleAssignmentEdge, error) {
 		output, err := schema.ListRoleAssignmentsOnUser(ctx, c.client, userId, cursor, ptr.Int(internal.MaxPageSize), options.filter, options.order)
 		if err != nil {
 			return nil, nil, types.NewErrClient(err)
@@ -270,7 +316,17 @@ func (c *RoleClient) ListRoleAssignmentsOnUser(ctx context.Context, userId strin
 
 		switch r := output.User.(type) {
 		case *schema.ListRoleAssignmentsOnUserUser:
-			return &r.RoleAssignments.PageInfo.PageInfo, r.RoleAssignments.Edges, nil
+			switch ra := r.RoleAssignments.(type) {
+			case *schema.ListRoleAssignmentsOnUserUserRoleAssignmentsRoleAssignmentConnection:
+				return &ra.PageInfo.PageInfo, ra.Edges, nil
+			case *schema.ListRoleAssignmentsOnUserUserRoleAssignmentsPermissionDeniedError:
+				return nil, nil, types.NewErrPermissionDenied("listRoleAssignmentsOnUser", ra.Message)
+			case *schema.ListRoleAssignmentsOnUserUserRoleAssignmentsNotFoundError:
+				return nil, nil, types.NewErrNotFound(userId, ra.Typename, ra.Message)
+			default:
+				return nil, nil, fmt.Errorf("unexpected type '%T'", ra)
+			}
+
 		case *schema.ListRoleAssignmentsOnUserUserPermissionDeniedError:
 			return nil, nil, types.NewErrPermissionDenied("listRoleAssignmentsOnUser", r.Message)
 		case *schema.ListRoleAssignmentsOnUserUserNotFoundError:
@@ -285,94 +341,6 @@ func (c *RoleClient) ListRoleAssignmentsOnUser(ctx context.Context, userId strin
 	}
 
 	return internal.PaginationExecutor(ctx, loadPageFn, roleAssignmentsEdgeFn)
-}
-
-// AssignRoleOnIdentityStore create a role assignment between an IdentityStore and a set of users.
-// roleId is the id of the role to assign.
-// isId is the id of the identity store to assign the role to.
-// to is a list of user ids to assign the role to.
-func (c *RoleClient) AssignRoleOnIdentityStore(ctx context.Context, roleId string, isId string, to ...string) (*types.Role, error) {
-	output, err := schema.AssignRoleOnIdentityStore(ctx, c.client, roleId, isId, to)
-	if err != nil {
-		return nil, types.NewErrClient(err)
-	}
-
-	switch r := output.AssignRoleOnIdentityStore.(type) {
-	case *schema.AssignRoleOnIdentityStoreAssignRoleOnIdentityStoreRole:
-		return &r.Role, nil
-	case *schema.AssignRoleOnIdentityStoreAssignRoleOnIdentityStorePermissionDeniedError:
-		return nil, types.NewErrPermissionDenied("assignRoleOnIdentityStore", r.Message)
-	case *schema.AssignRoleOnIdentityStoreAssignRoleOnIdentityStoreNotFoundError:
-		return nil, types.NewErrNotFound(isId, r.Typename, r.Message)
-	default:
-		return nil, fmt.Errorf("unexpected type '%T'", r)
-	}
-}
-
-// AssignRoleOnDataObject create a role assignment between a data object and a set of users.
-// roleId is the id of the role to assign.
-// isId is the id of the identity store to assign the role to.
-// to is a list of user ids to assign the role to.
-func (c *RoleClient) AssignRoleOnDataObject(ctx context.Context, roleId string, doId string, to ...string) (*types.Role, error) {
-	output, err := schema.AssignRoleOnDataObject(ctx, c.client, roleId, doId, to)
-	if err != nil {
-		return nil, types.NewErrClient(err)
-	}
-
-	switch r := output.AssignRoleOnDataObject.(type) {
-	case *schema.AssignRoleOnDataObjectAssignRoleOnDataObjectRole:
-		return &r.Role, nil
-	case *schema.AssignRoleOnDataObjectAssignRoleOnDataObjectPermissionDeniedError:
-		return nil, types.NewErrPermissionDenied("assignRoleOnDataObject", r.Message)
-	case *schema.AssignRoleOnDataObjectAssignRoleOnDataObjectNotFoundError:
-		return nil, types.NewErrNotFound(doId, r.Typename, r.Message)
-	default:
-		return nil, fmt.Errorf("unexpected type '%T'", r)
-	}
-}
-
-// AssignRoleOnDataSource create a role assignment between a data source and a set of users.
-// roleId is the id of the role to assign.
-// dataSourceId is the id of the data source to assign the role to.
-// to is a list of user ids to assign the role to.
-func (c *RoleClient) AssignRoleOnDataSource(ctx context.Context, roleId string, dataSourceId string, to ...string) (*types.Role, error) {
-	output, err := schema.AssignRoleOnDataSource(ctx, c.client, roleId, dataSourceId, to)
-	if err != nil {
-		return nil, types.NewErrClient(err)
-	}
-
-	switch r := output.AssignRoleOnDataSource.(type) {
-	case *schema.AssignRoleOnDataSourceAssignRoleOnDataSourceRole:
-		return &r.Role, nil
-	case *schema.AssignRoleOnDataSourceAssignRoleOnDataSourcePermissionDeniedError:
-		return nil, types.NewErrPermissionDenied("assignRoleOnDataSource", r.Message)
-	case *schema.AssignRoleOnDataSourceAssignRoleOnDataSourceNotFoundError:
-		return nil, types.NewErrNotFound(dataSourceId, r.Typename, r.Message)
-	default:
-		return nil, fmt.Errorf("unexpected type '%T'", r)
-	}
-}
-
-// AssignRoleOnAccessProvider create a role assignment between an access provider and a set of users.
-// roleId is the id of the role to assign.
-// accessProviderId is the id of the access provider to assign the role to.
-// to is a list of user ids to assign the role to.
-func (c *RoleClient) AssignRoleOnAccessProvider(ctx context.Context, roleId string, accessProviderId string, to ...string) (*types.Role, error) {
-	output, err := schema.AssignRoleOnAccessProvider(ctx, c.client, roleId, accessProviderId, to)
-	if err != nil {
-		return nil, types.NewErrClient(err)
-	}
-
-	switch r := output.AssignRoleOnAccessProvider.(type) {
-	case *schema.AssignRoleOnAccessProviderAssignRoleOnAccessProviderRole:
-		return &r.Role, nil
-	case *schema.AssignRoleOnAccessProviderAssignRoleOnAccessProviderPermissionDeniedError:
-		return nil, types.NewErrPermissionDenied("assignRoleOnAccessProvider", r.Message)
-	case *schema.AssignRoleOnAccessProviderAssignRoleOnAccessProviderNotFoundError:
-		return nil, types.NewErrNotFound(accessProviderId, r.Typename, r.Message)
-	default:
-		return nil, fmt.Errorf("unexpected type '%T'", r)
-	}
 }
 
 // AssignGlobalRole create a role assignment between a global role and a set of users.
@@ -391,98 +359,6 @@ func (c *RoleClient) AssignGlobalRole(ctx context.Context, roelId string, to ...
 		return nil, types.NewErrPermissionDenied("assignGlobalRole", r.Message)
 	case *schema.AssignGlobalRoleAssignGlobalRoleNotFoundError:
 		return nil, types.NewErrNotFound(roelId, r.Typename, r.Message)
-	default:
-		return nil, fmt.Errorf("unexpected type '%T'", r)
-	}
-}
-
-// UnassignRoleFromIdentityStore removes a role assignment between an IdentityStore and a set of users
-// roleId is the id of the role to unassign.
-// isId is the id of the identity store to unassign the role from.
-// from is a list of user ids to unassign the role from.
-func (c *RoleClient) UnassignRoleFromIdentityStore(ctx context.Context, roleId string, isId string, from ...string) (*types.Role, error) {
-	output, err := schema.UnassignRoleFromIdentityStore(ctx, c.client, roleId, isId, from)
-	if err != nil {
-		return nil, types.NewErrClient(err)
-	}
-
-	switch r := output.UnassignRoleFromIdentityStore.(type) {
-	case *schema.UnassignRoleFromIdentityStoreUnassignRoleFromIdentityStoreRole:
-		return &r.Role, nil
-	case *schema.UnassignRoleFromIdentityStoreUnassignRoleFromIdentityStorePermissionDeniedError:
-		return nil, types.NewErrPermissionDenied("unassignRoleFromIdentityStore", r.Message)
-	case *schema.UnassignRoleFromIdentityStoreUnassignRoleFromIdentityStoreNotFoundError:
-		return nil, types.NewErrNotFound(isId, r.Typename, r.Message)
-	default:
-		return nil, fmt.Errorf("unexpected type '%T'", r)
-	}
-}
-
-// UnassignRoleFromDataObject removes a role assignment between a data object and a set of users.
-// roleId is the id of the role to unassign.
-// doId is the id of the data object to unassign the role from.
-// from is a list of user ids to unassign the role from.
-func (c *RoleClient) UnassignRoleFromDataObject(ctx context.Context, roleId string, doId string, from ...string) (*types.Role, error) {
-	output, err := schema.UnassignRoleFromDataObject(ctx, c.client, roleId, doId, from)
-	if err != nil {
-		return nil, types.NewErrClient(err)
-	}
-
-	switch r := output.UnassignRoleFromDataObject.(type) {
-	case *schema.UnassignRoleFromDataObjectUnassignRoleFromDataObjectRole:
-		return &r.Role, nil
-	case *schema.UnassignRoleFromDataObjectUnassignRoleFromDataObjectPermissionDeniedError:
-		return nil, types.NewErrPermissionDenied("unassignRoleFromDataObject", r.Message)
-	case *schema.UnassignRoleFromDataObjectUnassignRoleFromDataObjectNotFoundError:
-		return nil, types.NewErrNotFound(doId, r.Typename, r.Message)
-	default:
-		return nil, fmt.Errorf("unexpected type '%T'", r)
-	}
-}
-
-// UnassignRoleFromDataSource removes a role assignment between a data source and a set of users.
-// roleId is the id of the role to unassign.
-// dataSourceId is the id of the data source to unassign the role from.
-// from is a list of user ids to unassign the role from.
-func (c *RoleClient) UnassignRoleFromDataSource(ctx context.Context, roleId string, dataSourceId string, from ...string) (*types.Role, error) {
-	output, err := schema.UnassignRoleFromDataSource(ctx, c.client, roleId, dataSourceId, from)
-	if err != nil {
-		return nil, types.NewErrClient(err)
-	}
-
-	switch r := output.UnassignRoleFromDataSource.(type) {
-	case *schema.UnassignRoleFromDataSourceUnassignRoleFromDataSourceRole:
-		return &r.Role, nil
-	case *schema.UnassignRoleFromDataSourceUnassignRoleFromDataSourcePermissionDeniedError:
-		return nil, types.NewErrPermissionDenied("unassignRoleFromDataSource", r.Message)
-	case *schema.UnassignRoleFromDataSourceUnassignRoleFromDataSourceNotFoundError:
-		return nil, types.NewErrNotFound(dataSourceId, r.Typename, r.Message)
-	default:
-		return nil, fmt.Errorf("unexpected type '%T'", r)
-	}
-}
-
-// UnassignRoleFromAccessProvider removes a role assignment between an access provider and a set of users
-// roleId is the id of the role to unassign.
-// accessProviderId is the id of the access provider to unassign the role from.
-// from is a list of user ids to unassign the role from.
-func (c *RoleClient) UnassignRoleFromAccessProvider(ctx context.Context, roleId string, accessProviderId string, from ...string) (*types.Role, error) {
-	output, err := schema.UnassignRoleFromAccessProvider(ctx, c.client, roleId, accessProviderId, from)
-	if err != nil {
-		return nil, types.NewErrClient(err)
-	}
-
-	if output.UnassignRoleFromAccessProvider == nil {
-		return nil, types.NewErrClient(errors.New("unknown error"))
-	}
-
-	switch r := (*output.UnassignRoleFromAccessProvider).(type) {
-	case *schema.UnassignRoleFromAccessProviderUnassignRoleFromAccessProviderRole:
-		return &r.Role, nil
-	case *schema.UnassignRoleFromAccessProviderUnassignRoleFromAccessProviderPermissionDeniedError:
-		return nil, types.NewErrPermissionDenied("unassignRoleFromAccessProvider", r.Message)
-	case *schema.UnassignRoleFromAccessProviderUnassignRoleFromAccessProviderNotFoundError:
-		return nil, types.NewErrNotFound(accessProviderId, r.Typename, r.Message)
 	default:
 		return nil, fmt.Errorf("unexpected type '%T'", r)
 	}
@@ -578,26 +454,26 @@ func (c *RoleClient) UpdateRoleAssigneesOnDataSource(ctx context.Context, dataSo
 	}
 }
 
-// UpdateRoleAssigneesOnAccessProvider updates a role assignment between an access provider and a set of users.
+// UpdateRoleAssigneesOnAccessControl updates a role assignment between an access control and a set of users.
 // Existing role assignments will be overwritten.
-// accessProviderId is the id of the access provider to assign the role to.
+// accessControlId is the id of the access provider to assign the role to.
 // roleId is the id of the role to assign.
 // assignees is a list of user ids to assign the role to.
-func (c *RoleClient) UpdateRoleAssigneesOnAccessProvider(ctx context.Context, accessProviderId string, roleId string, assignees ...string) (*types.Role, error) {
-	output, err := schema.UpdateRoleAssigneesOnAccessProvider(ctx, c.client, accessProviderId, roleId, assignees)
+func (c *RoleClient) UpdateRoleAssigneesOnAccessControl(ctx context.Context, accessControlId string, roleId string, assignees ...string) (*types.Role, error) {
+	output, err := schema.UpdateRoleAssigneesOnAccessControl(ctx, c.client, accessControlId, roleId, assignees)
 	if err != nil {
 		return nil, types.NewErrClient(err)
 	}
 
-	switch r := output.UpdateRoleAssigneesOnAccessProvider.(type) {
-	case *schema.UpdateRoleAssigneesOnAccessProviderUpdateRoleAssigneesOnAccessProviderRole:
-		return &r.Role, nil
-	case *schema.UpdateRoleAssigneesOnAccessProviderUpdateRoleAssigneesOnAccessProviderPermissionDeniedError:
-		return nil, types.NewErrPermissionDenied("updateRoleAssigneesOnAccessProvider", r.Message)
-	case *schema.UpdateRoleAssigneesOnAccessProviderUpdateRoleAssigneesOnAccessProviderNotFoundError:
-		return nil, types.NewErrNotFound(accessProviderId, r.Typename, r.Message)
+	switch response := output.UpdateRoleAssigneesOnAccessControl.(type) {
+	case *schema.UpdateRoleAssigneesOnAccessControlUpdateRoleAssigneesOnAccessControlRole:
+		return &response.Role, nil
+	case *schema.UpdateRoleAssigneesOnAccessControlUpdateRoleAssigneesOnAccessControlPermissionDeniedError:
+		return nil, types.NewErrPermissionDenied("updateRoleAssigneesOnAccessControl", response.Message)
+	case *schema.UpdateRoleAssigneesOnAccessControlUpdateRoleAssigneesOnAccessControlNotFoundError:
+		return nil, types.NewErrNotFound(accessControlId, response.Typename, response.Message)
 	default:
-		return nil, fmt.Errorf("unexpected type '%T'", r)
+		return nil, fmt.Errorf("unexpected type '%T'", response)
 	}
 }
 
@@ -625,14 +501,10 @@ func (c *RoleClient) SetGlobalRoleForUsers(ctx context.Context, roleId string, a
 	}
 }
 
-func roleAssignmentsEdgeFn(edge *types.RoleAssignmentPageEdgesEdge) (*string, *schema.RoleAssignment, error) {
+func roleAssignmentsEdgeFn(edge *types.RoleAssignmentConnectionEdgesRoleAssignmentEdge) (*string, *schema.RoleAssignment, error) {
 	cursor := edge.Cursor
-
 	if edge.Node == nil {
 		return cursor, nil, nil
 	}
-
-	listItem := (*edge.Node).(*types.RoleAssignmentPageEdgesEdgeNodeRoleAssignment)
-
-	return cursor, &listItem.RoleAssignment, nil
+	return cursor, &edge.Node.RoleAssignment, nil
 }

@@ -11,9 +11,5 @@ optional: pointer_omitempty
 bindings:
   Time:
     type: time.Time
-  AccessProviderState:
-    type: github.com/raito-io/sdk-go/types/models.AccessProviderState
-  AccessProviderAction:
-    type: github.com/raito-io/sdk-go/types/models.AccessProviderAction
   Duration:
     type: int64

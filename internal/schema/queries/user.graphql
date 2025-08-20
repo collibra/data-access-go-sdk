@@ -2,7 +2,6 @@ fragment User on User {
     id
     name
     email
-    isRaitoUser
     type
 }
 
@@ -51,41 +50,5 @@ mutation UpdateUser($uId: ID!, $input: UserInput!) {
         ... PermissionDeniedError
         ... NotFoundError
         ... InvalidEmailError
-    }
-}
-
-mutation DeleteUser($uId: ID!) {
-    deleteUser(id: $uId) {
-       ... on UserDelete {
-        success
-       }
-        ... PermissionDeniedError
-    }
-}
-
-mutation InviteAsRaitoUser($uId: ID!, $noPassword: Boolean) {
-    inviteAsRaitoUser(id: $uId, noPassword: $noPassword) {
-        ... User
-        ... InvalidEmailError
-        ... NotFoundError
-        ... PermissionDeniedError
-    }
-}
-
-mutation RemoveAsRaitoUser($uId: ID!) {
-    removeAsRaitoUser(id: $uId) {
-        ... User
-        ... InvalidEmailError
-        ... NotFoundError
-        ... PermissionDeniedError
-    }
-}
-
-mutation SetUserPassword($uId: ID!, $password: String!) {
-    setPassword(id: $uId, password: $password) {
-        ...User
-        ...PermissionDeniedError
-        ...NotFoundError
-        ...InvalidEmailError
     }
 }

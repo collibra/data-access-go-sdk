@@ -1,13 +1,12 @@
-module github.com/raito-io/sdk-go
+module github.com/collibra/access-governance-go-sdk
 
-go 1.24.0
+go 1.25.0
 
 tool (
 	github.com/Khan/genqlient
 	github.com/agnivade/levenshtein
 	github.com/alexflint/go-arg
 	github.com/alexflint/go-scalar
-	github.com/raito-io/enumer
 )
 
 require (
@@ -38,11 +37,8 @@ require (
 	github.com/aws/aws-sdk-go-v2/service/sts v1.33.19 // indirect
 	github.com/bmatcuk/doublestar/v4 v4.8.1 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
-	github.com/go-errors/errors v1.5.1 // indirect
 	github.com/google/uuid v1.6.0 // indirect
-	github.com/pascaldekloe/name v1.0.1 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
-	github.com/raito-io/enumer v0.1.6 // indirect
 	github.com/vektah/gqlparser/v2 v2.5.23 // indirect
 	golang.org/x/mod v0.24.0 // indirect
 	golang.org/x/sync v0.14.0 // indirect

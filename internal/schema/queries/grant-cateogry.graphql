@@ -45,8 +45,8 @@ fragment GrantCategoryDetails on GrantCategory {
 }
 
 fragment GrantCategoryTypeForDataSource on GrantCategoryTypeForDataSource {
-    DataSource
-    Type
+    dataSource
+    type
 }
 
 fragment GrantCategoryAllowedWhoItems on GrantCategoryAllowedWhoItems {
