@@ -1,5 +1,5 @@
-name: Release Raito SDK
-run-name: Running Release for Raito SDK
+name: Release Collibra Access Governance SDK
+run-name: Running Release for Collibra Access Governance SDK
 on:
   push:
     tags:

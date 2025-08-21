@@ -80,7 +80,7 @@ func (c *UserClient) GetUserByEmail(ctx context.Context, email string) (*types.U
 	}
 }
 
-// CreateUser creates a new user in Raito Cloud
+// CreateUser creates a new user in Collibra Access Governance
 // Returns a User if user is created successfully, otherwise returns an error.
 func (c *UserClient) CreateUser(ctx context.Context, userInput types.UserInput) (*types.User, error) {
 	result, err := schema.CreateUser(ctx, c.client, userInput)
@@ -102,7 +102,7 @@ func (c *UserClient) CreateUser(ctx context.Context, userInput types.UserInput) 
 	}
 }
 
-// UpdateUser updates an existing user in Raito Cloud
+// UpdateUser updates an existing user in Collibra Access Governance
 // Returns a User if user is updated successfully, otherwise returns an error.
 func (c *UserClient) UpdateUser(ctx context.Context, id string, userInput types.UserInput) (*types.User, error) {
 	result, err := schema.UpdateUser(ctx, c.client, id, userInput)
@@ -124,13 +124,13 @@ func (c *UserClient) UpdateUser(ctx context.Context, id string, userInput types.
 	}
 }
 
-type InviteAsRaitoUserOptions struct {
+type InviteAsAccessGovernanceUserOptions struct {
 	NoPassword bool
 }
 
-// WithInviteAsRaitoUserNoPassword adds the option to not send a password to the invited user.
-func WithInviteAsRaitoUserNoPassword() func(options *InviteAsRaitoUserOptions) {
-	return func(options *InviteAsRaitoUserOptions) {
+// WithInviteAsAccessGovernanceUserNoPassword adds the option to not send a password to the invited user.
+func WithInviteAsAccessGovernanceUserNoPassword() func(options *InviteAsAccessGovernanceUserOptions) {
+	return func(options *InviteAsAccessGovernanceUserOptions) {
 		options.NoPassword = true
 	}
 }

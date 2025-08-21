@@ -1,5 +1,5 @@
-name: Validate Raito SDK
-run-name: Validation of Raito SDK
+name: Validate Collibra Access Governance SDK
+run-name: Validation of Collibra Access Governance SDK
 on:
   push:
     branches:

@@ -21,39 +21,23 @@ type CollibraClient struct {
 	userClient          services.UserClient
 }
 
-type ClientOptions struct {
-	UrlOverride string
-}
-
-// WithUrlOverride can be used to override the URL used to communicate with the Raito API.
-func WithUrlOverride(urlOverride string) func(options *ClientOptions) {
-	return func(options *ClientOptions) {
-		options.UrlOverride = urlOverride
-	}
-}
-
 // NewClient creates a new CollibraClient with the given credentials.
-func NewClient(ctx context.Context, domain, user, secret string, ops ...func(options *ClientOptions)) *CollibraClient {
-	options := ClientOptions{
-		UrlOverride: internal.DefaultApiEndpoint,
+func NewClient(ctx context.Context, user, password, url string) *CollibraClient {
+	apiUrl := url
+	if apiUrl == "" {
+		apiUrl = internal.DefaultApiEndpoint
 	}
 
-	for _, op := range ops {
-		op(&options)
-	}
-
-	url := options.UrlOverride
 	if !strings.HasSuffix(url, "/") {
-		url += "/"
+		apiUrl += "/"
 	}
 
-	url += internal.GqlApiPath
+	apiUrl += internal.GqlApiPath
 
-	client := gql.NewClient(url, &internal.AuthedDoer{
-		Domain: domain,
-		User:   user,
-		Secret: secret,
-		Url:    options.UrlOverride,
+	client := gql.NewClient(apiUrl, &internal.BasicAuthedDoer{
+		User:     user,
+		Password: password,
+		Url:      apiUrl,
 	})
 
 	return &CollibraClient{
