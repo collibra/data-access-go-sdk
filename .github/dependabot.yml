@@ -29,7 +29,7 @@ updates:
       # for example, `dependabot-npm_and_yarn-next_js-acorn-6.4.1`
       separator: '-'
     reviewers:
-      - '@raito-io/back-end'
+      - '@collibra/access-management-backend'
   # Maintain dependencies for npm
   - package-ecosystem: 'gomod'
     directory: '/'
@@ -44,4 +44,4 @@ updates:
       # for example, `dependabot-npm_and_yarn-next_js-acorn-6.4.1`
       separator: '-'
     reviewers:
-      - '@raito-io/back-end'
+      - '@collibra/access-management-backend'

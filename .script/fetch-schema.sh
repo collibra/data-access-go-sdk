@@ -1,14 +1,37 @@
 #!/bin/bash
 
-# Parse command-line arguments
+# ==========================================================
+# This script downloads a GraphQL schema from a running
+# service using an introspection query and Basic Authentication.
+# How to use:
+# ./fetch-schema.sh --login "user" --password "P4sWorD" --output "./result.txt" --url "https://access-governance.collibra.tech"
+# NOTE:
+# --url is optional. If not provided the "https://access-governance.collibra.tech" will be used
+# ==========================================================
+
+# --- Argument Parsing ---
+# Initialize variables to hold login, password, output file, and optional URL
+LOGIN=""
+PASSWORD=""
+OUTPUT_FILE=""
+URL_OVERRIDE=""
+
 while [[ $# -gt 0 ]]; do
   case "$1" in
-    --token)
-      TOKEN=$2
+    --login)
+      LOGIN=$2
+      shift 2
+      ;;
+    --password)
+      PASSWORD=$2
       shift 2
       ;;
     --output)
       OUTPUT_FILE=$2
+      shift 2
+      ;;
+    --url)
+      URL_OVERRIDE=$2
       shift 2
       ;;
     *)
@@ -18,31 +41,30 @@ while [[ $# -gt 0 ]]; do
   esac
 done
 
-# If GITHUB_TOKEN is not provided as an argument, check if it's set as an environment variable
-if [ -z "${TOKEN}" ]; then
-  if [ -z "${GITHUB_TOKEN}" ]; then
-    echo "Error: token is not provided as an argument and GITHUB_TOKEN is not set."
-    exit 1
-  else
-    TOKEN=${GITHUB_TOKEN}
-  fi
+# --- URL and Validation ---
+DEFAULT_URL="https://access-governance.collibra.tech/accessGovernance/query"
+SERVICE_URL=${URL_OVERRIDE:-$DEFAULT_URL}
+
+# Ensure the URL has the correct GraphQL endpoint path
+GRAPHQL_PATH="/accessGovernance/query"
+if [[ ! "${SERVICE_URL}" =~ "${GRAPHQL_PATH}"$ ]]; then
+  # Append the path if it's missing
+  SERVICE_URL="${SERVICE_URL}${GRAPHQL_PATH}"
 fi
 
-# Check if required arguments are provided
-if [ -z "${TOKEN}" ] || [ -z "${OUTPUT_FILE}" ]; then
-  echo "Usage: $0 --token GITHUB_TOKEN --output OUTPUT_FILE"
+# Check if all required arguments are provided
+if [ -z "${LOGIN}" ] || [ -z "${PASSWORD}" ] || [ -z "${OUTPUT_FILE}" ]; then
+  echo "Error: Missing arguments."
+  echo "Usage: $0 --login GITHUB_USERNAME --password GITHUB_PASSWORD --output OUTPUT_FILE [--url CUSTOM_URL]"
   exit 1
 fi
 
-# Fetch the asset URL and download the file
-asset_url=$(curl -L -s \
- -H "Accept: application/vnd.github+json" \
- -H "Authorization: Bearer ${TOKEN}" \
- -H "X-GitHub-Api-Version: 2022-11-28" \
- https://api.github.com/repos/raito-io/appserver/releases/latest | jq -r '.assets[] | select(.name=="schema.graphql") | .url ')
+# --- Downloading the File using GraphQL Introspection ---
+AUTH_HEADER="Authorization: Basic $(echo -n "${LOGIN}:${PASSWORD}" | base64)"
 
-curl -L -s \
- -H "Accept: application/octet-stream" \
- -H "Authorization: Bearer ${TOKEN}" \
- -H "X-GitHub-Api-Version: 2022-11-28" \
- ${asset_url} > ${OUTPUT_FILE}
+npx --yes @apollo/rover graph introspect "${SERVICE_URL}" \
+  --header "${AUTH_HEADER}" \
+  --output "${OUTPUT_FILE}"
+
+# Add a success message
+echo "Successfully downloaded GraphQL schema to ${OUTPUT_FILE}"
