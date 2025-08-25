@@ -47,7 +47,24 @@ jobs:
       - name: Test
         run: make test
 
-#      - uses: codecov/codecov-action@v3
-#        with:
-#          token: ${{ secrets.CODECOV_TOKEN }}
-#          file: ./coverage.txt
+      - name: SonarQube Scan
+        uses: sonarsource/sonarqube-scan-action@v4
+        env:
+          SONAR_TOKEN: ${{ secrets.SONARQUBE_TOKEN }}
+          SONAR_HOST_URL: https://sonarqube.collibra.dev
+        with:
+          args: >
+            -Dsonar.pullrequest.github.repository=collibra/access-governance-go-sdk
+
+      - name: SonarQube Quality Gate
+        uses: sonarsource/sonarqube-quality-gate-action@v1.1.0
+        timeout-minutes: 10
+        continue-on-error: true
+        env:
+          SONAR_TOKEN: ${{ secrets.SONARQUBE_TOKEN }}
+          SONAR_HOST_URL: https://sonarqube.collibra.dev
+
+      - name: FOSSA Scan
+        uses: fossas/fossa-action@v1
+        with:
+          api-key: ${{ secrets.FOSSA_API_KEY }}
