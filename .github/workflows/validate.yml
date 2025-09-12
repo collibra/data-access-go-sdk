@@ -48,9 +48,9 @@ jobs:
         run: make test
 
       - name: SonarQube Scan
-        uses: sonarsource/sonarqube-scan-action@v4
+        uses: sonarsource/sonarqube-scan-action@v5
         env:
-          SONAR_TOKEN: ${{ secrets.SONARQUBE_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONARQUBE_PUBLIC_API_KEY }}
           SONAR_HOST_URL: https://sonarqube.collibra.dev
         with:
           args: >
@@ -61,10 +61,10 @@ jobs:
         timeout-minutes: 10
         continue-on-error: true
         env:
-          SONAR_TOKEN: ${{ secrets.SONARQUBE_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONARQUBE_PUBLIC_API_KEY }}
           SONAR_HOST_URL: https://sonarqube.collibra.dev
 
       - name: FOSSA Scan
         uses: fossas/fossa-action@v1
         with:
-          api-key: ${{ secrets.FOSSA_API_KEY }}
+          api-key: ${{ secrets.FOSSA_PUBLIC_API_KEY }}
