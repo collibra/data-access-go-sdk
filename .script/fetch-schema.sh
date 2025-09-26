@@ -55,7 +55,7 @@ fi
 # Check if all required arguments are provided
 if [ -z "${LOGIN}" ] || [ -z "${PASSWORD}" ] || [ -z "${OUTPUT_FILE}" ]; then
   echo "Error: Missing arguments."
-  echo "Usage: $0 --login GITHUB_USERNAME --password GITHUB_PASSWORD --output OUTPUT_FILE [--url CUSTOM_URL]"
+  echo "Usage: $0 --login COLLIBRA_USERNAME --password COLLIBRA_PASSWORD --output OUTPUT_FILE [--url CUSTOM_URL]"
   exit 1
 fi
 

@@ -5,18 +5,18 @@ import (
 	"fmt"
 
 	"github.com/Khan/genqlient/graphql"
-	"github.com/aws/smithy-go/ptr"
 
 	"github.com/collibra/access-governance-go-sdk/internal/schema"
 	"github.com/collibra/access-governance-go-sdk/types"
+	"github.com/collibra/access-governance-go-sdk/utils"
 )
 
 type UserClient struct {
 	client graphql.Client
 }
 
-func NewUserClient(client graphql.Client) UserClient {
-	return UserClient{
+func NewUserClient(client graphql.Client) *UserClient {
+	return &UserClient{
 		client: client,
 	}
 }
@@ -63,7 +63,7 @@ func (c *UserClient) GetUserByEmail(ctx context.Context, email string) (*types.U
 	}
 
 	if result.UserByEmail == nil {
-		return nil, types.NewErrNotFound(email, ptr.String("user"), "No user found for the given email address.")
+		return nil, types.NewErrNotFound(email, utils.Ptr("user"), "No user found for the given email address.")
 	}
 
 	switch user := (*result.UserByEmail).(type) {

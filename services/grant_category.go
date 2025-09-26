@@ -14,8 +14,8 @@ type GrantCategoryClient struct {
 	client graphql.Client
 }
 
-func NewGrantCategoryClient(client graphql.Client) GrantCategoryClient {
-	return GrantCategoryClient{
+func NewGrantCategoryClient(client graphql.Client) *GrantCategoryClient {
+	return &GrantCategoryClient{
 		client: client,
 	}
 }

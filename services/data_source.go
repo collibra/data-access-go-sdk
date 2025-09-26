@@ -3,21 +3,22 @@ package services
 import (
 	"context"
 	"fmt"
+	"iter"
 
 	"github.com/Khan/genqlient/graphql"
-	"github.com/aws/smithy-go/ptr"
 
 	"github.com/collibra/access-governance-go-sdk/internal"
 	"github.com/collibra/access-governance-go-sdk/internal/schema"
 	"github.com/collibra/access-governance-go-sdk/types"
+	"github.com/collibra/access-governance-go-sdk/utils"
 )
 
 type DataSourceClient struct {
 	client graphql.Client
 }
 
-func NewDataSourceClient(client graphql.Client) DataSourceClient {
-	return DataSourceClient{
+func NewDataSourceClient(client graphql.Client) *DataSourceClient {
+	return &DataSourceClient{
 		client: client,
 	}
 }
@@ -197,14 +198,14 @@ func WithDataSourceListSearch(input *string) func(options *DataSourceListOptions
 // A filter can be specified with WithDataSourceListFilter.
 // A channel is returned that can be used to receive the list of DataSourceListItem.
 // To close the channel ensure to cancel the context.
-func (c *DataSourceClient) ListDataSources(ctx context.Context, ops ...func(*DataSourceListOptions)) <-chan types.ListItem[types.DataSource] {
+func (c *DataSourceClient) ListDataSources(ctx context.Context, ops ...func(*DataSourceListOptions)) iter.Seq2[*types.DataSource, error] {
 	options := DataSourceListOptions{}
 	for _, op := range ops {
 		op(&options)
 	}
 
 	loadPageFn := func(ctx context.Context, cursor *string) (*types.PageInfo, []types.DataSourceConnectionEdgesDataSourceEdge, error) {
-		output, err := schema.ListDataSources(ctx, c.client, cursor, ptr.Int(internal.MaxPageSize), options.filter, nil, options.order)
+		output, err := schema.ListDataSources(ctx, c.client, cursor, utils.Ptr(internal.MaxPageSize), options.filter, nil, options.order)
 		if err != nil {
 			return nil, nil, types.NewErrClient(err)
 		}
@@ -251,5 +252,23 @@ func (c *DataSourceClient) ListIdentityStores(ctx context.Context, dsId string) 
 		return nil, types.NewErrPermissionDenied("listIdentityStores", datasource.Message)
 	default:
 		return nil, fmt.Errorf("unexpected type '%T': %w", datasource, types.ErrUnknownType)
+	}
+}
+
+func (c *DataSourceClient) SetDataSourceMetadata(ctx context.Context, id string, metadata types.DataSourceMetaDataInput) (*types.DataSource, error) {
+	result, err := schema.SetDataSourceMetadata(ctx, c.client, id, metadata)
+	if err != nil {
+		return nil, types.NewErrClient(err)
+	}
+
+	switch response := result.SetDataSourceMetaData.(type) {
+	case *schema.SetDataSourceMetadataSetDataSourceMetaDataDataSource:
+		return &response.DataSource, nil
+	case *schema.SetDataSourceMetadataSetDataSourceMetaDataNotFoundError:
+		return nil, types.NewErrNotFound(id, response.Typename, response.Message)
+	case *schema.SetDataSourceMetadataSetDataSourceMetaDataPermissionDeniedError:
+		return nil, types.NewErrPermissionDenied("setDataSourceMetadata", response.Message)
+	default:
+		return nil, fmt.Errorf("unexpected response type: %T", result.SetDataSourceMetaData)
 	}
 }

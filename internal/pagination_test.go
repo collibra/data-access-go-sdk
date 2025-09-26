@@ -51,16 +51,17 @@ func testPaginationExecutorSuccess(t *testing.T) {
 		return &cursor, &item, nil
 	}
 
-	outputChannel := PaginationExecutor(ctx, mockLoadPageFn, mockEdgeFn)
+	iterator := PaginationExecutor(ctx, mockLoadPageFn, mockEdgeFn)
 
 	var items []string
-	for listItem := range outputChannel {
-		if listItem.HasError() {
-			t.Errorf("Error encountered: %v", listItem.GetError())
-			return
+	iterator(func(item *string, err error) bool {
+		if err != nil {
+			t.Errorf("Error encountered: %v", err)
+			return false
 		}
-		items = append(items, listItem.MustGetItem())
-	}
+		items = append(items, *item)
+		return true
+	})
 
 	assert.Equal(t, []string{"item 0", "item 1", "item 2", "item 3", "item 4", "item 5", "item 6", "item 7"}, items)
 }
@@ -75,49 +76,56 @@ func testPaginationExecutorLoadPageError(t *testing.T) {
 		return nil, nil, nil
 	}
 
-	outputChannel := PaginationExecutor(ctx, mockLoadPageFn, mockEdgeFn)
+	iterator := PaginationExecutor(ctx, mockLoadPageFn, mockEdgeFn)
 
-	for listItem := range outputChannel {
-		if !listItem.HasError() {
-			t.Error("Expected error, but none received")
-			return
+	var receivedError error
+	var itemsReceived int
+	iterator(func(item *string, err error) bool {
+		if err != nil {
+			receivedError = err
+			return false
 		}
-		if listItem.GetError() != expectedErr {
-			t.Errorf("Expected error: %v, got: %v", expectedErr, listItem.GetError())
-			return
-		}
-	}
+		itemsReceived++
+		return true
+	})
+
+	assert.ErrorIs(t, receivedError, expectedErr)
+	assert.Equal(t, 0, itemsReceived)
 }
 
 func testPaginationExecutorEdgeFnError(t *testing.T) {
 	ctx := context.Background()
 	expectedErr := errors.New("edgeFn error")
 	mockLoadPageFn := func(ctx context.Context, cursor *string) (*types.PageInfo, []int, error) {
-		pageInfo := &types.PageInfo{HasNextPage: boolPtr(true)} // Adjust as needed
-		edges := []int{1, 2, 3}                                 // Adjust as needed
+		pageInfo := &types.PageInfo{HasNextPage: boolPtr(true)}
+		edges := []int{1, 2, 3}
 		return pageInfo, edges, nil
 	}
 	mockEdgeFn := func(edge *int) (*string, *string, error) {
 		return nil, nil, expectedErr
 	}
 
-	outputChannel := PaginationExecutor(ctx, mockLoadPageFn, mockEdgeFn)
+	iterator := PaginationExecutor(ctx, mockLoadPageFn, mockEdgeFn)
 
-	for listItem := range outputChannel {
-		if !listItem.HasError() {
-			t.Error("Expected error, but none received")
-			return
+	var receivedError error
+	var itemsReceived int
+	iterator(func(item *string, err error) bool {
+		if err != nil {
+			receivedError = err
+			return false
 		}
-		if listItem.GetError() != expectedErr {
-			t.Errorf("Expected error: %v, got: %v", expectedErr, listItem.GetError())
-			return
-		}
-	}
+		itemsReceived++
+		return true
+	})
+
+	assert.ErrorIs(t, receivedError, expectedErr)
+	assert.Equal(t, 0, itemsReceived)
 }
 
 func testPaginationExecutorCancel(t *testing.T) {
 	ctx := context.Background()
 	cancelCtx, cancelFn := context.WithCancel(ctx)
+	defer cancelFn()
 
 	mockLoadPageFn := func(ctx context.Context, cursor *string) (*types.PageInfo, []int, error) {
 		pageNr := 0
@@ -148,23 +156,25 @@ func testPaginationExecutorCancel(t *testing.T) {
 		return &cursor, &item, nil
 	}
 
-	outputChannel := PaginationExecutor(cancelCtx, mockLoadPageFn, mockEdgeFn)
+	iterator := PaginationExecutor(cancelCtx, mockLoadPageFn, mockEdgeFn)
 
 	var items []string
-	for listItem := range outputChannel {
-		if listItem.HasError() {
-			t.Errorf("Error encountered: %v", listItem.GetError())
-			return
+	var errEncountered error
+	iterator(func(item *string, err error) bool {
+		if err != nil {
+			errEncountered = err
+			return false
 		}
-		items = append(items, listItem.MustGetItem())
+		items = append(items, *item)
 
-		if len(items) > 4 {
+		if len(items) == 5 {
 			cancelFn()
 		}
-	}
+		return true
+	})
 
 	assert.Equal(t, []string{"item 0", "item 1", "item 2", "item 3", "item 4"}, items)
-
+	assert.ErrorIs(t, errEncountered, context.Canceled)
 }
 
 // Utility function to get a pointer to bool

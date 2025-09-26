@@ -3,21 +3,22 @@ package services
 import (
 	"context"
 	"fmt"
+	"iter"
 
 	"github.com/Khan/genqlient/graphql"
-	"github.com/aws/smithy-go/ptr"
 
 	"github.com/collibra/access-governance-go-sdk/internal"
 	"github.com/collibra/access-governance-go-sdk/internal/schema"
 	"github.com/collibra/access-governance-go-sdk/types"
+	"github.com/collibra/access-governance-go-sdk/utils"
 )
 
 type IdentityStoreClient struct {
 	client graphql.Client
 }
 
-func NewIdentityStoreClient(client graphql.Client) IdentityStoreClient {
-	return IdentityStoreClient{
+func NewIdentityStoreClient(client graphql.Client) *IdentityStoreClient {
+	return &IdentityStoreClient{
 		client: client,
 	}
 }
@@ -157,14 +158,14 @@ func WithListIdentityStoresFilter(input *schema.IdentityStoreFilterInput) func(o
 // A filter can be specified with WithListIdentityStoresFilter.
 // A channel is returned that can be used to receive the list of IdentityStores.
 // To close the channel ensure to cancel the context.
-func (c *IdentityStoreClient) ListIdentityStores(ctx context.Context, ops ...func(options *ListIdentityStoresOptions)) <-chan types.ListItem[types.IdentityStore] {
+func (c *IdentityStoreClient) ListIdentityStores(ctx context.Context, ops ...func(options *ListIdentityStoresOptions)) iter.Seq2[*types.IdentityStore, error] {
 	options := ListIdentityStoresOptions{}
 	for _, op := range ops {
 		op(&options)
 	}
 
 	loadPageFn := func(ctx context.Context, cursor *string) (*types.PageInfo, []types.IdentityStoreConnectionEdgesIdentityStoreEdge, error) {
-		output, err := schema.ListIdentityStores(ctx, c.client, cursor, ptr.Int(internal.MaxPageSize), nil, options.filter, options.order)
+		output, err := schema.ListIdentityStores(ctx, c.client, cursor, utils.Ptr(internal.MaxPageSize), nil, options.filter, options.order)
 		if err != nil {
 			return nil, nil, types.NewErrClient(err)
 		}

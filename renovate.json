@@ -23,6 +23,12 @@
         "patch"
       ],
       "groupName": "go minor and patch dependencies"
+    },
+    {
+      "matchPackageNames": [
+        "golang"
+      ],
+      "enabled": false
     }
   ],
   "hashedBranchLength": 24,

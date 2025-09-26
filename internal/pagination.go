@@ -2,66 +2,76 @@ package internal
 
 import (
 	"context"
+	"iter"
 
 	"github.com/collibra/access-governance-go-sdk/types"
 )
 
-func PaginationExecutor[T any, E any](ctx context.Context, loadPageFn func(ctx context.Context, cursor *string) (*types.PageInfo, []E, error), edgeFn func(edge *E) (*string, *T, error)) <-chan types.ListItem[T] {
-	outputChannel := make(chan types.ListItem[T])
+func PaginationExecutor[T any, E any](ctx context.Context, loadPageFn func(ctx context.Context, cursor *string) (*types.PageInfo, []E, error), edgeFn func(edge *E) (*string, *T, error)) iter.Seq2[*T, error] {
+	return func(yield func(*T, error) bool) {
+		var (
+			hasNext    = true
+			lastCursor *string
+			edges      []E
+			edgeIndex  int
+		)
 
-	go func() {
-		defer close(outputChannel)
-
-		hasNext := true
-		var lastCursor *string
-
-		for hasNext {
-			select {
-			case <-ctx.Done():
+		for {
+			if err := ctx.Err(); err != nil {
+				yield(nil, err)
 				return
-			default:
-				pageInfo, edges, err := loadPageFn(ctx, lastCursor)
-				if err != nil {
-					putOnChannel(ctx, types.NewListItemError[T](err), outputChannel)
+			}
 
+			if edgeIndex >= len(edges) {
+				if !hasNext {
 					return
 				}
 
-				for i := range edges {
-					cursor, item, edgeErr := edgeFn(&edges[i])
-					if edgeErr != nil {
-						putOnChannel(ctx, types.NewListItemError[T](edgeErr), outputChannel)
-
-						return
-					}
-
-					if cursor != nil {
-						lastCursor = cursor
-					}
-
-					if item == nil {
-						continue
-					}
-
-					ctxDone := putOnChannel(ctx, types.NewListItemItem(item), outputChannel)
-					if ctxDone {
-						return
-					}
+				// Fetch the next page of data.
+				pageInfo, newEdges, err := loadPageFn(ctx, lastCursor)
+				if err != nil {
+					yield(nil, err)
+					return
 				}
 
+				// Reset state for the new page.
+				edges = newEdges
+				edgeIndex = 0
+
+				// Determine if there is a subsequent page.
 				hasNext = pageInfo != nil && pageInfo.HasNextPage != nil && *pageInfo.HasNextPage
+
+				// If the new page is empty, loop again to fetch the next one or exit.
+				if len(edges) == 0 {
+					continue
+				}
+			}
+
+			// Process the current item (edge) from the page.
+			edge := &edges[edgeIndex]
+			edgeIndex++ // Move to the next item for the next iteration.
+
+			cursor, item, err := edgeFn(edge)
+			if err != nil {
+				yield(nil, err)
+				return
+			}
+
+			// Update the cursor for the next page load.
+			if cursor != nil {
+				lastCursor = cursor
+			}
+
+			// Skip nil items, as in the original function.
+			if item == nil {
+				continue
+			}
+
+			// Yield the processed item. If yield returns false, the consumer
+			// has stopped iterating, so we should stop as well.
+			if !yield(item, nil) {
+				return
 			}
 		}
-	}()
-
-	return outputChannel
-}
-
-func putOnChannel[T any](ctx context.Context, item T, outputChannel chan<- T) bool {
-	select {
-	case <-ctx.Done():
-		return true
-	case outputChannel <- item:
-		return false
 	}
 }

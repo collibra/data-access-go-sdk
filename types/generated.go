@@ -30,6 +30,7 @@ const (
 	AccessControlActionMask   AccessControlAction = schema.AccessControlActionMask
 	AccessControlActionFilter AccessControlAction = schema.AccessControlActionFilter
 	AccessControlActionShare  AccessControlAction = schema.AccessControlActionShare
+	AccessControlActionGroup  AccessControlAction = schema.AccessControlActionGroup
 )
 
 type AccessControlCategoryGrantCategory = schema.AccessControlCategoryGrantCategory
@@ -43,7 +44,10 @@ type AccessControlConnectionResultInvalidInputError = schema.AccessControlConnec
 type AccessControlConnectionResultNotFoundError = schema.AccessControlConnectionResultNotFoundError
 type AccessControlConnectionResultPermissionDeniedError = schema.AccessControlConnectionResultPermissionDeniedError
 type AccessControlDataSourceInput = schema.AccessControlDataSourceInput
+type AccessControlFeedbackImport = schema.AccessControlFeedbackImport
+type AccessControlFeedbackState = schema.AccessControlFeedbackState
 type AccessControlFilterInput = schema.AccessControlFilterInput
+type AccessControlImport = schema.AccessControlImport
 type AccessControlInput = schema.AccessControlInput
 type AccessControlLock = schema.AccessControlLock
 
@@ -79,12 +83,14 @@ const (
 )
 
 type AccessControlSyncData = schema.AccessControlSyncData
+type AccessControlTypeInput = schema.AccessControlTypeInput
 type AccessControlWhatAbacRule = schema.AccessControlWhatAbacRule
 type AccessControlWhatAccessControlFilterInput = schema.AccessControlWhatAccessControlFilterInput
 type AccessControlWhatDoByNameInput = schema.AccessControlWhatDoByNameInput
 type AccessControlWhatInputAP = schema.AccessControlWhatInputAP
 type AccessControlWhatInputDO = schema.AccessControlWhatInputDO
 type AccessControlWhoAbacRule = schema.AccessControlWhoAbacRule
+type AccessControlWhoFeedbackState = schema.AccessControlWhoFeedbackState
 type AccessControlWhoOrderByInput = schema.AccessControlWhoOrderByInput
 type AccessWhatAccessControlItem = schema.AccessWhatAccessControlItem
 type AccessWhatAccessControlItemAccessControl = schema.AccessWhatAccessControlItemAccessControl
@@ -126,6 +132,14 @@ const (
 	AccessWhoItemTypeWhopromise AccessWhoItemType = schema.AccessWhoItemTypeWhopromise
 )
 
+type ActionType = schema.ActionType
+
+const (
+	ActionTypeRead  ActionType = schema.ActionTypeRead
+	ActionTypeWrite ActionType = schema.ActionTypeWrite
+	ActionTypeAdmin ActionType = schema.ActionTypeAdmin
+)
+
 type ActivateAccessControlActivateAccessControl = schema.ActivateAccessControlActivateAccessControl
 type ActivateAccessControlActivateAccessControlAccessControlResult = schema.ActivateAccessControlActivateAccessControlAccessControlResult
 type ActivateAccessControlActivateAccessControlInvalidInputError = schema.ActivateAccessControlActivateAccessControlInvalidInputError
@@ -138,6 +152,10 @@ type AddIdentityStoreToDataSourceAddIdentityStoreToDataSourceInvalidInputError =
 type AddIdentityStoreToDataSourceAddIdentityStoreToDataSourceNotFoundError = schema.AddIdentityStoreToDataSourceAddIdentityStoreToDataSourceNotFoundError
 type AddIdentityStoreToDataSourceAddIdentityStoreToDataSourcePermissionDeniedError = schema.AddIdentityStoreToDataSourceAddIdentityStoreToDataSourcePermissionDeniedError
 type AddIdentityStoreToDataSourceResponse = schema.AddIdentityStoreToDataSourceResponse
+type AddSubtaskEventAddSubtaskEventSubtask = schema.AddSubtaskEventAddSubtaskEventSubtask
+type AddSubtaskEventResponse = schema.AddSubtaskEventResponse
+type AddTaskEventAddTaskEventTask = schema.AddTaskEventAddTaskEventTask
+type AddTaskEventResponse = schema.AddTaskEventResponse
 type AlreadyExistsError = schema.AlreadyExistsError
 type AssignGlobalRoleAssignGlobalRole = schema.AssignGlobalRoleAssignGlobalRole
 type AssignGlobalRoleAssignGlobalRoleInvalidInputError = schema.AssignGlobalRoleAssignGlobalRoleInvalidInputError
@@ -186,6 +204,8 @@ type CreateIdentityStoreCreateIdentityStoreInvalidInputError = schema.CreateIden
 type CreateIdentityStoreCreateIdentityStoreNotFoundError = schema.CreateIdentityStoreCreateIdentityStoreNotFoundError
 type CreateIdentityStoreCreateIdentityStorePermissionDeniedError = schema.CreateIdentityStoreCreateIdentityStorePermissionDeniedError
 type CreateIdentityStoreResponse = schema.CreateIdentityStoreResponse
+type CreateJobCreateJob = schema.CreateJobCreateJob
+type CreateJobResponse = schema.CreateJobResponse
 type CreateUserCreateUser = schema.CreateUserCreateUser
 type CreateUserCreateUserInvalidEmailError = schema.CreateUserCreateUserInvalidEmailError
 type CreateUserCreateUserInvalidInputError = schema.CreateUserCreateUserInvalidInputError
@@ -240,7 +260,13 @@ type DataObjectConnectionResultNotFoundError = schema.DataObjectConnectionResult
 type DataObjectConnectionResultPermissionDeniedError = schema.DataObjectConnectionResultPermissionDeniedError
 type DataObjectDataSource = schema.DataObjectDataSource
 type DataObjectFilterInput = schema.DataObjectFilterInput
+type DataObjectImport = schema.DataObjectImport
 type DataObjectOrderByInput = schema.DataObjectOrderByInput
+type DataObjectReferenceImport = schema.DataObjectReferenceImport
+type DataObjectSharePropertiesInput = schema.DataObjectSharePropertiesInput
+type DataObjectTypeActionInput = schema.DataObjectTypeActionInput
+type DataObjectTypeInput = schema.DataObjectTypeInput
+type DataObjectTypePermissionInput = schema.DataObjectTypePermissionInput
 type DataSource = schema.DataSource
 type DataSourceConnection = schema.DataSourceConnection
 type DataSourceConnectionEdgesDataSourceEdge = schema.DataSourceConnectionEdgesDataSourceEdge
@@ -275,6 +301,7 @@ type DataSourceMaskInformationDataSourceMaskingMetadata = schema.DataSourceMaskI
 type DataSourceMaskInformationDataSourceNotFoundError = schema.DataSourceMaskInformationDataSourceNotFoundError
 type DataSourceMaskInformationDataSourcePermissionDeniedError = schema.DataSourceMaskInformationDataSourcePermissionDeniedError
 type DataSourceMaskInformationResponse = schema.DataSourceMaskInformationResponse
+type DataSourceMetaDataInput = schema.DataSourceMetaDataInput
 type DataSourceOrderByInput = schema.DataSourceOrderByInput
 type DataSourceParentDataSource = schema.DataSourceParentDataSource
 type DataSourceSyncMethod = schema.DataSourceSyncMethod
@@ -285,6 +312,14 @@ const (
 )
 
 type DataSourceTypeInfo = schema.DataSourceTypeInfo
+type DataTypeOrigin = schema.DataTypeOrigin
+
+const (
+	DataTypeOriginInternal DataTypeOrigin = schema.DataTypeOriginInternal
+	DataTypeOriginExternal DataTypeOrigin = schema.DataTypeOriginExternal
+	DataTypeOriginShared   DataTypeOrigin = schema.DataTypeOriginShared
+)
+
 type DeactivateAccessControlDeactivateAccessControl = schema.DeactivateAccessControlDeactivateAccessControl
 type DeactivateAccessControlDeactivateAccessControlAccessControlResult = schema.DeactivateAccessControlDeactivateAccessControlAccessControlResult
 type DeactivateAccessControlDeactivateAccessControlInvalidInputError = schema.DeactivateAccessControlDeactivateAccessControlInvalidInputError
@@ -316,6 +351,13 @@ type DeleteIdentityStoreDeleteIdentityStoreInvalidInputError = schema.DeleteIden
 type DeleteIdentityStoreDeleteIdentityStoreNotFoundError = schema.DeleteIdentityStoreDeleteIdentityStoreNotFoundError
 type DeleteIdentityStoreDeleteIdentityStorePermissionDeniedError = schema.DeleteIdentityStoreDeleteIdentityStorePermissionDeniedError
 type DeleteIdentityStoreResponse = schema.DeleteIdentityStoreResponse
+type EndOfTargetsSyncEndOfTargetsSync = schema.EndOfTargetsSyncEndOfTargetsSync
+type EndOfTargetsSyncEndOfTargetsSyncEndOfTargetsSyncResult = schema.EndOfTargetsSyncEndOfTargetsSyncEndOfTargetsSyncResult
+type EndOfTargetsSyncEndOfTargetsSyncPermissionDeniedError = schema.EndOfTargetsSyncEndOfTargetsSyncPermissionDeniedError
+type EndOfTargetsSyncInput = schema.EndOfTargetsSyncInput
+type EndOfTargetsSyncResponse = schema.EndOfTargetsSyncResponse
+type FilterMetadataInput = schema.FilterMetadataInput
+type FinishImportFlowResponse = schema.FinishImportFlowResponse
 type GetAccessControlAccessControl = schema.GetAccessControlAccessControl
 type GetAccessControlAccessControlAccessControlResult = schema.GetAccessControlAccessControlAccessControlResult
 type GetAccessControlAccessControlInvalidInputError = schema.GetAccessControlAccessControlInvalidInputError
@@ -378,8 +420,14 @@ type GetIdentityStoreIdentityStoreInvalidInputError = schema.GetIdentityStoreIde
 type GetIdentityStoreIdentityStoreNotFoundError = schema.GetIdentityStoreIdentityStoreNotFoundError
 type GetIdentityStoreIdentityStorePermissionDeniedError = schema.GetIdentityStoreIdentityStorePermissionDeniedError
 type GetIdentityStoreResponse = schema.GetIdentityStoreResponse
+type GetJobJob = schema.GetJobJob
+type GetJobResponse = schema.GetJobResponse
 type GetRoleResponse = schema.GetRoleResponse
 type GetRoleRole = schema.GetRoleRole
+type GetSubtaskOfTaskJobSubtask = schema.GetSubtaskOfTaskJobSubtask
+type GetSubtaskOfTaskResponse = schema.GetSubtaskOfTaskResponse
+type GetTaskJobTask = schema.GetTaskJobTask
+type GetTaskResponse = schema.GetTaskResponse
 type GetUserByEmailResponse = schema.GetUserByEmailResponse
 type GetUserByEmailUserByEmailInvalidEmailError = schema.GetUserByEmailUserByEmailInvalidEmailError
 type GetUserByEmailUserByEmailInvalidInputError = schema.GetUserByEmailUserByEmailInvalidInputError
@@ -431,8 +479,35 @@ type IdentityStoreConnectionResultPermissionDeniedError = schema.IdentityStoreCo
 type IdentityStoreFilterInput = schema.IdentityStoreFilterInput
 type IdentityStoreInput = schema.IdentityStoreInput
 type IdentityStoreOrderByInput = schema.IdentityStoreOrderByInput
+type ImportCommand = schema.ImportCommand
+type ImportCommands = schema.ImportCommands
+type ImportFlowOptions = schema.ImportFlowOptions
 type InvalidEmailError = schema.InvalidEmailError
 type InvalidInputError = schema.InvalidInputError
+type Job = schema.Job
+type JobConnection = schema.JobConnection
+type JobConnectionEdgesJobEdge = schema.JobConnectionEdgesJobEdge
+type JobConnectionEdgesJobEdgeNodeJob = schema.JobConnectionEdgesJobEdgeNodeJob
+type JobConnectionPageInfo = schema.JobConnectionPageInfo
+type JobConnectionResult = schema.JobConnectionResult
+type JobConnectionResultInvalidInputError = schema.JobConnectionResultInvalidInputError
+type JobConnectionResultJobConnection = schema.JobConnectionResultJobConnection
+type JobConnectionResultNotFoundError = schema.JobConnectionResultNotFoundError
+type JobConnectionResultPermissionDeniedError = schema.JobConnectionResultPermissionDeniedError
+type JobDataSource = schema.JobDataSource
+type JobIdentityStore = schema.JobIdentityStore
+type JobInput = schema.JobInput
+type JobStatus = schema.JobStatus
+
+const (
+	JobStatusStarted    JobStatus = schema.JobStatusStarted
+	JobStatusInprogress JobStatus = schema.JobStatusInprogress
+	JobStatusCompleted  JobStatus = schema.JobStatusCompleted
+	JobStatusFailed     JobStatus = schema.JobStatusFailed
+	JobStatusTimedout   JobStatus = schema.JobStatusTimedout
+)
+
+type JobsFilter = schema.JobsFilter
 type ListAccessControlAbacWhatScopeAccessControl = schema.ListAccessControlAbacWhatScopeAccessControl
 type ListAccessControlAbacWhatScopeAccessControlAccessControlResult = schema.ListAccessControlAbacWhatScopeAccessControlAccessControlResult
 type ListAccessControlAbacWhatScopeAccessControlInvalidInputError = schema.ListAccessControlAbacWhatScopeAccessControlInvalidInputError
@@ -476,6 +551,12 @@ type ListIdentityStoresIdentityStoresInvalidInputError = schema.ListIdentityStor
 type ListIdentityStoresIdentityStoresNotFoundError = schema.ListIdentityStoresIdentityStoresNotFoundError
 type ListIdentityStoresIdentityStoresPermissionDeniedError = schema.ListIdentityStoresIdentityStoresPermissionDeniedError
 type ListIdentityStoresResponse = schema.ListIdentityStoresResponse
+type ListJobsJobsInvalidInputError = schema.ListJobsJobsInvalidInputError
+type ListJobsJobsJobConnection = schema.ListJobsJobsJobConnection
+type ListJobsJobsJobConnectionResult = schema.ListJobsJobsJobConnectionResult
+type ListJobsJobsNotFoundError = schema.ListJobsJobsNotFoundError
+type ListJobsJobsPermissionDeniedError = schema.ListJobsJobsPermissionDeniedError
+type ListJobsResponse = schema.ListJobsResponse
 type ListRoleAssignmentsOnAccessControlAccessControl = schema.ListRoleAssignmentsOnAccessControlAccessControl
 type ListRoleAssignmentsOnAccessControlAccessControlAccessControlResult = schema.ListRoleAssignmentsOnAccessControlAccessControlAccessControlResult
 type ListRoleAssignmentsOnAccessControlAccessControlInvalidInputError = schema.ListRoleAssignmentsOnAccessControlAccessControlInvalidInputError
@@ -541,12 +622,23 @@ type ListRolesRolesNotFoundError = schema.ListRolesRolesNotFoundError
 type ListRolesRolesPermissionDeniedError = schema.ListRolesRolesPermissionDeniedError
 type ListRolesRolesRoleConnection = schema.ListRolesRolesRoleConnection
 type ListRolesRolesRoleConnectionResult = schema.ListRolesRolesRoleConnectionResult
+type ListTasksOfJobJob = schema.ListTasksOfJobJob
+type ListTasksOfJobJobTasksInvalidInputError = schema.ListTasksOfJobJobTasksInvalidInputError
+type ListTasksOfJobJobTasksNotFoundError = schema.ListTasksOfJobJobTasksNotFoundError
+type ListTasksOfJobJobTasksPermissionDeniedError = schema.ListTasksOfJobJobTasksPermissionDeniedError
+type ListTasksOfJobJobTasksTaskConnection = schema.ListTasksOfJobJobTasksTaskConnection
+type ListTasksOfJobJobTasksTaskConnectionResult = schema.ListTasksOfJobJobTasksTaskConnectionResult
+type ListTasksOfJobResponse = schema.ListTasksOfJobResponse
 type MaskType = schema.MaskType
+type MaskTypeInput = schema.MaskTypeInput
 type MaskingMetadata = schema.MaskingMetadata
+type MaskingMetadataInput = schema.MaskingMetadataInput
 type MaskingMetadataMaskTypesMaskType = schema.MaskingMetadataMaskTypesMaskType
 type NotFoundError = schema.NotFoundError
+type ObjectTypeTaskResult = schema.ObjectTypeTaskResult
 type PageInfo = schema.PageInfo
 type PermissionDeniedError = schema.PermissionDeniedError
+type QueryStatementImport = schema.QueryStatementImport
 type RemoveIdentityStoreFromDataSourceRemoveIdentityStoreFromDataSource = schema.RemoveIdentityStoreFromDataSourceRemoveIdentityStoreFromDataSource
 type RemoveIdentityStoreFromDataSourceRemoveIdentityStoreFromDataSourceDataSourceResult = schema.RemoveIdentityStoreFromDataSourceRemoveIdentityStoreFromDataSourceDataSourceResult
 type RemoveIdentityStoreFromDataSourceRemoveIdentityStoreFromDataSourceInvalidInputError = schema.RemoveIdentityStoreFromDataSourceRemoveIdentityStoreFromDataSourceInvalidInputError
@@ -589,17 +681,53 @@ type RoleConnectionResultPermissionDeniedError = schema.RoleConnectionResultPerm
 type RoleConnectionResultRoleConnection = schema.RoleConnectionResultRoleConnection
 type RoleFilterInput = schema.RoleFilterInput
 type RoleOrderByInput = schema.RoleOrderByInput
+type SetDataSourceMetadataResponse = schema.SetDataSourceMetadataResponse
+type SetDataSourceMetadataSetDataSourceMetaDataDataSource = schema.SetDataSourceMetadataSetDataSourceMetaDataDataSource
+type SetDataSourceMetadataSetDataSourceMetaDataDataSourceResult = schema.SetDataSourceMetadataSetDataSourceMetaDataDataSourceResult
+type SetDataSourceMetadataSetDataSourceMetaDataInvalidInputError = schema.SetDataSourceMetadataSetDataSourceMetaDataInvalidInputError
+type SetDataSourceMetadataSetDataSourceMetaDataNotFoundError = schema.SetDataSourceMetadataSetDataSourceMetaDataNotFoundError
+type SetDataSourceMetadataSetDataSourceMetaDataPermissionDeniedError = schema.SetDataSourceMetadataSetDataSourceMetaDataPermissionDeniedError
 type SetGlobalRolesForUserResponse = schema.SetGlobalRolesForUserResponse
 type SetGlobalRolesForUserSetGlobalRolesForUser = schema.SetGlobalRolesForUserSetGlobalRolesForUser
 type SetGlobalRolesForUserSetGlobalRolesForUserInvalidInputError = schema.SetGlobalRolesForUserSetGlobalRolesForUserInvalidInputError
 type SetGlobalRolesForUserSetGlobalRolesForUserNotFoundError = schema.SetGlobalRolesForUserSetGlobalRolesForUserNotFoundError
 type SetGlobalRolesForUserSetGlobalRolesForUserPermissionDeniedError = schema.SetGlobalRolesForUserSetGlobalRolesForUserPermissionDeniedError
 type SetGlobalRolesForUserSetGlobalRolesForUserSetGlobalRolesForUserResult = schema.SetGlobalRolesForUserSetGlobalRolesForUserSetGlobalRolesForUserResult
+type ShareMetadataInput = schema.ShareMetadataInput
 type Sort = schema.Sort
 
 const (
 	SortAsc  Sort = schema.SortAsc
 	SortDesc Sort = schema.SortDesc
+)
+
+type StartImportFlowResponse = schema.StartImportFlowResponse
+type StartImportFlowStartImportFlowInvalidInputError = schema.StartImportFlowStartImportFlowInvalidInputError
+type StartImportFlowStartImportFlowNotFoundError = schema.StartImportFlowStartImportFlowNotFoundError
+type StartImportFlowStartImportFlowPermissionDeniedError = schema.StartImportFlowStartImportFlowPermissionDeniedError
+type StartImportFlowStartImportFlowSubtask = schema.StartImportFlowStartImportFlowSubtask
+type StartImportFlowStartImportFlowSubtaskReturnResult = schema.StartImportFlowStartImportFlowSubtaskReturnResult
+type StartInputFlowInput = schema.StartInputFlowInput
+type StatementImportDataObject = schema.StatementImportDataObject
+type SubmitImportObjectsResponse = schema.SubmitImportObjectsResponse
+type SubmitImportObjectsSubmitImportObjectsInvalidInputError = schema.SubmitImportObjectsSubmitImportObjectsInvalidInputError
+type SubmitImportObjectsSubmitImportObjectsNotFoundError = schema.SubmitImportObjectsSubmitImportObjectsNotFoundError
+type SubmitImportObjectsSubmitImportObjectsPermissionDeniedError = schema.SubmitImportObjectsSubmitImportObjectsPermissionDeniedError
+type SubmitImportObjectsSubmitImportObjectsSubmittedCommands = schema.SubmitImportObjectsSubmitImportObjectsSubmittedCommands
+type SubmitImportObjectsSubmitImportObjectsSubmittedCommandsResult = schema.SubmitImportObjectsSubmitImportObjectsSubmittedCommandsResult
+type SubmittedCommands = schema.SubmittedCommands
+type Subtask = schema.Subtask
+type SubtaskInput = schema.SubtaskInput
+type SubtaskStatus = schema.SubtaskStatus
+
+const (
+	SubtaskStatusStarted      SubtaskStatus = schema.SubtaskStatusStarted
+	SubtaskStatusQueued       SubtaskStatus = schema.SubtaskStatusQueued
+	SubtaskStatusDataretrieve SubtaskStatus = schema.SubtaskStatusDataretrieve
+	SubtaskStatusInprogress   SubtaskStatus = schema.SubtaskStatusInprogress
+	SubtaskStatusCompleted    SubtaskStatus = schema.SubtaskStatusCompleted
+	SubtaskStatusFailed       SubtaskStatus = schema.SubtaskStatusFailed
+	SubtaskStatusTimedout     SubtaskStatus = schema.SubtaskStatusTimedout
 )
 
 type SyncData = schema.SyncData
@@ -618,6 +746,34 @@ const (
 )
 
 type TagFilter = schema.TagFilter
+type TagImport = schema.TagImport
+type Task = schema.Task
+type TaskConnection = schema.TaskConnection
+type TaskConnectionEdgesTaskEdge = schema.TaskConnectionEdgesTaskEdge
+type TaskConnectionEdgesTaskEdgeNodeTask = schema.TaskConnectionEdgesTaskEdgeNodeTask
+type TaskConnectionPageInfo = schema.TaskConnectionPageInfo
+type TaskConnectionResult = schema.TaskConnectionResult
+type TaskConnectionResultInvalidInputError = schema.TaskConnectionResultInvalidInputError
+type TaskConnectionResultNotFoundError = schema.TaskConnectionResultNotFoundError
+type TaskConnectionResultPermissionDeniedError = schema.TaskConnectionResultPermissionDeniedError
+type TaskConnectionResultTaskConnection = schema.TaskConnectionResultTaskConnection
+type TaskEventInput = schema.TaskEventInput
+type TaskResult = schema.TaskResult
+type TaskResultInput = schema.TaskResultInput
+type TaskStatus = schema.TaskStatus
+
+const (
+	TaskStatusStarted        TaskStatus = schema.TaskStatusStarted
+	TaskStatusDataretrieve   TaskStatus = schema.TaskStatusDataretrieve
+	TaskStatusDataupload     TaskStatus = schema.TaskStatusDataupload
+	TaskStatusQueued         TaskStatus = schema.TaskStatusQueued
+	TaskStatusDataprocessing TaskStatus = schema.TaskStatusDataprocessing
+	TaskStatusCompleted      TaskStatus = schema.TaskStatusCompleted
+	TaskStatusFailed         TaskStatus = schema.TaskStatusFailed
+	TaskStatusSkipped        TaskStatus = schema.TaskStatusSkipped
+	TaskStatusTimedout       TaskStatus = schema.TaskStatusTimedout
+)
+
 type UnassignGlobalRoleResponse = schema.UnassignGlobalRoleResponse
 type UnassignGlobalRoleUnassignGlobalRole = schema.UnassignGlobalRoleUnassignGlobalRole
 type UnassignGlobalRoleUnassignGlobalRoleInvalidInputError = schema.UnassignGlobalRoleUnassignGlobalRoleInvalidInputError
@@ -658,6 +814,8 @@ type UpdateIdentityStoreUpdateIdentityStoreIdentityStoreResult = schema.UpdateId
 type UpdateIdentityStoreUpdateIdentityStoreInvalidInputError = schema.UpdateIdentityStoreUpdateIdentityStoreInvalidInputError
 type UpdateIdentityStoreUpdateIdentityStoreNotFoundError = schema.UpdateIdentityStoreUpdateIdentityStoreNotFoundError
 type UpdateIdentityStoreUpdateIdentityStorePermissionDeniedError = schema.UpdateIdentityStoreUpdateIdentityStorePermissionDeniedError
+type UpdateJobResponse = schema.UpdateJobResponse
+type UpdateJobUpdateJob = schema.UpdateJobUpdateJob
 type UpdateRoleAssigneesOnAccessControlResponse = schema.UpdateRoleAssigneesOnAccessControlResponse
 type UpdateRoleAssigneesOnAccessControlUpdateRoleAssigneesOnAccessControlInvalidInputError = schema.UpdateRoleAssigneesOnAccessControlUpdateRoleAssigneesOnAccessControlInvalidInputError
 type UpdateRoleAssigneesOnAccessControlUpdateRoleAssigneesOnAccessControlNotFoundError = schema.UpdateRoleAssigneesOnAccessControlUpdateRoleAssigneesOnAccessControlNotFoundError
@@ -689,7 +847,10 @@ type UpdateUserUpdateUserInvalidInputError = schema.UpdateUserUpdateUserInvalidI
 type UpdateUserUpdateUserNotFoundError = schema.UpdateUserUpdateUserNotFoundError
 type UpdateUserUpdateUserPermissionDeniedError = schema.UpdateUserUpdateUserPermissionDeniedError
 type UpdateUserUpdateUserUserResult = schema.UpdateUserUpdateUserUserResult
+type UsageMetaInput = schema.UsageMetaInput
+type UsageMetaInputDetail = schema.UsageMetaInputDetail
 type User = schema.User
+type UserImport = schema.UserImport
 type UserInput = schema.UserInput
 type UserType = schema.UserType
 
@@ -700,6 +861,7 @@ const (
 
 type WhatAbacRule = schema.WhatAbacRule
 type WhatAbacRuleInput = schema.WhatAbacRuleInput
+type WhatItemImport = schema.WhatItemImport
 type WhoAbacRule = schema.WhoAbacRule
 type WhoAbacRuleInput = schema.WhoAbacRuleInput
 type WhoAndWhatType = schema.WhoAndWhatType
@@ -710,21 +872,27 @@ const (
 	WhoAndWhatTypeUnknown WhoAndWhatType = schema.WhoAndWhatTypeUnknown
 )
 
+type WhoItemImport = schema.WhoItemImport
 type WhoItemInput = schema.WhoItemInput
 
 var AllAbacComparisonExpressionComparisonOperator = []AbacComparisonExpressionComparisonOperator{AbacComparisonExpressionComparisonOperatorPropertyequals, AbacComparisonExpressionComparisonOperatorPropertyin, AbacComparisonExpressionComparisonOperatorHastag, AbacComparisonExpressionComparisonOperatorContainstag, AbacComparisonExpressionComparisonOperatorPropertystartswith, AbacComparisonExpressionComparisonOperatorPropertyendswith, AbacComparisonExpressionComparisonOperatorPropertycontains}
-var AllAccessControlAction = []AccessControlAction{AccessControlActionGrant, AccessControlActionMask, AccessControlActionFilter, AccessControlActionShare}
+var AllAccessControlAction = []AccessControlAction{AccessControlActionGrant, AccessControlActionMask, AccessControlActionFilter, AccessControlActionShare, AccessControlActionGroup}
 var AllAccessControlLock = []AccessControlLock{AccessControlLockWholock, AccessControlLockInheritancelock, AccessControlLockWhatlock, AccessControlLockNamelock, AccessControlLockDeletelock, AccessControlLockOwnerlock}
 var AllAccessControlLockType = []AccessControlLockType{AccessControlLockTypeImportexport, AccessControlLockTypeUseronly}
 var AllAccessControlState = []AccessControlState{AccessControlStateActive, AccessControlStateInactive, AccessControlStateDeleted}
 var AllAccessWhoItemType = []AccessWhoItemType{AccessWhoItemTypeWhogrant, AccessWhoItemTypeWhopromise}
+var AllActionType = []ActionType{ActionTypeRead, ActionTypeWrite, ActionTypeAdmin}
 var AllBinaryExpressionAggregatorOperator = []BinaryExpressionAggregatorOperator{BinaryExpressionAggregatorOperatorAnd, BinaryExpressionAggregatorOperatorOr}
 var AllBinaryExpressionUnaryExpressionOperator = []BinaryExpressionUnaryExpressionOperator{BinaryExpressionUnaryExpressionOperatorNot}
 var AllDataComparisonExpressionComparisonOperator = []DataComparisonExpressionComparisonOperator{DataComparisonExpressionComparisonOperatorEqual, DataComparisonExpressionComparisonOperatorNotequal, DataComparisonExpressionComparisonOperatorLessthan, DataComparisonExpressionComparisonOperatorLessthanorequal, DataComparisonExpressionComparisonOperatorGreaterthan, DataComparisonExpressionComparisonOperatorGreaterthanorequal}
 var AllDataComparisonExpressionEntityType = []DataComparisonExpressionEntityType{DataComparisonExpressionEntityTypeDataobject, DataComparisonExpressionEntityTypeColumnreferencebyname}
 var AllDataSourceFeatures = []DataSourceFeatures{DataSourceFeaturesColumnmasking, DataSourceFeaturesRowfiltering, DataSourceFeaturesDatasharing}
 var AllDataSourceSyncMethod = []DataSourceSyncMethod{DataSourceSyncMethodOnprem, DataSourceSyncMethodCloudmanualtrigger}
+var AllDataTypeOrigin = []DataTypeOrigin{DataTypeOriginInternal, DataTypeOriginExternal, DataTypeOriginShared}
+var AllJobStatus = []JobStatus{JobStatusStarted, JobStatusInprogress, JobStatusCompleted, JobStatusFailed, JobStatusTimedout}
 var AllSort = []Sort{SortAsc, SortDesc}
+var AllSubtaskStatus = []SubtaskStatus{SubtaskStatusStarted, SubtaskStatusQueued, SubtaskStatusDataretrieve, SubtaskStatusInprogress, SubtaskStatusCompleted, SubtaskStatusFailed, SubtaskStatusTimedout}
 var AllSyncStatus = []SyncStatus{SyncStatusNotconnected, SyncStatusFailed, SyncStatusOutofdate, SyncStatusInprogress, SyncStatusSynced, SyncStatusOutofsync}
+var AllTaskStatus = []TaskStatus{TaskStatusStarted, TaskStatusDataretrieve, TaskStatusDataupload, TaskStatusQueued, TaskStatusDataprocessing, TaskStatusCompleted, TaskStatusFailed, TaskStatusSkipped, TaskStatusTimedout}
 var AllUserType = []UserType{UserTypeHuman, UserTypeMachine}
 var AllWhoAndWhatType = []WhoAndWhatType{WhoAndWhatTypeStatic, WhoAndWhatTypeDynamic, WhoAndWhatTypeUnknown}
