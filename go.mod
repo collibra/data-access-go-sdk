@@ -1,6 +1,6 @@
 module github.com/collibra/access-governance-go-sdk
 
-go 1.25.0
+go 1.25.1
 
 tool github.com/Khan/genqlient
 
