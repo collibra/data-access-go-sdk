@@ -3,21 +3,22 @@ package services
 import (
 	"context"
 	"fmt"
+	"iter"
 
 	"github.com/Khan/genqlient/graphql"
-	"github.com/aws/smithy-go/ptr"
 
 	"github.com/collibra/access-governance-go-sdk/internal"
 	"github.com/collibra/access-governance-go-sdk/internal/schema"
 	"github.com/collibra/access-governance-go-sdk/types"
+	"github.com/collibra/access-governance-go-sdk/utils"
 )
 
 type GroupClient struct {
 	client graphql.Client
 }
 
-func NewGroupClient(client graphql.Client) GroupClient {
-	return GroupClient{
+func NewGroupClient(client graphql.Client) *GroupClient {
+	return &GroupClient{
 		client: client,
 	}
 }
@@ -56,14 +57,14 @@ func WithGroupListFilter(input *types.GroupFilterInput) func(options *GroupListO
 // A filter can be specified with WithGroupListFilter
 // A channel is returned that can be used to receive the list of GroupListItem
 // To close the channel ensure to cancel the context
-func (g GroupClient) ListGroups(ctx context.Context, ops ...func(options *GroupListOptions)) <-chan types.ListItem[types.Group] { //nolint:dupl
+func (g GroupClient) ListGroups(ctx context.Context, ops ...func(options *GroupListOptions)) iter.Seq2[*types.Group, error] { //nolint:dupl
 	options := GroupListOptions{}
 	for _, op := range ops {
 		op(&options)
 	}
 
 	loadPageFn := func(ctx context.Context, cursor *string) (*types.PageInfo, []types.GroupConnectionEdgesGroupEdge, error) {
-		output, err := schema.ListGroups(ctx, g.client, cursor, ptr.Int(internal.MaxPageSize), options.filter, options.order)
+		output, err := schema.ListGroups(ctx, g.client, cursor, utils.Ptr(internal.MaxPageSize), options.filter, options.order)
 		if err != nil {
 			return nil, nil, types.NewErrClient(err)
 		}

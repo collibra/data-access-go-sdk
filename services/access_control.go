@@ -4,21 +4,22 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"iter"
 
 	"github.com/Khan/genqlient/graphql"
-	"github.com/aws/smithy-go/ptr"
 
 	"github.com/collibra/access-governance-go-sdk/internal"
 	"github.com/collibra/access-governance-go-sdk/internal/schema"
 	"github.com/collibra/access-governance-go-sdk/types"
+	"github.com/collibra/access-governance-go-sdk/utils"
 )
 
 type AccessControlClient struct {
 	client graphql.Client
 }
 
-func NewAccessControlClient(client graphql.Client) AccessControlClient {
-	return AccessControlClient{
+func NewAccessControlClient(client graphql.Client) *AccessControlClient {
+	return &AccessControlClient{
 		client: client,
 	}
 }
@@ -193,14 +194,14 @@ func WithAccessControlListFilter(input *types.AccessControlFilterInput) func(opt
 // A filter can be specified with WithAccessControlListFilter.
 // A channel is returned that can be used to receive the list of AccessControls.
 // To close the channel ensure to cancel the context.
-func (a *AccessControlClient) ListAccessControls(ctx context.Context, ops ...func(*AccessControlListOptions)) <-chan types.ListItem[types.AccessControl] {
+func (a *AccessControlClient) ListAccessControls(ctx context.Context, ops ...func(*AccessControlListOptions)) iter.Seq2[*types.AccessControl, error] {
 	options := AccessControlListOptions{}
 	for _, op := range ops {
 		op(&options)
 	}
 
 	loadPageFn := func(ctx context.Context, cursor *string) (*schema.PageInfo, []schema.AccessControlConnectionEdgesAccessControlEdge, error) {
-		output, err := schema.ListAccessControls(ctx, a.client, cursor, ptr.Int(internal.MaxPageSize), options.filter, options.order)
+		output, err := schema.ListAccessControls(ctx, a.client, cursor, utils.Ptr(internal.MaxPageSize), options.filter, options.order)
 		if err != nil {
 			return nil, nil, types.NewErrClient(err)
 		}
@@ -241,14 +242,14 @@ func WithAccessControlWhoListOrder(input ...schema.AccessControlWhoOrderByInput)
 // The order of the list can be specified with WithAccessControlWhoListOrder.
 // A channel is returned that can be used to receive the list of AccessWhoItem.
 // To close the channel ensure to cancel the context.
-func (a *AccessControlClient) GetAccessControlWhoList(ctx context.Context, id string, ops ...func(*AccessControlWhoListOptions)) <-chan types.ListItem[types.AccessWhoItem] {
+func (a *AccessControlClient) GetAccessControlWhoList(ctx context.Context, id string, ops ...func(*AccessControlWhoListOptions)) iter.Seq2[*types.AccessWhoItem, error] {
 	options := AccessControlWhoListOptions{}
 	for _, op := range ops {
 		op(&options)
 	}
 
 	loadPageFn := func(ctx context.Context, cursor *string) (*types.PageInfo, []types.AccessWhoItemConnectionEdgesAccessWhoItemEdge, error) {
-		output, err := schema.GetAccessControlWhoList(ctx, a.client, id, cursor, ptr.Int(internal.MaxPageSize), nil, options.order)
+		output, err := schema.GetAccessControlWhoList(ctx, a.client, id, cursor, utils.Ptr(internal.MaxPageSize), nil, options.order)
 		if err != nil {
 			return nil, nil, types.NewErrClient(err)
 		}
@@ -306,14 +307,14 @@ func WithAccessControlWhatListFilter(input *types.AccessWhatFilterInput) func(op
 // The order of the list can be specified with WithAccessControlWhatListOrder.
 // A channel is returned that can be used to receive the list of AccessWhatDataObjectItem.
 // To close the channel ensure to cancel the context.
-func (a *AccessControlClient) GetAccessControlWhatDataObjectList(ctx context.Context, id string, ops ...func(*AccessControlWhatListOptions)) <-chan types.ListItem[types.AccessWhatDataObjectItem] {
+func (a *AccessControlClient) GetAccessControlWhatDataObjectList(ctx context.Context, id string, ops ...func(*AccessControlWhatListOptions)) iter.Seq2[*types.AccessWhatDataObjectItem, error] {
 	options := AccessControlWhatListOptions{}
 	for _, op := range ops {
 		op(&options)
 	}
 
 	loadPageFn := func(ctx context.Context, cursor *string) (*types.PageInfo, []types.AccessWhatDataObjectItemConnectionEdgesAccessWhatDataObjectItemEdge, error) {
-		output, err := schema.GetAccessControlWhatDataObjectList(ctx, a.client, id, cursor, ptr.Int(internal.MaxPageSize), options.filter, options.order)
+		output, err := schema.GetAccessControlWhatDataObjectList(ctx, a.client, id, cursor, utils.Ptr(internal.MaxPageSize), options.filter, options.order)
 		if err != nil {
 			return nil, nil, types.NewErrClient(err)
 		}
@@ -369,14 +370,14 @@ func WithAccessControlWhatAccessControlListFilter(filter *types.AccessControlWha
 }
 
 // GetAccessControlWhatAccessControlList returns all what access controls of an AccessControl.
-func (a *AccessControlClient) GetAccessControlWhatAccessControlList(ctx context.Context, id string, ops ...func(*AccessControlWhatAccessControlListOptions)) <-chan types.ListItem[types.AccessWhatAccessControlItem] {
+func (a *AccessControlClient) GetAccessControlWhatAccessControlList(ctx context.Context, id string, ops ...func(*AccessControlWhatAccessControlListOptions)) iter.Seq2[*types.AccessWhatAccessControlItem, error] {
 	options := AccessControlWhatAccessControlListOptions{}
 	for _, op := range ops {
 		op(&options)
 	}
 
 	loadPageFn := func(ctx context.Context, cursor *string) (*types.PageInfo, []types.AccessWhatAccessControlItemConnectionEdgesAccessWhatAccessControlItemEdge, error) {
-		output, err := schema.GetAccessControlWhatAccessControls(ctx, a.client, id, cursor, ptr.Int(internal.MaxPageSize), nil, options.order, options.filter)
+		output, err := schema.GetAccessControlWhatAccessControls(ctx, a.client, id, cursor, utils.Ptr(internal.MaxPageSize), nil, options.order, options.filter)
 		if err != nil {
 			return nil, nil, types.NewErrClient(err)
 		}
@@ -438,14 +439,14 @@ func WithAccessControlAbacWhatScopeListSearch(search string) func(options *Acces
 // id is the id of the AccessControl
 // WithAccessControlAbacWhatScopeListSearch can be used to specify the search of the returned types.DataObject
 // WithAccessControlAbacWhatScopeListOrder can be used to specify the order of the returned types.DataObject
-func (a *AccessControlClient) GetAccessControlAbacWhatScope(ctx context.Context, id string, ops ...func(*AccessControlAbacWhatScopeListOptions)) <-chan types.ListItem[types.DataObject] {
+func (a *AccessControlClient) GetAccessControlAbacWhatScope(ctx context.Context, id string, ops ...func(*AccessControlAbacWhatScopeListOptions)) iter.Seq2[*types.DataObject, error] {
 	options := AccessControlAbacWhatScopeListOptions{}
 	for _, op := range ops {
 		op(&options)
 	}
 
 	loadPageFn := func(ctx context.Context, cursor *string) (*types.PageInfo, []types.DataObjectConnectionEdgesDataObjectEdge, error) {
-		output, err := schema.ListAccessControlAbacWhatScope(ctx, a.client, id, cursor, ptr.Int(internal.MaxPageSize), options.search, options.order)
+		output, err := schema.ListAccessControlAbacWhatScope(ctx, a.client, id, cursor, utils.Ptr(internal.MaxPageSize), options.search, options.order)
 		if err != nil {
 			return nil, nil, types.NewErrClient(err)
 		}

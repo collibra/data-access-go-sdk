@@ -1,0 +1,161 @@
+fragment Job on Job {
+    id: jobId
+    status
+    startTime
+    lastUpdate
+    endTime
+    duration
+
+    hasErrors
+    hasWarnings
+
+    dataSource {
+        ... DataSource
+    }
+
+    identityStore {
+        ... IdentityStore
+    }
+}
+
+fragment JobConnection on JobConnection {
+    ... on JobConnection {
+        pageInfo {
+            ... PageInfo
+        }
+        edges {
+            cursor
+            node {
+                ... Job
+            }
+        }
+    }
+}
+
+fragment JobConnectionResult on JobConnectionResult {
+    ... JobConnection
+    ... NotFoundError
+    ... PermissionDeniedError
+    ... InvalidInputError
+}
+
+fragment Task on Task {
+    jobId
+    taskType: jobType
+    status
+    startTime
+    lastUpdate
+    endTime
+    duration
+    numberOfWarnings
+    result {
+        ... ObjectTypeTaskResult
+    }
+}
+
+fragment ObjectTypeTaskResult on TaskResult {
+    objectType
+    added
+    updated
+    removed
+}
+
+fragment TaskConnectionResult on TaskConnectionResult {
+    ... TaskConnection
+    ... NotFoundError
+    ... PermissionDeniedError
+    ... InvalidInputError
+}
+
+fragment TaskConnection on TaskConnection {
+    pageInfo {
+        ... PageInfo
+    }
+    edges {
+        cursor
+        node {
+            ... Task
+        }
+    }
+}
+
+fragment Subtask on Subtask {
+    jobId
+    taskType: jobType
+    subtaskId
+    status
+    lastUpdate
+
+    isStreaming
+    flowId
+    ingestionFinished
+    flowClosed
+    flowCommandsAdded
+    flowCommandsUpdated
+    flowCommandsRemoved
+}
+
+query GetJob($id: ID!) {
+    job(jobId: $id) {
+        ... Job
+    }
+}
+
+query ListJobs($filter: JobsFilter, $after: String, $limit: Int) {
+    jobs(filter: $filter, after: $after, limit: $limit) {
+        ... JobConnectionResult
+    }
+}
+
+query GetTask($jobId: ID!, $taskType: String!) {
+    jobTask(jobId: $jobId, jobType: $taskType) {
+        ... Task
+    }
+}
+
+query ListTasksOfJob($jobId: ID!, $after: String, $limit: Int) {
+    job(jobId: $jobId) {
+        tasks(after: $after, limit: $limit) {
+            ... TaskConnectionResult
+        }
+    }
+}
+
+query GetSubtaskOfTask($jobId: ID!, $taskType: String!, $subtaskId: String!) {
+    jobSubtask(jobId: $jobId, jobType: $taskType, subtaskId: $subtaskId) {
+        ... Subtask
+    }
+}
+
+mutation CreateJob($input: JobInput!) {
+    createJob(input: $input) {
+        ... Job
+    }
+}
+
+mutation UpdateJob($id: String!, $input: JobInput!) {
+    updateJob(id: $id, input: $input) {
+        ... Job
+    }
+}
+
+mutation AddTaskEvent($input: TaskEventInput!) {
+    addTaskEvent(input: $input) {
+        ... Task
+    }
+}
+
+mutation AddSubtaskEvent($input: SubtaskInput!) {
+    addSubtaskEvent(input: $input) {
+        ... Subtask
+    }
+}
+
+mutation EndOfTargetsSync($input: EndOfTargetsSyncInput!) {
+    endOfTargetsSync(input: $input) {
+        ... on EndOfTargetsSync {
+            success
+        }
+        ... PermissionDeniedError
+    }
+}

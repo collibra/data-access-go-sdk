@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"github.com/Khan/genqlient/graphql"
+	"github.com/google/uuid"
 )
 
 type AbacComparisonExpressionAggregatorInput struct {
@@ -222,6 +223,7 @@ const (
 	AccessControlActionMask   AccessControlAction = "Mask"
 	AccessControlActionFilter AccessControlAction = "Filter"
 	AccessControlActionShare  AccessControlAction = "Share"
+	AccessControlActionGroup  AccessControlAction = "Group"
 )
 
 var AllAccessControlAction = []AccessControlAction{
@@ -229,6 +231,7 @@ var AllAccessControlAction = []AccessControlAction{
 	AccessControlActionMask,
 	AccessControlActionFilter,
 	AccessControlActionShare,
+	AccessControlActionGroup,
 }
 
 // AccessControlCategoryGrantCategory includes the requested fields of the GraphQL type GrantCategory.
@@ -943,6 +946,44 @@ func (v *AccessControlDataSourceInput) GetDataSource() string { return v.DataSou
 // GetType returns AccessControlDataSourceInput.Type, and is useful for accessing the field via an interface.
 func (v *AccessControlDataSourceInput) GetType() *string { return v.Type }
 
+type AccessControlFeedbackImport struct {
+	AccessControlId string                      `json:"accessControlId"`
+	ActualName      string                      `json:"actualName"`
+	ExternalId      *string                     `json:"externalId,omitempty"`
+	Type            *string                     `json:"type,omitempty"`
+	Errors          []string                    `json:"errors"`
+	Warnings        []string                    `json:"warnings"`
+	State           *AccessControlFeedbackState `json:"state,omitempty"`
+}
+
+// GetAccessControlId returns AccessControlFeedbackImport.AccessControlId, and is useful for accessing the field via an interface.
+func (v *AccessControlFeedbackImport) GetAccessControlId() string { return v.AccessControlId }
+
+// GetActualName returns AccessControlFeedbackImport.ActualName, and is useful for accessing the field via an interface.
+func (v *AccessControlFeedbackImport) GetActualName() string { return v.ActualName }
+
+// GetExternalId returns AccessControlFeedbackImport.ExternalId, and is useful for accessing the field via an interface.
+func (v *AccessControlFeedbackImport) GetExternalId() *string { return v.ExternalId }
+
+// GetType returns AccessControlFeedbackImport.Type, and is useful for accessing the field via an interface.
+func (v *AccessControlFeedbackImport) GetType() *string { return v.Type }
+
+// GetErrors returns AccessControlFeedbackImport.Errors, and is useful for accessing the field via an interface.
+func (v *AccessControlFeedbackImport) GetErrors() []string { return v.Errors }
+
+// GetWarnings returns AccessControlFeedbackImport.Warnings, and is useful for accessing the field via an interface.
+func (v *AccessControlFeedbackImport) GetWarnings() []string { return v.Warnings }
+
+// GetState returns AccessControlFeedbackImport.State, and is useful for accessing the field via an interface.
+func (v *AccessControlFeedbackImport) GetState() *AccessControlFeedbackState { return v.State }
+
+type AccessControlFeedbackState struct {
+	Who *AccessControlWhoFeedbackState `json:"who,omitempty"`
+}
+
+// GetWho returns AccessControlFeedbackState.Who, and is useful for accessing the field via an interface.
+func (v *AccessControlFeedbackState) GetWho() *AccessControlWhoFeedbackState { return v.Who }
+
 type AccessControlFilterInput struct {
 	Actions            []AccessControlAction `json:"actions"`
 	States             []AccessControlState  `json:"states"`
@@ -1009,6 +1050,105 @@ func (v *AccessControlFilterInput) GetHasTags() []TagFilter { return v.HasTags }
 
 // GetDataObjectInWhat returns AccessControlFilterInput.DataObjectInWhat, and is useful for accessing the field via an interface.
 func (v *AccessControlFilterInput) GetDataObjectInWhat() *string { return v.DataObjectInWhat }
+
+type AccessControlImport struct {
+	ExternalId              string              `json:"externalId"`
+	Name                    string              `json:"name"`
+	NamingHint              string              `json:"namingHint"`
+	Type                    *string             `json:"type,omitempty"`
+	Action                  AccessControlAction `json:"action"`
+	Policy                  *string             `json:"policy,omitempty"`
+	Who                     WhoItemImport       `json:"who"`
+	NotInternalizable       bool                `json:"notInternalizable"`
+	WhoLocked               bool                `json:"whoLocked"`
+	WhoLockedReason         *string             `json:"whoLockedReason,omitempty"`
+	InheritanceLocked       bool                `json:"inheritanceLocked"`
+	InheritanceLockedReason *string             `json:"inheritanceLockedReason,omitempty"`
+	WhatLocked              bool                `json:"whatLocked"`
+	WhatLockedReason        *string             `json:"whatLockedReason,omitempty"`
+	NameLocked              bool                `json:"nameLocked"`
+	NameLockedReason        *string             `json:"nameLockedReason,omitempty"`
+	DeleteLocked            bool                `json:"deleteLocked"`
+	DeleteLockedReason      *string             `json:"deleteLockedReason,omitempty"`
+	OwnersLocked            bool                `json:"ownersLocked"`
+	OwnersLockedReason      *string             `json:"ownersLockedReason,omitempty"`
+	ActualName              string              `json:"actualName"`
+	Incomplete              bool                `json:"incomplete"`
+	Tags                    []TagImport         `json:"tags"`
+	CommonWhatDataObject    *string             `json:"commonWhatDataObject,omitempty"`
+}
+
+// GetExternalId returns AccessControlImport.ExternalId, and is useful for accessing the field via an interface.
+func (v *AccessControlImport) GetExternalId() string { return v.ExternalId }
+
+// GetName returns AccessControlImport.Name, and is useful for accessing the field via an interface.
+func (v *AccessControlImport) GetName() string { return v.Name }
+
+// GetNamingHint returns AccessControlImport.NamingHint, and is useful for accessing the field via an interface.
+func (v *AccessControlImport) GetNamingHint() string { return v.NamingHint }
+
+// GetType returns AccessControlImport.Type, and is useful for accessing the field via an interface.
+func (v *AccessControlImport) GetType() *string { return v.Type }
+
+// GetAction returns AccessControlImport.Action, and is useful for accessing the field via an interface.
+func (v *AccessControlImport) GetAction() AccessControlAction { return v.Action }
+
+// GetPolicy returns AccessControlImport.Policy, and is useful for accessing the field via an interface.
+func (v *AccessControlImport) GetPolicy() *string { return v.Policy }
+
+// GetWho returns AccessControlImport.Who, and is useful for accessing the field via an interface.
+func (v *AccessControlImport) GetWho() WhoItemImport { return v.Who }
+
+// GetNotInternalizable returns AccessControlImport.NotInternalizable, and is useful for accessing the field via an interface.
+func (v *AccessControlImport) GetNotInternalizable() bool { return v.NotInternalizable }
+
+// GetWhoLocked returns AccessControlImport.WhoLocked, and is useful for accessing the field via an interface.
+func (v *AccessControlImport) GetWhoLocked() bool { return v.WhoLocked }
+
+// GetWhoLockedReason returns AccessControlImport.WhoLockedReason, and is useful for accessing the field via an interface.
+func (v *AccessControlImport) GetWhoLockedReason() *string { return v.WhoLockedReason }
+
+// GetInheritanceLocked returns AccessControlImport.InheritanceLocked, and is useful for accessing the field via an interface.
+func (v *AccessControlImport) GetInheritanceLocked() bool { return v.InheritanceLocked }
+
+// GetInheritanceLockedReason returns AccessControlImport.InheritanceLockedReason, and is useful for accessing the field via an interface.
+func (v *AccessControlImport) GetInheritanceLockedReason() *string { return v.InheritanceLockedReason }
+
+// GetWhatLocked returns AccessControlImport.WhatLocked, and is useful for accessing the field via an interface.
+func (v *AccessControlImport) GetWhatLocked() bool { return v.WhatLocked }
+
+// GetWhatLockedReason returns AccessControlImport.WhatLockedReason, and is useful for accessing the field via an interface.
+func (v *AccessControlImport) GetWhatLockedReason() *string { return v.WhatLockedReason }
+
+// GetNameLocked returns AccessControlImport.NameLocked, and is useful for accessing the field via an interface.
+func (v *AccessControlImport) GetNameLocked() bool { return v.NameLocked }
+
+// GetNameLockedReason returns AccessControlImport.NameLockedReason, and is useful for accessing the field via an interface.
+func (v *AccessControlImport) GetNameLockedReason() *string { return v.NameLockedReason }
+
+// GetDeleteLocked returns AccessControlImport.DeleteLocked, and is useful for accessing the field via an interface.
+func (v *AccessControlImport) GetDeleteLocked() bool { return v.DeleteLocked }
+
+// GetDeleteLockedReason returns AccessControlImport.DeleteLockedReason, and is useful for accessing the field via an interface.
+func (v *AccessControlImport) GetDeleteLockedReason() *string { return v.DeleteLockedReason }
+
+// GetOwnersLocked returns AccessControlImport.OwnersLocked, and is useful for accessing the field via an interface.
+func (v *AccessControlImport) GetOwnersLocked() bool { return v.OwnersLocked }
+
+// GetOwnersLockedReason returns AccessControlImport.OwnersLockedReason, and is useful for accessing the field via an interface.
+func (v *AccessControlImport) GetOwnersLockedReason() *string { return v.OwnersLockedReason }
+
+// GetActualName returns AccessControlImport.ActualName, and is useful for accessing the field via an interface.
+func (v *AccessControlImport) GetActualName() string { return v.ActualName }
+
+// GetIncomplete returns AccessControlImport.Incomplete, and is useful for accessing the field via an interface.
+func (v *AccessControlImport) GetIncomplete() bool { return v.Incomplete }
+
+// GetTags returns AccessControlImport.Tags, and is useful for accessing the field via an interface.
+func (v *AccessControlImport) GetTags() []TagImport { return v.Tags }
+
+// GetCommonWhatDataObject returns AccessControlImport.CommonWhatDataObject, and is useful for accessing the field via an interface.
+func (v *AccessControlImport) GetCommonWhatDataObject() *string { return v.CommonWhatDataObject }
 
 type AccessControlInput struct {
 	Name                   *string                        `json:"name,omitempty"`
@@ -1406,6 +1546,71 @@ func (v *AccessControlSyncData) __premarshalJSON() (*__premarshalAccessControlSy
 	return &retval, nil
 }
 
+type AccessControlTypeInput struct {
+	// Boolean to specify that this is the default access control type to create for the data source
+	IsDefault *bool `json:"isDefault,omitempty"`
+	// The (internal) name of the type
+	Type *string `json:"type,omitempty"`
+	// A human readable name for the access control
+	Label *string `json:"label,omitempty"`
+	// the name or base64 encoded version of the icon to use for this access control
+	Icon *string `json:"icon,omitempty"`
+	// Boolean to indicate if the access control represents a named entity (like a role or a policy) in the data source. False, typically means some kind of ACL system (nameless bindings).
+	IsNamedEntity *bool `json:"isNamedEntity,omitempty"`
+	// Boolean to indicate whether the access control can be created from the web application or not
+	CanBeCreated *bool `json:"canBeCreated,omitempty"`
+	// Boolean to indicate that this (named entity) is something the user has to ‘assume’ to get these permissions. Typically, a role.
+	CanBeAssumed *bool `json:"canBeAssumed,omitempty"`
+	// Boolean to indicate that the user can assume multiple (roles).
+	CanAssumeMultiple *bool `json:"canAssumeMultiple,omitempty"`
+	// List of access control types that could be in the who list of this access control type
+	// Nil indicates that all access control types are allowed. Otherwise only defined access control types are allowed to be part of the who list of this access control type.
+	AllowedWhoAccessControlTypes []string `json:"allowedWhoAccessControlTypes"`
+	// Can be used to specify from which identity store type the WHO can come from.
+	// This was specifically called to life for supporting the case of AWS permission sets as they become special roles in the AWS account data sources but should only use users and groups from the AWS organization (which is a linked identity store of the aws account data sources).
+	IdentityStoreTypeForWho *string `json:"identityStoreTypeForWho,omitempty"`
+	// If set, this access control lives in a subset of the data source.
+	// This can be used to define database roles, application roles, etc.
+	CommonParentType *string `json:"commonParentType,omitempty"`
+}
+
+// GetIsDefault returns AccessControlTypeInput.IsDefault, and is useful for accessing the field via an interface.
+func (v *AccessControlTypeInput) GetIsDefault() *bool { return v.IsDefault }
+
+// GetType returns AccessControlTypeInput.Type, and is useful for accessing the field via an interface.
+func (v *AccessControlTypeInput) GetType() *string { return v.Type }
+
+// GetLabel returns AccessControlTypeInput.Label, and is useful for accessing the field via an interface.
+func (v *AccessControlTypeInput) GetLabel() *string { return v.Label }
+
+// GetIcon returns AccessControlTypeInput.Icon, and is useful for accessing the field via an interface.
+func (v *AccessControlTypeInput) GetIcon() *string { return v.Icon }
+
+// GetIsNamedEntity returns AccessControlTypeInput.IsNamedEntity, and is useful for accessing the field via an interface.
+func (v *AccessControlTypeInput) GetIsNamedEntity() *bool { return v.IsNamedEntity }
+
+// GetCanBeCreated returns AccessControlTypeInput.CanBeCreated, and is useful for accessing the field via an interface.
+func (v *AccessControlTypeInput) GetCanBeCreated() *bool { return v.CanBeCreated }
+
+// GetCanBeAssumed returns AccessControlTypeInput.CanBeAssumed, and is useful for accessing the field via an interface.
+func (v *AccessControlTypeInput) GetCanBeAssumed() *bool { return v.CanBeAssumed }
+
+// GetCanAssumeMultiple returns AccessControlTypeInput.CanAssumeMultiple, and is useful for accessing the field via an interface.
+func (v *AccessControlTypeInput) GetCanAssumeMultiple() *bool { return v.CanAssumeMultiple }
+
+// GetAllowedWhoAccessControlTypes returns AccessControlTypeInput.AllowedWhoAccessControlTypes, and is useful for accessing the field via an interface.
+func (v *AccessControlTypeInput) GetAllowedWhoAccessControlTypes() []string {
+	return v.AllowedWhoAccessControlTypes
+}
+
+// GetIdentityStoreTypeForWho returns AccessControlTypeInput.IdentityStoreTypeForWho, and is useful for accessing the field via an interface.
+func (v *AccessControlTypeInput) GetIdentityStoreTypeForWho() *string {
+	return v.IdentityStoreTypeForWho
+}
+
+// GetCommonParentType returns AccessControlTypeInput.CommonParentType, and is useful for accessing the field via an interface.
+func (v *AccessControlTypeInput) GetCommonParentType() *string { return v.CommonParentType }
+
 // AccessControlWhatAbacRule includes the requested fields of the GraphQL type WhatAbacRule.
 type AccessControlWhatAbacRule struct {
 	WhatAbacRule `json:"-"`
@@ -1609,6 +1814,25 @@ func (v *AccessControlWhoAbacRule) __premarshalJSON() (*__premarshalAccessContro
 	retval.RuleJson = v.WhoAbacRule.RuleJson
 	return &retval, nil
 }
+
+type AccessControlWhoFeedbackState struct {
+	Users       []string `json:"users"`
+	Groups      []string `json:"groups"`
+	InheritFrom []string `json:"inheritFrom"`
+	Recipients  []string `json:"recipients"`
+}
+
+// GetUsers returns AccessControlWhoFeedbackState.Users, and is useful for accessing the field via an interface.
+func (v *AccessControlWhoFeedbackState) GetUsers() []string { return v.Users }
+
+// GetGroups returns AccessControlWhoFeedbackState.Groups, and is useful for accessing the field via an interface.
+func (v *AccessControlWhoFeedbackState) GetGroups() []string { return v.Groups }
+
+// GetInheritFrom returns AccessControlWhoFeedbackState.InheritFrom, and is useful for accessing the field via an interface.
+func (v *AccessControlWhoFeedbackState) GetInheritFrom() []string { return v.InheritFrom }
+
+// GetRecipients returns AccessControlWhoFeedbackState.Recipients, and is useful for accessing the field via an interface.
+func (v *AccessControlWhoFeedbackState) GetRecipients() []string { return v.Recipients }
 
 type AccessControlWhoOrderByInput struct {
 	Name *Sort `json:"name,omitempty"`
@@ -3214,6 +3438,20 @@ var AllAccessWhoItemType = []AccessWhoItemType{
 	AccessWhoItemTypeWhopromise,
 }
 
+type ActionType string
+
+const (
+	ActionTypeRead  ActionType = "Read"
+	ActionTypeWrite ActionType = "Write"
+	ActionTypeAdmin ActionType = "Admin"
+)
+
+var AllActionType = []ActionType{
+	ActionTypeRead,
+	ActionTypeWrite,
+	ActionTypeAdmin,
+}
+
 // ActivateAccessControlActivateAccessControl includes the requested fields of the GraphQL type AccessControl.
 type ActivateAccessControlActivateAccessControl struct {
 	Typename      *string `json:"__typename"`
@@ -4242,6 +4480,252 @@ func (v *AddIdentityStoreToDataSourceResponse) __premarshalJSON() (*__premarshal
 	}
 	return &retval, nil
 }
+
+// AddSubtaskEventAddSubtaskEventSubtask includes the requested fields of the GraphQL type Subtask.
+type AddSubtaskEventAddSubtaskEventSubtask struct {
+	Subtask `json:"-"`
+}
+
+// GetJobId returns AddSubtaskEventAddSubtaskEventSubtask.JobId, and is useful for accessing the field via an interface.
+func (v *AddSubtaskEventAddSubtaskEventSubtask) GetJobId() string { return v.Subtask.JobId }
+
+// GetTaskType returns AddSubtaskEventAddSubtaskEventSubtask.TaskType, and is useful for accessing the field via an interface.
+func (v *AddSubtaskEventAddSubtaskEventSubtask) GetTaskType() string { return v.Subtask.TaskType }
+
+// GetSubtaskId returns AddSubtaskEventAddSubtaskEventSubtask.SubtaskId, and is useful for accessing the field via an interface.
+func (v *AddSubtaskEventAddSubtaskEventSubtask) GetSubtaskId() string { return v.Subtask.SubtaskId }
+
+// GetStatus returns AddSubtaskEventAddSubtaskEventSubtask.Status, and is useful for accessing the field via an interface.
+func (v *AddSubtaskEventAddSubtaskEventSubtask) GetStatus() SubtaskStatus { return v.Subtask.Status }
+
+// GetLastUpdate returns AddSubtaskEventAddSubtaskEventSubtask.LastUpdate, and is useful for accessing the field via an interface.
+func (v *AddSubtaskEventAddSubtaskEventSubtask) GetLastUpdate() time.Time {
+	return v.Subtask.LastUpdate
+}
+
+// GetIsStreaming returns AddSubtaskEventAddSubtaskEventSubtask.IsStreaming, and is useful for accessing the field via an interface.
+func (v *AddSubtaskEventAddSubtaskEventSubtask) GetIsStreaming() bool { return v.Subtask.IsStreaming }
+
+// GetFlowId returns AddSubtaskEventAddSubtaskEventSubtask.FlowId, and is useful for accessing the field via an interface.
+func (v *AddSubtaskEventAddSubtaskEventSubtask) GetFlowId() *uuid.UUID { return v.Subtask.FlowId }
+
+// GetIngestionFinished returns AddSubtaskEventAddSubtaskEventSubtask.IngestionFinished, and is useful for accessing the field via an interface.
+func (v *AddSubtaskEventAddSubtaskEventSubtask) GetIngestionFinished() *bool {
+	return v.Subtask.IngestionFinished
+}
+
+// GetFlowClosed returns AddSubtaskEventAddSubtaskEventSubtask.FlowClosed, and is useful for accessing the field via an interface.
+func (v *AddSubtaskEventAddSubtaskEventSubtask) GetFlowClosed() *bool { return v.Subtask.FlowClosed }
+
+// GetFlowCommandsAdded returns AddSubtaskEventAddSubtaskEventSubtask.FlowCommandsAdded, and is useful for accessing the field via an interface.
+func (v *AddSubtaskEventAddSubtaskEventSubtask) GetFlowCommandsAdded() int {
+	return v.Subtask.FlowCommandsAdded
+}
+
+// GetFlowCommandsUpdated returns AddSubtaskEventAddSubtaskEventSubtask.FlowCommandsUpdated, and is useful for accessing the field via an interface.
+func (v *AddSubtaskEventAddSubtaskEventSubtask) GetFlowCommandsUpdated() int {
+	return v.Subtask.FlowCommandsUpdated
+}
+
+// GetFlowCommandsRemoved returns AddSubtaskEventAddSubtaskEventSubtask.FlowCommandsRemoved, and is useful for accessing the field via an interface.
+func (v *AddSubtaskEventAddSubtaskEventSubtask) GetFlowCommandsRemoved() int {
+	return v.Subtask.FlowCommandsRemoved
+}
+
+func (v *AddSubtaskEventAddSubtaskEventSubtask) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*AddSubtaskEventAddSubtaskEventSubtask
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.AddSubtaskEventAddSubtaskEventSubtask = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.Subtask)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalAddSubtaskEventAddSubtaskEventSubtask struct {
+	JobId string `json:"jobId"`
+
+	TaskType string `json:"taskType"`
+
+	SubtaskId string `json:"subtaskId"`
+
+	Status SubtaskStatus `json:"status"`
+
+	LastUpdate time.Time `json:"lastUpdate"`
+
+	IsStreaming bool `json:"isStreaming"`
+
+	FlowId *uuid.UUID `json:"flowId"`
+
+	IngestionFinished *bool `json:"ingestionFinished"`
+
+	FlowClosed *bool `json:"flowClosed"`
+
+	FlowCommandsAdded int `json:"flowCommandsAdded"`
+
+	FlowCommandsUpdated int `json:"flowCommandsUpdated"`
+
+	FlowCommandsRemoved int `json:"flowCommandsRemoved"`
+}
+
+func (v *AddSubtaskEventAddSubtaskEventSubtask) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *AddSubtaskEventAddSubtaskEventSubtask) __premarshalJSON() (*__premarshalAddSubtaskEventAddSubtaskEventSubtask, error) {
+	var retval __premarshalAddSubtaskEventAddSubtaskEventSubtask
+
+	retval.JobId = v.Subtask.JobId
+	retval.TaskType = v.Subtask.TaskType
+	retval.SubtaskId = v.Subtask.SubtaskId
+	retval.Status = v.Subtask.Status
+	retval.LastUpdate = v.Subtask.LastUpdate
+	retval.IsStreaming = v.Subtask.IsStreaming
+	retval.FlowId = v.Subtask.FlowId
+	retval.IngestionFinished = v.Subtask.IngestionFinished
+	retval.FlowClosed = v.Subtask.FlowClosed
+	retval.FlowCommandsAdded = v.Subtask.FlowCommandsAdded
+	retval.FlowCommandsUpdated = v.Subtask.FlowCommandsUpdated
+	retval.FlowCommandsRemoved = v.Subtask.FlowCommandsRemoved
+	return &retval, nil
+}
+
+// AddSubtaskEventResponse is returned by AddSubtaskEvent on success.
+type AddSubtaskEventResponse struct {
+	AddSubtaskEvent AddSubtaskEventAddSubtaskEventSubtask `json:"addSubtaskEvent"`
+}
+
+// GetAddSubtaskEvent returns AddSubtaskEventResponse.AddSubtaskEvent, and is useful for accessing the field via an interface.
+func (v *AddSubtaskEventResponse) GetAddSubtaskEvent() AddSubtaskEventAddSubtaskEventSubtask {
+	return v.AddSubtaskEvent
+}
+
+// AddTaskEventAddTaskEventTask includes the requested fields of the GraphQL type Task.
+type AddTaskEventAddTaskEventTask struct {
+	Task `json:"-"`
+}
+
+// GetJobId returns AddTaskEventAddTaskEventTask.JobId, and is useful for accessing the field via an interface.
+func (v *AddTaskEventAddTaskEventTask) GetJobId() string { return v.Task.JobId }
+
+// GetTaskType returns AddTaskEventAddTaskEventTask.TaskType, and is useful for accessing the field via an interface.
+func (v *AddTaskEventAddTaskEventTask) GetTaskType() string { return v.Task.TaskType }
+
+// GetStatus returns AddTaskEventAddTaskEventTask.Status, and is useful for accessing the field via an interface.
+func (v *AddTaskEventAddTaskEventTask) GetStatus() TaskStatus { return v.Task.Status }
+
+// GetStartTime returns AddTaskEventAddTaskEventTask.StartTime, and is useful for accessing the field via an interface.
+func (v *AddTaskEventAddTaskEventTask) GetStartTime() time.Time { return v.Task.StartTime }
+
+// GetLastUpdate returns AddTaskEventAddTaskEventTask.LastUpdate, and is useful for accessing the field via an interface.
+func (v *AddTaskEventAddTaskEventTask) GetLastUpdate() time.Time { return v.Task.LastUpdate }
+
+// GetEndTime returns AddTaskEventAddTaskEventTask.EndTime, and is useful for accessing the field via an interface.
+func (v *AddTaskEventAddTaskEventTask) GetEndTime() *time.Time { return v.Task.EndTime }
+
+// GetDuration returns AddTaskEventAddTaskEventTask.Duration, and is useful for accessing the field via an interface.
+func (v *AddTaskEventAddTaskEventTask) GetDuration() *int64 { return v.Task.Duration }
+
+// GetNumberOfWarnings returns AddTaskEventAddTaskEventTask.NumberOfWarnings, and is useful for accessing the field via an interface.
+func (v *AddTaskEventAddTaskEventTask) GetNumberOfWarnings() int { return v.Task.NumberOfWarnings }
+
+// GetResult returns AddTaskEventAddTaskEventTask.Result, and is useful for accessing the field via an interface.
+func (v *AddTaskEventAddTaskEventTask) GetResult() []TaskResult { return v.Task.Result }
+
+func (v *AddTaskEventAddTaskEventTask) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*AddTaskEventAddTaskEventTask
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.AddTaskEventAddTaskEventTask = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.Task)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalAddTaskEventAddTaskEventTask struct {
+	JobId string `json:"jobId"`
+
+	TaskType string `json:"taskType"`
+
+	Status TaskStatus `json:"status"`
+
+	StartTime time.Time `json:"startTime"`
+
+	LastUpdate time.Time `json:"lastUpdate"`
+
+	EndTime *time.Time `json:"endTime"`
+
+	Duration *int64 `json:"duration"`
+
+	NumberOfWarnings int `json:"numberOfWarnings"`
+
+	Result []TaskResult `json:"result"`
+}
+
+func (v *AddTaskEventAddTaskEventTask) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *AddTaskEventAddTaskEventTask) __premarshalJSON() (*__premarshalAddTaskEventAddTaskEventTask, error) {
+	var retval __premarshalAddTaskEventAddTaskEventTask
+
+	retval.JobId = v.Task.JobId
+	retval.TaskType = v.Task.TaskType
+	retval.Status = v.Task.Status
+	retval.StartTime = v.Task.StartTime
+	retval.LastUpdate = v.Task.LastUpdate
+	retval.EndTime = v.Task.EndTime
+	retval.Duration = v.Task.Duration
+	retval.NumberOfWarnings = v.Task.NumberOfWarnings
+	retval.Result = v.Task.Result
+	return &retval, nil
+}
+
+// AddTaskEventResponse is returned by AddTaskEvent on success.
+type AddTaskEventResponse struct {
+	AddTaskEvent AddTaskEventAddTaskEventTask `json:"addTaskEvent"`
+}
+
+// GetAddTaskEvent returns AddTaskEventResponse.AddTaskEvent, and is useful for accessing the field via an interface.
+func (v *AddTaskEventResponse) GetAddTaskEvent() AddTaskEventAddTaskEventTask { return v.AddTaskEvent }
 
 // AlreadyExistsError includes the GraphQL fields of AlreadyExistsError requested by the fragment AlreadyExistsError.
 type AlreadyExistsError struct {
@@ -6933,6 +7417,120 @@ func (v *CreateIdentityStoreResponse) __premarshalJSON() (*__premarshalCreateIde
 	return &retval, nil
 }
 
+// CreateJobCreateJob includes the requested fields of the GraphQL type Job.
+type CreateJobCreateJob struct {
+	Job `json:"-"`
+}
+
+// GetId returns CreateJobCreateJob.Id, and is useful for accessing the field via an interface.
+func (v *CreateJobCreateJob) GetId() string { return v.Job.Id }
+
+// GetStatus returns CreateJobCreateJob.Status, and is useful for accessing the field via an interface.
+func (v *CreateJobCreateJob) GetStatus() JobStatus { return v.Job.Status }
+
+// GetStartTime returns CreateJobCreateJob.StartTime, and is useful for accessing the field via an interface.
+func (v *CreateJobCreateJob) GetStartTime() time.Time { return v.Job.StartTime }
+
+// GetLastUpdate returns CreateJobCreateJob.LastUpdate, and is useful for accessing the field via an interface.
+func (v *CreateJobCreateJob) GetLastUpdate() time.Time { return v.Job.LastUpdate }
+
+// GetEndTime returns CreateJobCreateJob.EndTime, and is useful for accessing the field via an interface.
+func (v *CreateJobCreateJob) GetEndTime() *time.Time { return v.Job.EndTime }
+
+// GetDuration returns CreateJobCreateJob.Duration, and is useful for accessing the field via an interface.
+func (v *CreateJobCreateJob) GetDuration() *int64 { return v.Job.Duration }
+
+// GetHasErrors returns CreateJobCreateJob.HasErrors, and is useful for accessing the field via an interface.
+func (v *CreateJobCreateJob) GetHasErrors() *bool { return v.Job.HasErrors }
+
+// GetHasWarnings returns CreateJobCreateJob.HasWarnings, and is useful for accessing the field via an interface.
+func (v *CreateJobCreateJob) GetHasWarnings() *bool { return v.Job.HasWarnings }
+
+// GetDataSource returns CreateJobCreateJob.DataSource, and is useful for accessing the field via an interface.
+func (v *CreateJobCreateJob) GetDataSource() *JobDataSource { return v.Job.DataSource }
+
+// GetIdentityStore returns CreateJobCreateJob.IdentityStore, and is useful for accessing the field via an interface.
+func (v *CreateJobCreateJob) GetIdentityStore() *JobIdentityStore { return v.Job.IdentityStore }
+
+func (v *CreateJobCreateJob) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*CreateJobCreateJob
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.CreateJobCreateJob = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.Job)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalCreateJobCreateJob struct {
+	Id string `json:"id"`
+
+	Status JobStatus `json:"status"`
+
+	StartTime time.Time `json:"startTime"`
+
+	LastUpdate time.Time `json:"lastUpdate"`
+
+	EndTime *time.Time `json:"endTime"`
+
+	Duration *int64 `json:"duration"`
+
+	HasErrors *bool `json:"hasErrors"`
+
+	HasWarnings *bool `json:"hasWarnings"`
+
+	DataSource *JobDataSource `json:"dataSource"`
+
+	IdentityStore *JobIdentityStore `json:"identityStore"`
+}
+
+func (v *CreateJobCreateJob) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *CreateJobCreateJob) __premarshalJSON() (*__premarshalCreateJobCreateJob, error) {
+	var retval __premarshalCreateJobCreateJob
+
+	retval.Id = v.Job.Id
+	retval.Status = v.Job.Status
+	retval.StartTime = v.Job.StartTime
+	retval.LastUpdate = v.Job.LastUpdate
+	retval.EndTime = v.Job.EndTime
+	retval.Duration = v.Job.Duration
+	retval.HasErrors = v.Job.HasErrors
+	retval.HasWarnings = v.Job.HasWarnings
+	retval.DataSource = v.Job.DataSource
+	retval.IdentityStore = v.Job.IdentityStore
+	return &retval, nil
+}
+
+// CreateJobResponse is returned by CreateJob on success.
+type CreateJobResponse struct {
+	CreateJob CreateJobCreateJob `json:"createJob"`
+}
+
+// GetCreateJob returns CreateJobResponse.CreateJob, and is useful for accessing the field via an interface.
+func (v *CreateJobResponse) GetCreateJob() CreateJobCreateJob { return v.CreateJob }
+
 // CreateUserCreateUser includes the requested fields of the GraphQL type User.
 type CreateUserCreateUser struct {
 	Typename *string `json:"__typename"`
@@ -8797,6 +9395,49 @@ func (v *DataObjectFilterInput) GetSupportedDataSourceFeatures() []DataSourceFea
 // GetCanRequestAccess returns DataObjectFilterInput.CanRequestAccess, and is useful for accessing the field via an interface.
 func (v *DataObjectFilterInput) GetCanRequestAccess() *bool { return v.CanRequestAccess }
 
+type DataObjectImport struct {
+	ExternalId              string      `json:"externalId"`
+	Name                    string      `json:"name"`
+	FullName                string      `json:"fullName"`
+	Type                    string      `json:"type"`
+	Description             string      `json:"description"`
+	ParentExternalId        *string     `json:"parentExternalId,omitempty"`
+	Tags                    []TagImport `json:"tags"`
+	DataType                *string     `json:"dataType,omitempty"`
+	ShareProviderIdentifier *string     `json:"shareProviderIdentifier,omitempty"`
+	ShareIdentifier         *string     `json:"shareIdentifier,omitempty"`
+}
+
+// GetExternalId returns DataObjectImport.ExternalId, and is useful for accessing the field via an interface.
+func (v *DataObjectImport) GetExternalId() string { return v.ExternalId }
+
+// GetName returns DataObjectImport.Name, and is useful for accessing the field via an interface.
+func (v *DataObjectImport) GetName() string { return v.Name }
+
+// GetFullName returns DataObjectImport.FullName, and is useful for accessing the field via an interface.
+func (v *DataObjectImport) GetFullName() string { return v.FullName }
+
+// GetType returns DataObjectImport.Type, and is useful for accessing the field via an interface.
+func (v *DataObjectImport) GetType() string { return v.Type }
+
+// GetDescription returns DataObjectImport.Description, and is useful for accessing the field via an interface.
+func (v *DataObjectImport) GetDescription() string { return v.Description }
+
+// GetParentExternalId returns DataObjectImport.ParentExternalId, and is useful for accessing the field via an interface.
+func (v *DataObjectImport) GetParentExternalId() *string { return v.ParentExternalId }
+
+// GetTags returns DataObjectImport.Tags, and is useful for accessing the field via an interface.
+func (v *DataObjectImport) GetTags() []TagImport { return v.Tags }
+
+// GetDataType returns DataObjectImport.DataType, and is useful for accessing the field via an interface.
+func (v *DataObjectImport) GetDataType() *string { return v.DataType }
+
+// GetShareProviderIdentifier returns DataObjectImport.ShareProviderIdentifier, and is useful for accessing the field via an interface.
+func (v *DataObjectImport) GetShareProviderIdentifier() *string { return v.ShareProviderIdentifier }
+
+// GetShareIdentifier returns DataObjectImport.ShareIdentifier, and is useful for accessing the field via an interface.
+func (v *DataObjectImport) GetShareIdentifier() *string { return v.ShareIdentifier }
+
 type DataObjectOrderByInput struct {
 	Name     *Sort `json:"name,omitempty"`
 	FullName *Sort `json:"fullName,omitempty"`
@@ -8811,6 +9452,124 @@ func (v *DataObjectOrderByInput) GetFullName() *Sort { return v.FullName }
 
 // GetType returns DataObjectOrderByInput.Type, and is useful for accessing the field via an interface.
 func (v *DataObjectOrderByInput) GetType() *Sort { return v.Type }
+
+type DataObjectReferenceImport struct {
+	FullName string `json:"fullName"`
+	Type     string `json:"type"`
+}
+
+// GetFullName returns DataObjectReferenceImport.FullName, and is useful for accessing the field via an interface.
+func (v *DataObjectReferenceImport) GetFullName() string { return v.FullName }
+
+// GetType returns DataObjectReferenceImport.Type, and is useful for accessing the field via an interface.
+func (v *DataObjectReferenceImport) GetType() string { return v.Type }
+
+type DataObjectSharePropertiesInput struct {
+	ShareablePermissions     []string `json:"shareablePermissions"`
+	CorrespondingSharedTypes []string `json:"correspondingSharedTypes"`
+}
+
+// GetShareablePermissions returns DataObjectSharePropertiesInput.ShareablePermissions, and is useful for accessing the field via an interface.
+func (v *DataObjectSharePropertiesInput) GetShareablePermissions() []string {
+	return v.ShareablePermissions
+}
+
+// GetCorrespondingSharedTypes returns DataObjectSharePropertiesInput.CorrespondingSharedTypes, and is useful for accessing the field via an interface.
+func (v *DataObjectSharePropertiesInput) GetCorrespondingSharedTypes() []string {
+	return v.CorrespondingSharedTypes
+}
+
+type DataObjectTypeActionInput struct {
+	// The action that is defined
+	Action string `json:"action"`
+	// The corresponding global actions
+	GlobalActions []string `json:"globalActions"`
+}
+
+// GetAction returns DataObjectTypeActionInput.Action, and is useful for accessing the field via an interface.
+func (v *DataObjectTypeActionInput) GetAction() string { return v.Action }
+
+// GetGlobalActions returns DataObjectTypeActionInput.GlobalActions, and is useful for accessing the field via an interface.
+func (v *DataObjectTypeActionInput) GetGlobalActions() []string { return v.GlobalActions }
+
+type DataObjectTypeInput struct {
+	// the internal technical name used to reference the data object type. This must be unique.
+	Name *string `json:"name,omitempty"`
+	// Type is used to group conceptually similar data object types. Data object types with the same type will be shown in the same table in the UI. E.g. shared-table and table both have the type table.
+	Type *string `json:"type,omitempty"`
+	// a display name for the type to be used in the UI
+	Label *string `json:"label,omitempty"`
+	// The name or base64 encoded version of the icon to use for this data source.
+	Icon *string `json:"icon,omitempty"`
+	// Children describes all the data object types that could be a direct child of this data object type.
+	Children []string `json:"children"`
+	// Permissions describes all the permissions that could be applied on this data object type.
+	Permissions []DataObjectTypePermissionInput `json:"permissions"`
+	// Actions describes all the actions that could be performed on this data object type.
+	Actions []DataObjectTypeActionInput `json:"actions"`
+	// DataOrigin describes the origin of the data object type.
+	DataOrigin      *DataTypeOrigin                 `json:"dataOrigin,omitempty"`
+	ShareProperties *DataObjectSharePropertiesInput `json:"shareProperties,omitempty"`
+}
+
+// GetName returns DataObjectTypeInput.Name, and is useful for accessing the field via an interface.
+func (v *DataObjectTypeInput) GetName() *string { return v.Name }
+
+// GetType returns DataObjectTypeInput.Type, and is useful for accessing the field via an interface.
+func (v *DataObjectTypeInput) GetType() *string { return v.Type }
+
+// GetLabel returns DataObjectTypeInput.Label, and is useful for accessing the field via an interface.
+func (v *DataObjectTypeInput) GetLabel() *string { return v.Label }
+
+// GetIcon returns DataObjectTypeInput.Icon, and is useful for accessing the field via an interface.
+func (v *DataObjectTypeInput) GetIcon() *string { return v.Icon }
+
+// GetChildren returns DataObjectTypeInput.Children, and is useful for accessing the field via an interface.
+func (v *DataObjectTypeInput) GetChildren() []string { return v.Children }
+
+// GetPermissions returns DataObjectTypeInput.Permissions, and is useful for accessing the field via an interface.
+func (v *DataObjectTypeInput) GetPermissions() []DataObjectTypePermissionInput { return v.Permissions }
+
+// GetActions returns DataObjectTypeInput.Actions, and is useful for accessing the field via an interface.
+func (v *DataObjectTypeInput) GetActions() []DataObjectTypeActionInput { return v.Actions }
+
+// GetDataOrigin returns DataObjectTypeInput.DataOrigin, and is useful for accessing the field via an interface.
+func (v *DataObjectTypeInput) GetDataOrigin() *DataTypeOrigin { return v.DataOrigin }
+
+// GetShareProperties returns DataObjectTypeInput.ShareProperties, and is useful for accessing the field via an interface.
+func (v *DataObjectTypeInput) GetShareProperties() *DataObjectSharePropertiesInput {
+	return v.ShareProperties
+}
+
+type DataObjectTypePermissionInput struct {
+	// The name of the permission as used in the datasource
+	Permission *string `json:"permission,omitempty"`
+	// A list of global permissions (read, write, admin) that this permission should be included in. This is used when expanding the global permission into its specific ones for the datasource
+	GlobalPermissions []string `json:"globalPermissions"`
+	// The list of global permissions (read, write, admin) for which this permission should be counted for the usage.
+	UsageGlobalPermissions []string `json:"usageGlobalPermissions"`
+	// An explanation of what this permission does (typically from the documentation of the datasource)
+	Description *string `json:"description,omitempty"`
+	// This boolean can be set to false if this permission cannot be granted through the web application.
+	CannotBeGranted *bool `json:"cannotBeGranted,omitempty"`
+}
+
+// GetPermission returns DataObjectTypePermissionInput.Permission, and is useful for accessing the field via an interface.
+func (v *DataObjectTypePermissionInput) GetPermission() *string { return v.Permission }
+
+// GetGlobalPermissions returns DataObjectTypePermissionInput.GlobalPermissions, and is useful for accessing the field via an interface.
+func (v *DataObjectTypePermissionInput) GetGlobalPermissions() []string { return v.GlobalPermissions }
+
+// GetUsageGlobalPermissions returns DataObjectTypePermissionInput.UsageGlobalPermissions, and is useful for accessing the field via an interface.
+func (v *DataObjectTypePermissionInput) GetUsageGlobalPermissions() []string {
+	return v.UsageGlobalPermissions
+}
+
+// GetDescription returns DataObjectTypePermissionInput.Description, and is useful for accessing the field via an interface.
+func (v *DataObjectTypePermissionInput) GetDescription() *string { return v.Description }
+
+// GetCannotBeGranted returns DataObjectTypePermissionInput.CannotBeGranted, and is useful for accessing the field via an interface.
+func (v *DataObjectTypePermissionInput) GetCannotBeGranted() *bool { return v.CannotBeGranted }
 
 // DataSource includes the GraphQL fields of DataSource requested by the fragment DataSource.
 type DataSource struct {
@@ -10281,6 +11040,65 @@ func (v *DataSourceMaskInformationResponse) __premarshalJSON() (*__premarshalDat
 	return &retval, nil
 }
 
+type DataSourceMetaDataInput struct {
+	// dataObjectTypes describes the data object types that are available in the data source
+	DataObjectTypes []DataObjectTypeInput `json:"dataObjectTypes"`
+	// accessControlTypes describes the access control types that are available in the data source
+	AccessControlTypes []AccessControlTypeInput `json:"accessControlTypes"`
+	// SupportedFeatures is a list of features supported by the data source
+	// Currently supported features: columnMasking, rowFiltering, columnFiltering, dataSharing
+	SupportedFeatures []string `json:"supportedFeatures"`
+	// type indicates the type of data source (Snowflake, BigQuery, etc.).
+	Type *string `json:"type,omitempty"`
+	// Icon the name or base64 encoded version of the icon to use for this data source.
+	Icon *string `json:"icon,omitempty"`
+	// UsageMetaInfo describes the usage metadata for this data source.
+	UsageMetaInfo *UsageMetaInput `json:"usageMetaInfo,omitempty"`
+	// If true, access controls will not be unpacked at export time. Otherwise, access controls will be unpacked into native groups and users.
+	SupportsAccessControlInheritance *bool                 `json:"supportsAccessControlInheritance,omitempty"`
+	MaskingMetadata                  *MaskingMetadataInput `json:"maskingMetadata,omitempty"`
+	FilterMetadata                   *FilterMetadataInput  `json:"filterMetadata,omitempty"`
+	ShareMetadata                    *ShareMetadataInput   `json:"shareMetadata,omitempty"`
+}
+
+// GetDataObjectTypes returns DataSourceMetaDataInput.DataObjectTypes, and is useful for accessing the field via an interface.
+func (v *DataSourceMetaDataInput) GetDataObjectTypes() []DataObjectTypeInput {
+	return v.DataObjectTypes
+}
+
+// GetAccessControlTypes returns DataSourceMetaDataInput.AccessControlTypes, and is useful for accessing the field via an interface.
+func (v *DataSourceMetaDataInput) GetAccessControlTypes() []AccessControlTypeInput {
+	return v.AccessControlTypes
+}
+
+// GetSupportedFeatures returns DataSourceMetaDataInput.SupportedFeatures, and is useful for accessing the field via an interface.
+func (v *DataSourceMetaDataInput) GetSupportedFeatures() []string { return v.SupportedFeatures }
+
+// GetType returns DataSourceMetaDataInput.Type, and is useful for accessing the field via an interface.
+func (v *DataSourceMetaDataInput) GetType() *string { return v.Type }
+
+// GetIcon returns DataSourceMetaDataInput.Icon, and is useful for accessing the field via an interface.
+func (v *DataSourceMetaDataInput) GetIcon() *string { return v.Icon }
+
+// GetUsageMetaInfo returns DataSourceMetaDataInput.UsageMetaInfo, and is useful for accessing the field via an interface.
+func (v *DataSourceMetaDataInput) GetUsageMetaInfo() *UsageMetaInput { return v.UsageMetaInfo }
+
+// GetSupportsAccessControlInheritance returns DataSourceMetaDataInput.SupportsAccessControlInheritance, and is useful for accessing the field via an interface.
+func (v *DataSourceMetaDataInput) GetSupportsAccessControlInheritance() *bool {
+	return v.SupportsAccessControlInheritance
+}
+
+// GetMaskingMetadata returns DataSourceMetaDataInput.MaskingMetadata, and is useful for accessing the field via an interface.
+func (v *DataSourceMetaDataInput) GetMaskingMetadata() *MaskingMetadataInput {
+	return v.MaskingMetadata
+}
+
+// GetFilterMetadata returns DataSourceMetaDataInput.FilterMetadata, and is useful for accessing the field via an interface.
+func (v *DataSourceMetaDataInput) GetFilterMetadata() *FilterMetadataInput { return v.FilterMetadata }
+
+// GetShareMetadata returns DataSourceMetaDataInput.ShareMetadata, and is useful for accessing the field via an interface.
+func (v *DataSourceMetaDataInput) GetShareMetadata() *ShareMetadataInput { return v.ShareMetadata }
+
 type DataSourceOrderByInput struct {
 	Name *Sort `json:"name,omitempty"`
 }
@@ -10318,6 +11136,20 @@ func (v *DataSourceTypeInfo) GetDataSource() string { return v.DataSource }
 
 // GetAccessControlType returns DataSourceTypeInfo.AccessControlType, and is useful for accessing the field via an interface.
 func (v *DataSourceTypeInfo) GetAccessControlType() *string { return v.AccessControlType }
+
+type DataTypeOrigin string
+
+const (
+	DataTypeOriginInternal DataTypeOrigin = "Internal"
+	DataTypeOriginExternal DataTypeOrigin = "External"
+	DataTypeOriginShared   DataTypeOrigin = "Shared"
+)
+
+var AllDataTypeOrigin = []DataTypeOrigin{
+	DataTypeOriginInternal,
+	DataTypeOriginExternal,
+	DataTypeOriginShared,
+}
 
 // DeactivateAccessControlDeactivateAccessControl includes the requested fields of the GraphQL type AccessControl.
 type DeactivateAccessControlDeactivateAccessControl struct {
@@ -12480,6 +13312,262 @@ func (v *DeleteIdentityStoreResponse) __premarshalJSON() (*__premarshalDeleteIde
 	}
 	return &retval, nil
 }
+
+// EndOfTargetsSyncEndOfTargetsSync includes the requested fields of the GraphQL type EndOfTargetsSync.
+type EndOfTargetsSyncEndOfTargetsSync struct {
+	Typename *string `json:"__typename"`
+	Success  *bool   `json:"success"`
+}
+
+// GetTypename returns EndOfTargetsSyncEndOfTargetsSync.Typename, and is useful for accessing the field via an interface.
+func (v *EndOfTargetsSyncEndOfTargetsSync) GetTypename() *string { return v.Typename }
+
+// GetSuccess returns EndOfTargetsSyncEndOfTargetsSync.Success, and is useful for accessing the field via an interface.
+func (v *EndOfTargetsSyncEndOfTargetsSync) GetSuccess() *bool { return v.Success }
+
+// EndOfTargetsSyncEndOfTargetsSyncEndOfTargetsSyncResult includes the requested fields of the GraphQL interface EndOfTargetsSyncResult.
+//
+// EndOfTargetsSyncEndOfTargetsSyncEndOfTargetsSyncResult is implemented by the following types:
+// EndOfTargetsSyncEndOfTargetsSync
+// EndOfTargetsSyncEndOfTargetsSyncPermissionDeniedError
+type EndOfTargetsSyncEndOfTargetsSyncEndOfTargetsSyncResult interface {
+	implementsGraphQLInterfaceEndOfTargetsSyncEndOfTargetsSyncEndOfTargetsSyncResult()
+	// GetTypename returns the receiver's concrete GraphQL type-name (see interface doc for possible values).
+	GetTypename() *string
+}
+
+func (v *EndOfTargetsSyncEndOfTargetsSync) implementsGraphQLInterfaceEndOfTargetsSyncEndOfTargetsSyncEndOfTargetsSyncResult() {
+}
+func (v *EndOfTargetsSyncEndOfTargetsSyncPermissionDeniedError) implementsGraphQLInterfaceEndOfTargetsSyncEndOfTargetsSyncEndOfTargetsSyncResult() {
+}
+
+func __unmarshalEndOfTargetsSyncEndOfTargetsSyncEndOfTargetsSyncResult(b []byte, v *EndOfTargetsSyncEndOfTargetsSyncEndOfTargetsSyncResult) error {
+	if string(b) == "null" {
+		return nil
+	}
+
+	var tn struct {
+		TypeName string `json:"__typename"`
+	}
+	err := json.Unmarshal(b, &tn)
+	if err != nil {
+		return err
+	}
+
+	switch tn.TypeName {
+	case "EndOfTargetsSync":
+		*v = new(EndOfTargetsSyncEndOfTargetsSync)
+		return json.Unmarshal(b, *v)
+	case "PermissionDeniedError":
+		*v = new(EndOfTargetsSyncEndOfTargetsSyncPermissionDeniedError)
+		return json.Unmarshal(b, *v)
+	case "":
+		return fmt.Errorf(
+			"response was missing EndOfTargetsSyncResult.__typename")
+	default:
+		return fmt.Errorf(
+			`unexpected concrete type for EndOfTargetsSyncEndOfTargetsSyncEndOfTargetsSyncResult: "%v"`, tn.TypeName)
+	}
+}
+
+func __marshalEndOfTargetsSyncEndOfTargetsSyncEndOfTargetsSyncResult(v *EndOfTargetsSyncEndOfTargetsSyncEndOfTargetsSyncResult) ([]byte, error) {
+
+	var typename string
+	switch v := (*v).(type) {
+	case *EndOfTargetsSyncEndOfTargetsSync:
+		typename = "EndOfTargetsSync"
+
+		result := struct {
+			TypeName string `json:"__typename"`
+			*EndOfTargetsSyncEndOfTargetsSync
+		}{typename, v}
+		return json.Marshal(result)
+	case *EndOfTargetsSyncEndOfTargetsSyncPermissionDeniedError:
+		typename = "PermissionDeniedError"
+
+		premarshaled, err := v.__premarshalJSON()
+		if err != nil {
+			return nil, err
+		}
+		result := struct {
+			TypeName string `json:"__typename"`
+			*__premarshalEndOfTargetsSyncEndOfTargetsSyncPermissionDeniedError
+		}{typename, premarshaled}
+		return json.Marshal(result)
+	case nil:
+		return []byte("null"), nil
+	default:
+		return nil, fmt.Errorf(
+			`unexpected concrete type for EndOfTargetsSyncEndOfTargetsSyncEndOfTargetsSyncResult: "%T"`, v)
+	}
+}
+
+// EndOfTargetsSyncEndOfTargetsSyncPermissionDeniedError includes the requested fields of the GraphQL type PermissionDeniedError.
+type EndOfTargetsSyncEndOfTargetsSyncPermissionDeniedError struct {
+	Typename              *string `json:"__typename"`
+	PermissionDeniedError `json:"-"`
+}
+
+// GetTypename returns EndOfTargetsSyncEndOfTargetsSyncPermissionDeniedError.Typename, and is useful for accessing the field via an interface.
+func (v *EndOfTargetsSyncEndOfTargetsSyncPermissionDeniedError) GetTypename() *string {
+	return v.Typename
+}
+
+// GetMessage returns EndOfTargetsSyncEndOfTargetsSyncPermissionDeniedError.Message, and is useful for accessing the field via an interface.
+func (v *EndOfTargetsSyncEndOfTargetsSyncPermissionDeniedError) GetMessage() string {
+	return v.PermissionDeniedError.Message
+}
+
+func (v *EndOfTargetsSyncEndOfTargetsSyncPermissionDeniedError) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*EndOfTargetsSyncEndOfTargetsSyncPermissionDeniedError
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.EndOfTargetsSyncEndOfTargetsSyncPermissionDeniedError = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.PermissionDeniedError)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalEndOfTargetsSyncEndOfTargetsSyncPermissionDeniedError struct {
+	Typename *string `json:"__typename"`
+
+	Message string `json:"message"`
+}
+
+func (v *EndOfTargetsSyncEndOfTargetsSyncPermissionDeniedError) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *EndOfTargetsSyncEndOfTargetsSyncPermissionDeniedError) __premarshalJSON() (*__premarshalEndOfTargetsSyncEndOfTargetsSyncPermissionDeniedError, error) {
+	var retval __premarshalEndOfTargetsSyncEndOfTargetsSyncPermissionDeniedError
+
+	retval.Typename = v.Typename
+	retval.Message = v.PermissionDeniedError.Message
+	return &retval, nil
+}
+
+type EndOfTargetsSyncInput struct {
+	JobIds []string `json:"jobIds"`
+}
+
+// GetJobIds returns EndOfTargetsSyncInput.JobIds, and is useful for accessing the field via an interface.
+func (v *EndOfTargetsSyncInput) GetJobIds() []string { return v.JobIds }
+
+// EndOfTargetsSyncResponse is returned by EndOfTargetsSync on success.
+type EndOfTargetsSyncResponse struct {
+	EndOfTargetsSync *EndOfTargetsSyncEndOfTargetsSyncEndOfTargetsSyncResult `json:"-"`
+}
+
+// GetEndOfTargetsSync returns EndOfTargetsSyncResponse.EndOfTargetsSync, and is useful for accessing the field via an interface.
+func (v *EndOfTargetsSyncResponse) GetEndOfTargetsSync() *EndOfTargetsSyncEndOfTargetsSyncEndOfTargetsSyncResult {
+	return v.EndOfTargetsSync
+}
+
+func (v *EndOfTargetsSyncResponse) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*EndOfTargetsSyncResponse
+		EndOfTargetsSync json.RawMessage `json:"endOfTargetsSync"`
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.EndOfTargetsSyncResponse = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	{
+		dst := &v.EndOfTargetsSync
+		src := firstPass.EndOfTargetsSync
+		if len(src) != 0 && string(src) != "null" {
+			*dst = new(EndOfTargetsSyncEndOfTargetsSyncEndOfTargetsSyncResult)
+			err = __unmarshalEndOfTargetsSyncEndOfTargetsSyncEndOfTargetsSyncResult(
+				src, *dst)
+			if err != nil {
+				return fmt.Errorf(
+					"unable to unmarshal EndOfTargetsSyncResponse.EndOfTargetsSync: %w", err)
+			}
+		}
+	}
+	return nil
+}
+
+type __premarshalEndOfTargetsSyncResponse struct {
+	EndOfTargetsSync json.RawMessage `json:"endOfTargetsSync"`
+}
+
+func (v *EndOfTargetsSyncResponse) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *EndOfTargetsSyncResponse) __premarshalJSON() (*__premarshalEndOfTargetsSyncResponse, error) {
+	var retval __premarshalEndOfTargetsSyncResponse
+
+	{
+
+		dst := &retval.EndOfTargetsSync
+		src := v.EndOfTargetsSync
+		if src != nil {
+			var err error
+			*dst, err = __marshalEndOfTargetsSyncEndOfTargetsSyncEndOfTargetsSyncResult(
+				src)
+			if err != nil {
+				return nil, fmt.Errorf(
+					"unable to marshal EndOfTargetsSyncResponse.EndOfTargetsSync: %w", err)
+			}
+		}
+	}
+	return &retval, nil
+}
+
+type FilterMetadataInput struct {
+	FilterOverridePermissions []string `json:"filterOverridePermissions"`
+	ApplicableTypes           []string `json:"applicableTypes"`
+}
+
+// GetFilterOverridePermissions returns FilterMetadataInput.FilterOverridePermissions, and is useful for accessing the field via an interface.
+func (v *FilterMetadataInput) GetFilterOverridePermissions() []string {
+	return v.FilterOverridePermissions
+}
+
+// GetApplicableTypes returns FilterMetadataInput.ApplicableTypes, and is useful for accessing the field via an interface.
+func (v *FilterMetadataInput) GetApplicableTypes() []string { return v.ApplicableTypes }
+
+// FinishImportFlowResponse is returned by FinishImportFlow on success.
+type FinishImportFlowResponse struct {
+	FinishImportFlow bool `json:"finishImportFlow"`
+}
+
+// GetFinishImportFlow returns FinishImportFlowResponse.FinishImportFlow, and is useful for accessing the field via an interface.
+func (v *FinishImportFlowResponse) GetFinishImportFlow() bool { return v.FinishImportFlow }
 
 // GetAccessControlAccessControl includes the requested fields of the GraphQL type AccessControl.
 type GetAccessControlAccessControl struct {
@@ -16790,6 +17878,120 @@ func (v *GetIdentityStoreResponse) __premarshalJSON() (*__premarshalGetIdentityS
 	return &retval, nil
 }
 
+// GetJobJob includes the requested fields of the GraphQL type Job.
+type GetJobJob struct {
+	Job `json:"-"`
+}
+
+// GetId returns GetJobJob.Id, and is useful for accessing the field via an interface.
+func (v *GetJobJob) GetId() string { return v.Job.Id }
+
+// GetStatus returns GetJobJob.Status, and is useful for accessing the field via an interface.
+func (v *GetJobJob) GetStatus() JobStatus { return v.Job.Status }
+
+// GetStartTime returns GetJobJob.StartTime, and is useful for accessing the field via an interface.
+func (v *GetJobJob) GetStartTime() time.Time { return v.Job.StartTime }
+
+// GetLastUpdate returns GetJobJob.LastUpdate, and is useful for accessing the field via an interface.
+func (v *GetJobJob) GetLastUpdate() time.Time { return v.Job.LastUpdate }
+
+// GetEndTime returns GetJobJob.EndTime, and is useful for accessing the field via an interface.
+func (v *GetJobJob) GetEndTime() *time.Time { return v.Job.EndTime }
+
+// GetDuration returns GetJobJob.Duration, and is useful for accessing the field via an interface.
+func (v *GetJobJob) GetDuration() *int64 { return v.Job.Duration }
+
+// GetHasErrors returns GetJobJob.HasErrors, and is useful for accessing the field via an interface.
+func (v *GetJobJob) GetHasErrors() *bool { return v.Job.HasErrors }
+
+// GetHasWarnings returns GetJobJob.HasWarnings, and is useful for accessing the field via an interface.
+func (v *GetJobJob) GetHasWarnings() *bool { return v.Job.HasWarnings }
+
+// GetDataSource returns GetJobJob.DataSource, and is useful for accessing the field via an interface.
+func (v *GetJobJob) GetDataSource() *JobDataSource { return v.Job.DataSource }
+
+// GetIdentityStore returns GetJobJob.IdentityStore, and is useful for accessing the field via an interface.
+func (v *GetJobJob) GetIdentityStore() *JobIdentityStore { return v.Job.IdentityStore }
+
+func (v *GetJobJob) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*GetJobJob
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.GetJobJob = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.Job)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalGetJobJob struct {
+	Id string `json:"id"`
+
+	Status JobStatus `json:"status"`
+
+	StartTime time.Time `json:"startTime"`
+
+	LastUpdate time.Time `json:"lastUpdate"`
+
+	EndTime *time.Time `json:"endTime"`
+
+	Duration *int64 `json:"duration"`
+
+	HasErrors *bool `json:"hasErrors"`
+
+	HasWarnings *bool `json:"hasWarnings"`
+
+	DataSource *JobDataSource `json:"dataSource"`
+
+	IdentityStore *JobIdentityStore `json:"identityStore"`
+}
+
+func (v *GetJobJob) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *GetJobJob) __premarshalJSON() (*__premarshalGetJobJob, error) {
+	var retval __premarshalGetJobJob
+
+	retval.Id = v.Job.Id
+	retval.Status = v.Job.Status
+	retval.StartTime = v.Job.StartTime
+	retval.LastUpdate = v.Job.LastUpdate
+	retval.EndTime = v.Job.EndTime
+	retval.Duration = v.Job.Duration
+	retval.HasErrors = v.Job.HasErrors
+	retval.HasWarnings = v.Job.HasWarnings
+	retval.DataSource = v.Job.DataSource
+	retval.IdentityStore = v.Job.IdentityStore
+	return &retval, nil
+}
+
+// GetJobResponse is returned by GetJob on success.
+type GetJobResponse struct {
+	Job GetJobJob `json:"job"`
+}
+
+// GetJob returns GetJobResponse.Job, and is useful for accessing the field via an interface.
+func (v *GetJobResponse) GetJob() GetJobJob { return v.Job }
+
 // GetRoleResponse is returned by GetRole on success.
 type GetRoleResponse struct {
 	Role GetRoleRole `json:"role"`
@@ -16861,6 +18063,244 @@ func (v *GetRoleRole) __premarshalJSON() (*__premarshalGetRoleRole, error) {
 	retval.Name = v.Role.Name
 	return &retval, nil
 }
+
+// GetSubtaskOfTaskJobSubtask includes the requested fields of the GraphQL type Subtask.
+type GetSubtaskOfTaskJobSubtask struct {
+	Subtask `json:"-"`
+}
+
+// GetJobId returns GetSubtaskOfTaskJobSubtask.JobId, and is useful for accessing the field via an interface.
+func (v *GetSubtaskOfTaskJobSubtask) GetJobId() string { return v.Subtask.JobId }
+
+// GetTaskType returns GetSubtaskOfTaskJobSubtask.TaskType, and is useful for accessing the field via an interface.
+func (v *GetSubtaskOfTaskJobSubtask) GetTaskType() string { return v.Subtask.TaskType }
+
+// GetSubtaskId returns GetSubtaskOfTaskJobSubtask.SubtaskId, and is useful for accessing the field via an interface.
+func (v *GetSubtaskOfTaskJobSubtask) GetSubtaskId() string { return v.Subtask.SubtaskId }
+
+// GetStatus returns GetSubtaskOfTaskJobSubtask.Status, and is useful for accessing the field via an interface.
+func (v *GetSubtaskOfTaskJobSubtask) GetStatus() SubtaskStatus { return v.Subtask.Status }
+
+// GetLastUpdate returns GetSubtaskOfTaskJobSubtask.LastUpdate, and is useful for accessing the field via an interface.
+func (v *GetSubtaskOfTaskJobSubtask) GetLastUpdate() time.Time { return v.Subtask.LastUpdate }
+
+// GetIsStreaming returns GetSubtaskOfTaskJobSubtask.IsStreaming, and is useful for accessing the field via an interface.
+func (v *GetSubtaskOfTaskJobSubtask) GetIsStreaming() bool { return v.Subtask.IsStreaming }
+
+// GetFlowId returns GetSubtaskOfTaskJobSubtask.FlowId, and is useful for accessing the field via an interface.
+func (v *GetSubtaskOfTaskJobSubtask) GetFlowId() *uuid.UUID { return v.Subtask.FlowId }
+
+// GetIngestionFinished returns GetSubtaskOfTaskJobSubtask.IngestionFinished, and is useful for accessing the field via an interface.
+func (v *GetSubtaskOfTaskJobSubtask) GetIngestionFinished() *bool { return v.Subtask.IngestionFinished }
+
+// GetFlowClosed returns GetSubtaskOfTaskJobSubtask.FlowClosed, and is useful for accessing the field via an interface.
+func (v *GetSubtaskOfTaskJobSubtask) GetFlowClosed() *bool { return v.Subtask.FlowClosed }
+
+// GetFlowCommandsAdded returns GetSubtaskOfTaskJobSubtask.FlowCommandsAdded, and is useful for accessing the field via an interface.
+func (v *GetSubtaskOfTaskJobSubtask) GetFlowCommandsAdded() int { return v.Subtask.FlowCommandsAdded }
+
+// GetFlowCommandsUpdated returns GetSubtaskOfTaskJobSubtask.FlowCommandsUpdated, and is useful for accessing the field via an interface.
+func (v *GetSubtaskOfTaskJobSubtask) GetFlowCommandsUpdated() int {
+	return v.Subtask.FlowCommandsUpdated
+}
+
+// GetFlowCommandsRemoved returns GetSubtaskOfTaskJobSubtask.FlowCommandsRemoved, and is useful for accessing the field via an interface.
+func (v *GetSubtaskOfTaskJobSubtask) GetFlowCommandsRemoved() int {
+	return v.Subtask.FlowCommandsRemoved
+}
+
+func (v *GetSubtaskOfTaskJobSubtask) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*GetSubtaskOfTaskJobSubtask
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.GetSubtaskOfTaskJobSubtask = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.Subtask)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalGetSubtaskOfTaskJobSubtask struct {
+	JobId string `json:"jobId"`
+
+	TaskType string `json:"taskType"`
+
+	SubtaskId string `json:"subtaskId"`
+
+	Status SubtaskStatus `json:"status"`
+
+	LastUpdate time.Time `json:"lastUpdate"`
+
+	IsStreaming bool `json:"isStreaming"`
+
+	FlowId *uuid.UUID `json:"flowId"`
+
+	IngestionFinished *bool `json:"ingestionFinished"`
+
+	FlowClosed *bool `json:"flowClosed"`
+
+	FlowCommandsAdded int `json:"flowCommandsAdded"`
+
+	FlowCommandsUpdated int `json:"flowCommandsUpdated"`
+
+	FlowCommandsRemoved int `json:"flowCommandsRemoved"`
+}
+
+func (v *GetSubtaskOfTaskJobSubtask) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *GetSubtaskOfTaskJobSubtask) __premarshalJSON() (*__premarshalGetSubtaskOfTaskJobSubtask, error) {
+	var retval __premarshalGetSubtaskOfTaskJobSubtask
+
+	retval.JobId = v.Subtask.JobId
+	retval.TaskType = v.Subtask.TaskType
+	retval.SubtaskId = v.Subtask.SubtaskId
+	retval.Status = v.Subtask.Status
+	retval.LastUpdate = v.Subtask.LastUpdate
+	retval.IsStreaming = v.Subtask.IsStreaming
+	retval.FlowId = v.Subtask.FlowId
+	retval.IngestionFinished = v.Subtask.IngestionFinished
+	retval.FlowClosed = v.Subtask.FlowClosed
+	retval.FlowCommandsAdded = v.Subtask.FlowCommandsAdded
+	retval.FlowCommandsUpdated = v.Subtask.FlowCommandsUpdated
+	retval.FlowCommandsRemoved = v.Subtask.FlowCommandsRemoved
+	return &retval, nil
+}
+
+// GetSubtaskOfTaskResponse is returned by GetSubtaskOfTask on success.
+type GetSubtaskOfTaskResponse struct {
+	JobSubtask GetSubtaskOfTaskJobSubtask `json:"jobSubtask"`
+}
+
+// GetJobSubtask returns GetSubtaskOfTaskResponse.JobSubtask, and is useful for accessing the field via an interface.
+func (v *GetSubtaskOfTaskResponse) GetJobSubtask() GetSubtaskOfTaskJobSubtask { return v.JobSubtask }
+
+// GetTaskJobTask includes the requested fields of the GraphQL type Task.
+type GetTaskJobTask struct {
+	Task `json:"-"`
+}
+
+// GetJobId returns GetTaskJobTask.JobId, and is useful for accessing the field via an interface.
+func (v *GetTaskJobTask) GetJobId() string { return v.Task.JobId }
+
+// GetTaskType returns GetTaskJobTask.TaskType, and is useful for accessing the field via an interface.
+func (v *GetTaskJobTask) GetTaskType() string { return v.Task.TaskType }
+
+// GetStatus returns GetTaskJobTask.Status, and is useful for accessing the field via an interface.
+func (v *GetTaskJobTask) GetStatus() TaskStatus { return v.Task.Status }
+
+// GetStartTime returns GetTaskJobTask.StartTime, and is useful for accessing the field via an interface.
+func (v *GetTaskJobTask) GetStartTime() time.Time { return v.Task.StartTime }
+
+// GetLastUpdate returns GetTaskJobTask.LastUpdate, and is useful for accessing the field via an interface.
+func (v *GetTaskJobTask) GetLastUpdate() time.Time { return v.Task.LastUpdate }
+
+// GetEndTime returns GetTaskJobTask.EndTime, and is useful for accessing the field via an interface.
+func (v *GetTaskJobTask) GetEndTime() *time.Time { return v.Task.EndTime }
+
+// GetDuration returns GetTaskJobTask.Duration, and is useful for accessing the field via an interface.
+func (v *GetTaskJobTask) GetDuration() *int64 { return v.Task.Duration }
+
+// GetNumberOfWarnings returns GetTaskJobTask.NumberOfWarnings, and is useful for accessing the field via an interface.
+func (v *GetTaskJobTask) GetNumberOfWarnings() int { return v.Task.NumberOfWarnings }
+
+// GetResult returns GetTaskJobTask.Result, and is useful for accessing the field via an interface.
+func (v *GetTaskJobTask) GetResult() []TaskResult { return v.Task.Result }
+
+func (v *GetTaskJobTask) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*GetTaskJobTask
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.GetTaskJobTask = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.Task)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalGetTaskJobTask struct {
+	JobId string `json:"jobId"`
+
+	TaskType string `json:"taskType"`
+
+	Status TaskStatus `json:"status"`
+
+	StartTime time.Time `json:"startTime"`
+
+	LastUpdate time.Time `json:"lastUpdate"`
+
+	EndTime *time.Time `json:"endTime"`
+
+	Duration *int64 `json:"duration"`
+
+	NumberOfWarnings int `json:"numberOfWarnings"`
+
+	Result []TaskResult `json:"result"`
+}
+
+func (v *GetTaskJobTask) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *GetTaskJobTask) __premarshalJSON() (*__premarshalGetTaskJobTask, error) {
+	var retval __premarshalGetTaskJobTask
+
+	retval.JobId = v.Task.JobId
+	retval.TaskType = v.Task.TaskType
+	retval.Status = v.Task.Status
+	retval.StartTime = v.Task.StartTime
+	retval.LastUpdate = v.Task.LastUpdate
+	retval.EndTime = v.Task.EndTime
+	retval.Duration = v.Task.Duration
+	retval.NumberOfWarnings = v.Task.NumberOfWarnings
+	retval.Result = v.Task.Result
+	return &retval, nil
+}
+
+// GetTaskResponse is returned by GetTask on success.
+type GetTaskResponse struct {
+	JobTask GetTaskJobTask `json:"jobTask"`
+}
+
+// GetJobTask returns GetTaskResponse.JobTask, and is useful for accessing the field via an interface.
+func (v *GetTaskResponse) GetJobTask() GetTaskJobTask { return v.JobTask }
 
 // GetUserByEmailResponse is returned by GetUserByEmail on success.
 type GetUserByEmailResponse struct {
@@ -19509,6 +20949,63 @@ func (v *IdentityStoreOrderByInput) GetName() *Sort { return v.Name }
 // GetDescription returns IdentityStoreOrderByInput.Description, and is useful for accessing the field via an interface.
 func (v *IdentityStoreOrderByInput) GetDescription() *Sort { return v.Description }
 
+type ImportCommand struct {
+	UpsertDataObject            *DataObjectImport            `json:"upsertDataObject,omitempty"`
+	UpsertUser                  *UserImport                  `json:"upsertUser,omitempty"`
+	UpsertAccessControl         *AccessControlImport         `json:"upsertAccessControl,omitempty"`
+	UpsertAccessControlWhatItem *WhatItemImport              `json:"upsertAccessControlWhatItem,omitempty"`
+	UpsertAccessControlFeedback *AccessControlFeedbackImport `json:"upsertAccessControlFeedback,omitempty"`
+	QueryHistory                *QueryStatementImport        `json:"queryHistory,omitempty"`
+	AccessControlWhatFinished   *string                      `json:"accessControlWhatFinished,omitempty"`
+}
+
+// GetUpsertDataObject returns ImportCommand.UpsertDataObject, and is useful for accessing the field via an interface.
+func (v *ImportCommand) GetUpsertDataObject() *DataObjectImport { return v.UpsertDataObject }
+
+// GetUpsertUser returns ImportCommand.UpsertUser, and is useful for accessing the field via an interface.
+func (v *ImportCommand) GetUpsertUser() *UserImport { return v.UpsertUser }
+
+// GetUpsertAccessControl returns ImportCommand.UpsertAccessControl, and is useful for accessing the field via an interface.
+func (v *ImportCommand) GetUpsertAccessControl() *AccessControlImport { return v.UpsertAccessControl }
+
+// GetUpsertAccessControlWhatItem returns ImportCommand.UpsertAccessControlWhatItem, and is useful for accessing the field via an interface.
+func (v *ImportCommand) GetUpsertAccessControlWhatItem() *WhatItemImport {
+	return v.UpsertAccessControlWhatItem
+}
+
+// GetUpsertAccessControlFeedback returns ImportCommand.UpsertAccessControlFeedback, and is useful for accessing the field via an interface.
+func (v *ImportCommand) GetUpsertAccessControlFeedback() *AccessControlFeedbackImport {
+	return v.UpsertAccessControlFeedback
+}
+
+// GetQueryHistory returns ImportCommand.QueryHistory, and is useful for accessing the field via an interface.
+func (v *ImportCommand) GetQueryHistory() *QueryStatementImport { return v.QueryHistory }
+
+// GetAccessControlWhatFinished returns ImportCommand.AccessControlWhatFinished, and is useful for accessing the field via an interface.
+func (v *ImportCommand) GetAccessControlWhatFinished() *string { return v.AccessControlWhatFinished }
+
+type ImportCommands struct {
+	FlowId   uuid.UUID       `json:"flowId"`
+	Commands []ImportCommand `json:"commands"`
+}
+
+// GetFlowId returns ImportCommands.FlowId, and is useful for accessing the field via an interface.
+func (v *ImportCommands) GetFlowId() uuid.UUID { return v.FlowId }
+
+// GetCommands returns ImportCommands.Commands, and is useful for accessing the field via an interface.
+func (v *ImportCommands) GetCommands() []ImportCommand { return v.Commands }
+
+type ImportFlowOptions struct {
+	ExecuteDeleteUntouched *bool    `json:"executeDeleteUntouched,omitempty"`
+	TagSourcesScope        []string `json:"tagSourcesScope"`
+}
+
+// GetExecuteDeleteUntouched returns ImportFlowOptions.ExecuteDeleteUntouched, and is useful for accessing the field via an interface.
+func (v *ImportFlowOptions) GetExecuteDeleteUntouched() *bool { return v.ExecuteDeleteUntouched }
+
+// GetTagSourcesScope returns ImportFlowOptions.TagSourcesScope, and is useful for accessing the field via an interface.
+func (v *ImportFlowOptions) GetTagSourcesScope() []string { return v.TagSourcesScope }
+
 // InvalidEmailError includes the GraphQL fields of InvalidEmailError requested by the fragment InvalidEmailError.
 type InvalidEmailError struct {
 	ErrEmail string `json:"errEmail"`
@@ -19528,6 +21025,813 @@ type InvalidInputError struct {
 
 // GetMessage returns InvalidInputError.Message, and is useful for accessing the field via an interface.
 func (v *InvalidInputError) GetMessage() string { return v.Message }
+
+// Job includes the GraphQL fields of Job requested by the fragment Job.
+type Job struct {
+	Id            string            `json:"id"`
+	Status        JobStatus         `json:"status"`
+	StartTime     time.Time         `json:"startTime"`
+	LastUpdate    time.Time         `json:"lastUpdate"`
+	EndTime       *time.Time        `json:"endTime"`
+	Duration      *int64            `json:"duration"`
+	HasErrors     *bool             `json:"hasErrors"`
+	HasWarnings   *bool             `json:"hasWarnings"`
+	DataSource    *JobDataSource    `json:"dataSource"`
+	IdentityStore *JobIdentityStore `json:"identityStore"`
+}
+
+// GetId returns Job.Id, and is useful for accessing the field via an interface.
+func (v *Job) GetId() string { return v.Id }
+
+// GetStatus returns Job.Status, and is useful for accessing the field via an interface.
+func (v *Job) GetStatus() JobStatus { return v.Status }
+
+// GetStartTime returns Job.StartTime, and is useful for accessing the field via an interface.
+func (v *Job) GetStartTime() time.Time { return v.StartTime }
+
+// GetLastUpdate returns Job.LastUpdate, and is useful for accessing the field via an interface.
+func (v *Job) GetLastUpdate() time.Time { return v.LastUpdate }
+
+// GetEndTime returns Job.EndTime, and is useful for accessing the field via an interface.
+func (v *Job) GetEndTime() *time.Time { return v.EndTime }
+
+// GetDuration returns Job.Duration, and is useful for accessing the field via an interface.
+func (v *Job) GetDuration() *int64 { return v.Duration }
+
+// GetHasErrors returns Job.HasErrors, and is useful for accessing the field via an interface.
+func (v *Job) GetHasErrors() *bool { return v.HasErrors }
+
+// GetHasWarnings returns Job.HasWarnings, and is useful for accessing the field via an interface.
+func (v *Job) GetHasWarnings() *bool { return v.HasWarnings }
+
+// GetDataSource returns Job.DataSource, and is useful for accessing the field via an interface.
+func (v *Job) GetDataSource() *JobDataSource { return v.DataSource }
+
+// GetIdentityStore returns Job.IdentityStore, and is useful for accessing the field via an interface.
+func (v *Job) GetIdentityStore() *JobIdentityStore { return v.IdentityStore }
+
+// JobConnection includes the GraphQL fields of JobConnection requested by the fragment JobConnection.
+type JobConnection struct {
+	PageInfo JobConnectionPageInfo       `json:"pageInfo"`
+	Edges    []JobConnectionEdgesJobEdge `json:"edges"`
+}
+
+// GetPageInfo returns JobConnection.PageInfo, and is useful for accessing the field via an interface.
+func (v *JobConnection) GetPageInfo() JobConnectionPageInfo { return v.PageInfo }
+
+// GetEdges returns JobConnection.Edges, and is useful for accessing the field via an interface.
+func (v *JobConnection) GetEdges() []JobConnectionEdgesJobEdge { return v.Edges }
+
+// JobConnectionEdgesJobEdge includes the requested fields of the GraphQL type JobEdge.
+type JobConnectionEdgesJobEdge struct {
+	Cursor *string                           `json:"cursor"`
+	Node   *JobConnectionEdgesJobEdgeNodeJob `json:"node"`
+}
+
+// GetCursor returns JobConnectionEdgesJobEdge.Cursor, and is useful for accessing the field via an interface.
+func (v *JobConnectionEdgesJobEdge) GetCursor() *string { return v.Cursor }
+
+// GetNode returns JobConnectionEdgesJobEdge.Node, and is useful for accessing the field via an interface.
+func (v *JobConnectionEdgesJobEdge) GetNode() *JobConnectionEdgesJobEdgeNodeJob { return v.Node }
+
+// JobConnectionEdgesJobEdgeNodeJob includes the requested fields of the GraphQL type Job.
+type JobConnectionEdgesJobEdgeNodeJob struct {
+	Job `json:"-"`
+}
+
+// GetId returns JobConnectionEdgesJobEdgeNodeJob.Id, and is useful for accessing the field via an interface.
+func (v *JobConnectionEdgesJobEdgeNodeJob) GetId() string { return v.Job.Id }
+
+// GetStatus returns JobConnectionEdgesJobEdgeNodeJob.Status, and is useful for accessing the field via an interface.
+func (v *JobConnectionEdgesJobEdgeNodeJob) GetStatus() JobStatus { return v.Job.Status }
+
+// GetStartTime returns JobConnectionEdgesJobEdgeNodeJob.StartTime, and is useful for accessing the field via an interface.
+func (v *JobConnectionEdgesJobEdgeNodeJob) GetStartTime() time.Time { return v.Job.StartTime }
+
+// GetLastUpdate returns JobConnectionEdgesJobEdgeNodeJob.LastUpdate, and is useful for accessing the field via an interface.
+func (v *JobConnectionEdgesJobEdgeNodeJob) GetLastUpdate() time.Time { return v.Job.LastUpdate }
+
+// GetEndTime returns JobConnectionEdgesJobEdgeNodeJob.EndTime, and is useful for accessing the field via an interface.
+func (v *JobConnectionEdgesJobEdgeNodeJob) GetEndTime() *time.Time { return v.Job.EndTime }
+
+// GetDuration returns JobConnectionEdgesJobEdgeNodeJob.Duration, and is useful for accessing the field via an interface.
+func (v *JobConnectionEdgesJobEdgeNodeJob) GetDuration() *int64 { return v.Job.Duration }
+
+// GetHasErrors returns JobConnectionEdgesJobEdgeNodeJob.HasErrors, and is useful for accessing the field via an interface.
+func (v *JobConnectionEdgesJobEdgeNodeJob) GetHasErrors() *bool { return v.Job.HasErrors }
+
+// GetHasWarnings returns JobConnectionEdgesJobEdgeNodeJob.HasWarnings, and is useful for accessing the field via an interface.
+func (v *JobConnectionEdgesJobEdgeNodeJob) GetHasWarnings() *bool { return v.Job.HasWarnings }
+
+// GetDataSource returns JobConnectionEdgesJobEdgeNodeJob.DataSource, and is useful for accessing the field via an interface.
+func (v *JobConnectionEdgesJobEdgeNodeJob) GetDataSource() *JobDataSource { return v.Job.DataSource }
+
+// GetIdentityStore returns JobConnectionEdgesJobEdgeNodeJob.IdentityStore, and is useful for accessing the field via an interface.
+func (v *JobConnectionEdgesJobEdgeNodeJob) GetIdentityStore() *JobIdentityStore {
+	return v.Job.IdentityStore
+}
+
+func (v *JobConnectionEdgesJobEdgeNodeJob) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*JobConnectionEdgesJobEdgeNodeJob
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.JobConnectionEdgesJobEdgeNodeJob = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.Job)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalJobConnectionEdgesJobEdgeNodeJob struct {
+	Id string `json:"id"`
+
+	Status JobStatus `json:"status"`
+
+	StartTime time.Time `json:"startTime"`
+
+	LastUpdate time.Time `json:"lastUpdate"`
+
+	EndTime *time.Time `json:"endTime"`
+
+	Duration *int64 `json:"duration"`
+
+	HasErrors *bool `json:"hasErrors"`
+
+	HasWarnings *bool `json:"hasWarnings"`
+
+	DataSource *JobDataSource `json:"dataSource"`
+
+	IdentityStore *JobIdentityStore `json:"identityStore"`
+}
+
+func (v *JobConnectionEdgesJobEdgeNodeJob) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *JobConnectionEdgesJobEdgeNodeJob) __premarshalJSON() (*__premarshalJobConnectionEdgesJobEdgeNodeJob, error) {
+	var retval __premarshalJobConnectionEdgesJobEdgeNodeJob
+
+	retval.Id = v.Job.Id
+	retval.Status = v.Job.Status
+	retval.StartTime = v.Job.StartTime
+	retval.LastUpdate = v.Job.LastUpdate
+	retval.EndTime = v.Job.EndTime
+	retval.Duration = v.Job.Duration
+	retval.HasErrors = v.Job.HasErrors
+	retval.HasWarnings = v.Job.HasWarnings
+	retval.DataSource = v.Job.DataSource
+	retval.IdentityStore = v.Job.IdentityStore
+	return &retval, nil
+}
+
+// JobConnectionPageInfo includes the requested fields of the GraphQL type PageInfo.
+type JobConnectionPageInfo struct {
+	PageInfo `json:"-"`
+}
+
+// GetHasNextPage returns JobConnectionPageInfo.HasNextPage, and is useful for accessing the field via an interface.
+func (v *JobConnectionPageInfo) GetHasNextPage() *bool { return v.PageInfo.HasNextPage }
+
+// GetStartCursor returns JobConnectionPageInfo.StartCursor, and is useful for accessing the field via an interface.
+func (v *JobConnectionPageInfo) GetStartCursor() *string { return v.PageInfo.StartCursor }
+
+func (v *JobConnectionPageInfo) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*JobConnectionPageInfo
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.JobConnectionPageInfo = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.PageInfo)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalJobConnectionPageInfo struct {
+	HasNextPage *bool `json:"hasNextPage"`
+
+	StartCursor *string `json:"startCursor"`
+}
+
+func (v *JobConnectionPageInfo) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *JobConnectionPageInfo) __premarshalJSON() (*__premarshalJobConnectionPageInfo, error) {
+	var retval __premarshalJobConnectionPageInfo
+
+	retval.HasNextPage = v.PageInfo.HasNextPage
+	retval.StartCursor = v.PageInfo.StartCursor
+	return &retval, nil
+}
+
+// JobConnectionResult includes the GraphQL fields of JobConnectionResult requested by the fragment JobConnectionResult.
+//
+// JobConnectionResult is implemented by the following types:
+// JobConnectionResultInvalidInputError
+// JobConnectionResultJobConnection
+// JobConnectionResultNotFoundError
+// JobConnectionResultPermissionDeniedError
+type JobConnectionResult interface {
+	implementsGraphQLInterfaceJobConnectionResult()
+}
+
+func (v *JobConnectionResultInvalidInputError) implementsGraphQLInterfaceJobConnectionResult()     {}
+func (v *JobConnectionResultJobConnection) implementsGraphQLInterfaceJobConnectionResult()         {}
+func (v *JobConnectionResultNotFoundError) implementsGraphQLInterfaceJobConnectionResult()         {}
+func (v *JobConnectionResultPermissionDeniedError) implementsGraphQLInterfaceJobConnectionResult() {}
+
+func __unmarshalJobConnectionResult(b []byte, v *JobConnectionResult) error {
+	if string(b) == "null" {
+		return nil
+	}
+
+	var tn struct {
+		TypeName string `json:"__typename"`
+	}
+	err := json.Unmarshal(b, &tn)
+	if err != nil {
+		return err
+	}
+
+	switch tn.TypeName {
+	case "InvalidInputError":
+		*v = new(JobConnectionResultInvalidInputError)
+		return json.Unmarshal(b, *v)
+	case "JobConnection":
+		*v = new(JobConnectionResultJobConnection)
+		return json.Unmarshal(b, *v)
+	case "NotFoundError":
+		*v = new(JobConnectionResultNotFoundError)
+		return json.Unmarshal(b, *v)
+	case "PermissionDeniedError":
+		*v = new(JobConnectionResultPermissionDeniedError)
+		return json.Unmarshal(b, *v)
+	case "":
+		return fmt.Errorf(
+			"response was missing JobConnectionResult.__typename")
+	default:
+		return fmt.Errorf(
+			`unexpected concrete type for JobConnectionResult: "%v"`, tn.TypeName)
+	}
+}
+
+func __marshalJobConnectionResult(v *JobConnectionResult) ([]byte, error) {
+
+	var typename string
+	switch v := (*v).(type) {
+	case *JobConnectionResultInvalidInputError:
+		typename = "InvalidInputError"
+
+		premarshaled, err := v.__premarshalJSON()
+		if err != nil {
+			return nil, err
+		}
+		result := struct {
+			TypeName string `json:"__typename"`
+			*__premarshalJobConnectionResultInvalidInputError
+		}{typename, premarshaled}
+		return json.Marshal(result)
+	case *JobConnectionResultJobConnection:
+		typename = "JobConnection"
+
+		premarshaled, err := v.__premarshalJSON()
+		if err != nil {
+			return nil, err
+		}
+		result := struct {
+			TypeName string `json:"__typename"`
+			*__premarshalJobConnectionResultJobConnection
+		}{typename, premarshaled}
+		return json.Marshal(result)
+	case *JobConnectionResultNotFoundError:
+		typename = "NotFoundError"
+
+		premarshaled, err := v.__premarshalJSON()
+		if err != nil {
+			return nil, err
+		}
+		result := struct {
+			TypeName string `json:"__typename"`
+			*__premarshalJobConnectionResultNotFoundError
+		}{typename, premarshaled}
+		return json.Marshal(result)
+	case *JobConnectionResultPermissionDeniedError:
+		typename = "PermissionDeniedError"
+
+		premarshaled, err := v.__premarshalJSON()
+		if err != nil {
+			return nil, err
+		}
+		result := struct {
+			TypeName string `json:"__typename"`
+			*__premarshalJobConnectionResultPermissionDeniedError
+		}{typename, premarshaled}
+		return json.Marshal(result)
+	case nil:
+		return []byte("null"), nil
+	default:
+		return nil, fmt.Errorf(
+			`unexpected concrete type for JobConnectionResult: "%T"`, v)
+	}
+}
+
+// JobConnectionResult includes the GraphQL fields of InvalidInputError requested by the fragment JobConnectionResult.
+type JobConnectionResultInvalidInputError struct {
+	InvalidInputError `json:"-"`
+}
+
+// GetMessage returns JobConnectionResultInvalidInputError.Message, and is useful for accessing the field via an interface.
+func (v *JobConnectionResultInvalidInputError) GetMessage() string {
+	return v.InvalidInputError.Message
+}
+
+func (v *JobConnectionResultInvalidInputError) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*JobConnectionResultInvalidInputError
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.JobConnectionResultInvalidInputError = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.InvalidInputError)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalJobConnectionResultInvalidInputError struct {
+	Message string `json:"message"`
+}
+
+func (v *JobConnectionResultInvalidInputError) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *JobConnectionResultInvalidInputError) __premarshalJSON() (*__premarshalJobConnectionResultInvalidInputError, error) {
+	var retval __premarshalJobConnectionResultInvalidInputError
+
+	retval.Message = v.InvalidInputError.Message
+	return &retval, nil
+}
+
+// JobConnectionResult includes the GraphQL fields of JobConnection requested by the fragment JobConnectionResult.
+type JobConnectionResultJobConnection struct {
+	JobConnection `json:"-"`
+}
+
+// GetPageInfo returns JobConnectionResultJobConnection.PageInfo, and is useful for accessing the field via an interface.
+func (v *JobConnectionResultJobConnection) GetPageInfo() JobConnectionPageInfo {
+	return v.JobConnection.PageInfo
+}
+
+// GetEdges returns JobConnectionResultJobConnection.Edges, and is useful for accessing the field via an interface.
+func (v *JobConnectionResultJobConnection) GetEdges() []JobConnectionEdgesJobEdge {
+	return v.JobConnection.Edges
+}
+
+func (v *JobConnectionResultJobConnection) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*JobConnectionResultJobConnection
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.JobConnectionResultJobConnection = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.JobConnection)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalJobConnectionResultJobConnection struct {
+	PageInfo JobConnectionPageInfo `json:"pageInfo"`
+
+	Edges []JobConnectionEdgesJobEdge `json:"edges"`
+}
+
+func (v *JobConnectionResultJobConnection) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *JobConnectionResultJobConnection) __premarshalJSON() (*__premarshalJobConnectionResultJobConnection, error) {
+	var retval __premarshalJobConnectionResultJobConnection
+
+	retval.PageInfo = v.JobConnection.PageInfo
+	retval.Edges = v.JobConnection.Edges
+	return &retval, nil
+}
+
+// JobConnectionResult includes the GraphQL fields of NotFoundError requested by the fragment JobConnectionResult.
+type JobConnectionResultNotFoundError struct {
+	NotFoundError `json:"-"`
+}
+
+// GetMessage returns JobConnectionResultNotFoundError.Message, and is useful for accessing the field via an interface.
+func (v *JobConnectionResultNotFoundError) GetMessage() string { return v.NotFoundError.Message }
+
+func (v *JobConnectionResultNotFoundError) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*JobConnectionResultNotFoundError
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.JobConnectionResultNotFoundError = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.NotFoundError)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalJobConnectionResultNotFoundError struct {
+	Message string `json:"message"`
+}
+
+func (v *JobConnectionResultNotFoundError) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *JobConnectionResultNotFoundError) __premarshalJSON() (*__premarshalJobConnectionResultNotFoundError, error) {
+	var retval __premarshalJobConnectionResultNotFoundError
+
+	retval.Message = v.NotFoundError.Message
+	return &retval, nil
+}
+
+// JobConnectionResult includes the GraphQL fields of PermissionDeniedError requested by the fragment JobConnectionResult.
+type JobConnectionResultPermissionDeniedError struct {
+	PermissionDeniedError `json:"-"`
+}
+
+// GetMessage returns JobConnectionResultPermissionDeniedError.Message, and is useful for accessing the field via an interface.
+func (v *JobConnectionResultPermissionDeniedError) GetMessage() string {
+	return v.PermissionDeniedError.Message
+}
+
+func (v *JobConnectionResultPermissionDeniedError) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*JobConnectionResultPermissionDeniedError
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.JobConnectionResultPermissionDeniedError = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.PermissionDeniedError)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalJobConnectionResultPermissionDeniedError struct {
+	Message string `json:"message"`
+}
+
+func (v *JobConnectionResultPermissionDeniedError) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *JobConnectionResultPermissionDeniedError) __premarshalJSON() (*__premarshalJobConnectionResultPermissionDeniedError, error) {
+	var retval __premarshalJobConnectionResultPermissionDeniedError
+
+	retval.Message = v.PermissionDeniedError.Message
+	return &retval, nil
+}
+
+// JobDataSource includes the requested fields of the GraphQL type DataSource.
+type JobDataSource struct {
+	DataSource `json:"-"`
+}
+
+// GetId returns JobDataSource.Id, and is useful for accessing the field via an interface.
+func (v *JobDataSource) GetId() string { return v.DataSource.Id }
+
+// GetName returns JobDataSource.Name, and is useful for accessing the field via an interface.
+func (v *JobDataSource) GetName() string { return v.DataSource.Name }
+
+// GetType returns JobDataSource.Type, and is useful for accessing the field via an interface.
+func (v *JobDataSource) GetType() string { return v.DataSource.Type }
+
+// GetDescription returns JobDataSource.Description, and is useful for accessing the field via an interface.
+func (v *JobDataSource) GetDescription() string { return v.DataSource.Description }
+
+// GetCreatedAt returns JobDataSource.CreatedAt, and is useful for accessing the field via an interface.
+func (v *JobDataSource) GetCreatedAt() time.Time { return v.DataSource.CreatedAt }
+
+// GetModifiedAt returns JobDataSource.ModifiedAt, and is useful for accessing the field via an interface.
+func (v *JobDataSource) GetModifiedAt() time.Time { return v.DataSource.ModifiedAt }
+
+// GetSyncMethod returns JobDataSource.SyncMethod, and is useful for accessing the field via an interface.
+func (v *JobDataSource) GetSyncMethod() DataSourceSyncMethod { return v.DataSource.SyncMethod }
+
+// GetParent returns JobDataSource.Parent, and is useful for accessing the field via an interface.
+func (v *JobDataSource) GetParent() *DataSourceParentDataSource { return v.DataSource.Parent }
+
+func (v *JobDataSource) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*JobDataSource
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.JobDataSource = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.DataSource)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalJobDataSource struct {
+	Id string `json:"id"`
+
+	Name string `json:"name"`
+
+	Type string `json:"type"`
+
+	Description string `json:"description"`
+
+	CreatedAt time.Time `json:"createdAt"`
+
+	ModifiedAt time.Time `json:"modifiedAt"`
+
+	SyncMethod DataSourceSyncMethod `json:"syncMethod"`
+
+	Parent *DataSourceParentDataSource `json:"parent"`
+}
+
+func (v *JobDataSource) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *JobDataSource) __premarshalJSON() (*__premarshalJobDataSource, error) {
+	var retval __premarshalJobDataSource
+
+	retval.Id = v.DataSource.Id
+	retval.Name = v.DataSource.Name
+	retval.Type = v.DataSource.Type
+	retval.Description = v.DataSource.Description
+	retval.CreatedAt = v.DataSource.CreatedAt
+	retval.ModifiedAt = v.DataSource.ModifiedAt
+	retval.SyncMethod = v.DataSource.SyncMethod
+	retval.Parent = v.DataSource.Parent
+	return &retval, nil
+}
+
+// JobIdentityStore includes the requested fields of the GraphQL type IdentityStore.
+type JobIdentityStore struct {
+	IdentityStore `json:"-"`
+}
+
+// GetId returns JobIdentityStore.Id, and is useful for accessing the field via an interface.
+func (v *JobIdentityStore) GetId() string { return v.IdentityStore.Id }
+
+// GetName returns JobIdentityStore.Name, and is useful for accessing the field via an interface.
+func (v *JobIdentityStore) GetName() string { return v.IdentityStore.Name }
+
+// GetType returns JobIdentityStore.Type, and is useful for accessing the field via an interface.
+func (v *JobIdentityStore) GetType() string { return v.IdentityStore.Type }
+
+// GetDescription returns JobIdentityStore.Description, and is useful for accessing the field via an interface.
+func (v *JobIdentityStore) GetDescription() string { return v.IdentityStore.Description }
+
+// GetCreatedAt returns JobIdentityStore.CreatedAt, and is useful for accessing the field via an interface.
+func (v *JobIdentityStore) GetCreatedAt() time.Time { return v.IdentityStore.CreatedAt }
+
+// GetModifiedAt returns JobIdentityStore.ModifiedAt, and is useful for accessing the field via an interface.
+func (v *JobIdentityStore) GetModifiedAt() time.Time { return v.IdentityStore.ModifiedAt }
+
+// GetMaster returns JobIdentityStore.Master, and is useful for accessing the field via an interface.
+func (v *JobIdentityStore) GetMaster() bool { return v.IdentityStore.Master }
+
+// GetNative returns JobIdentityStore.Native, and is useful for accessing the field via an interface.
+func (v *JobIdentityStore) GetNative() bool { return v.IdentityStore.Native }
+
+func (v *JobIdentityStore) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*JobIdentityStore
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.JobIdentityStore = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.IdentityStore)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalJobIdentityStore struct {
+	Id string `json:"id"`
+
+	Name string `json:"name"`
+
+	Type string `json:"type"`
+
+	Description string `json:"description"`
+
+	CreatedAt time.Time `json:"createdAt"`
+
+	ModifiedAt time.Time `json:"modifiedAt"`
+
+	Master bool `json:"master"`
+
+	Native bool `json:"native"`
+}
+
+func (v *JobIdentityStore) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *JobIdentityStore) __premarshalJSON() (*__premarshalJobIdentityStore, error) {
+	var retval __premarshalJobIdentityStore
+
+	retval.Id = v.IdentityStore.Id
+	retval.Name = v.IdentityStore.Name
+	retval.Type = v.IdentityStore.Type
+	retval.Description = v.IdentityStore.Description
+	retval.CreatedAt = v.IdentityStore.CreatedAt
+	retval.ModifiedAt = v.IdentityStore.ModifiedAt
+	retval.Master = v.IdentityStore.Master
+	retval.Native = v.IdentityStore.Native
+	return &retval, nil
+}
+
+type JobInput struct {
+	DataSourceId    *string    `json:"dataSourceId,omitempty"`
+	IdentityStoreId *string    `json:"identityStoreId,omitempty"`
+	EventTime       time.Time  `json:"eventTime"`
+	Status          *JobStatus `json:"status,omitempty"`
+	Errors          []string   `json:"errors"`
+}
+
+// GetDataSourceId returns JobInput.DataSourceId, and is useful for accessing the field via an interface.
+func (v *JobInput) GetDataSourceId() *string { return v.DataSourceId }
+
+// GetIdentityStoreId returns JobInput.IdentityStoreId, and is useful for accessing the field via an interface.
+func (v *JobInput) GetIdentityStoreId() *string { return v.IdentityStoreId }
+
+// GetEventTime returns JobInput.EventTime, and is useful for accessing the field via an interface.
+func (v *JobInput) GetEventTime() time.Time { return v.EventTime }
+
+// GetStatus returns JobInput.Status, and is useful for accessing the field via an interface.
+func (v *JobInput) GetStatus() *JobStatus { return v.Status }
+
+// GetErrors returns JobInput.Errors, and is useful for accessing the field via an interface.
+func (v *JobInput) GetErrors() []string { return v.Errors }
+
+type JobStatus string
+
+const (
+	JobStatusStarted    JobStatus = "Started"
+	JobStatusInprogress JobStatus = "InProgress"
+	JobStatusCompleted  JobStatus = "Completed"
+	JobStatusFailed     JobStatus = "Failed"
+	JobStatusTimedout   JobStatus = "TimedOut"
+)
+
+var AllJobStatus = []JobStatus{
+	JobStatusStarted,
+	JobStatusInprogress,
+	JobStatusCompleted,
+	JobStatusFailed,
+	JobStatusTimedout,
+}
+
+type JobsFilter struct {
+	DataSource    *string `json:"dataSource,omitempty"`
+	IdentityStore *string `json:"identityStore,omitempty"`
+}
+
+// GetDataSource returns JobsFilter.DataSource, and is useful for accessing the field via an interface.
+func (v *JobsFilter) GetDataSource() *string { return v.DataSource }
+
+// GetIdentityStore returns JobsFilter.IdentityStore, and is useful for accessing the field via an interface.
+func (v *JobsFilter) GetIdentityStore() *string { return v.IdentityStore }
 
 // ListAccessControlAbacWhatScopeAccessControl includes the requested fields of the GraphQL type AccessControl.
 type ListAccessControlAbacWhatScopeAccessControl struct {
@@ -22584,6 +24888,444 @@ func (v *ListIdentityStoresResponse) __premarshalJSON() (*__premarshalListIdenti
 		if err != nil {
 			return nil, fmt.Errorf(
 				"unable to marshal ListIdentityStoresResponse.IdentityStores: %w", err)
+		}
+	}
+	return &retval, nil
+}
+
+// ListJobsJobsInvalidInputError includes the requested fields of the GraphQL type InvalidInputError.
+type ListJobsJobsInvalidInputError struct {
+	Typename                             *string `json:"__typename"`
+	JobConnectionResultInvalidInputError `json:"-"`
+}
+
+// GetTypename returns ListJobsJobsInvalidInputError.Typename, and is useful for accessing the field via an interface.
+func (v *ListJobsJobsInvalidInputError) GetTypename() *string { return v.Typename }
+
+// GetMessage returns ListJobsJobsInvalidInputError.Message, and is useful for accessing the field via an interface.
+func (v *ListJobsJobsInvalidInputError) GetMessage() string {
+	return v.JobConnectionResultInvalidInputError.InvalidInputError.Message
+}
+
+func (v *ListJobsJobsInvalidInputError) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*ListJobsJobsInvalidInputError
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.ListJobsJobsInvalidInputError = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.JobConnectionResultInvalidInputError)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalListJobsJobsInvalidInputError struct {
+	Typename *string `json:"__typename"`
+
+	Message string `json:"message"`
+}
+
+func (v *ListJobsJobsInvalidInputError) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *ListJobsJobsInvalidInputError) __premarshalJSON() (*__premarshalListJobsJobsInvalidInputError, error) {
+	var retval __premarshalListJobsJobsInvalidInputError
+
+	retval.Typename = v.Typename
+	retval.Message = v.JobConnectionResultInvalidInputError.InvalidInputError.Message
+	return &retval, nil
+}
+
+// ListJobsJobsJobConnection includes the requested fields of the GraphQL type JobConnection.
+type ListJobsJobsJobConnection struct {
+	Typename                         *string `json:"__typename"`
+	JobConnectionResultJobConnection `json:"-"`
+}
+
+// GetTypename returns ListJobsJobsJobConnection.Typename, and is useful for accessing the field via an interface.
+func (v *ListJobsJobsJobConnection) GetTypename() *string { return v.Typename }
+
+// GetPageInfo returns ListJobsJobsJobConnection.PageInfo, and is useful for accessing the field via an interface.
+func (v *ListJobsJobsJobConnection) GetPageInfo() JobConnectionPageInfo {
+	return v.JobConnectionResultJobConnection.JobConnection.PageInfo
+}
+
+// GetEdges returns ListJobsJobsJobConnection.Edges, and is useful for accessing the field via an interface.
+func (v *ListJobsJobsJobConnection) GetEdges() []JobConnectionEdgesJobEdge {
+	return v.JobConnectionResultJobConnection.JobConnection.Edges
+}
+
+func (v *ListJobsJobsJobConnection) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*ListJobsJobsJobConnection
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.ListJobsJobsJobConnection = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.JobConnectionResultJobConnection)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalListJobsJobsJobConnection struct {
+	Typename *string `json:"__typename"`
+
+	PageInfo JobConnectionPageInfo `json:"pageInfo"`
+
+	Edges []JobConnectionEdgesJobEdge `json:"edges"`
+}
+
+func (v *ListJobsJobsJobConnection) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *ListJobsJobsJobConnection) __premarshalJSON() (*__premarshalListJobsJobsJobConnection, error) {
+	var retval __premarshalListJobsJobsJobConnection
+
+	retval.Typename = v.Typename
+	retval.PageInfo = v.JobConnectionResultJobConnection.JobConnection.PageInfo
+	retval.Edges = v.JobConnectionResultJobConnection.JobConnection.Edges
+	return &retval, nil
+}
+
+// ListJobsJobsJobConnectionResult includes the requested fields of the GraphQL interface JobConnectionResult.
+//
+// ListJobsJobsJobConnectionResult is implemented by the following types:
+// ListJobsJobsInvalidInputError
+// ListJobsJobsJobConnection
+// ListJobsJobsNotFoundError
+// ListJobsJobsPermissionDeniedError
+type ListJobsJobsJobConnectionResult interface {
+	implementsGraphQLInterfaceListJobsJobsJobConnectionResult()
+	// GetTypename returns the receiver's concrete GraphQL type-name (see interface doc for possible values).
+	GetTypename() *string
+	JobConnectionResult
+}
+
+func (v *ListJobsJobsInvalidInputError) implementsGraphQLInterfaceListJobsJobsJobConnectionResult() {}
+func (v *ListJobsJobsJobConnection) implementsGraphQLInterfaceListJobsJobsJobConnectionResult()     {}
+func (v *ListJobsJobsNotFoundError) implementsGraphQLInterfaceListJobsJobsJobConnectionResult()     {}
+func (v *ListJobsJobsPermissionDeniedError) implementsGraphQLInterfaceListJobsJobsJobConnectionResult() {
+}
+
+func __unmarshalListJobsJobsJobConnectionResult(b []byte, v *ListJobsJobsJobConnectionResult) error {
+	if string(b) == "null" {
+		return nil
+	}
+
+	var tn struct {
+		TypeName string `json:"__typename"`
+	}
+	err := json.Unmarshal(b, &tn)
+	if err != nil {
+		return err
+	}
+
+	switch tn.TypeName {
+	case "InvalidInputError":
+		*v = new(ListJobsJobsInvalidInputError)
+		return json.Unmarshal(b, *v)
+	case "JobConnection":
+		*v = new(ListJobsJobsJobConnection)
+		return json.Unmarshal(b, *v)
+	case "NotFoundError":
+		*v = new(ListJobsJobsNotFoundError)
+		return json.Unmarshal(b, *v)
+	case "PermissionDeniedError":
+		*v = new(ListJobsJobsPermissionDeniedError)
+		return json.Unmarshal(b, *v)
+	case "":
+		return fmt.Errorf(
+			"response was missing JobConnectionResult.__typename")
+	default:
+		return fmt.Errorf(
+			`unexpected concrete type for ListJobsJobsJobConnectionResult: "%v"`, tn.TypeName)
+	}
+}
+
+func __marshalListJobsJobsJobConnectionResult(v *ListJobsJobsJobConnectionResult) ([]byte, error) {
+
+	var typename string
+	switch v := (*v).(type) {
+	case *ListJobsJobsInvalidInputError:
+		typename = "InvalidInputError"
+
+		premarshaled, err := v.__premarshalJSON()
+		if err != nil {
+			return nil, err
+		}
+		result := struct {
+			TypeName string `json:"__typename"`
+			*__premarshalListJobsJobsInvalidInputError
+		}{typename, premarshaled}
+		return json.Marshal(result)
+	case *ListJobsJobsJobConnection:
+		typename = "JobConnection"
+
+		premarshaled, err := v.__premarshalJSON()
+		if err != nil {
+			return nil, err
+		}
+		result := struct {
+			TypeName string `json:"__typename"`
+			*__premarshalListJobsJobsJobConnection
+		}{typename, premarshaled}
+		return json.Marshal(result)
+	case *ListJobsJobsNotFoundError:
+		typename = "NotFoundError"
+
+		premarshaled, err := v.__premarshalJSON()
+		if err != nil {
+			return nil, err
+		}
+		result := struct {
+			TypeName string `json:"__typename"`
+			*__premarshalListJobsJobsNotFoundError
+		}{typename, premarshaled}
+		return json.Marshal(result)
+	case *ListJobsJobsPermissionDeniedError:
+		typename = "PermissionDeniedError"
+
+		premarshaled, err := v.__premarshalJSON()
+		if err != nil {
+			return nil, err
+		}
+		result := struct {
+			TypeName string `json:"__typename"`
+			*__premarshalListJobsJobsPermissionDeniedError
+		}{typename, premarshaled}
+		return json.Marshal(result)
+	case nil:
+		return []byte("null"), nil
+	default:
+		return nil, fmt.Errorf(
+			`unexpected concrete type for ListJobsJobsJobConnectionResult: "%T"`, v)
+	}
+}
+
+// ListJobsJobsNotFoundError includes the requested fields of the GraphQL type NotFoundError.
+type ListJobsJobsNotFoundError struct {
+	Typename                         *string `json:"__typename"`
+	JobConnectionResultNotFoundError `json:"-"`
+}
+
+// GetTypename returns ListJobsJobsNotFoundError.Typename, and is useful for accessing the field via an interface.
+func (v *ListJobsJobsNotFoundError) GetTypename() *string { return v.Typename }
+
+// GetMessage returns ListJobsJobsNotFoundError.Message, and is useful for accessing the field via an interface.
+func (v *ListJobsJobsNotFoundError) GetMessage() string {
+	return v.JobConnectionResultNotFoundError.NotFoundError.Message
+}
+
+func (v *ListJobsJobsNotFoundError) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*ListJobsJobsNotFoundError
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.ListJobsJobsNotFoundError = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.JobConnectionResultNotFoundError)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalListJobsJobsNotFoundError struct {
+	Typename *string `json:"__typename"`
+
+	Message string `json:"message"`
+}
+
+func (v *ListJobsJobsNotFoundError) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *ListJobsJobsNotFoundError) __premarshalJSON() (*__premarshalListJobsJobsNotFoundError, error) {
+	var retval __premarshalListJobsJobsNotFoundError
+
+	retval.Typename = v.Typename
+	retval.Message = v.JobConnectionResultNotFoundError.NotFoundError.Message
+	return &retval, nil
+}
+
+// ListJobsJobsPermissionDeniedError includes the requested fields of the GraphQL type PermissionDeniedError.
+type ListJobsJobsPermissionDeniedError struct {
+	Typename                                 *string `json:"__typename"`
+	JobConnectionResultPermissionDeniedError `json:"-"`
+}
+
+// GetTypename returns ListJobsJobsPermissionDeniedError.Typename, and is useful for accessing the field via an interface.
+func (v *ListJobsJobsPermissionDeniedError) GetTypename() *string { return v.Typename }
+
+// GetMessage returns ListJobsJobsPermissionDeniedError.Message, and is useful for accessing the field via an interface.
+func (v *ListJobsJobsPermissionDeniedError) GetMessage() string {
+	return v.JobConnectionResultPermissionDeniedError.PermissionDeniedError.Message
+}
+
+func (v *ListJobsJobsPermissionDeniedError) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*ListJobsJobsPermissionDeniedError
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.ListJobsJobsPermissionDeniedError = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.JobConnectionResultPermissionDeniedError)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalListJobsJobsPermissionDeniedError struct {
+	Typename *string `json:"__typename"`
+
+	Message string `json:"message"`
+}
+
+func (v *ListJobsJobsPermissionDeniedError) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *ListJobsJobsPermissionDeniedError) __premarshalJSON() (*__premarshalListJobsJobsPermissionDeniedError, error) {
+	var retval __premarshalListJobsJobsPermissionDeniedError
+
+	retval.Typename = v.Typename
+	retval.Message = v.JobConnectionResultPermissionDeniedError.PermissionDeniedError.Message
+	return &retval, nil
+}
+
+// ListJobsResponse is returned by ListJobs on success.
+type ListJobsResponse struct {
+	Jobs ListJobsJobsJobConnectionResult `json:"-"`
+}
+
+// GetJobs returns ListJobsResponse.Jobs, and is useful for accessing the field via an interface.
+func (v *ListJobsResponse) GetJobs() ListJobsJobsJobConnectionResult { return v.Jobs }
+
+func (v *ListJobsResponse) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*ListJobsResponse
+		Jobs json.RawMessage `json:"jobs"`
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.ListJobsResponse = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	{
+		dst := &v.Jobs
+		src := firstPass.Jobs
+		if len(src) != 0 && string(src) != "null" {
+			err = __unmarshalListJobsJobsJobConnectionResult(
+				src, dst)
+			if err != nil {
+				return fmt.Errorf(
+					"unable to unmarshal ListJobsResponse.Jobs: %w", err)
+			}
+		}
+	}
+	return nil
+}
+
+type __premarshalListJobsResponse struct {
+	Jobs json.RawMessage `json:"jobs"`
+}
+
+func (v *ListJobsResponse) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *ListJobsResponse) __premarshalJSON() (*__premarshalListJobsResponse, error) {
+	var retval __premarshalListJobsResponse
+
+	{
+
+		dst := &retval.Jobs
+		src := v.Jobs
+		var err error
+		*dst, err = __marshalListJobsJobsJobConnectionResult(
+			&src)
+		if err != nil {
+			return nil, fmt.Errorf(
+				"unable to marshal ListJobsResponse.Jobs: %w", err)
 		}
 	}
 	return &retval, nil
@@ -27287,6 +30029,455 @@ func __marshalListRolesRolesRoleConnectionResult(v *ListRolesRolesRoleConnection
 	}
 }
 
+// ListTasksOfJobJob includes the requested fields of the GraphQL type Job.
+type ListTasksOfJobJob struct {
+	Tasks ListTasksOfJobJobTasksTaskConnectionResult `json:"-"`
+}
+
+// GetTasks returns ListTasksOfJobJob.Tasks, and is useful for accessing the field via an interface.
+func (v *ListTasksOfJobJob) GetTasks() ListTasksOfJobJobTasksTaskConnectionResult { return v.Tasks }
+
+func (v *ListTasksOfJobJob) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*ListTasksOfJobJob
+		Tasks json.RawMessage `json:"tasks"`
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.ListTasksOfJobJob = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	{
+		dst := &v.Tasks
+		src := firstPass.Tasks
+		if len(src) != 0 && string(src) != "null" {
+			err = __unmarshalListTasksOfJobJobTasksTaskConnectionResult(
+				src, dst)
+			if err != nil {
+				return fmt.Errorf(
+					"unable to unmarshal ListTasksOfJobJob.Tasks: %w", err)
+			}
+		}
+	}
+	return nil
+}
+
+type __premarshalListTasksOfJobJob struct {
+	Tasks json.RawMessage `json:"tasks"`
+}
+
+func (v *ListTasksOfJobJob) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *ListTasksOfJobJob) __premarshalJSON() (*__premarshalListTasksOfJobJob, error) {
+	var retval __premarshalListTasksOfJobJob
+
+	{
+
+		dst := &retval.Tasks
+		src := v.Tasks
+		var err error
+		*dst, err = __marshalListTasksOfJobJobTasksTaskConnectionResult(
+			&src)
+		if err != nil {
+			return nil, fmt.Errorf(
+				"unable to marshal ListTasksOfJobJob.Tasks: %w", err)
+		}
+	}
+	return &retval, nil
+}
+
+// ListTasksOfJobJobTasksInvalidInputError includes the requested fields of the GraphQL type InvalidInputError.
+type ListTasksOfJobJobTasksInvalidInputError struct {
+	Typename                              *string `json:"__typename"`
+	TaskConnectionResultInvalidInputError `json:"-"`
+}
+
+// GetTypename returns ListTasksOfJobJobTasksInvalidInputError.Typename, and is useful for accessing the field via an interface.
+func (v *ListTasksOfJobJobTasksInvalidInputError) GetTypename() *string { return v.Typename }
+
+// GetMessage returns ListTasksOfJobJobTasksInvalidInputError.Message, and is useful for accessing the field via an interface.
+func (v *ListTasksOfJobJobTasksInvalidInputError) GetMessage() string {
+	return v.TaskConnectionResultInvalidInputError.InvalidInputError.Message
+}
+
+func (v *ListTasksOfJobJobTasksInvalidInputError) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*ListTasksOfJobJobTasksInvalidInputError
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.ListTasksOfJobJobTasksInvalidInputError = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.TaskConnectionResultInvalidInputError)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalListTasksOfJobJobTasksInvalidInputError struct {
+	Typename *string `json:"__typename"`
+
+	Message string `json:"message"`
+}
+
+func (v *ListTasksOfJobJobTasksInvalidInputError) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *ListTasksOfJobJobTasksInvalidInputError) __premarshalJSON() (*__premarshalListTasksOfJobJobTasksInvalidInputError, error) {
+	var retval __premarshalListTasksOfJobJobTasksInvalidInputError
+
+	retval.Typename = v.Typename
+	retval.Message = v.TaskConnectionResultInvalidInputError.InvalidInputError.Message
+	return &retval, nil
+}
+
+// ListTasksOfJobJobTasksNotFoundError includes the requested fields of the GraphQL type NotFoundError.
+type ListTasksOfJobJobTasksNotFoundError struct {
+	Typename                          *string `json:"__typename"`
+	TaskConnectionResultNotFoundError `json:"-"`
+}
+
+// GetTypename returns ListTasksOfJobJobTasksNotFoundError.Typename, and is useful for accessing the field via an interface.
+func (v *ListTasksOfJobJobTasksNotFoundError) GetTypename() *string { return v.Typename }
+
+// GetMessage returns ListTasksOfJobJobTasksNotFoundError.Message, and is useful for accessing the field via an interface.
+func (v *ListTasksOfJobJobTasksNotFoundError) GetMessage() string {
+	return v.TaskConnectionResultNotFoundError.NotFoundError.Message
+}
+
+func (v *ListTasksOfJobJobTasksNotFoundError) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*ListTasksOfJobJobTasksNotFoundError
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.ListTasksOfJobJobTasksNotFoundError = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.TaskConnectionResultNotFoundError)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalListTasksOfJobJobTasksNotFoundError struct {
+	Typename *string `json:"__typename"`
+
+	Message string `json:"message"`
+}
+
+func (v *ListTasksOfJobJobTasksNotFoundError) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *ListTasksOfJobJobTasksNotFoundError) __premarshalJSON() (*__premarshalListTasksOfJobJobTasksNotFoundError, error) {
+	var retval __premarshalListTasksOfJobJobTasksNotFoundError
+
+	retval.Typename = v.Typename
+	retval.Message = v.TaskConnectionResultNotFoundError.NotFoundError.Message
+	return &retval, nil
+}
+
+// ListTasksOfJobJobTasksPermissionDeniedError includes the requested fields of the GraphQL type PermissionDeniedError.
+type ListTasksOfJobJobTasksPermissionDeniedError struct {
+	Typename                                  *string `json:"__typename"`
+	TaskConnectionResultPermissionDeniedError `json:"-"`
+}
+
+// GetTypename returns ListTasksOfJobJobTasksPermissionDeniedError.Typename, and is useful for accessing the field via an interface.
+func (v *ListTasksOfJobJobTasksPermissionDeniedError) GetTypename() *string { return v.Typename }
+
+// GetMessage returns ListTasksOfJobJobTasksPermissionDeniedError.Message, and is useful for accessing the field via an interface.
+func (v *ListTasksOfJobJobTasksPermissionDeniedError) GetMessage() string {
+	return v.TaskConnectionResultPermissionDeniedError.PermissionDeniedError.Message
+}
+
+func (v *ListTasksOfJobJobTasksPermissionDeniedError) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*ListTasksOfJobJobTasksPermissionDeniedError
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.ListTasksOfJobJobTasksPermissionDeniedError = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.TaskConnectionResultPermissionDeniedError)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalListTasksOfJobJobTasksPermissionDeniedError struct {
+	Typename *string `json:"__typename"`
+
+	Message string `json:"message"`
+}
+
+func (v *ListTasksOfJobJobTasksPermissionDeniedError) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *ListTasksOfJobJobTasksPermissionDeniedError) __premarshalJSON() (*__premarshalListTasksOfJobJobTasksPermissionDeniedError, error) {
+	var retval __premarshalListTasksOfJobJobTasksPermissionDeniedError
+
+	retval.Typename = v.Typename
+	retval.Message = v.TaskConnectionResultPermissionDeniedError.PermissionDeniedError.Message
+	return &retval, nil
+}
+
+// ListTasksOfJobJobTasksTaskConnection includes the requested fields of the GraphQL type TaskConnection.
+type ListTasksOfJobJobTasksTaskConnection struct {
+	Typename                           *string `json:"__typename"`
+	TaskConnectionResultTaskConnection `json:"-"`
+}
+
+// GetTypename returns ListTasksOfJobJobTasksTaskConnection.Typename, and is useful for accessing the field via an interface.
+func (v *ListTasksOfJobJobTasksTaskConnection) GetTypename() *string { return v.Typename }
+
+// GetPageInfo returns ListTasksOfJobJobTasksTaskConnection.PageInfo, and is useful for accessing the field via an interface.
+func (v *ListTasksOfJobJobTasksTaskConnection) GetPageInfo() TaskConnectionPageInfo {
+	return v.TaskConnectionResultTaskConnection.TaskConnection.PageInfo
+}
+
+// GetEdges returns ListTasksOfJobJobTasksTaskConnection.Edges, and is useful for accessing the field via an interface.
+func (v *ListTasksOfJobJobTasksTaskConnection) GetEdges() []TaskConnectionEdgesTaskEdge {
+	return v.TaskConnectionResultTaskConnection.TaskConnection.Edges
+}
+
+func (v *ListTasksOfJobJobTasksTaskConnection) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*ListTasksOfJobJobTasksTaskConnection
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.ListTasksOfJobJobTasksTaskConnection = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.TaskConnectionResultTaskConnection)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalListTasksOfJobJobTasksTaskConnection struct {
+	Typename *string `json:"__typename"`
+
+	PageInfo TaskConnectionPageInfo `json:"pageInfo"`
+
+	Edges []TaskConnectionEdgesTaskEdge `json:"edges"`
+}
+
+func (v *ListTasksOfJobJobTasksTaskConnection) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *ListTasksOfJobJobTasksTaskConnection) __premarshalJSON() (*__premarshalListTasksOfJobJobTasksTaskConnection, error) {
+	var retval __premarshalListTasksOfJobJobTasksTaskConnection
+
+	retval.Typename = v.Typename
+	retval.PageInfo = v.TaskConnectionResultTaskConnection.TaskConnection.PageInfo
+	retval.Edges = v.TaskConnectionResultTaskConnection.TaskConnection.Edges
+	return &retval, nil
+}
+
+// ListTasksOfJobJobTasksTaskConnectionResult includes the requested fields of the GraphQL interface TaskConnectionResult.
+//
+// ListTasksOfJobJobTasksTaskConnectionResult is implemented by the following types:
+// ListTasksOfJobJobTasksInvalidInputError
+// ListTasksOfJobJobTasksNotFoundError
+// ListTasksOfJobJobTasksPermissionDeniedError
+// ListTasksOfJobJobTasksTaskConnection
+type ListTasksOfJobJobTasksTaskConnectionResult interface {
+	implementsGraphQLInterfaceListTasksOfJobJobTasksTaskConnectionResult()
+	// GetTypename returns the receiver's concrete GraphQL type-name (see interface doc for possible values).
+	GetTypename() *string
+	TaskConnectionResult
+}
+
+func (v *ListTasksOfJobJobTasksInvalidInputError) implementsGraphQLInterfaceListTasksOfJobJobTasksTaskConnectionResult() {
+}
+func (v *ListTasksOfJobJobTasksNotFoundError) implementsGraphQLInterfaceListTasksOfJobJobTasksTaskConnectionResult() {
+}
+func (v *ListTasksOfJobJobTasksPermissionDeniedError) implementsGraphQLInterfaceListTasksOfJobJobTasksTaskConnectionResult() {
+}
+func (v *ListTasksOfJobJobTasksTaskConnection) implementsGraphQLInterfaceListTasksOfJobJobTasksTaskConnectionResult() {
+}
+
+func __unmarshalListTasksOfJobJobTasksTaskConnectionResult(b []byte, v *ListTasksOfJobJobTasksTaskConnectionResult) error {
+	if string(b) == "null" {
+		return nil
+	}
+
+	var tn struct {
+		TypeName string `json:"__typename"`
+	}
+	err := json.Unmarshal(b, &tn)
+	if err != nil {
+		return err
+	}
+
+	switch tn.TypeName {
+	case "InvalidInputError":
+		*v = new(ListTasksOfJobJobTasksInvalidInputError)
+		return json.Unmarshal(b, *v)
+	case "NotFoundError":
+		*v = new(ListTasksOfJobJobTasksNotFoundError)
+		return json.Unmarshal(b, *v)
+	case "PermissionDeniedError":
+		*v = new(ListTasksOfJobJobTasksPermissionDeniedError)
+		return json.Unmarshal(b, *v)
+	case "TaskConnection":
+		*v = new(ListTasksOfJobJobTasksTaskConnection)
+		return json.Unmarshal(b, *v)
+	case "":
+		return fmt.Errorf(
+			"response was missing TaskConnectionResult.__typename")
+	default:
+		return fmt.Errorf(
+			`unexpected concrete type for ListTasksOfJobJobTasksTaskConnectionResult: "%v"`, tn.TypeName)
+	}
+}
+
+func __marshalListTasksOfJobJobTasksTaskConnectionResult(v *ListTasksOfJobJobTasksTaskConnectionResult) ([]byte, error) {
+
+	var typename string
+	switch v := (*v).(type) {
+	case *ListTasksOfJobJobTasksInvalidInputError:
+		typename = "InvalidInputError"
+
+		premarshaled, err := v.__premarshalJSON()
+		if err != nil {
+			return nil, err
+		}
+		result := struct {
+			TypeName string `json:"__typename"`
+			*__premarshalListTasksOfJobJobTasksInvalidInputError
+		}{typename, premarshaled}
+		return json.Marshal(result)
+	case *ListTasksOfJobJobTasksNotFoundError:
+		typename = "NotFoundError"
+
+		premarshaled, err := v.__premarshalJSON()
+		if err != nil {
+			return nil, err
+		}
+		result := struct {
+			TypeName string `json:"__typename"`
+			*__premarshalListTasksOfJobJobTasksNotFoundError
+		}{typename, premarshaled}
+		return json.Marshal(result)
+	case *ListTasksOfJobJobTasksPermissionDeniedError:
+		typename = "PermissionDeniedError"
+
+		premarshaled, err := v.__premarshalJSON()
+		if err != nil {
+			return nil, err
+		}
+		result := struct {
+			TypeName string `json:"__typename"`
+			*__premarshalListTasksOfJobJobTasksPermissionDeniedError
+		}{typename, premarshaled}
+		return json.Marshal(result)
+	case *ListTasksOfJobJobTasksTaskConnection:
+		typename = "TaskConnection"
+
+		premarshaled, err := v.__premarshalJSON()
+		if err != nil {
+			return nil, err
+		}
+		result := struct {
+			TypeName string `json:"__typename"`
+			*__premarshalListTasksOfJobJobTasksTaskConnection
+		}{typename, premarshaled}
+		return json.Marshal(result)
+	case nil:
+		return []byte("null"), nil
+	default:
+		return nil, fmt.Errorf(
+			`unexpected concrete type for ListTasksOfJobJobTasksTaskConnectionResult: "%T"`, v)
+	}
+}
+
+// ListTasksOfJobResponse is returned by ListTasksOfJob on success.
+type ListTasksOfJobResponse struct {
+	Job ListTasksOfJobJob `json:"job"`
+}
+
+// GetJob returns ListTasksOfJobResponse.Job, and is useful for accessing the field via an interface.
+func (v *ListTasksOfJobResponse) GetJob() ListTasksOfJobJob { return v.Job }
+
 // MaskType includes the GraphQL fields of MaskType requested by the fragment MaskType.
 type MaskType struct {
 	ExternalId  string   `json:"externalId"`
@@ -27307,6 +30498,25 @@ func (v *MaskType) GetDescription() string { return v.Description }
 // GetDataTypes returns MaskType.DataTypes, and is useful for accessing the field via an interface.
 func (v *MaskType) GetDataTypes() []string { return v.DataTypes }
 
+type MaskTypeInput struct {
+	DisplayName string   `json:"displayName"`
+	ExternalId  string   `json:"externalId"`
+	Description string   `json:"description"`
+	DataTypes   []string `json:"dataTypes"`
+}
+
+// GetDisplayName returns MaskTypeInput.DisplayName, and is useful for accessing the field via an interface.
+func (v *MaskTypeInput) GetDisplayName() string { return v.DisplayName }
+
+// GetExternalId returns MaskTypeInput.ExternalId, and is useful for accessing the field via an interface.
+func (v *MaskTypeInput) GetExternalId() string { return v.ExternalId }
+
+// GetDescription returns MaskTypeInput.Description, and is useful for accessing the field via an interface.
+func (v *MaskTypeInput) GetDescription() string { return v.Description }
+
+// GetDataTypes returns MaskTypeInput.DataTypes, and is useful for accessing the field via an interface.
+func (v *MaskTypeInput) GetDataTypes() []string { return v.DataTypes }
+
 // MaskingMetadata includes the GraphQL fields of MaskingMetadata requested by the fragment MaskingMetadata.
 type MaskingMetadata struct {
 	DefaultMaskExternalName *string                            `json:"defaultMaskExternalName"`
@@ -27318,6 +30528,27 @@ func (v *MaskingMetadata) GetDefaultMaskExternalName() *string { return v.Defaul
 
 // GetMaskTypes returns MaskingMetadata.MaskTypes, and is useful for accessing the field via an interface.
 func (v *MaskingMetadata) GetMaskTypes() []MaskingMetadataMaskTypesMaskType { return v.MaskTypes }
+
+type MaskingMetadataInput struct {
+	MaskTypes               []MaskTypeInput `json:"maskTypes"`
+	DefaultMaskExternalName *string         `json:"defaultMaskExternalName,omitempty"`
+	MaskOverridePermissions []string        `json:"maskOverridePermissions"`
+	ApplicableTypes         []string        `json:"applicableTypes"`
+}
+
+// GetMaskTypes returns MaskingMetadataInput.MaskTypes, and is useful for accessing the field via an interface.
+func (v *MaskingMetadataInput) GetMaskTypes() []MaskTypeInput { return v.MaskTypes }
+
+// GetDefaultMaskExternalName returns MaskingMetadataInput.DefaultMaskExternalName, and is useful for accessing the field via an interface.
+func (v *MaskingMetadataInput) GetDefaultMaskExternalName() *string { return v.DefaultMaskExternalName }
+
+// GetMaskOverridePermissions returns MaskingMetadataInput.MaskOverridePermissions, and is useful for accessing the field via an interface.
+func (v *MaskingMetadataInput) GetMaskOverridePermissions() []string {
+	return v.MaskOverridePermissions
+}
+
+// GetApplicableTypes returns MaskingMetadataInput.ApplicableTypes, and is useful for accessing the field via an interface.
+func (v *MaskingMetadataInput) GetApplicableTypes() []string { return v.ApplicableTypes }
 
 // MaskingMetadataMaskTypesMaskType includes the requested fields of the GraphQL type MaskType.
 type MaskingMetadataMaskTypesMaskType struct {
@@ -27397,6 +30628,26 @@ type NotFoundError struct {
 // GetMessage returns NotFoundError.Message, and is useful for accessing the field via an interface.
 func (v *NotFoundError) GetMessage() string { return v.Message }
 
+// ObjectTypeTaskResult includes the GraphQL fields of TaskResult requested by the fragment ObjectTypeTaskResult.
+type ObjectTypeTaskResult struct {
+	ObjectType string `json:"objectType"`
+	Added      int    `json:"added"`
+	Updated    int    `json:"updated"`
+	Removed    int    `json:"removed"`
+}
+
+// GetObjectType returns ObjectTypeTaskResult.ObjectType, and is useful for accessing the field via an interface.
+func (v *ObjectTypeTaskResult) GetObjectType() string { return v.ObjectType }
+
+// GetAdded returns ObjectTypeTaskResult.Added, and is useful for accessing the field via an interface.
+func (v *ObjectTypeTaskResult) GetAdded() int { return v.Added }
+
+// GetUpdated returns ObjectTypeTaskResult.Updated, and is useful for accessing the field via an interface.
+func (v *ObjectTypeTaskResult) GetUpdated() int { return v.Updated }
+
+// GetRemoved returns ObjectTypeTaskResult.Removed, and is useful for accessing the field via an interface.
+func (v *ObjectTypeTaskResult) GetRemoved() int { return v.Removed }
+
 // PageInfo includes the GraphQL fields of PageInfo requested by the fragment PageInfo.
 type PageInfo struct {
 	HasNextPage *bool   `json:"hasNextPage"`
@@ -27416,6 +30667,59 @@ type PermissionDeniedError struct {
 
 // GetMessage returns PermissionDeniedError.Message, and is useful for accessing the field via an interface.
 func (v *PermissionDeniedError) GetMessage() string { return v.Message }
+
+type QueryStatementImport struct {
+	ExternalId          string                      `json:"externalId"`
+	AccessedDataObjects []StatementImportDataObject `json:"accessedDataObjects"`
+	Query               string                      `json:"query"`
+	Success             bool                        `json:"success"`
+	Status              *string                     `json:"status,omitempty"`
+	User                *string                     `json:"user,omitempty"`
+	Role                *string                     `json:"role,omitempty"`
+	StartTime           int                         `json:"startTime"`
+	EndTime             *int                        `json:"endTime,omitempty"`
+	Bytes               *int                        `json:"bytes,omitempty"`
+	Rows                *int                        `json:"rows,omitempty"`
+	Credits             *float64                    `json:"credits,omitempty"`
+}
+
+// GetExternalId returns QueryStatementImport.ExternalId, and is useful for accessing the field via an interface.
+func (v *QueryStatementImport) GetExternalId() string { return v.ExternalId }
+
+// GetAccessedDataObjects returns QueryStatementImport.AccessedDataObjects, and is useful for accessing the field via an interface.
+func (v *QueryStatementImport) GetAccessedDataObjects() []StatementImportDataObject {
+	return v.AccessedDataObjects
+}
+
+// GetQuery returns QueryStatementImport.Query, and is useful for accessing the field via an interface.
+func (v *QueryStatementImport) GetQuery() string { return v.Query }
+
+// GetSuccess returns QueryStatementImport.Success, and is useful for accessing the field via an interface.
+func (v *QueryStatementImport) GetSuccess() bool { return v.Success }
+
+// GetStatus returns QueryStatementImport.Status, and is useful for accessing the field via an interface.
+func (v *QueryStatementImport) GetStatus() *string { return v.Status }
+
+// GetUser returns QueryStatementImport.User, and is useful for accessing the field via an interface.
+func (v *QueryStatementImport) GetUser() *string { return v.User }
+
+// GetRole returns QueryStatementImport.Role, and is useful for accessing the field via an interface.
+func (v *QueryStatementImport) GetRole() *string { return v.Role }
+
+// GetStartTime returns QueryStatementImport.StartTime, and is useful for accessing the field via an interface.
+func (v *QueryStatementImport) GetStartTime() int { return v.StartTime }
+
+// GetEndTime returns QueryStatementImport.EndTime, and is useful for accessing the field via an interface.
+func (v *QueryStatementImport) GetEndTime() *int { return v.EndTime }
+
+// GetBytes returns QueryStatementImport.Bytes, and is useful for accessing the field via an interface.
+func (v *QueryStatementImport) GetBytes() *int { return v.Bytes }
+
+// GetRows returns QueryStatementImport.Rows, and is useful for accessing the field via an interface.
+func (v *QueryStatementImport) GetRows() *int { return v.Rows }
+
+// GetCredits returns QueryStatementImport.Credits, and is useful for accessing the field via an interface.
+func (v *QueryStatementImport) GetCredits() *float64 { return v.Credits }
 
 // RemoveIdentityStoreFromDataSourceRemoveIdentityStoreFromDataSource includes the requested fields of the GraphQL type DataSource.
 type RemoveIdentityStoreFromDataSourceRemoveIdentityStoreFromDataSource struct {
@@ -29487,6 +32791,502 @@ type RoleOrderByInput struct {
 // GetName returns RoleOrderByInput.Name, and is useful for accessing the field via an interface.
 func (v *RoleOrderByInput) GetName() *Sort { return v.Name }
 
+// SetDataSourceMetadataResponse is returned by SetDataSourceMetadata on success.
+type SetDataSourceMetadataResponse struct {
+	SetDataSourceMetaData SetDataSourceMetadataSetDataSourceMetaDataDataSourceResult `json:"-"`
+}
+
+// GetSetDataSourceMetaData returns SetDataSourceMetadataResponse.SetDataSourceMetaData, and is useful for accessing the field via an interface.
+func (v *SetDataSourceMetadataResponse) GetSetDataSourceMetaData() SetDataSourceMetadataSetDataSourceMetaDataDataSourceResult {
+	return v.SetDataSourceMetaData
+}
+
+func (v *SetDataSourceMetadataResponse) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*SetDataSourceMetadataResponse
+		SetDataSourceMetaData json.RawMessage `json:"setDataSourceMetaData"`
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.SetDataSourceMetadataResponse = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	{
+		dst := &v.SetDataSourceMetaData
+		src := firstPass.SetDataSourceMetaData
+		if len(src) != 0 && string(src) != "null" {
+			err = __unmarshalSetDataSourceMetadataSetDataSourceMetaDataDataSourceResult(
+				src, dst)
+			if err != nil {
+				return fmt.Errorf(
+					"unable to unmarshal SetDataSourceMetadataResponse.SetDataSourceMetaData: %w", err)
+			}
+		}
+	}
+	return nil
+}
+
+type __premarshalSetDataSourceMetadataResponse struct {
+	SetDataSourceMetaData json.RawMessage `json:"setDataSourceMetaData"`
+}
+
+func (v *SetDataSourceMetadataResponse) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *SetDataSourceMetadataResponse) __premarshalJSON() (*__premarshalSetDataSourceMetadataResponse, error) {
+	var retval __premarshalSetDataSourceMetadataResponse
+
+	{
+
+		dst := &retval.SetDataSourceMetaData
+		src := v.SetDataSourceMetaData
+		var err error
+		*dst, err = __marshalSetDataSourceMetadataSetDataSourceMetaDataDataSourceResult(
+			&src)
+		if err != nil {
+			return nil, fmt.Errorf(
+				"unable to marshal SetDataSourceMetadataResponse.SetDataSourceMetaData: %w", err)
+		}
+	}
+	return &retval, nil
+}
+
+// SetDataSourceMetadataSetDataSourceMetaDataDataSource includes the requested fields of the GraphQL type DataSource.
+type SetDataSourceMetadataSetDataSourceMetaDataDataSource struct {
+	Typename   *string `json:"__typename"`
+	DataSource `json:"-"`
+}
+
+// GetTypename returns SetDataSourceMetadataSetDataSourceMetaDataDataSource.Typename, and is useful for accessing the field via an interface.
+func (v *SetDataSourceMetadataSetDataSourceMetaDataDataSource) GetTypename() *string {
+	return v.Typename
+}
+
+// GetId returns SetDataSourceMetadataSetDataSourceMetaDataDataSource.Id, and is useful for accessing the field via an interface.
+func (v *SetDataSourceMetadataSetDataSourceMetaDataDataSource) GetId() string { return v.DataSource.Id }
+
+// GetName returns SetDataSourceMetadataSetDataSourceMetaDataDataSource.Name, and is useful for accessing the field via an interface.
+func (v *SetDataSourceMetadataSetDataSourceMetaDataDataSource) GetName() string {
+	return v.DataSource.Name
+}
+
+// GetType returns SetDataSourceMetadataSetDataSourceMetaDataDataSource.Type, and is useful for accessing the field via an interface.
+func (v *SetDataSourceMetadataSetDataSourceMetaDataDataSource) GetType() string {
+	return v.DataSource.Type
+}
+
+// GetDescription returns SetDataSourceMetadataSetDataSourceMetaDataDataSource.Description, and is useful for accessing the field via an interface.
+func (v *SetDataSourceMetadataSetDataSourceMetaDataDataSource) GetDescription() string {
+	return v.DataSource.Description
+}
+
+// GetCreatedAt returns SetDataSourceMetadataSetDataSourceMetaDataDataSource.CreatedAt, and is useful for accessing the field via an interface.
+func (v *SetDataSourceMetadataSetDataSourceMetaDataDataSource) GetCreatedAt() time.Time {
+	return v.DataSource.CreatedAt
+}
+
+// GetModifiedAt returns SetDataSourceMetadataSetDataSourceMetaDataDataSource.ModifiedAt, and is useful for accessing the field via an interface.
+func (v *SetDataSourceMetadataSetDataSourceMetaDataDataSource) GetModifiedAt() time.Time {
+	return v.DataSource.ModifiedAt
+}
+
+// GetSyncMethod returns SetDataSourceMetadataSetDataSourceMetaDataDataSource.SyncMethod, and is useful for accessing the field via an interface.
+func (v *SetDataSourceMetadataSetDataSourceMetaDataDataSource) GetSyncMethod() DataSourceSyncMethod {
+	return v.DataSource.SyncMethod
+}
+
+// GetParent returns SetDataSourceMetadataSetDataSourceMetaDataDataSource.Parent, and is useful for accessing the field via an interface.
+func (v *SetDataSourceMetadataSetDataSourceMetaDataDataSource) GetParent() *DataSourceParentDataSource {
+	return v.DataSource.Parent
+}
+
+func (v *SetDataSourceMetadataSetDataSourceMetaDataDataSource) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*SetDataSourceMetadataSetDataSourceMetaDataDataSource
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.SetDataSourceMetadataSetDataSourceMetaDataDataSource = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.DataSource)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalSetDataSourceMetadataSetDataSourceMetaDataDataSource struct {
+	Typename *string `json:"__typename"`
+
+	Id string `json:"id"`
+
+	Name string `json:"name"`
+
+	Type string `json:"type"`
+
+	Description string `json:"description"`
+
+	CreatedAt time.Time `json:"createdAt"`
+
+	ModifiedAt time.Time `json:"modifiedAt"`
+
+	SyncMethod DataSourceSyncMethod `json:"syncMethod"`
+
+	Parent *DataSourceParentDataSource `json:"parent"`
+}
+
+func (v *SetDataSourceMetadataSetDataSourceMetaDataDataSource) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *SetDataSourceMetadataSetDataSourceMetaDataDataSource) __premarshalJSON() (*__premarshalSetDataSourceMetadataSetDataSourceMetaDataDataSource, error) {
+	var retval __premarshalSetDataSourceMetadataSetDataSourceMetaDataDataSource
+
+	retval.Typename = v.Typename
+	retval.Id = v.DataSource.Id
+	retval.Name = v.DataSource.Name
+	retval.Type = v.DataSource.Type
+	retval.Description = v.DataSource.Description
+	retval.CreatedAt = v.DataSource.CreatedAt
+	retval.ModifiedAt = v.DataSource.ModifiedAt
+	retval.SyncMethod = v.DataSource.SyncMethod
+	retval.Parent = v.DataSource.Parent
+	return &retval, nil
+}
+
+// SetDataSourceMetadataSetDataSourceMetaDataDataSourceResult includes the requested fields of the GraphQL interface DataSourceResult.
+//
+// SetDataSourceMetadataSetDataSourceMetaDataDataSourceResult is implemented by the following types:
+// SetDataSourceMetadataSetDataSourceMetaDataDataSource
+// SetDataSourceMetadataSetDataSourceMetaDataInvalidInputError
+// SetDataSourceMetadataSetDataSourceMetaDataNotFoundError
+// SetDataSourceMetadataSetDataSourceMetaDataPermissionDeniedError
+type SetDataSourceMetadataSetDataSourceMetaDataDataSourceResult interface {
+	implementsGraphQLInterfaceSetDataSourceMetadataSetDataSourceMetaDataDataSourceResult()
+	// GetTypename returns the receiver's concrete GraphQL type-name (see interface doc for possible values).
+	GetTypename() *string
+}
+
+func (v *SetDataSourceMetadataSetDataSourceMetaDataDataSource) implementsGraphQLInterfaceSetDataSourceMetadataSetDataSourceMetaDataDataSourceResult() {
+}
+func (v *SetDataSourceMetadataSetDataSourceMetaDataInvalidInputError) implementsGraphQLInterfaceSetDataSourceMetadataSetDataSourceMetaDataDataSourceResult() {
+}
+func (v *SetDataSourceMetadataSetDataSourceMetaDataNotFoundError) implementsGraphQLInterfaceSetDataSourceMetadataSetDataSourceMetaDataDataSourceResult() {
+}
+func (v *SetDataSourceMetadataSetDataSourceMetaDataPermissionDeniedError) implementsGraphQLInterfaceSetDataSourceMetadataSetDataSourceMetaDataDataSourceResult() {
+}
+
+func __unmarshalSetDataSourceMetadataSetDataSourceMetaDataDataSourceResult(b []byte, v *SetDataSourceMetadataSetDataSourceMetaDataDataSourceResult) error {
+	if string(b) == "null" {
+		return nil
+	}
+
+	var tn struct {
+		TypeName string `json:"__typename"`
+	}
+	err := json.Unmarshal(b, &tn)
+	if err != nil {
+		return err
+	}
+
+	switch tn.TypeName {
+	case "DataSource":
+		*v = new(SetDataSourceMetadataSetDataSourceMetaDataDataSource)
+		return json.Unmarshal(b, *v)
+	case "InvalidInputError":
+		*v = new(SetDataSourceMetadataSetDataSourceMetaDataInvalidInputError)
+		return json.Unmarshal(b, *v)
+	case "NotFoundError":
+		*v = new(SetDataSourceMetadataSetDataSourceMetaDataNotFoundError)
+		return json.Unmarshal(b, *v)
+	case "PermissionDeniedError":
+		*v = new(SetDataSourceMetadataSetDataSourceMetaDataPermissionDeniedError)
+		return json.Unmarshal(b, *v)
+	case "":
+		return fmt.Errorf(
+			"response was missing DataSourceResult.__typename")
+	default:
+		return fmt.Errorf(
+			`unexpected concrete type for SetDataSourceMetadataSetDataSourceMetaDataDataSourceResult: "%v"`, tn.TypeName)
+	}
+}
+
+func __marshalSetDataSourceMetadataSetDataSourceMetaDataDataSourceResult(v *SetDataSourceMetadataSetDataSourceMetaDataDataSourceResult) ([]byte, error) {
+
+	var typename string
+	switch v := (*v).(type) {
+	case *SetDataSourceMetadataSetDataSourceMetaDataDataSource:
+		typename = "DataSource"
+
+		premarshaled, err := v.__premarshalJSON()
+		if err != nil {
+			return nil, err
+		}
+		result := struct {
+			TypeName string `json:"__typename"`
+			*__premarshalSetDataSourceMetadataSetDataSourceMetaDataDataSource
+		}{typename, premarshaled}
+		return json.Marshal(result)
+	case *SetDataSourceMetadataSetDataSourceMetaDataInvalidInputError:
+		typename = "InvalidInputError"
+
+		premarshaled, err := v.__premarshalJSON()
+		if err != nil {
+			return nil, err
+		}
+		result := struct {
+			TypeName string `json:"__typename"`
+			*__premarshalSetDataSourceMetadataSetDataSourceMetaDataInvalidInputError
+		}{typename, premarshaled}
+		return json.Marshal(result)
+	case *SetDataSourceMetadataSetDataSourceMetaDataNotFoundError:
+		typename = "NotFoundError"
+
+		premarshaled, err := v.__premarshalJSON()
+		if err != nil {
+			return nil, err
+		}
+		result := struct {
+			TypeName string `json:"__typename"`
+			*__premarshalSetDataSourceMetadataSetDataSourceMetaDataNotFoundError
+		}{typename, premarshaled}
+		return json.Marshal(result)
+	case *SetDataSourceMetadataSetDataSourceMetaDataPermissionDeniedError:
+		typename = "PermissionDeniedError"
+
+		premarshaled, err := v.__premarshalJSON()
+		if err != nil {
+			return nil, err
+		}
+		result := struct {
+			TypeName string `json:"__typename"`
+			*__premarshalSetDataSourceMetadataSetDataSourceMetaDataPermissionDeniedError
+		}{typename, premarshaled}
+		return json.Marshal(result)
+	case nil:
+		return []byte("null"), nil
+	default:
+		return nil, fmt.Errorf(
+			`unexpected concrete type for SetDataSourceMetadataSetDataSourceMetaDataDataSourceResult: "%T"`, v)
+	}
+}
+
+// SetDataSourceMetadataSetDataSourceMetaDataInvalidInputError includes the requested fields of the GraphQL type InvalidInputError.
+type SetDataSourceMetadataSetDataSourceMetaDataInvalidInputError struct {
+	Typename          *string `json:"__typename"`
+	InvalidInputError `json:"-"`
+}
+
+// GetTypename returns SetDataSourceMetadataSetDataSourceMetaDataInvalidInputError.Typename, and is useful for accessing the field via an interface.
+func (v *SetDataSourceMetadataSetDataSourceMetaDataInvalidInputError) GetTypename() *string {
+	return v.Typename
+}
+
+// GetMessage returns SetDataSourceMetadataSetDataSourceMetaDataInvalidInputError.Message, and is useful for accessing the field via an interface.
+func (v *SetDataSourceMetadataSetDataSourceMetaDataInvalidInputError) GetMessage() string {
+	return v.InvalidInputError.Message
+}
+
+func (v *SetDataSourceMetadataSetDataSourceMetaDataInvalidInputError) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*SetDataSourceMetadataSetDataSourceMetaDataInvalidInputError
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.SetDataSourceMetadataSetDataSourceMetaDataInvalidInputError = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.InvalidInputError)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalSetDataSourceMetadataSetDataSourceMetaDataInvalidInputError struct {
+	Typename *string `json:"__typename"`
+
+	Message string `json:"message"`
+}
+
+func (v *SetDataSourceMetadataSetDataSourceMetaDataInvalidInputError) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *SetDataSourceMetadataSetDataSourceMetaDataInvalidInputError) __premarshalJSON() (*__premarshalSetDataSourceMetadataSetDataSourceMetaDataInvalidInputError, error) {
+	var retval __premarshalSetDataSourceMetadataSetDataSourceMetaDataInvalidInputError
+
+	retval.Typename = v.Typename
+	retval.Message = v.InvalidInputError.Message
+	return &retval, nil
+}
+
+// SetDataSourceMetadataSetDataSourceMetaDataNotFoundError includes the requested fields of the GraphQL type NotFoundError.
+type SetDataSourceMetadataSetDataSourceMetaDataNotFoundError struct {
+	Typename      *string `json:"__typename"`
+	NotFoundError `json:"-"`
+}
+
+// GetTypename returns SetDataSourceMetadataSetDataSourceMetaDataNotFoundError.Typename, and is useful for accessing the field via an interface.
+func (v *SetDataSourceMetadataSetDataSourceMetaDataNotFoundError) GetTypename() *string {
+	return v.Typename
+}
+
+// GetMessage returns SetDataSourceMetadataSetDataSourceMetaDataNotFoundError.Message, and is useful for accessing the field via an interface.
+func (v *SetDataSourceMetadataSetDataSourceMetaDataNotFoundError) GetMessage() string {
+	return v.NotFoundError.Message
+}
+
+func (v *SetDataSourceMetadataSetDataSourceMetaDataNotFoundError) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*SetDataSourceMetadataSetDataSourceMetaDataNotFoundError
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.SetDataSourceMetadataSetDataSourceMetaDataNotFoundError = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.NotFoundError)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalSetDataSourceMetadataSetDataSourceMetaDataNotFoundError struct {
+	Typename *string `json:"__typename"`
+
+	Message string `json:"message"`
+}
+
+func (v *SetDataSourceMetadataSetDataSourceMetaDataNotFoundError) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *SetDataSourceMetadataSetDataSourceMetaDataNotFoundError) __premarshalJSON() (*__premarshalSetDataSourceMetadataSetDataSourceMetaDataNotFoundError, error) {
+	var retval __premarshalSetDataSourceMetadataSetDataSourceMetaDataNotFoundError
+
+	retval.Typename = v.Typename
+	retval.Message = v.NotFoundError.Message
+	return &retval, nil
+}
+
+// SetDataSourceMetadataSetDataSourceMetaDataPermissionDeniedError includes the requested fields of the GraphQL type PermissionDeniedError.
+type SetDataSourceMetadataSetDataSourceMetaDataPermissionDeniedError struct {
+	Typename              *string `json:"__typename"`
+	PermissionDeniedError `json:"-"`
+}
+
+// GetTypename returns SetDataSourceMetadataSetDataSourceMetaDataPermissionDeniedError.Typename, and is useful for accessing the field via an interface.
+func (v *SetDataSourceMetadataSetDataSourceMetaDataPermissionDeniedError) GetTypename() *string {
+	return v.Typename
+}
+
+// GetMessage returns SetDataSourceMetadataSetDataSourceMetaDataPermissionDeniedError.Message, and is useful for accessing the field via an interface.
+func (v *SetDataSourceMetadataSetDataSourceMetaDataPermissionDeniedError) GetMessage() string {
+	return v.PermissionDeniedError.Message
+}
+
+func (v *SetDataSourceMetadataSetDataSourceMetaDataPermissionDeniedError) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*SetDataSourceMetadataSetDataSourceMetaDataPermissionDeniedError
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.SetDataSourceMetadataSetDataSourceMetaDataPermissionDeniedError = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.PermissionDeniedError)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalSetDataSourceMetadataSetDataSourceMetaDataPermissionDeniedError struct {
+	Typename *string `json:"__typename"`
+
+	Message string `json:"message"`
+}
+
+func (v *SetDataSourceMetadataSetDataSourceMetaDataPermissionDeniedError) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *SetDataSourceMetadataSetDataSourceMetaDataPermissionDeniedError) __premarshalJSON() (*__premarshalSetDataSourceMetadataSetDataSourceMetaDataPermissionDeniedError, error) {
+	var retval __premarshalSetDataSourceMetadataSetDataSourceMetaDataPermissionDeniedError
+
+	retval.Typename = v.Typename
+	retval.Message = v.PermissionDeniedError.Message
+	return &retval, nil
+}
+
 // SetGlobalRolesForUserResponse is returned by SetGlobalRolesForUser on success.
 type SetGlobalRolesForUserResponse struct {
 	SetGlobalRolesForUser SetGlobalRolesForUserSetGlobalRolesForUserSetGlobalRolesForUserResult `json:"-"`
@@ -29760,6 +33560,23 @@ func __marshalSetGlobalRolesForUserSetGlobalRolesForUserSetGlobalRolesForUserRes
 	}
 }
 
+type ShareMetadataInput struct {
+	ApplicableTypes           []string `json:"applicableTypes"`
+	CommonParentType          *string  `json:"commonParentType,omitempty"`
+	DataSourceShareIdentifier string   `json:"dataSourceShareIdentifier"`
+}
+
+// GetApplicableTypes returns ShareMetadataInput.ApplicableTypes, and is useful for accessing the field via an interface.
+func (v *ShareMetadataInput) GetApplicableTypes() []string { return v.ApplicableTypes }
+
+// GetCommonParentType returns ShareMetadataInput.CommonParentType, and is useful for accessing the field via an interface.
+func (v *ShareMetadataInput) GetCommonParentType() *string { return v.CommonParentType }
+
+// GetDataSourceShareIdentifier returns ShareMetadataInput.DataSourceShareIdentifier, and is useful for accessing the field via an interface.
+func (v *ShareMetadataInput) GetDataSourceShareIdentifier() string {
+	return v.DataSourceShareIdentifier
+}
+
 type Sort string
 
 const (
@@ -29770,6 +33587,1109 @@ const (
 var AllSort = []Sort{
 	SortAsc,
 	SortDesc,
+}
+
+// StartImportFlowResponse is returned by StartImportFlow on success.
+type StartImportFlowResponse struct {
+	StartImportFlow StartImportFlowStartImportFlowSubtaskReturnResult `json:"-"`
+}
+
+// GetStartImportFlow returns StartImportFlowResponse.StartImportFlow, and is useful for accessing the field via an interface.
+func (v *StartImportFlowResponse) GetStartImportFlow() StartImportFlowStartImportFlowSubtaskReturnResult {
+	return v.StartImportFlow
+}
+
+func (v *StartImportFlowResponse) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*StartImportFlowResponse
+		StartImportFlow json.RawMessage `json:"startImportFlow"`
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.StartImportFlowResponse = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	{
+		dst := &v.StartImportFlow
+		src := firstPass.StartImportFlow
+		if len(src) != 0 && string(src) != "null" {
+			err = __unmarshalStartImportFlowStartImportFlowSubtaskReturnResult(
+				src, dst)
+			if err != nil {
+				return fmt.Errorf(
+					"unable to unmarshal StartImportFlowResponse.StartImportFlow: %w", err)
+			}
+		}
+	}
+	return nil
+}
+
+type __premarshalStartImportFlowResponse struct {
+	StartImportFlow json.RawMessage `json:"startImportFlow"`
+}
+
+func (v *StartImportFlowResponse) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *StartImportFlowResponse) __premarshalJSON() (*__premarshalStartImportFlowResponse, error) {
+	var retval __premarshalStartImportFlowResponse
+
+	{
+
+		dst := &retval.StartImportFlow
+		src := v.StartImportFlow
+		var err error
+		*dst, err = __marshalStartImportFlowStartImportFlowSubtaskReturnResult(
+			&src)
+		if err != nil {
+			return nil, fmt.Errorf(
+				"unable to marshal StartImportFlowResponse.StartImportFlow: %w", err)
+		}
+	}
+	return &retval, nil
+}
+
+// StartImportFlowStartImportFlowInvalidInputError includes the requested fields of the GraphQL type InvalidInputError.
+type StartImportFlowStartImportFlowInvalidInputError struct {
+	Typename          *string `json:"__typename"`
+	InvalidInputError `json:"-"`
+}
+
+// GetTypename returns StartImportFlowStartImportFlowInvalidInputError.Typename, and is useful for accessing the field via an interface.
+func (v *StartImportFlowStartImportFlowInvalidInputError) GetTypename() *string { return v.Typename }
+
+// GetMessage returns StartImportFlowStartImportFlowInvalidInputError.Message, and is useful for accessing the field via an interface.
+func (v *StartImportFlowStartImportFlowInvalidInputError) GetMessage() string {
+	return v.InvalidInputError.Message
+}
+
+func (v *StartImportFlowStartImportFlowInvalidInputError) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*StartImportFlowStartImportFlowInvalidInputError
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.StartImportFlowStartImportFlowInvalidInputError = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.InvalidInputError)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalStartImportFlowStartImportFlowInvalidInputError struct {
+	Typename *string `json:"__typename"`
+
+	Message string `json:"message"`
+}
+
+func (v *StartImportFlowStartImportFlowInvalidInputError) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *StartImportFlowStartImportFlowInvalidInputError) __premarshalJSON() (*__premarshalStartImportFlowStartImportFlowInvalidInputError, error) {
+	var retval __premarshalStartImportFlowStartImportFlowInvalidInputError
+
+	retval.Typename = v.Typename
+	retval.Message = v.InvalidInputError.Message
+	return &retval, nil
+}
+
+// StartImportFlowStartImportFlowNotFoundError includes the requested fields of the GraphQL type NotFoundError.
+type StartImportFlowStartImportFlowNotFoundError struct {
+	Typename      *string `json:"__typename"`
+	NotFoundError `json:"-"`
+}
+
+// GetTypename returns StartImportFlowStartImportFlowNotFoundError.Typename, and is useful for accessing the field via an interface.
+func (v *StartImportFlowStartImportFlowNotFoundError) GetTypename() *string { return v.Typename }
+
+// GetMessage returns StartImportFlowStartImportFlowNotFoundError.Message, and is useful for accessing the field via an interface.
+func (v *StartImportFlowStartImportFlowNotFoundError) GetMessage() string {
+	return v.NotFoundError.Message
+}
+
+func (v *StartImportFlowStartImportFlowNotFoundError) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*StartImportFlowStartImportFlowNotFoundError
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.StartImportFlowStartImportFlowNotFoundError = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.NotFoundError)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalStartImportFlowStartImportFlowNotFoundError struct {
+	Typename *string `json:"__typename"`
+
+	Message string `json:"message"`
+}
+
+func (v *StartImportFlowStartImportFlowNotFoundError) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *StartImportFlowStartImportFlowNotFoundError) __premarshalJSON() (*__premarshalStartImportFlowStartImportFlowNotFoundError, error) {
+	var retval __premarshalStartImportFlowStartImportFlowNotFoundError
+
+	retval.Typename = v.Typename
+	retval.Message = v.NotFoundError.Message
+	return &retval, nil
+}
+
+// StartImportFlowStartImportFlowPermissionDeniedError includes the requested fields of the GraphQL type PermissionDeniedError.
+type StartImportFlowStartImportFlowPermissionDeniedError struct {
+	Typename              *string `json:"__typename"`
+	PermissionDeniedError `json:"-"`
+}
+
+// GetTypename returns StartImportFlowStartImportFlowPermissionDeniedError.Typename, and is useful for accessing the field via an interface.
+func (v *StartImportFlowStartImportFlowPermissionDeniedError) GetTypename() *string {
+	return v.Typename
+}
+
+// GetMessage returns StartImportFlowStartImportFlowPermissionDeniedError.Message, and is useful for accessing the field via an interface.
+func (v *StartImportFlowStartImportFlowPermissionDeniedError) GetMessage() string {
+	return v.PermissionDeniedError.Message
+}
+
+func (v *StartImportFlowStartImportFlowPermissionDeniedError) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*StartImportFlowStartImportFlowPermissionDeniedError
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.StartImportFlowStartImportFlowPermissionDeniedError = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.PermissionDeniedError)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalStartImportFlowStartImportFlowPermissionDeniedError struct {
+	Typename *string `json:"__typename"`
+
+	Message string `json:"message"`
+}
+
+func (v *StartImportFlowStartImportFlowPermissionDeniedError) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *StartImportFlowStartImportFlowPermissionDeniedError) __premarshalJSON() (*__premarshalStartImportFlowStartImportFlowPermissionDeniedError, error) {
+	var retval __premarshalStartImportFlowStartImportFlowPermissionDeniedError
+
+	retval.Typename = v.Typename
+	retval.Message = v.PermissionDeniedError.Message
+	return &retval, nil
+}
+
+// StartImportFlowStartImportFlowSubtask includes the requested fields of the GraphQL type Subtask.
+type StartImportFlowStartImportFlowSubtask struct {
+	Typename *string `json:"__typename"`
+	Subtask  `json:"-"`
+}
+
+// GetTypename returns StartImportFlowStartImportFlowSubtask.Typename, and is useful for accessing the field via an interface.
+func (v *StartImportFlowStartImportFlowSubtask) GetTypename() *string { return v.Typename }
+
+// GetJobId returns StartImportFlowStartImportFlowSubtask.JobId, and is useful for accessing the field via an interface.
+func (v *StartImportFlowStartImportFlowSubtask) GetJobId() string { return v.Subtask.JobId }
+
+// GetTaskType returns StartImportFlowStartImportFlowSubtask.TaskType, and is useful for accessing the field via an interface.
+func (v *StartImportFlowStartImportFlowSubtask) GetTaskType() string { return v.Subtask.TaskType }
+
+// GetSubtaskId returns StartImportFlowStartImportFlowSubtask.SubtaskId, and is useful for accessing the field via an interface.
+func (v *StartImportFlowStartImportFlowSubtask) GetSubtaskId() string { return v.Subtask.SubtaskId }
+
+// GetStatus returns StartImportFlowStartImportFlowSubtask.Status, and is useful for accessing the field via an interface.
+func (v *StartImportFlowStartImportFlowSubtask) GetStatus() SubtaskStatus { return v.Subtask.Status }
+
+// GetLastUpdate returns StartImportFlowStartImportFlowSubtask.LastUpdate, and is useful for accessing the field via an interface.
+func (v *StartImportFlowStartImportFlowSubtask) GetLastUpdate() time.Time {
+	return v.Subtask.LastUpdate
+}
+
+// GetIsStreaming returns StartImportFlowStartImportFlowSubtask.IsStreaming, and is useful for accessing the field via an interface.
+func (v *StartImportFlowStartImportFlowSubtask) GetIsStreaming() bool { return v.Subtask.IsStreaming }
+
+// GetFlowId returns StartImportFlowStartImportFlowSubtask.FlowId, and is useful for accessing the field via an interface.
+func (v *StartImportFlowStartImportFlowSubtask) GetFlowId() *uuid.UUID { return v.Subtask.FlowId }
+
+// GetIngestionFinished returns StartImportFlowStartImportFlowSubtask.IngestionFinished, and is useful for accessing the field via an interface.
+func (v *StartImportFlowStartImportFlowSubtask) GetIngestionFinished() *bool {
+	return v.Subtask.IngestionFinished
+}
+
+// GetFlowClosed returns StartImportFlowStartImportFlowSubtask.FlowClosed, and is useful for accessing the field via an interface.
+func (v *StartImportFlowStartImportFlowSubtask) GetFlowClosed() *bool { return v.Subtask.FlowClosed }
+
+// GetFlowCommandsAdded returns StartImportFlowStartImportFlowSubtask.FlowCommandsAdded, and is useful for accessing the field via an interface.
+func (v *StartImportFlowStartImportFlowSubtask) GetFlowCommandsAdded() int {
+	return v.Subtask.FlowCommandsAdded
+}
+
+// GetFlowCommandsUpdated returns StartImportFlowStartImportFlowSubtask.FlowCommandsUpdated, and is useful for accessing the field via an interface.
+func (v *StartImportFlowStartImportFlowSubtask) GetFlowCommandsUpdated() int {
+	return v.Subtask.FlowCommandsUpdated
+}
+
+// GetFlowCommandsRemoved returns StartImportFlowStartImportFlowSubtask.FlowCommandsRemoved, and is useful for accessing the field via an interface.
+func (v *StartImportFlowStartImportFlowSubtask) GetFlowCommandsRemoved() int {
+	return v.Subtask.FlowCommandsRemoved
+}
+
+func (v *StartImportFlowStartImportFlowSubtask) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*StartImportFlowStartImportFlowSubtask
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.StartImportFlowStartImportFlowSubtask = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.Subtask)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalStartImportFlowStartImportFlowSubtask struct {
+	Typename *string `json:"__typename"`
+
+	JobId string `json:"jobId"`
+
+	TaskType string `json:"taskType"`
+
+	SubtaskId string `json:"subtaskId"`
+
+	Status SubtaskStatus `json:"status"`
+
+	LastUpdate time.Time `json:"lastUpdate"`
+
+	IsStreaming bool `json:"isStreaming"`
+
+	FlowId *uuid.UUID `json:"flowId"`
+
+	IngestionFinished *bool `json:"ingestionFinished"`
+
+	FlowClosed *bool `json:"flowClosed"`
+
+	FlowCommandsAdded int `json:"flowCommandsAdded"`
+
+	FlowCommandsUpdated int `json:"flowCommandsUpdated"`
+
+	FlowCommandsRemoved int `json:"flowCommandsRemoved"`
+}
+
+func (v *StartImportFlowStartImportFlowSubtask) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *StartImportFlowStartImportFlowSubtask) __premarshalJSON() (*__premarshalStartImportFlowStartImportFlowSubtask, error) {
+	var retval __premarshalStartImportFlowStartImportFlowSubtask
+
+	retval.Typename = v.Typename
+	retval.JobId = v.Subtask.JobId
+	retval.TaskType = v.Subtask.TaskType
+	retval.SubtaskId = v.Subtask.SubtaskId
+	retval.Status = v.Subtask.Status
+	retval.LastUpdate = v.Subtask.LastUpdate
+	retval.IsStreaming = v.Subtask.IsStreaming
+	retval.FlowId = v.Subtask.FlowId
+	retval.IngestionFinished = v.Subtask.IngestionFinished
+	retval.FlowClosed = v.Subtask.FlowClosed
+	retval.FlowCommandsAdded = v.Subtask.FlowCommandsAdded
+	retval.FlowCommandsUpdated = v.Subtask.FlowCommandsUpdated
+	retval.FlowCommandsRemoved = v.Subtask.FlowCommandsRemoved
+	return &retval, nil
+}
+
+// StartImportFlowStartImportFlowSubtaskReturnResult includes the requested fields of the GraphQL interface SubtaskReturnResult.
+//
+// StartImportFlowStartImportFlowSubtaskReturnResult is implemented by the following types:
+// StartImportFlowStartImportFlowInvalidInputError
+// StartImportFlowStartImportFlowNotFoundError
+// StartImportFlowStartImportFlowPermissionDeniedError
+// StartImportFlowStartImportFlowSubtask
+type StartImportFlowStartImportFlowSubtaskReturnResult interface {
+	implementsGraphQLInterfaceStartImportFlowStartImportFlowSubtaskReturnResult()
+	// GetTypename returns the receiver's concrete GraphQL type-name (see interface doc for possible values).
+	GetTypename() *string
+}
+
+func (v *StartImportFlowStartImportFlowInvalidInputError) implementsGraphQLInterfaceStartImportFlowStartImportFlowSubtaskReturnResult() {
+}
+func (v *StartImportFlowStartImportFlowNotFoundError) implementsGraphQLInterfaceStartImportFlowStartImportFlowSubtaskReturnResult() {
+}
+func (v *StartImportFlowStartImportFlowPermissionDeniedError) implementsGraphQLInterfaceStartImportFlowStartImportFlowSubtaskReturnResult() {
+}
+func (v *StartImportFlowStartImportFlowSubtask) implementsGraphQLInterfaceStartImportFlowStartImportFlowSubtaskReturnResult() {
+}
+
+func __unmarshalStartImportFlowStartImportFlowSubtaskReturnResult(b []byte, v *StartImportFlowStartImportFlowSubtaskReturnResult) error {
+	if string(b) == "null" {
+		return nil
+	}
+
+	var tn struct {
+		TypeName string `json:"__typename"`
+	}
+	err := json.Unmarshal(b, &tn)
+	if err != nil {
+		return err
+	}
+
+	switch tn.TypeName {
+	case "InvalidInputError":
+		*v = new(StartImportFlowStartImportFlowInvalidInputError)
+		return json.Unmarshal(b, *v)
+	case "NotFoundError":
+		*v = new(StartImportFlowStartImportFlowNotFoundError)
+		return json.Unmarshal(b, *v)
+	case "PermissionDeniedError":
+		*v = new(StartImportFlowStartImportFlowPermissionDeniedError)
+		return json.Unmarshal(b, *v)
+	case "Subtask":
+		*v = new(StartImportFlowStartImportFlowSubtask)
+		return json.Unmarshal(b, *v)
+	case "":
+		return fmt.Errorf(
+			"response was missing SubtaskReturnResult.__typename")
+	default:
+		return fmt.Errorf(
+			`unexpected concrete type for StartImportFlowStartImportFlowSubtaskReturnResult: "%v"`, tn.TypeName)
+	}
+}
+
+func __marshalStartImportFlowStartImportFlowSubtaskReturnResult(v *StartImportFlowStartImportFlowSubtaskReturnResult) ([]byte, error) {
+
+	var typename string
+	switch v := (*v).(type) {
+	case *StartImportFlowStartImportFlowInvalidInputError:
+		typename = "InvalidInputError"
+
+		premarshaled, err := v.__premarshalJSON()
+		if err != nil {
+			return nil, err
+		}
+		result := struct {
+			TypeName string `json:"__typename"`
+			*__premarshalStartImportFlowStartImportFlowInvalidInputError
+		}{typename, premarshaled}
+		return json.Marshal(result)
+	case *StartImportFlowStartImportFlowNotFoundError:
+		typename = "NotFoundError"
+
+		premarshaled, err := v.__premarshalJSON()
+		if err != nil {
+			return nil, err
+		}
+		result := struct {
+			TypeName string `json:"__typename"`
+			*__premarshalStartImportFlowStartImportFlowNotFoundError
+		}{typename, premarshaled}
+		return json.Marshal(result)
+	case *StartImportFlowStartImportFlowPermissionDeniedError:
+		typename = "PermissionDeniedError"
+
+		premarshaled, err := v.__premarshalJSON()
+		if err != nil {
+			return nil, err
+		}
+		result := struct {
+			TypeName string `json:"__typename"`
+			*__premarshalStartImportFlowStartImportFlowPermissionDeniedError
+		}{typename, premarshaled}
+		return json.Marshal(result)
+	case *StartImportFlowStartImportFlowSubtask:
+		typename = "Subtask"
+
+		premarshaled, err := v.__premarshalJSON()
+		if err != nil {
+			return nil, err
+		}
+		result := struct {
+			TypeName string `json:"__typename"`
+			*__premarshalStartImportFlowStartImportFlowSubtask
+		}{typename, premarshaled}
+		return json.Marshal(result)
+	case nil:
+		return []byte("null"), nil
+	default:
+		return nil, fmt.Errorf(
+			`unexpected concrete type for StartImportFlowStartImportFlowSubtaskReturnResult: "%T"`, v)
+	}
+}
+
+type StartInputFlowInput struct {
+	JobId     string             `json:"jobId"`
+	TaskId    string             `json:"taskId"`
+	SubtaskId string             `json:"subtaskId"`
+	Options   *ImportFlowOptions `json:"options,omitempty"`
+}
+
+// GetJobId returns StartInputFlowInput.JobId, and is useful for accessing the field via an interface.
+func (v *StartInputFlowInput) GetJobId() string { return v.JobId }
+
+// GetTaskId returns StartInputFlowInput.TaskId, and is useful for accessing the field via an interface.
+func (v *StartInputFlowInput) GetTaskId() string { return v.TaskId }
+
+// GetSubtaskId returns StartInputFlowInput.SubtaskId, and is useful for accessing the field via an interface.
+func (v *StartInputFlowInput) GetSubtaskId() string { return v.SubtaskId }
+
+// GetOptions returns StartInputFlowInput.Options, and is useful for accessing the field via an interface.
+func (v *StartInputFlowInput) GetOptions() *ImportFlowOptions { return v.Options }
+
+type StatementImportDataObject struct {
+	GlobalPermission *ActionType `json:"globalPermission,omitempty"`
+	FullName         string      `json:"fullName"`
+	Type             *string     `json:"type,omitempty"`
+}
+
+// GetGlobalPermission returns StatementImportDataObject.GlobalPermission, and is useful for accessing the field via an interface.
+func (v *StatementImportDataObject) GetGlobalPermission() *ActionType { return v.GlobalPermission }
+
+// GetFullName returns StatementImportDataObject.FullName, and is useful for accessing the field via an interface.
+func (v *StatementImportDataObject) GetFullName() string { return v.FullName }
+
+// GetType returns StatementImportDataObject.Type, and is useful for accessing the field via an interface.
+func (v *StatementImportDataObject) GetType() *string { return v.Type }
+
+// SubmitImportObjectsResponse is returned by SubmitImportObjects on success.
+type SubmitImportObjectsResponse struct {
+	SubmitImportObjects SubmitImportObjectsSubmitImportObjectsSubmittedCommandsResult `json:"-"`
+}
+
+// GetSubmitImportObjects returns SubmitImportObjectsResponse.SubmitImportObjects, and is useful for accessing the field via an interface.
+func (v *SubmitImportObjectsResponse) GetSubmitImportObjects() SubmitImportObjectsSubmitImportObjectsSubmittedCommandsResult {
+	return v.SubmitImportObjects
+}
+
+func (v *SubmitImportObjectsResponse) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*SubmitImportObjectsResponse
+		SubmitImportObjects json.RawMessage `json:"submitImportObjects"`
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.SubmitImportObjectsResponse = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	{
+		dst := &v.SubmitImportObjects
+		src := firstPass.SubmitImportObjects
+		if len(src) != 0 && string(src) != "null" {
+			err = __unmarshalSubmitImportObjectsSubmitImportObjectsSubmittedCommandsResult(
+				src, dst)
+			if err != nil {
+				return fmt.Errorf(
+					"unable to unmarshal SubmitImportObjectsResponse.SubmitImportObjects: %w", err)
+			}
+		}
+	}
+	return nil
+}
+
+type __premarshalSubmitImportObjectsResponse struct {
+	SubmitImportObjects json.RawMessage `json:"submitImportObjects"`
+}
+
+func (v *SubmitImportObjectsResponse) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *SubmitImportObjectsResponse) __premarshalJSON() (*__premarshalSubmitImportObjectsResponse, error) {
+	var retval __premarshalSubmitImportObjectsResponse
+
+	{
+
+		dst := &retval.SubmitImportObjects
+		src := v.SubmitImportObjects
+		var err error
+		*dst, err = __marshalSubmitImportObjectsSubmitImportObjectsSubmittedCommandsResult(
+			&src)
+		if err != nil {
+			return nil, fmt.Errorf(
+				"unable to marshal SubmitImportObjectsResponse.SubmitImportObjects: %w", err)
+		}
+	}
+	return &retval, nil
+}
+
+// SubmitImportObjectsSubmitImportObjectsInvalidInputError includes the requested fields of the GraphQL type InvalidInputError.
+type SubmitImportObjectsSubmitImportObjectsInvalidInputError struct {
+	Typename          *string `json:"__typename"`
+	InvalidInputError `json:"-"`
+}
+
+// GetTypename returns SubmitImportObjectsSubmitImportObjectsInvalidInputError.Typename, and is useful for accessing the field via an interface.
+func (v *SubmitImportObjectsSubmitImportObjectsInvalidInputError) GetTypename() *string {
+	return v.Typename
+}
+
+// GetMessage returns SubmitImportObjectsSubmitImportObjectsInvalidInputError.Message, and is useful for accessing the field via an interface.
+func (v *SubmitImportObjectsSubmitImportObjectsInvalidInputError) GetMessage() string {
+	return v.InvalidInputError.Message
+}
+
+func (v *SubmitImportObjectsSubmitImportObjectsInvalidInputError) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*SubmitImportObjectsSubmitImportObjectsInvalidInputError
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.SubmitImportObjectsSubmitImportObjectsInvalidInputError = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.InvalidInputError)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalSubmitImportObjectsSubmitImportObjectsInvalidInputError struct {
+	Typename *string `json:"__typename"`
+
+	Message string `json:"message"`
+}
+
+func (v *SubmitImportObjectsSubmitImportObjectsInvalidInputError) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *SubmitImportObjectsSubmitImportObjectsInvalidInputError) __premarshalJSON() (*__premarshalSubmitImportObjectsSubmitImportObjectsInvalidInputError, error) {
+	var retval __premarshalSubmitImportObjectsSubmitImportObjectsInvalidInputError
+
+	retval.Typename = v.Typename
+	retval.Message = v.InvalidInputError.Message
+	return &retval, nil
+}
+
+// SubmitImportObjectsSubmitImportObjectsNotFoundError includes the requested fields of the GraphQL type NotFoundError.
+type SubmitImportObjectsSubmitImportObjectsNotFoundError struct {
+	Typename      *string `json:"__typename"`
+	NotFoundError `json:"-"`
+}
+
+// GetTypename returns SubmitImportObjectsSubmitImportObjectsNotFoundError.Typename, and is useful for accessing the field via an interface.
+func (v *SubmitImportObjectsSubmitImportObjectsNotFoundError) GetTypename() *string {
+	return v.Typename
+}
+
+// GetMessage returns SubmitImportObjectsSubmitImportObjectsNotFoundError.Message, and is useful for accessing the field via an interface.
+func (v *SubmitImportObjectsSubmitImportObjectsNotFoundError) GetMessage() string {
+	return v.NotFoundError.Message
+}
+
+func (v *SubmitImportObjectsSubmitImportObjectsNotFoundError) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*SubmitImportObjectsSubmitImportObjectsNotFoundError
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.SubmitImportObjectsSubmitImportObjectsNotFoundError = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.NotFoundError)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalSubmitImportObjectsSubmitImportObjectsNotFoundError struct {
+	Typename *string `json:"__typename"`
+
+	Message string `json:"message"`
+}
+
+func (v *SubmitImportObjectsSubmitImportObjectsNotFoundError) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *SubmitImportObjectsSubmitImportObjectsNotFoundError) __premarshalJSON() (*__premarshalSubmitImportObjectsSubmitImportObjectsNotFoundError, error) {
+	var retval __premarshalSubmitImportObjectsSubmitImportObjectsNotFoundError
+
+	retval.Typename = v.Typename
+	retval.Message = v.NotFoundError.Message
+	return &retval, nil
+}
+
+// SubmitImportObjectsSubmitImportObjectsPermissionDeniedError includes the requested fields of the GraphQL type PermissionDeniedError.
+type SubmitImportObjectsSubmitImportObjectsPermissionDeniedError struct {
+	Typename              *string `json:"__typename"`
+	PermissionDeniedError `json:"-"`
+}
+
+// GetTypename returns SubmitImportObjectsSubmitImportObjectsPermissionDeniedError.Typename, and is useful for accessing the field via an interface.
+func (v *SubmitImportObjectsSubmitImportObjectsPermissionDeniedError) GetTypename() *string {
+	return v.Typename
+}
+
+// GetMessage returns SubmitImportObjectsSubmitImportObjectsPermissionDeniedError.Message, and is useful for accessing the field via an interface.
+func (v *SubmitImportObjectsSubmitImportObjectsPermissionDeniedError) GetMessage() string {
+	return v.PermissionDeniedError.Message
+}
+
+func (v *SubmitImportObjectsSubmitImportObjectsPermissionDeniedError) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*SubmitImportObjectsSubmitImportObjectsPermissionDeniedError
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.SubmitImportObjectsSubmitImportObjectsPermissionDeniedError = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.PermissionDeniedError)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalSubmitImportObjectsSubmitImportObjectsPermissionDeniedError struct {
+	Typename *string `json:"__typename"`
+
+	Message string `json:"message"`
+}
+
+func (v *SubmitImportObjectsSubmitImportObjectsPermissionDeniedError) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *SubmitImportObjectsSubmitImportObjectsPermissionDeniedError) __premarshalJSON() (*__premarshalSubmitImportObjectsSubmitImportObjectsPermissionDeniedError, error) {
+	var retval __premarshalSubmitImportObjectsSubmitImportObjectsPermissionDeniedError
+
+	retval.Typename = v.Typename
+	retval.Message = v.PermissionDeniedError.Message
+	return &retval, nil
+}
+
+// SubmitImportObjectsSubmitImportObjectsSubmittedCommands includes the requested fields of the GraphQL type SubmittedCommands.
+type SubmitImportObjectsSubmitImportObjectsSubmittedCommands struct {
+	Typename          *string `json:"__typename"`
+	SubmittedCommands `json:"-"`
+}
+
+// GetTypename returns SubmitImportObjectsSubmitImportObjectsSubmittedCommands.Typename, and is useful for accessing the field via an interface.
+func (v *SubmitImportObjectsSubmitImportObjectsSubmittedCommands) GetTypename() *string {
+	return v.Typename
+}
+
+// GetSubmitted returns SubmitImportObjectsSubmitImportObjectsSubmittedCommands.Submitted, and is useful for accessing the field via an interface.
+func (v *SubmitImportObjectsSubmitImportObjectsSubmittedCommands) GetSubmitted() int {
+	return v.SubmittedCommands.Submitted
+}
+
+func (v *SubmitImportObjectsSubmitImportObjectsSubmittedCommands) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*SubmitImportObjectsSubmitImportObjectsSubmittedCommands
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.SubmitImportObjectsSubmitImportObjectsSubmittedCommands = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.SubmittedCommands)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalSubmitImportObjectsSubmitImportObjectsSubmittedCommands struct {
+	Typename *string `json:"__typename"`
+
+	Submitted int `json:"submitted"`
+}
+
+func (v *SubmitImportObjectsSubmitImportObjectsSubmittedCommands) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *SubmitImportObjectsSubmitImportObjectsSubmittedCommands) __premarshalJSON() (*__premarshalSubmitImportObjectsSubmitImportObjectsSubmittedCommands, error) {
+	var retval __premarshalSubmitImportObjectsSubmitImportObjectsSubmittedCommands
+
+	retval.Typename = v.Typename
+	retval.Submitted = v.SubmittedCommands.Submitted
+	return &retval, nil
+}
+
+// SubmitImportObjectsSubmitImportObjectsSubmittedCommandsResult includes the requested fields of the GraphQL interface SubmittedCommandsResult.
+//
+// SubmitImportObjectsSubmitImportObjectsSubmittedCommandsResult is implemented by the following types:
+// SubmitImportObjectsSubmitImportObjectsInvalidInputError
+// SubmitImportObjectsSubmitImportObjectsNotFoundError
+// SubmitImportObjectsSubmitImportObjectsPermissionDeniedError
+// SubmitImportObjectsSubmitImportObjectsSubmittedCommands
+type SubmitImportObjectsSubmitImportObjectsSubmittedCommandsResult interface {
+	implementsGraphQLInterfaceSubmitImportObjectsSubmitImportObjectsSubmittedCommandsResult()
+	// GetTypename returns the receiver's concrete GraphQL type-name (see interface doc for possible values).
+	GetTypename() *string
+}
+
+func (v *SubmitImportObjectsSubmitImportObjectsInvalidInputError) implementsGraphQLInterfaceSubmitImportObjectsSubmitImportObjectsSubmittedCommandsResult() {
+}
+func (v *SubmitImportObjectsSubmitImportObjectsNotFoundError) implementsGraphQLInterfaceSubmitImportObjectsSubmitImportObjectsSubmittedCommandsResult() {
+}
+func (v *SubmitImportObjectsSubmitImportObjectsPermissionDeniedError) implementsGraphQLInterfaceSubmitImportObjectsSubmitImportObjectsSubmittedCommandsResult() {
+}
+func (v *SubmitImportObjectsSubmitImportObjectsSubmittedCommands) implementsGraphQLInterfaceSubmitImportObjectsSubmitImportObjectsSubmittedCommandsResult() {
+}
+
+func __unmarshalSubmitImportObjectsSubmitImportObjectsSubmittedCommandsResult(b []byte, v *SubmitImportObjectsSubmitImportObjectsSubmittedCommandsResult) error {
+	if string(b) == "null" {
+		return nil
+	}
+
+	var tn struct {
+		TypeName string `json:"__typename"`
+	}
+	err := json.Unmarshal(b, &tn)
+	if err != nil {
+		return err
+	}
+
+	switch tn.TypeName {
+	case "InvalidInputError":
+		*v = new(SubmitImportObjectsSubmitImportObjectsInvalidInputError)
+		return json.Unmarshal(b, *v)
+	case "NotFoundError":
+		*v = new(SubmitImportObjectsSubmitImportObjectsNotFoundError)
+		return json.Unmarshal(b, *v)
+	case "PermissionDeniedError":
+		*v = new(SubmitImportObjectsSubmitImportObjectsPermissionDeniedError)
+		return json.Unmarshal(b, *v)
+	case "SubmittedCommands":
+		*v = new(SubmitImportObjectsSubmitImportObjectsSubmittedCommands)
+		return json.Unmarshal(b, *v)
+	case "":
+		return fmt.Errorf(
+			"response was missing SubmittedCommandsResult.__typename")
+	default:
+		return fmt.Errorf(
+			`unexpected concrete type for SubmitImportObjectsSubmitImportObjectsSubmittedCommandsResult: "%v"`, tn.TypeName)
+	}
+}
+
+func __marshalSubmitImportObjectsSubmitImportObjectsSubmittedCommandsResult(v *SubmitImportObjectsSubmitImportObjectsSubmittedCommandsResult) ([]byte, error) {
+
+	var typename string
+	switch v := (*v).(type) {
+	case *SubmitImportObjectsSubmitImportObjectsInvalidInputError:
+		typename = "InvalidInputError"
+
+		premarshaled, err := v.__premarshalJSON()
+		if err != nil {
+			return nil, err
+		}
+		result := struct {
+			TypeName string `json:"__typename"`
+			*__premarshalSubmitImportObjectsSubmitImportObjectsInvalidInputError
+		}{typename, premarshaled}
+		return json.Marshal(result)
+	case *SubmitImportObjectsSubmitImportObjectsNotFoundError:
+		typename = "NotFoundError"
+
+		premarshaled, err := v.__premarshalJSON()
+		if err != nil {
+			return nil, err
+		}
+		result := struct {
+			TypeName string `json:"__typename"`
+			*__premarshalSubmitImportObjectsSubmitImportObjectsNotFoundError
+		}{typename, premarshaled}
+		return json.Marshal(result)
+	case *SubmitImportObjectsSubmitImportObjectsPermissionDeniedError:
+		typename = "PermissionDeniedError"
+
+		premarshaled, err := v.__premarshalJSON()
+		if err != nil {
+			return nil, err
+		}
+		result := struct {
+			TypeName string `json:"__typename"`
+			*__premarshalSubmitImportObjectsSubmitImportObjectsPermissionDeniedError
+		}{typename, premarshaled}
+		return json.Marshal(result)
+	case *SubmitImportObjectsSubmitImportObjectsSubmittedCommands:
+		typename = "SubmittedCommands"
+
+		premarshaled, err := v.__premarshalJSON()
+		if err != nil {
+			return nil, err
+		}
+		result := struct {
+			TypeName string `json:"__typename"`
+			*__premarshalSubmitImportObjectsSubmitImportObjectsSubmittedCommands
+		}{typename, premarshaled}
+		return json.Marshal(result)
+	case nil:
+		return []byte("null"), nil
+	default:
+		return nil, fmt.Errorf(
+			`unexpected concrete type for SubmitImportObjectsSubmitImportObjectsSubmittedCommandsResult: "%T"`, v)
+	}
+}
+
+// SubmittedCommands includes the GraphQL fields of SubmittedCommands requested by the fragment SubmittedCommands.
+type SubmittedCommands struct {
+	Submitted int `json:"submitted"`
+}
+
+// GetSubmitted returns SubmittedCommands.Submitted, and is useful for accessing the field via an interface.
+func (v *SubmittedCommands) GetSubmitted() int { return v.Submitted }
+
+// Subtask includes the GraphQL fields of Subtask requested by the fragment Subtask.
+type Subtask struct {
+	JobId               string        `json:"jobId"`
+	TaskType            string        `json:"taskType"`
+	SubtaskId           string        `json:"subtaskId"`
+	Status              SubtaskStatus `json:"status"`
+	LastUpdate          time.Time     `json:"lastUpdate"`
+	IsStreaming         bool          `json:"isStreaming"`
+	FlowId              *uuid.UUID    `json:"flowId"`
+	IngestionFinished   *bool         `json:"ingestionFinished"`
+	FlowClosed          *bool         `json:"flowClosed"`
+	FlowCommandsAdded   int           `json:"flowCommandsAdded"`
+	FlowCommandsUpdated int           `json:"flowCommandsUpdated"`
+	FlowCommandsRemoved int           `json:"flowCommandsRemoved"`
+}
+
+// GetJobId returns Subtask.JobId, and is useful for accessing the field via an interface.
+func (v *Subtask) GetJobId() string { return v.JobId }
+
+// GetTaskType returns Subtask.TaskType, and is useful for accessing the field via an interface.
+func (v *Subtask) GetTaskType() string { return v.TaskType }
+
+// GetSubtaskId returns Subtask.SubtaskId, and is useful for accessing the field via an interface.
+func (v *Subtask) GetSubtaskId() string { return v.SubtaskId }
+
+// GetStatus returns Subtask.Status, and is useful for accessing the field via an interface.
+func (v *Subtask) GetStatus() SubtaskStatus { return v.Status }
+
+// GetLastUpdate returns Subtask.LastUpdate, and is useful for accessing the field via an interface.
+func (v *Subtask) GetLastUpdate() time.Time { return v.LastUpdate }
+
+// GetIsStreaming returns Subtask.IsStreaming, and is useful for accessing the field via an interface.
+func (v *Subtask) GetIsStreaming() bool { return v.IsStreaming }
+
+// GetFlowId returns Subtask.FlowId, and is useful for accessing the field via an interface.
+func (v *Subtask) GetFlowId() *uuid.UUID { return v.FlowId }
+
+// GetIngestionFinished returns Subtask.IngestionFinished, and is useful for accessing the field via an interface.
+func (v *Subtask) GetIngestionFinished() *bool { return v.IngestionFinished }
+
+// GetFlowClosed returns Subtask.FlowClosed, and is useful for accessing the field via an interface.
+func (v *Subtask) GetFlowClosed() *bool { return v.FlowClosed }
+
+// GetFlowCommandsAdded returns Subtask.FlowCommandsAdded, and is useful for accessing the field via an interface.
+func (v *Subtask) GetFlowCommandsAdded() int { return v.FlowCommandsAdded }
+
+// GetFlowCommandsUpdated returns Subtask.FlowCommandsUpdated, and is useful for accessing the field via an interface.
+func (v *Subtask) GetFlowCommandsUpdated() int { return v.FlowCommandsUpdated }
+
+// GetFlowCommandsRemoved returns Subtask.FlowCommandsRemoved, and is useful for accessing the field via an interface.
+func (v *Subtask) GetFlowCommandsRemoved() int { return v.FlowCommandsRemoved }
+
+type SubtaskInput struct {
+	JobId           string        `json:"jobId"`
+	JobType         string        `json:"jobType"`
+	SubtaskId       string        `json:"subtaskId"`
+	DataSourceId    *string       `json:"dataSourceId,omitempty"`
+	IdentityStoreId *string       `json:"identityStoreId,omitempty"`
+	Status          SubtaskStatus `json:"status"`
+	EventTime       time.Time     `json:"eventTime"`
+	ReceivedDate    *int          `json:"receivedDate,omitempty"`
+}
+
+// GetJobId returns SubtaskInput.JobId, and is useful for accessing the field via an interface.
+func (v *SubtaskInput) GetJobId() string { return v.JobId }
+
+// GetJobType returns SubtaskInput.JobType, and is useful for accessing the field via an interface.
+func (v *SubtaskInput) GetJobType() string { return v.JobType }
+
+// GetSubtaskId returns SubtaskInput.SubtaskId, and is useful for accessing the field via an interface.
+func (v *SubtaskInput) GetSubtaskId() string { return v.SubtaskId }
+
+// GetDataSourceId returns SubtaskInput.DataSourceId, and is useful for accessing the field via an interface.
+func (v *SubtaskInput) GetDataSourceId() *string { return v.DataSourceId }
+
+// GetIdentityStoreId returns SubtaskInput.IdentityStoreId, and is useful for accessing the field via an interface.
+func (v *SubtaskInput) GetIdentityStoreId() *string { return v.IdentityStoreId }
+
+// GetStatus returns SubtaskInput.Status, and is useful for accessing the field via an interface.
+func (v *SubtaskInput) GetStatus() SubtaskStatus { return v.Status }
+
+// GetEventTime returns SubtaskInput.EventTime, and is useful for accessing the field via an interface.
+func (v *SubtaskInput) GetEventTime() time.Time { return v.EventTime }
+
+// GetReceivedDate returns SubtaskInput.ReceivedDate, and is useful for accessing the field via an interface.
+func (v *SubtaskInput) GetReceivedDate() *int { return v.ReceivedDate }
+
+type SubtaskStatus string
+
+const (
+	SubtaskStatusStarted      SubtaskStatus = "Started"
+	SubtaskStatusQueued       SubtaskStatus = "Queued"
+	SubtaskStatusDataretrieve SubtaskStatus = "DataRetrieve"
+	SubtaskStatusInprogress   SubtaskStatus = "InProgress"
+	SubtaskStatusCompleted    SubtaskStatus = "Completed"
+	SubtaskStatusFailed       SubtaskStatus = "Failed"
+	SubtaskStatusTimedout     SubtaskStatus = "TimedOut"
+)
+
+var AllSubtaskStatus = []SubtaskStatus{
+	SubtaskStatusStarted,
+	SubtaskStatusQueued,
+	SubtaskStatusDataretrieve,
+	SubtaskStatusInprogress,
+	SubtaskStatusCompleted,
+	SubtaskStatusFailed,
+	SubtaskStatusTimedout,
 }
 
 // SyncData includes the GraphQL fields of SyncData requested by the fragment SyncData.
@@ -29998,6 +34918,737 @@ func (v *TagFilter) GetKey() *string { return v.Key }
 
 // GetStringValue returns TagFilter.StringValue, and is useful for accessing the field via an interface.
 func (v *TagFilter) GetStringValue() *string { return v.StringValue }
+
+type TagImport struct {
+	Key    string `json:"key"`
+	Value  string `json:"value"`
+	Source string `json:"source"`
+}
+
+// GetKey returns TagImport.Key, and is useful for accessing the field via an interface.
+func (v *TagImport) GetKey() string { return v.Key }
+
+// GetValue returns TagImport.Value, and is useful for accessing the field via an interface.
+func (v *TagImport) GetValue() string { return v.Value }
+
+// GetSource returns TagImport.Source, and is useful for accessing the field via an interface.
+func (v *TagImport) GetSource() string { return v.Source }
+
+// Task includes the GraphQL fields of Task requested by the fragment Task.
+type Task struct {
+	JobId            string       `json:"jobId"`
+	TaskType         string       `json:"taskType"`
+	Status           TaskStatus   `json:"status"`
+	StartTime        time.Time    `json:"startTime"`
+	LastUpdate       time.Time    `json:"lastUpdate"`
+	EndTime          *time.Time   `json:"endTime"`
+	Duration         *int64       `json:"duration"`
+	NumberOfWarnings int          `json:"numberOfWarnings"`
+	Result           []TaskResult `json:"result"`
+}
+
+// GetJobId returns Task.JobId, and is useful for accessing the field via an interface.
+func (v *Task) GetJobId() string { return v.JobId }
+
+// GetTaskType returns Task.TaskType, and is useful for accessing the field via an interface.
+func (v *Task) GetTaskType() string { return v.TaskType }
+
+// GetStatus returns Task.Status, and is useful for accessing the field via an interface.
+func (v *Task) GetStatus() TaskStatus { return v.Status }
+
+// GetStartTime returns Task.StartTime, and is useful for accessing the field via an interface.
+func (v *Task) GetStartTime() time.Time { return v.StartTime }
+
+// GetLastUpdate returns Task.LastUpdate, and is useful for accessing the field via an interface.
+func (v *Task) GetLastUpdate() time.Time { return v.LastUpdate }
+
+// GetEndTime returns Task.EndTime, and is useful for accessing the field via an interface.
+func (v *Task) GetEndTime() *time.Time { return v.EndTime }
+
+// GetDuration returns Task.Duration, and is useful for accessing the field via an interface.
+func (v *Task) GetDuration() *int64 { return v.Duration }
+
+// GetNumberOfWarnings returns Task.NumberOfWarnings, and is useful for accessing the field via an interface.
+func (v *Task) GetNumberOfWarnings() int { return v.NumberOfWarnings }
+
+// GetResult returns Task.Result, and is useful for accessing the field via an interface.
+func (v *Task) GetResult() []TaskResult { return v.Result }
+
+// TaskConnection includes the GraphQL fields of TaskConnection requested by the fragment TaskConnection.
+type TaskConnection struct {
+	PageInfo TaskConnectionPageInfo        `json:"pageInfo"`
+	Edges    []TaskConnectionEdgesTaskEdge `json:"edges"`
+}
+
+// GetPageInfo returns TaskConnection.PageInfo, and is useful for accessing the field via an interface.
+func (v *TaskConnection) GetPageInfo() TaskConnectionPageInfo { return v.PageInfo }
+
+// GetEdges returns TaskConnection.Edges, and is useful for accessing the field via an interface.
+func (v *TaskConnection) GetEdges() []TaskConnectionEdgesTaskEdge { return v.Edges }
+
+// TaskConnectionEdgesTaskEdge includes the requested fields of the GraphQL type TaskEdge.
+type TaskConnectionEdgesTaskEdge struct {
+	Cursor *string                              `json:"cursor"`
+	Node   *TaskConnectionEdgesTaskEdgeNodeTask `json:"node"`
+}
+
+// GetCursor returns TaskConnectionEdgesTaskEdge.Cursor, and is useful for accessing the field via an interface.
+func (v *TaskConnectionEdgesTaskEdge) GetCursor() *string { return v.Cursor }
+
+// GetNode returns TaskConnectionEdgesTaskEdge.Node, and is useful for accessing the field via an interface.
+func (v *TaskConnectionEdgesTaskEdge) GetNode() *TaskConnectionEdgesTaskEdgeNodeTask { return v.Node }
+
+// TaskConnectionEdgesTaskEdgeNodeTask includes the requested fields of the GraphQL type Task.
+type TaskConnectionEdgesTaskEdgeNodeTask struct {
+	Task `json:"-"`
+}
+
+// GetJobId returns TaskConnectionEdgesTaskEdgeNodeTask.JobId, and is useful for accessing the field via an interface.
+func (v *TaskConnectionEdgesTaskEdgeNodeTask) GetJobId() string { return v.Task.JobId }
+
+// GetTaskType returns TaskConnectionEdgesTaskEdgeNodeTask.TaskType, and is useful for accessing the field via an interface.
+func (v *TaskConnectionEdgesTaskEdgeNodeTask) GetTaskType() string { return v.Task.TaskType }
+
+// GetStatus returns TaskConnectionEdgesTaskEdgeNodeTask.Status, and is useful for accessing the field via an interface.
+func (v *TaskConnectionEdgesTaskEdgeNodeTask) GetStatus() TaskStatus { return v.Task.Status }
+
+// GetStartTime returns TaskConnectionEdgesTaskEdgeNodeTask.StartTime, and is useful for accessing the field via an interface.
+func (v *TaskConnectionEdgesTaskEdgeNodeTask) GetStartTime() time.Time { return v.Task.StartTime }
+
+// GetLastUpdate returns TaskConnectionEdgesTaskEdgeNodeTask.LastUpdate, and is useful for accessing the field via an interface.
+func (v *TaskConnectionEdgesTaskEdgeNodeTask) GetLastUpdate() time.Time { return v.Task.LastUpdate }
+
+// GetEndTime returns TaskConnectionEdgesTaskEdgeNodeTask.EndTime, and is useful for accessing the field via an interface.
+func (v *TaskConnectionEdgesTaskEdgeNodeTask) GetEndTime() *time.Time { return v.Task.EndTime }
+
+// GetDuration returns TaskConnectionEdgesTaskEdgeNodeTask.Duration, and is useful for accessing the field via an interface.
+func (v *TaskConnectionEdgesTaskEdgeNodeTask) GetDuration() *int64 { return v.Task.Duration }
+
+// GetNumberOfWarnings returns TaskConnectionEdgesTaskEdgeNodeTask.NumberOfWarnings, and is useful for accessing the field via an interface.
+func (v *TaskConnectionEdgesTaskEdgeNodeTask) GetNumberOfWarnings() int {
+	return v.Task.NumberOfWarnings
+}
+
+// GetResult returns TaskConnectionEdgesTaskEdgeNodeTask.Result, and is useful for accessing the field via an interface.
+func (v *TaskConnectionEdgesTaskEdgeNodeTask) GetResult() []TaskResult { return v.Task.Result }
+
+func (v *TaskConnectionEdgesTaskEdgeNodeTask) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*TaskConnectionEdgesTaskEdgeNodeTask
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.TaskConnectionEdgesTaskEdgeNodeTask = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.Task)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalTaskConnectionEdgesTaskEdgeNodeTask struct {
+	JobId string `json:"jobId"`
+
+	TaskType string `json:"taskType"`
+
+	Status TaskStatus `json:"status"`
+
+	StartTime time.Time `json:"startTime"`
+
+	LastUpdate time.Time `json:"lastUpdate"`
+
+	EndTime *time.Time `json:"endTime"`
+
+	Duration *int64 `json:"duration"`
+
+	NumberOfWarnings int `json:"numberOfWarnings"`
+
+	Result []TaskResult `json:"result"`
+}
+
+func (v *TaskConnectionEdgesTaskEdgeNodeTask) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *TaskConnectionEdgesTaskEdgeNodeTask) __premarshalJSON() (*__premarshalTaskConnectionEdgesTaskEdgeNodeTask, error) {
+	var retval __premarshalTaskConnectionEdgesTaskEdgeNodeTask
+
+	retval.JobId = v.Task.JobId
+	retval.TaskType = v.Task.TaskType
+	retval.Status = v.Task.Status
+	retval.StartTime = v.Task.StartTime
+	retval.LastUpdate = v.Task.LastUpdate
+	retval.EndTime = v.Task.EndTime
+	retval.Duration = v.Task.Duration
+	retval.NumberOfWarnings = v.Task.NumberOfWarnings
+	retval.Result = v.Task.Result
+	return &retval, nil
+}
+
+// TaskConnectionPageInfo includes the requested fields of the GraphQL type PageInfo.
+type TaskConnectionPageInfo struct {
+	PageInfo `json:"-"`
+}
+
+// GetHasNextPage returns TaskConnectionPageInfo.HasNextPage, and is useful for accessing the field via an interface.
+func (v *TaskConnectionPageInfo) GetHasNextPage() *bool { return v.PageInfo.HasNextPage }
+
+// GetStartCursor returns TaskConnectionPageInfo.StartCursor, and is useful for accessing the field via an interface.
+func (v *TaskConnectionPageInfo) GetStartCursor() *string { return v.PageInfo.StartCursor }
+
+func (v *TaskConnectionPageInfo) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*TaskConnectionPageInfo
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.TaskConnectionPageInfo = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.PageInfo)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalTaskConnectionPageInfo struct {
+	HasNextPage *bool `json:"hasNextPage"`
+
+	StartCursor *string `json:"startCursor"`
+}
+
+func (v *TaskConnectionPageInfo) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *TaskConnectionPageInfo) __premarshalJSON() (*__premarshalTaskConnectionPageInfo, error) {
+	var retval __premarshalTaskConnectionPageInfo
+
+	retval.HasNextPage = v.PageInfo.HasNextPage
+	retval.StartCursor = v.PageInfo.StartCursor
+	return &retval, nil
+}
+
+// TaskConnectionResult includes the GraphQL fields of TaskConnectionResult requested by the fragment TaskConnectionResult.
+//
+// TaskConnectionResult is implemented by the following types:
+// TaskConnectionResultInvalidInputError
+// TaskConnectionResultNotFoundError
+// TaskConnectionResultPermissionDeniedError
+// TaskConnectionResultTaskConnection
+type TaskConnectionResult interface {
+	implementsGraphQLInterfaceTaskConnectionResult()
+}
+
+func (v *TaskConnectionResultInvalidInputError) implementsGraphQLInterfaceTaskConnectionResult() {}
+func (v *TaskConnectionResultNotFoundError) implementsGraphQLInterfaceTaskConnectionResult()     {}
+func (v *TaskConnectionResultPermissionDeniedError) implementsGraphQLInterfaceTaskConnectionResult() {
+}
+func (v *TaskConnectionResultTaskConnection) implementsGraphQLInterfaceTaskConnectionResult() {}
+
+func __unmarshalTaskConnectionResult(b []byte, v *TaskConnectionResult) error {
+	if string(b) == "null" {
+		return nil
+	}
+
+	var tn struct {
+		TypeName string `json:"__typename"`
+	}
+	err := json.Unmarshal(b, &tn)
+	if err != nil {
+		return err
+	}
+
+	switch tn.TypeName {
+	case "InvalidInputError":
+		*v = new(TaskConnectionResultInvalidInputError)
+		return json.Unmarshal(b, *v)
+	case "NotFoundError":
+		*v = new(TaskConnectionResultNotFoundError)
+		return json.Unmarshal(b, *v)
+	case "PermissionDeniedError":
+		*v = new(TaskConnectionResultPermissionDeniedError)
+		return json.Unmarshal(b, *v)
+	case "TaskConnection":
+		*v = new(TaskConnectionResultTaskConnection)
+		return json.Unmarshal(b, *v)
+	case "":
+		return fmt.Errorf(
+			"response was missing TaskConnectionResult.__typename")
+	default:
+		return fmt.Errorf(
+			`unexpected concrete type for TaskConnectionResult: "%v"`, tn.TypeName)
+	}
+}
+
+func __marshalTaskConnectionResult(v *TaskConnectionResult) ([]byte, error) {
+
+	var typename string
+	switch v := (*v).(type) {
+	case *TaskConnectionResultInvalidInputError:
+		typename = "InvalidInputError"
+
+		premarshaled, err := v.__premarshalJSON()
+		if err != nil {
+			return nil, err
+		}
+		result := struct {
+			TypeName string `json:"__typename"`
+			*__premarshalTaskConnectionResultInvalidInputError
+		}{typename, premarshaled}
+		return json.Marshal(result)
+	case *TaskConnectionResultNotFoundError:
+		typename = "NotFoundError"
+
+		premarshaled, err := v.__premarshalJSON()
+		if err != nil {
+			return nil, err
+		}
+		result := struct {
+			TypeName string `json:"__typename"`
+			*__premarshalTaskConnectionResultNotFoundError
+		}{typename, premarshaled}
+		return json.Marshal(result)
+	case *TaskConnectionResultPermissionDeniedError:
+		typename = "PermissionDeniedError"
+
+		premarshaled, err := v.__premarshalJSON()
+		if err != nil {
+			return nil, err
+		}
+		result := struct {
+			TypeName string `json:"__typename"`
+			*__premarshalTaskConnectionResultPermissionDeniedError
+		}{typename, premarshaled}
+		return json.Marshal(result)
+	case *TaskConnectionResultTaskConnection:
+		typename = "TaskConnection"
+
+		premarshaled, err := v.__premarshalJSON()
+		if err != nil {
+			return nil, err
+		}
+		result := struct {
+			TypeName string `json:"__typename"`
+			*__premarshalTaskConnectionResultTaskConnection
+		}{typename, premarshaled}
+		return json.Marshal(result)
+	case nil:
+		return []byte("null"), nil
+	default:
+		return nil, fmt.Errorf(
+			`unexpected concrete type for TaskConnectionResult: "%T"`, v)
+	}
+}
+
+// TaskConnectionResult includes the GraphQL fields of InvalidInputError requested by the fragment TaskConnectionResult.
+type TaskConnectionResultInvalidInputError struct {
+	InvalidInputError `json:"-"`
+}
+
+// GetMessage returns TaskConnectionResultInvalidInputError.Message, and is useful for accessing the field via an interface.
+func (v *TaskConnectionResultInvalidInputError) GetMessage() string {
+	return v.InvalidInputError.Message
+}
+
+func (v *TaskConnectionResultInvalidInputError) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*TaskConnectionResultInvalidInputError
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.TaskConnectionResultInvalidInputError = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.InvalidInputError)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalTaskConnectionResultInvalidInputError struct {
+	Message string `json:"message"`
+}
+
+func (v *TaskConnectionResultInvalidInputError) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *TaskConnectionResultInvalidInputError) __premarshalJSON() (*__premarshalTaskConnectionResultInvalidInputError, error) {
+	var retval __premarshalTaskConnectionResultInvalidInputError
+
+	retval.Message = v.InvalidInputError.Message
+	return &retval, nil
+}
+
+// TaskConnectionResult includes the GraphQL fields of NotFoundError requested by the fragment TaskConnectionResult.
+type TaskConnectionResultNotFoundError struct {
+	NotFoundError `json:"-"`
+}
+
+// GetMessage returns TaskConnectionResultNotFoundError.Message, and is useful for accessing the field via an interface.
+func (v *TaskConnectionResultNotFoundError) GetMessage() string { return v.NotFoundError.Message }
+
+func (v *TaskConnectionResultNotFoundError) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*TaskConnectionResultNotFoundError
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.TaskConnectionResultNotFoundError = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.NotFoundError)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalTaskConnectionResultNotFoundError struct {
+	Message string `json:"message"`
+}
+
+func (v *TaskConnectionResultNotFoundError) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *TaskConnectionResultNotFoundError) __premarshalJSON() (*__premarshalTaskConnectionResultNotFoundError, error) {
+	var retval __premarshalTaskConnectionResultNotFoundError
+
+	retval.Message = v.NotFoundError.Message
+	return &retval, nil
+}
+
+// TaskConnectionResult includes the GraphQL fields of PermissionDeniedError requested by the fragment TaskConnectionResult.
+type TaskConnectionResultPermissionDeniedError struct {
+	PermissionDeniedError `json:"-"`
+}
+
+// GetMessage returns TaskConnectionResultPermissionDeniedError.Message, and is useful for accessing the field via an interface.
+func (v *TaskConnectionResultPermissionDeniedError) GetMessage() string {
+	return v.PermissionDeniedError.Message
+}
+
+func (v *TaskConnectionResultPermissionDeniedError) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*TaskConnectionResultPermissionDeniedError
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.TaskConnectionResultPermissionDeniedError = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.PermissionDeniedError)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalTaskConnectionResultPermissionDeniedError struct {
+	Message string `json:"message"`
+}
+
+func (v *TaskConnectionResultPermissionDeniedError) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *TaskConnectionResultPermissionDeniedError) __premarshalJSON() (*__premarshalTaskConnectionResultPermissionDeniedError, error) {
+	var retval __premarshalTaskConnectionResultPermissionDeniedError
+
+	retval.Message = v.PermissionDeniedError.Message
+	return &retval, nil
+}
+
+// TaskConnectionResult includes the GraphQL fields of TaskConnection requested by the fragment TaskConnectionResult.
+type TaskConnectionResultTaskConnection struct {
+	TaskConnection `json:"-"`
+}
+
+// GetPageInfo returns TaskConnectionResultTaskConnection.PageInfo, and is useful for accessing the field via an interface.
+func (v *TaskConnectionResultTaskConnection) GetPageInfo() TaskConnectionPageInfo {
+	return v.TaskConnection.PageInfo
+}
+
+// GetEdges returns TaskConnectionResultTaskConnection.Edges, and is useful for accessing the field via an interface.
+func (v *TaskConnectionResultTaskConnection) GetEdges() []TaskConnectionEdgesTaskEdge {
+	return v.TaskConnection.Edges
+}
+
+func (v *TaskConnectionResultTaskConnection) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*TaskConnectionResultTaskConnection
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.TaskConnectionResultTaskConnection = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.TaskConnection)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalTaskConnectionResultTaskConnection struct {
+	PageInfo TaskConnectionPageInfo `json:"pageInfo"`
+
+	Edges []TaskConnectionEdgesTaskEdge `json:"edges"`
+}
+
+func (v *TaskConnectionResultTaskConnection) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *TaskConnectionResultTaskConnection) __premarshalJSON() (*__premarshalTaskConnectionResultTaskConnection, error) {
+	var retval __premarshalTaskConnectionResultTaskConnection
+
+	retval.PageInfo = v.TaskConnection.PageInfo
+	retval.Edges = v.TaskConnection.Edges
+	return &retval, nil
+}
+
+type TaskEventInput struct {
+	JobId           string            `json:"jobId"`
+	JobType         string            `json:"jobType"`
+	DataSourceId    *string           `json:"dataSourceId,omitempty"`
+	IdentityStoreId *string           `json:"identityStoreId,omitempty"`
+	Status          TaskStatus        `json:"status"`
+	EventTime       time.Time         `json:"eventTime"`
+	Errors          []string          `json:"errors"`
+	Warnings        []string          `json:"warnings"`
+	Result          []TaskResultInput `json:"result"`
+}
+
+// GetJobId returns TaskEventInput.JobId, and is useful for accessing the field via an interface.
+func (v *TaskEventInput) GetJobId() string { return v.JobId }
+
+// GetJobType returns TaskEventInput.JobType, and is useful for accessing the field via an interface.
+func (v *TaskEventInput) GetJobType() string { return v.JobType }
+
+// GetDataSourceId returns TaskEventInput.DataSourceId, and is useful for accessing the field via an interface.
+func (v *TaskEventInput) GetDataSourceId() *string { return v.DataSourceId }
+
+// GetIdentityStoreId returns TaskEventInput.IdentityStoreId, and is useful for accessing the field via an interface.
+func (v *TaskEventInput) GetIdentityStoreId() *string { return v.IdentityStoreId }
+
+// GetStatus returns TaskEventInput.Status, and is useful for accessing the field via an interface.
+func (v *TaskEventInput) GetStatus() TaskStatus { return v.Status }
+
+// GetEventTime returns TaskEventInput.EventTime, and is useful for accessing the field via an interface.
+func (v *TaskEventInput) GetEventTime() time.Time { return v.EventTime }
+
+// GetErrors returns TaskEventInput.Errors, and is useful for accessing the field via an interface.
+func (v *TaskEventInput) GetErrors() []string { return v.Errors }
+
+// GetWarnings returns TaskEventInput.Warnings, and is useful for accessing the field via an interface.
+func (v *TaskEventInput) GetWarnings() []string { return v.Warnings }
+
+// GetResult returns TaskEventInput.Result, and is useful for accessing the field via an interface.
+func (v *TaskEventInput) GetResult() []TaskResultInput { return v.Result }
+
+// TaskResult includes the requested fields of the GraphQL type TaskResult.
+type TaskResult struct {
+	ObjectTypeTaskResult `json:"-"`
+}
+
+// GetObjectType returns TaskResult.ObjectType, and is useful for accessing the field via an interface.
+func (v *TaskResult) GetObjectType() string { return v.ObjectTypeTaskResult.ObjectType }
+
+// GetAdded returns TaskResult.Added, and is useful for accessing the field via an interface.
+func (v *TaskResult) GetAdded() int { return v.ObjectTypeTaskResult.Added }
+
+// GetUpdated returns TaskResult.Updated, and is useful for accessing the field via an interface.
+func (v *TaskResult) GetUpdated() int { return v.ObjectTypeTaskResult.Updated }
+
+// GetRemoved returns TaskResult.Removed, and is useful for accessing the field via an interface.
+func (v *TaskResult) GetRemoved() int { return v.ObjectTypeTaskResult.Removed }
+
+func (v *TaskResult) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*TaskResult
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.TaskResult = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.ObjectTypeTaskResult)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalTaskResult struct {
+	ObjectType string `json:"objectType"`
+
+	Added int `json:"added"`
+
+	Updated int `json:"updated"`
+
+	Removed int `json:"removed"`
+}
+
+func (v *TaskResult) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *TaskResult) __premarshalJSON() (*__premarshalTaskResult, error) {
+	var retval __premarshalTaskResult
+
+	retval.ObjectType = v.ObjectTypeTaskResult.ObjectType
+	retval.Added = v.ObjectTypeTaskResult.Added
+	retval.Updated = v.ObjectTypeTaskResult.Updated
+	retval.Removed = v.ObjectTypeTaskResult.Removed
+	return &retval, nil
+}
+
+type TaskResultInput struct {
+	ObjectType string `json:"objectType"`
+	Added      *int   `json:"added,omitempty"`
+	Updated    *int   `json:"updated,omitempty"`
+	Removed    *int   `json:"removed,omitempty"`
+	Failed     *int   `json:"failed,omitempty"`
+}
+
+// GetObjectType returns TaskResultInput.ObjectType, and is useful for accessing the field via an interface.
+func (v *TaskResultInput) GetObjectType() string { return v.ObjectType }
+
+// GetAdded returns TaskResultInput.Added, and is useful for accessing the field via an interface.
+func (v *TaskResultInput) GetAdded() *int { return v.Added }
+
+// GetUpdated returns TaskResultInput.Updated, and is useful for accessing the field via an interface.
+func (v *TaskResultInput) GetUpdated() *int { return v.Updated }
+
+// GetRemoved returns TaskResultInput.Removed, and is useful for accessing the field via an interface.
+func (v *TaskResultInput) GetRemoved() *int { return v.Removed }
+
+// GetFailed returns TaskResultInput.Failed, and is useful for accessing the field via an interface.
+func (v *TaskResultInput) GetFailed() *int { return v.Failed }
+
+type TaskStatus string
+
+const (
+	TaskStatusStarted        TaskStatus = "Started"
+	TaskStatusDataretrieve   TaskStatus = "DataRetrieve"
+	TaskStatusDataupload     TaskStatus = "DataUpload"
+	TaskStatusQueued         TaskStatus = "Queued"
+	TaskStatusDataprocessing TaskStatus = "DataProcessing"
+	TaskStatusCompleted      TaskStatus = "Completed"
+	TaskStatusFailed         TaskStatus = "Failed"
+	TaskStatusSkipped        TaskStatus = "Skipped"
+	TaskStatusTimedout       TaskStatus = "TimedOut"
+)
+
+var AllTaskStatus = []TaskStatus{
+	TaskStatusStarted,
+	TaskStatusDataretrieve,
+	TaskStatusDataupload,
+	TaskStatusQueued,
+	TaskStatusDataprocessing,
+	TaskStatusCompleted,
+	TaskStatusFailed,
+	TaskStatusSkipped,
+	TaskStatusTimedout,
+}
 
 // UnassignGlobalRoleResponse is returned by UnassignGlobalRole on success.
 type UnassignGlobalRoleResponse struct {
@@ -33217,6 +38868,120 @@ func (v *UpdateIdentityStoreUpdateIdentityStorePermissionDeniedError) __premarsh
 	return &retval, nil
 }
 
+// UpdateJobResponse is returned by UpdateJob on success.
+type UpdateJobResponse struct {
+	UpdateJob UpdateJobUpdateJob `json:"updateJob"`
+}
+
+// GetUpdateJob returns UpdateJobResponse.UpdateJob, and is useful for accessing the field via an interface.
+func (v *UpdateJobResponse) GetUpdateJob() UpdateJobUpdateJob { return v.UpdateJob }
+
+// UpdateJobUpdateJob includes the requested fields of the GraphQL type Job.
+type UpdateJobUpdateJob struct {
+	Job `json:"-"`
+}
+
+// GetId returns UpdateJobUpdateJob.Id, and is useful for accessing the field via an interface.
+func (v *UpdateJobUpdateJob) GetId() string { return v.Job.Id }
+
+// GetStatus returns UpdateJobUpdateJob.Status, and is useful for accessing the field via an interface.
+func (v *UpdateJobUpdateJob) GetStatus() JobStatus { return v.Job.Status }
+
+// GetStartTime returns UpdateJobUpdateJob.StartTime, and is useful for accessing the field via an interface.
+func (v *UpdateJobUpdateJob) GetStartTime() time.Time { return v.Job.StartTime }
+
+// GetLastUpdate returns UpdateJobUpdateJob.LastUpdate, and is useful for accessing the field via an interface.
+func (v *UpdateJobUpdateJob) GetLastUpdate() time.Time { return v.Job.LastUpdate }
+
+// GetEndTime returns UpdateJobUpdateJob.EndTime, and is useful for accessing the field via an interface.
+func (v *UpdateJobUpdateJob) GetEndTime() *time.Time { return v.Job.EndTime }
+
+// GetDuration returns UpdateJobUpdateJob.Duration, and is useful for accessing the field via an interface.
+func (v *UpdateJobUpdateJob) GetDuration() *int64 { return v.Job.Duration }
+
+// GetHasErrors returns UpdateJobUpdateJob.HasErrors, and is useful for accessing the field via an interface.
+func (v *UpdateJobUpdateJob) GetHasErrors() *bool { return v.Job.HasErrors }
+
+// GetHasWarnings returns UpdateJobUpdateJob.HasWarnings, and is useful for accessing the field via an interface.
+func (v *UpdateJobUpdateJob) GetHasWarnings() *bool { return v.Job.HasWarnings }
+
+// GetDataSource returns UpdateJobUpdateJob.DataSource, and is useful for accessing the field via an interface.
+func (v *UpdateJobUpdateJob) GetDataSource() *JobDataSource { return v.Job.DataSource }
+
+// GetIdentityStore returns UpdateJobUpdateJob.IdentityStore, and is useful for accessing the field via an interface.
+func (v *UpdateJobUpdateJob) GetIdentityStore() *JobIdentityStore { return v.Job.IdentityStore }
+
+func (v *UpdateJobUpdateJob) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*UpdateJobUpdateJob
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.UpdateJobUpdateJob = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.Job)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalUpdateJobUpdateJob struct {
+	Id string `json:"id"`
+
+	Status JobStatus `json:"status"`
+
+	StartTime time.Time `json:"startTime"`
+
+	LastUpdate time.Time `json:"lastUpdate"`
+
+	EndTime *time.Time `json:"endTime"`
+
+	Duration *int64 `json:"duration"`
+
+	HasErrors *bool `json:"hasErrors"`
+
+	HasWarnings *bool `json:"hasWarnings"`
+
+	DataSource *JobDataSource `json:"dataSource"`
+
+	IdentityStore *JobIdentityStore `json:"identityStore"`
+}
+
+func (v *UpdateJobUpdateJob) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *UpdateJobUpdateJob) __premarshalJSON() (*__premarshalUpdateJobUpdateJob, error) {
+	var retval __premarshalUpdateJobUpdateJob
+
+	retval.Id = v.Job.Id
+	retval.Status = v.Job.Status
+	retval.StartTime = v.Job.StartTime
+	retval.LastUpdate = v.Job.LastUpdate
+	retval.EndTime = v.Job.EndTime
+	retval.Duration = v.Job.Duration
+	retval.HasErrors = v.Job.HasErrors
+	retval.HasWarnings = v.Job.HasWarnings
+	retval.DataSource = v.Job.DataSource
+	retval.IdentityStore = v.Job.IdentityStore
+	return &retval, nil
+}
+
 // UpdateRoleAssigneesOnAccessControlResponse is returned by UpdateRoleAssigneesOnAccessControl on success.
 type UpdateRoleAssigneesOnAccessControlResponse struct {
 	UpdateRoleAssigneesOnAccessControl UpdateRoleAssigneesOnAccessControlUpdateRoleAssigneesOnAccessControlRoleResult `json:"-"`
@@ -35296,6 +41061,28 @@ func __marshalUpdateUserUpdateUserUserResult(v *UpdateUserUpdateUserUserResult) 
 	}
 }
 
+type UsageMetaInput struct {
+	DefaultLevel *string                `json:"defaultLevel,omitempty"`
+	Levels       []UsageMetaInputDetail `json:"levels"`
+}
+
+// GetDefaultLevel returns UsageMetaInput.DefaultLevel, and is useful for accessing the field via an interface.
+func (v *UsageMetaInput) GetDefaultLevel() *string { return v.DefaultLevel }
+
+// GetLevels returns UsageMetaInput.Levels, and is useful for accessing the field via an interface.
+func (v *UsageMetaInput) GetLevels() []UsageMetaInputDetail { return v.Levels }
+
+type UsageMetaInputDetail struct {
+	Name            string   `json:"name"`
+	DataObjectTypes []string `json:"dataObjectTypes"`
+}
+
+// GetName returns UsageMetaInputDetail.Name, and is useful for accessing the field via an interface.
+func (v *UsageMetaInputDetail) GetName() string { return v.Name }
+
+// GetDataObjectTypes returns UsageMetaInputDetail.DataObjectTypes, and is useful for accessing the field via an interface.
+func (v *UsageMetaInputDetail) GetDataObjectTypes() []string { return v.DataObjectTypes }
+
 // User includes the GraphQL fields of User requested by the fragment User.
 type User struct {
 	Id    string   `json:"id"`
@@ -35315,6 +41102,37 @@ func (v *User) GetEmail() *string { return v.Email }
 
 // GetType returns User.Type, and is useful for accessing the field via an interface.
 func (v *User) GetType() UserType { return v.Type }
+
+type UserImport struct {
+	ExternalId       string      `json:"externalId"`
+	Name             string      `json:"name"`
+	UserName         string      `json:"userName"`
+	Email            string      `json:"email"`
+	Tags             []TagImport `json:"tags"`
+	IsMachine        bool        `json:"isMachine"`
+	GroupExternalIds []string    `json:"groupExternalIds"`
+}
+
+// GetExternalId returns UserImport.ExternalId, and is useful for accessing the field via an interface.
+func (v *UserImport) GetExternalId() string { return v.ExternalId }
+
+// GetName returns UserImport.Name, and is useful for accessing the field via an interface.
+func (v *UserImport) GetName() string { return v.Name }
+
+// GetUserName returns UserImport.UserName, and is useful for accessing the field via an interface.
+func (v *UserImport) GetUserName() string { return v.UserName }
+
+// GetEmail returns UserImport.Email, and is useful for accessing the field via an interface.
+func (v *UserImport) GetEmail() string { return v.Email }
+
+// GetTags returns UserImport.Tags, and is useful for accessing the field via an interface.
+func (v *UserImport) GetTags() []TagImport { return v.Tags }
+
+// GetIsMachine returns UserImport.IsMachine, and is useful for accessing the field via an interface.
+func (v *UserImport) GetIsMachine() bool { return v.IsMachine }
+
+// GetGroupExternalIds returns UserImport.GroupExternalIds, and is useful for accessing the field via an interface.
+func (v *UserImport) GetGroupExternalIds() []string { return v.GroupExternalIds }
 
 type UserInput struct {
 	Name            *string    `json:"name,omitempty"`
@@ -35398,6 +41216,21 @@ func (v *WhatAbacRuleInput) GetScope() []string { return v.Scope }
 // GetRule returns WhatAbacRuleInput.Rule, and is useful for accessing the field via an interface.
 func (v *WhatAbacRuleInput) GetRule() AbacComparisonExpressionInput { return v.Rule }
 
+type WhatItemImport struct {
+	AccessControlExternalId string                    `json:"accessControlExternalId"`
+	DataObject              DataObjectReferenceImport `json:"dataObject"`
+	Permissions             []string                  `json:"permissions"`
+}
+
+// GetAccessControlExternalId returns WhatItemImport.AccessControlExternalId, and is useful for accessing the field via an interface.
+func (v *WhatItemImport) GetAccessControlExternalId() string { return v.AccessControlExternalId }
+
+// GetDataObject returns WhatItemImport.DataObject, and is useful for accessing the field via an interface.
+func (v *WhatItemImport) GetDataObject() DataObjectReferenceImport { return v.DataObject }
+
+// GetPermissions returns WhatItemImport.Permissions, and is useful for accessing the field via an interface.
+func (v *WhatItemImport) GetPermissions() []string { return v.Permissions }
+
 // WhoAbacRule includes the GraphQL fields of WhoAbacRule requested by the fragment WhoAbacRule.
 type WhoAbacRule struct {
 	PromiseDuration *int64            `json:"promiseDuration"`
@@ -35442,6 +41275,25 @@ var AllWhoAndWhatType = []WhoAndWhatType{
 	WhoAndWhatTypeDynamic,
 	WhoAndWhatTypeUnknown,
 }
+
+type WhoItemImport struct {
+	Users          []string `json:"users"`
+	Groups         []string `json:"groups"`
+	AccessControls []string `json:"accessControls"`
+	Recipients     []string `json:"recipients"`
+}
+
+// GetUsers returns WhoItemImport.Users, and is useful for accessing the field via an interface.
+func (v *WhoItemImport) GetUsers() []string { return v.Users }
+
+// GetGroups returns WhoItemImport.Groups, and is useful for accessing the field via an interface.
+func (v *WhoItemImport) GetGroups() []string { return v.Groups }
+
+// GetAccessControls returns WhoItemImport.AccessControls, and is useful for accessing the field via an interface.
+func (v *WhoItemImport) GetAccessControls() []string { return v.AccessControls }
+
+// GetRecipients returns WhoItemImport.Recipients, and is useful for accessing the field via an interface.
+func (v *WhoItemImport) GetRecipients() []string { return v.Recipients }
 
 type WhoItemInput struct {
 	User            *string            `json:"user,omitempty"`
@@ -35498,6 +41350,22 @@ func (v *__AddIdentityStoreToDataSourceInput) GetDsId() string { return v.DsId }
 // GetIsId returns __AddIdentityStoreToDataSourceInput.IsId, and is useful for accessing the field via an interface.
 func (v *__AddIdentityStoreToDataSourceInput) GetIsId() string { return v.IsId }
 
+// __AddSubtaskEventInput is used internally by genqlient
+type __AddSubtaskEventInput struct {
+	Input SubtaskInput `json:"input"`
+}
+
+// GetInput returns __AddSubtaskEventInput.Input, and is useful for accessing the field via an interface.
+func (v *__AddSubtaskEventInput) GetInput() SubtaskInput { return v.Input }
+
+// __AddTaskEventInput is used internally by genqlient
+type __AddTaskEventInput struct {
+	Input TaskEventInput `json:"input"`
+}
+
+// GetInput returns __AddTaskEventInput.Input, and is useful for accessing the field via an interface.
+func (v *__AddTaskEventInput) GetInput() TaskEventInput { return v.Input }
+
 // __AssignGlobalRoleInput is used internally by genqlient
 type __AssignGlobalRoleInput struct {
 	Role string   `json:"role"`
@@ -35541,6 +41409,14 @@ type __CreateIdentityStoreInput struct {
 
 // GetInput returns __CreateIdentityStoreInput.Input, and is useful for accessing the field via an interface.
 func (v *__CreateIdentityStoreInput) GetInput() IdentityStoreInput { return v.Input }
+
+// __CreateJobInput is used internally by genqlient
+type __CreateJobInput struct {
+	Input JobInput `json:"input"`
+}
+
+// GetInput returns __CreateJobInput.Input, and is useful for accessing the field via an interface.
+func (v *__CreateJobInput) GetInput() JobInput { return v.Input }
 
 // __CreateUserInput is used internally by genqlient
 type __CreateUserInput struct {
@@ -35625,6 +41501,22 @@ type __DeleteIdentityStoreInput struct {
 
 // GetId returns __DeleteIdentityStoreInput.Id, and is useful for accessing the field via an interface.
 func (v *__DeleteIdentityStoreInput) GetId() string { return v.Id }
+
+// __EndOfTargetsSyncInput is used internally by genqlient
+type __EndOfTargetsSyncInput struct {
+	Input EndOfTargetsSyncInput `json:"input"`
+}
+
+// GetInput returns __EndOfTargetsSyncInput.Input, and is useful for accessing the field via an interface.
+func (v *__EndOfTargetsSyncInput) GetInput() EndOfTargetsSyncInput { return v.Input }
+
+// __FinishImportFlowInput is used internally by genqlient
+type __FinishImportFlowInput struct {
+	FlowId uuid.UUID `json:"flowId"`
+}
+
+// GetFlowId returns __FinishImportFlowInput.FlowId, and is useful for accessing the field via an interface.
+func (v *__FinishImportFlowInput) GetFlowId() uuid.UUID { return v.FlowId }
 
 // __GetAccessControlInput is used internally by genqlient
 type __GetAccessControlInput struct {
@@ -35758,6 +41650,14 @@ type __GetIdentityStoreInput struct {
 // GetId returns __GetIdentityStoreInput.Id, and is useful for accessing the field via an interface.
 func (v *__GetIdentityStoreInput) GetId() string { return v.Id }
 
+// __GetJobInput is used internally by genqlient
+type __GetJobInput struct {
+	Id string `json:"id"`
+}
+
+// GetId returns __GetJobInput.Id, and is useful for accessing the field via an interface.
+func (v *__GetJobInput) GetId() string { return v.Id }
+
 // __GetRoleInput is used internally by genqlient
 type __GetRoleInput struct {
 	Id string `json:"id"`
@@ -35765,6 +41665,34 @@ type __GetRoleInput struct {
 
 // GetId returns __GetRoleInput.Id, and is useful for accessing the field via an interface.
 func (v *__GetRoleInput) GetId() string { return v.Id }
+
+// __GetSubtaskOfTaskInput is used internally by genqlient
+type __GetSubtaskOfTaskInput struct {
+	JobId     string `json:"jobId"`
+	TaskType  string `json:"taskType"`
+	SubtaskId string `json:"subtaskId"`
+}
+
+// GetJobId returns __GetSubtaskOfTaskInput.JobId, and is useful for accessing the field via an interface.
+func (v *__GetSubtaskOfTaskInput) GetJobId() string { return v.JobId }
+
+// GetTaskType returns __GetSubtaskOfTaskInput.TaskType, and is useful for accessing the field via an interface.
+func (v *__GetSubtaskOfTaskInput) GetTaskType() string { return v.TaskType }
+
+// GetSubtaskId returns __GetSubtaskOfTaskInput.SubtaskId, and is useful for accessing the field via an interface.
+func (v *__GetSubtaskOfTaskInput) GetSubtaskId() string { return v.SubtaskId }
+
+// __GetTaskInput is used internally by genqlient
+type __GetTaskInput struct {
+	JobId    string `json:"jobId"`
+	TaskType string `json:"taskType"`
+}
+
+// GetJobId returns __GetTaskInput.JobId, and is useful for accessing the field via an interface.
+func (v *__GetTaskInput) GetJobId() string { return v.JobId }
+
+// GetTaskType returns __GetTaskInput.TaskType, and is useful for accessing the field via an interface.
+func (v *__GetTaskInput) GetTaskType() string { return v.TaskType }
 
 // __GetUserByEmailInput is used internally by genqlient
 type __GetUserByEmailInput struct {
@@ -35913,6 +41841,22 @@ func (v *__ListIdentityStoresInput) GetFilter() *IdentityStoreFilterInput { retu
 
 // GetOrder returns __ListIdentityStoresInput.Order, and is useful for accessing the field via an interface.
 func (v *__ListIdentityStoresInput) GetOrder() []IdentityStoreOrderByInput { return v.Order }
+
+// __ListJobsInput is used internally by genqlient
+type __ListJobsInput struct {
+	Filter *JobsFilter `json:"filter,omitempty"`
+	After  *string     `json:"after,omitempty"`
+	Limit  *int        `json:"limit,omitempty"`
+}
+
+// GetFilter returns __ListJobsInput.Filter, and is useful for accessing the field via an interface.
+func (v *__ListJobsInput) GetFilter() *JobsFilter { return v.Filter }
+
+// GetAfter returns __ListJobsInput.After, and is useful for accessing the field via an interface.
+func (v *__ListJobsInput) GetAfter() *string { return v.After }
+
+// GetLimit returns __ListJobsInput.Limit, and is useful for accessing the field via an interface.
+func (v *__ListJobsInput) GetLimit() *int { return v.Limit }
 
 // __ListRoleAssignmentsInput is used internally by genqlient
 type __ListRoleAssignmentsInput struct {
@@ -36090,6 +42034,22 @@ func (v *__ListRolesInput) GetFilter() *RoleFilterInput { return v.Filter }
 // GetOrder returns __ListRolesInput.Order, and is useful for accessing the field via an interface.
 func (v *__ListRolesInput) GetOrder() []RoleOrderByInput { return v.Order }
 
+// __ListTasksOfJobInput is used internally by genqlient
+type __ListTasksOfJobInput struct {
+	JobId string  `json:"jobId"`
+	After *string `json:"after,omitempty"`
+	Limit *int    `json:"limit,omitempty"`
+}
+
+// GetJobId returns __ListTasksOfJobInput.JobId, and is useful for accessing the field via an interface.
+func (v *__ListTasksOfJobInput) GetJobId() string { return v.JobId }
+
+// GetAfter returns __ListTasksOfJobInput.After, and is useful for accessing the field via an interface.
+func (v *__ListTasksOfJobInput) GetAfter() *string { return v.After }
+
+// GetLimit returns __ListTasksOfJobInput.Limit, and is useful for accessing the field via an interface.
+func (v *__ListTasksOfJobInput) GetLimit() *int { return v.Limit }
+
 // __RemoveIdentityStoreFromDataSourceInput is used internally by genqlient
 type __RemoveIdentityStoreFromDataSourceInput struct {
 	DsId string `json:"dsId"`
@@ -36102,6 +42062,18 @@ func (v *__RemoveIdentityStoreFromDataSourceInput) GetDsId() string { return v.D
 // GetIsId returns __RemoveIdentityStoreFromDataSourceInput.IsId, and is useful for accessing the field via an interface.
 func (v *__RemoveIdentityStoreFromDataSourceInput) GetIsId() string { return v.IsId }
 
+// __SetDataSourceMetadataInput is used internally by genqlient
+type __SetDataSourceMetadataInput struct {
+	DsID  string                  `json:"dsID"`
+	Input DataSourceMetaDataInput `json:"input"`
+}
+
+// GetDsID returns __SetDataSourceMetadataInput.DsID, and is useful for accessing the field via an interface.
+func (v *__SetDataSourceMetadataInput) GetDsID() string { return v.DsID }
+
+// GetInput returns __SetDataSourceMetadataInput.Input, and is useful for accessing the field via an interface.
+func (v *__SetDataSourceMetadataInput) GetInput() DataSourceMetaDataInput { return v.Input }
+
 // __SetGlobalRolesForUserInput is used internally by genqlient
 type __SetGlobalRolesForUserInput struct {
 	User  string   `json:"user"`
@@ -36113,6 +42085,22 @@ func (v *__SetGlobalRolesForUserInput) GetUser() string { return v.User }
 
 // GetRoles returns __SetGlobalRolesForUserInput.Roles, and is useful for accessing the field via an interface.
 func (v *__SetGlobalRolesForUserInput) GetRoles() []string { return v.Roles }
+
+// __StartImportFlowInput is used internally by genqlient
+type __StartImportFlowInput struct {
+	Input StartInputFlowInput `json:"input"`
+}
+
+// GetInput returns __StartImportFlowInput.Input, and is useful for accessing the field via an interface.
+func (v *__StartImportFlowInput) GetInput() StartInputFlowInput { return v.Input }
+
+// __SubmitImportObjectsInput is used internally by genqlient
+type __SubmitImportObjectsInput struct {
+	Input ImportCommands `json:"input"`
+}
+
+// GetInput returns __SubmitImportObjectsInput.Input, and is useful for accessing the field via an interface.
+func (v *__SubmitImportObjectsInput) GetInput() ImportCommands { return v.Input }
 
 // __UnassignGlobalRoleInput is used internally by genqlient
 type __UnassignGlobalRoleInput struct {
@@ -36189,6 +42177,18 @@ func (v *__UpdateIdentityStoreMasterFlagInput) GetId() string { return v.Id }
 
 // GetMaster returns __UpdateIdentityStoreMasterFlagInput.Master, and is useful for accessing the field via an interface.
 func (v *__UpdateIdentityStoreMasterFlagInput) GetMaster() bool { return v.Master }
+
+// __UpdateJobInput is used internally by genqlient
+type __UpdateJobInput struct {
+	Id    string   `json:"id"`
+	Input JobInput `json:"input"`
+}
+
+// GetId returns __UpdateJobInput.Id, and is useful for accessing the field via an interface.
+func (v *__UpdateJobInput) GetId() string { return v.Id }
+
+// GetInput returns __UpdateJobInput.Input, and is useful for accessing the field via an interface.
+func (v *__UpdateJobInput) GetInput() JobInput { return v.Input }
 
 // __UpdateRoleAssigneesOnAccessControlInput is used internally by genqlient
 type __UpdateRoleAssigneesOnAccessControlInput struct {
@@ -36450,6 +42450,107 @@ func AddIdentityStoreToDataSource(
 	}
 
 	data_ = &AddIdentityStoreToDataSourceResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
+// The mutation executed by AddSubtaskEvent.
+const AddSubtaskEvent_Operation = `
+mutation AddSubtaskEvent ($input: SubtaskInput!) {
+	addSubtaskEvent(input: $input) {
+		... Subtask
+	}
+}
+fragment Subtask on Subtask {
+	jobId
+	taskType: jobType
+	subtaskId
+	status
+	lastUpdate
+	isStreaming
+	flowId
+	ingestionFinished
+	flowClosed
+	flowCommandsAdded
+	flowCommandsUpdated
+	flowCommandsRemoved
+}
+`
+
+func AddSubtaskEvent(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	input SubtaskInput,
+) (data_ *AddSubtaskEventResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "AddSubtaskEvent",
+		Query:  AddSubtaskEvent_Operation,
+		Variables: &__AddSubtaskEventInput{
+			Input: input,
+		},
+	}
+
+	data_ = &AddSubtaskEventResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
+// The mutation executed by AddTaskEvent.
+const AddTaskEvent_Operation = `
+mutation AddTaskEvent ($input: TaskEventInput!) {
+	addTaskEvent(input: $input) {
+		... Task
+	}
+}
+fragment Task on Task {
+	jobId
+	taskType: jobType
+	status
+	startTime
+	lastUpdate
+	endTime
+	duration
+	numberOfWarnings
+	result {
+		... ObjectTypeTaskResult
+	}
+}
+fragment ObjectTypeTaskResult on TaskResult {
+	objectType
+	added
+	updated
+	removed
+}
+`
+
+func AddTaskEvent(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	input TaskEventInput,
+) (data_ *AddTaskEventResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "AddTaskEvent",
+		Query:  AddTaskEvent_Operation,
+		Variables: &__AddTaskEventInput{
+			Input: input,
+		},
+	}
+
+	data_ = &AddTaskEventResponse{}
 	resp_ := &graphql.Response{Data: data_}
 
 	err_ = client_.MakeRequest(
@@ -36835,6 +42936,79 @@ func CreateIdentityStore(
 	}
 
 	data_ = &CreateIdentityStoreResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
+// The mutation executed by CreateJob.
+const CreateJob_Operation = `
+mutation CreateJob ($input: JobInput!) {
+	createJob(input: $input) {
+		... Job
+	}
+}
+fragment Job on Job {
+	id: jobId
+	status
+	startTime
+	lastUpdate
+	endTime
+	duration
+	hasErrors
+	hasWarnings
+	dataSource {
+		... DataSource
+	}
+	identityStore {
+		... IdentityStore
+	}
+}
+fragment DataSource on DataSource {
+	id
+	name
+	type
+	description
+	createdAt
+	modifiedAt
+	description
+	syncMethod
+	parent {
+		id
+	}
+}
+fragment IdentityStore on IdentityStore {
+	id
+	name
+	type
+	description
+	createdAt
+	modifiedAt
+	master
+	native
+}
+`
+
+func CreateJob(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	input JobInput,
+) (data_ *CreateJobResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "CreateJob",
+		Query:  CreateJob_Operation,
+		Variables: &__CreateJobInput{
+			Input: input,
+		},
+	}
+
+	data_ = &CreateJobResponse{}
 	resp_ := &graphql.Response{Data: data_}
 
 	err_ = client_.MakeRequest(
@@ -37518,6 +43692,79 @@ func DeleteIdentityStore(
 	}
 
 	data_ = &DeleteIdentityStoreResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
+// The mutation executed by EndOfTargetsSync.
+const EndOfTargetsSync_Operation = `
+mutation EndOfTargetsSync ($input: EndOfTargetsSyncInput!) {
+	endOfTargetsSync(input: $input) {
+		__typename
+		... on EndOfTargetsSync {
+			success
+		}
+		... PermissionDeniedError
+	}
+}
+fragment PermissionDeniedError on PermissionDeniedError {
+	message
+}
+`
+
+func EndOfTargetsSync(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	input EndOfTargetsSyncInput,
+) (data_ *EndOfTargetsSyncResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "EndOfTargetsSync",
+		Query:  EndOfTargetsSync_Operation,
+		Variables: &__EndOfTargetsSyncInput{
+			Input: input,
+		},
+	}
+
+	data_ = &EndOfTargetsSyncResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
+// The mutation executed by FinishImportFlow.
+const FinishImportFlow_Operation = `
+mutation FinishImportFlow ($flowId: UUID!) {
+	finishImportFlow(flowId: $flowId)
+}
+`
+
+func FinishImportFlow(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	flowId uuid.UUID,
+) (data_ *FinishImportFlowResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "FinishImportFlow",
+		Query:  FinishImportFlow_Operation,
+		Variables: &__FinishImportFlowInput{
+			FlowId: flowId,
+		},
+	}
+
+	data_ = &FinishImportFlowResponse{}
 	resp_ := &graphql.Response{Data: data_}
 
 	err_ = client_.MakeRequest(
@@ -38321,6 +44568,79 @@ func GetIdentityStore(
 	return data_, err_
 }
 
+// The query executed by GetJob.
+const GetJob_Operation = `
+query GetJob ($id: ID!) {
+	job(jobId: $id) {
+		... Job
+	}
+}
+fragment Job on Job {
+	id: jobId
+	status
+	startTime
+	lastUpdate
+	endTime
+	duration
+	hasErrors
+	hasWarnings
+	dataSource {
+		... DataSource
+	}
+	identityStore {
+		... IdentityStore
+	}
+}
+fragment DataSource on DataSource {
+	id
+	name
+	type
+	description
+	createdAt
+	modifiedAt
+	description
+	syncMethod
+	parent {
+		id
+	}
+}
+fragment IdentityStore on IdentityStore {
+	id
+	name
+	type
+	description
+	createdAt
+	modifiedAt
+	master
+	native
+}
+`
+
+func GetJob(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	id string,
+) (data_ *GetJobResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "GetJob",
+		Query:  GetJob_Operation,
+		Variables: &__GetJobInput{
+			Id: id,
+		},
+	}
+
+	data_ = &GetJobResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
 // The query executed by GetRole.
 const GetRole_Operation = `
 query GetRole ($id: ID!) {
@@ -38349,6 +44669,113 @@ func GetRole(
 	}
 
 	data_ = &GetRoleResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
+// The query executed by GetSubtaskOfTask.
+const GetSubtaskOfTask_Operation = `
+query GetSubtaskOfTask ($jobId: ID!, $taskType: String!, $subtaskId: String!) {
+	jobSubtask(jobId: $jobId, jobType: $taskType, subtaskId: $subtaskId) {
+		... Subtask
+	}
+}
+fragment Subtask on Subtask {
+	jobId
+	taskType: jobType
+	subtaskId
+	status
+	lastUpdate
+	isStreaming
+	flowId
+	ingestionFinished
+	flowClosed
+	flowCommandsAdded
+	flowCommandsUpdated
+	flowCommandsRemoved
+}
+`
+
+func GetSubtaskOfTask(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	jobId string,
+	taskType string,
+	subtaskId string,
+) (data_ *GetSubtaskOfTaskResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "GetSubtaskOfTask",
+		Query:  GetSubtaskOfTask_Operation,
+		Variables: &__GetSubtaskOfTaskInput{
+			JobId:     jobId,
+			TaskType:  taskType,
+			SubtaskId: subtaskId,
+		},
+	}
+
+	data_ = &GetSubtaskOfTaskResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
+// The query executed by GetTask.
+const GetTask_Operation = `
+query GetTask ($jobId: ID!, $taskType: String!) {
+	jobTask(jobId: $jobId, jobType: $taskType) {
+		... Task
+	}
+}
+fragment Task on Task {
+	jobId
+	taskType: jobType
+	status
+	startTime
+	lastUpdate
+	endTime
+	duration
+	numberOfWarnings
+	result {
+		... ObjectTypeTaskResult
+	}
+}
+fragment ObjectTypeTaskResult on TaskResult {
+	objectType
+	added
+	updated
+	removed
+}
+`
+
+func GetTask(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	jobId string,
+	taskType string,
+) (data_ *GetTaskResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "GetTask",
+		Query:  GetTask_Operation,
+		Variables: &__GetTaskInput{
+			JobId:    jobId,
+			TaskType: taskType,
+		},
+	}
+
+	data_ = &GetTaskResponse{}
 	resp_ := &graphql.Response{Data: data_}
 
 	err_ = client_.MakeRequest(
@@ -39116,6 +45543,116 @@ func ListIdentityStores(
 	return data_, err_
 }
 
+// The query executed by ListJobs.
+const ListJobs_Operation = `
+query ListJobs ($filter: JobsFilter, $after: String, $limit: Int) {
+	jobs(filter: $filter, after: $after, limit: $limit) {
+		__typename
+		... JobConnectionResult
+	}
+}
+fragment JobConnectionResult on JobConnectionResult {
+	... JobConnection
+	... NotFoundError
+	... PermissionDeniedError
+	... InvalidInputError
+}
+fragment JobConnection on JobConnection {
+	... on JobConnection {
+		pageInfo {
+			... PageInfo
+		}
+		edges {
+			cursor
+			node {
+				... Job
+			}
+		}
+	}
+}
+fragment NotFoundError on NotFoundError {
+	message
+}
+fragment PermissionDeniedError on PermissionDeniedError {
+	message
+}
+fragment InvalidInputError on InvalidInputError {
+	message
+}
+fragment PageInfo on PageInfo {
+	hasNextPage
+	startCursor
+}
+fragment Job on Job {
+	id: jobId
+	status
+	startTime
+	lastUpdate
+	endTime
+	duration
+	hasErrors
+	hasWarnings
+	dataSource {
+		... DataSource
+	}
+	identityStore {
+		... IdentityStore
+	}
+}
+fragment DataSource on DataSource {
+	id
+	name
+	type
+	description
+	createdAt
+	modifiedAt
+	description
+	syncMethod
+	parent {
+		id
+	}
+}
+fragment IdentityStore on IdentityStore {
+	id
+	name
+	type
+	description
+	createdAt
+	modifiedAt
+	master
+	native
+}
+`
+
+func ListJobs(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	filter *JobsFilter,
+	after *string,
+	limit *int,
+) (data_ *ListJobsResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "ListJobs",
+		Query:  ListJobs_Operation,
+		Variables: &__ListJobsInput{
+			Filter: filter,
+			After:  after,
+			Limit:  limit,
+		},
+	}
+
+	data_ = &ListJobsResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
 // The query executed by ListRoleAssignments.
 const ListRoleAssignments_Operation = `
 query ListRoleAssignments ($after: String, $limit: Int, $filter: RoleAssignmentFilterInput, $order: [RoleAssignmentOrderInput!]) {
@@ -39867,6 +46404,96 @@ func ListRoles(
 	return data_, err_
 }
 
+// The query executed by ListTasksOfJob.
+const ListTasksOfJob_Operation = `
+query ListTasksOfJob ($jobId: ID!, $after: String, $limit: Int) {
+	job(jobId: $jobId) {
+		tasks(after: $after, limit: $limit) {
+			__typename
+			... TaskConnectionResult
+		}
+	}
+}
+fragment TaskConnectionResult on TaskConnectionResult {
+	... TaskConnection
+	... NotFoundError
+	... PermissionDeniedError
+	... InvalidInputError
+}
+fragment TaskConnection on TaskConnection {
+	pageInfo {
+		... PageInfo
+	}
+	edges {
+		cursor
+		node {
+			... Task
+		}
+	}
+}
+fragment NotFoundError on NotFoundError {
+	message
+}
+fragment PermissionDeniedError on PermissionDeniedError {
+	message
+}
+fragment InvalidInputError on InvalidInputError {
+	message
+}
+fragment PageInfo on PageInfo {
+	hasNextPage
+	startCursor
+}
+fragment Task on Task {
+	jobId
+	taskType: jobType
+	status
+	startTime
+	lastUpdate
+	endTime
+	duration
+	numberOfWarnings
+	result {
+		... ObjectTypeTaskResult
+	}
+}
+fragment ObjectTypeTaskResult on TaskResult {
+	objectType
+	added
+	updated
+	removed
+}
+`
+
+func ListTasksOfJob(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	jobId string,
+	after *string,
+	limit *int,
+) (data_ *ListTasksOfJobResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "ListTasksOfJob",
+		Query:  ListTasksOfJob_Operation,
+		Variables: &__ListTasksOfJobInput{
+			JobId: jobId,
+			After: after,
+			Limit: limit,
+		},
+	}
+
+	data_ = &ListTasksOfJobResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
 // The mutation executed by RemoveIdentityStoreFromDataSource.
 const RemoveIdentityStoreFromDataSource_Operation = `
 mutation RemoveIdentityStoreFromDataSource ($dsId: ID!, $isId: ID!) {
@@ -39925,6 +46552,68 @@ func RemoveIdentityStoreFromDataSource(
 	return data_, err_
 }
 
+// The mutation executed by SetDataSourceMetadata.
+const SetDataSourceMetadata_Operation = `
+mutation SetDataSourceMetadata ($dsID: ID!, $input: DataSourceMetaDataInput!) {
+	setDataSourceMetaData(id: $dsID, input: $input) {
+		__typename
+		... DataSource
+		... PermissionDeniedError
+		... NotFoundError
+		... InvalidInputError
+	}
+}
+fragment DataSource on DataSource {
+	id
+	name
+	type
+	description
+	createdAt
+	modifiedAt
+	description
+	syncMethod
+	parent {
+		id
+	}
+}
+fragment PermissionDeniedError on PermissionDeniedError {
+	message
+}
+fragment NotFoundError on NotFoundError {
+	message
+}
+fragment InvalidInputError on InvalidInputError {
+	message
+}
+`
+
+func SetDataSourceMetadata(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	dsID string,
+	input DataSourceMetaDataInput,
+) (data_ *SetDataSourceMetadataResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "SetDataSourceMetadata",
+		Query:  SetDataSourceMetadata_Operation,
+		Variables: &__SetDataSourceMetadataInput{
+			DsID:  dsID,
+			Input: input,
+		},
+	}
+
+	data_ = &SetDataSourceMetadataResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
 // The mutation executed by SetGlobalRolesForUser.
 const SetGlobalRolesForUser_Operation = `
 mutation SetGlobalRolesForUser ($user: ID!, $roles: [ID!]!) {
@@ -39957,6 +46646,117 @@ func SetGlobalRolesForUser(
 	}
 
 	data_ = &SetGlobalRolesForUserResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
+// The mutation executed by StartImportFlow.
+const StartImportFlow_Operation = `
+mutation StartImportFlow ($input: StartInputFlowInput!) {
+	startImportFlow(input: $input) {
+		__typename
+		... Subtask
+		... PermissionDeniedError
+		... NotFoundError
+		... InvalidInputError
+	}
+}
+fragment Subtask on Subtask {
+	jobId
+	taskType: jobType
+	subtaskId
+	status
+	lastUpdate
+	isStreaming
+	flowId
+	ingestionFinished
+	flowClosed
+	flowCommandsAdded
+	flowCommandsUpdated
+	flowCommandsRemoved
+}
+fragment PermissionDeniedError on PermissionDeniedError {
+	message
+}
+fragment NotFoundError on NotFoundError {
+	message
+}
+fragment InvalidInputError on InvalidInputError {
+	message
+}
+`
+
+func StartImportFlow(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	input StartInputFlowInput,
+) (data_ *StartImportFlowResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "StartImportFlow",
+		Query:  StartImportFlow_Operation,
+		Variables: &__StartImportFlowInput{
+			Input: input,
+		},
+	}
+
+	data_ = &StartImportFlowResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
+// The mutation executed by SubmitImportObjects.
+const SubmitImportObjects_Operation = `
+mutation SubmitImportObjects ($input: ImportCommands!) {
+	submitImportObjects(input: $input) {
+		__typename
+		... SubmittedCommands
+		... PermissionDeniedError
+		... NotFoundError
+		... InvalidInputError
+	}
+}
+fragment SubmittedCommands on SubmittedCommands {
+	submitted
+}
+fragment PermissionDeniedError on PermissionDeniedError {
+	message
+}
+fragment NotFoundError on NotFoundError {
+	message
+}
+fragment InvalidInputError on InvalidInputError {
+	message
+}
+`
+
+func SubmitImportObjects(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	input ImportCommands,
+) (data_ *SubmitImportObjectsResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "SubmitImportObjects",
+		Query:  SubmitImportObjects_Operation,
+		Variables: &__SubmitImportObjectsInput{
+			Input: input,
+		},
+	}
+
+	data_ = &SubmitImportObjectsResponse{}
 	resp_ := &graphql.Response{Data: data_}
 
 	err_ = client_.MakeRequest(
@@ -40416,6 +47216,81 @@ func UpdateIdentityStoreMasterFlag(
 	}
 
 	data_ = &UpdateIdentityStoreMasterFlagResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
+// The mutation executed by UpdateJob.
+const UpdateJob_Operation = `
+mutation UpdateJob ($id: String!, $input: JobInput!) {
+	updateJob(id: $id, input: $input) {
+		... Job
+	}
+}
+fragment Job on Job {
+	id: jobId
+	status
+	startTime
+	lastUpdate
+	endTime
+	duration
+	hasErrors
+	hasWarnings
+	dataSource {
+		... DataSource
+	}
+	identityStore {
+		... IdentityStore
+	}
+}
+fragment DataSource on DataSource {
+	id
+	name
+	type
+	description
+	createdAt
+	modifiedAt
+	description
+	syncMethod
+	parent {
+		id
+	}
+}
+fragment IdentityStore on IdentityStore {
+	id
+	name
+	type
+	description
+	createdAt
+	modifiedAt
+	master
+	native
+}
+`
+
+func UpdateJob(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	id string,
+	input JobInput,
+) (data_ *UpdateJobResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "UpdateJob",
+		Query:  UpdateJob_Operation,
+		Variables: &__UpdateJobInput{
+			Id:    id,
+			Input: input,
+		},
+	}
+
+	data_ = &UpdateJobResponse{}
 	resp_ := &graphql.Response{Data: data_}
 
 	err_ = client_.MakeRequest(

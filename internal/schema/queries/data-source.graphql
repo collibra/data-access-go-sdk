@@ -123,3 +123,12 @@ mutation RemoveIdentityStoreFromDataSource($dsId: ID! $isId: ID!) {
         ...NotFoundError
     }
 }
+
+mutation SetDataSourceMetadata($dsID: ID!, $input: DataSourceMetaDataInput!) {
+    setDataSourceMetaData(id: $dsID, input: $input) {
+        ... DataSource
+        ... PermissionDeniedError
+        ... NotFoundError
+        ... InvalidInputError
+    }
+}

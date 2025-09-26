@@ -1,0 +1,25 @@
+fragment SubmittedCommands on SubmittedCommands {
+    submitted
+}
+
+mutation StartImportFlow($input: StartInputFlowInput!) {
+    startImportFlow(input: $input) {
+        ... Subtask
+        ... PermissionDeniedError
+        ... NotFoundError
+        ... InvalidInputError
+    }
+}
+
+mutation FinishImportFlow($flowId: UUID!) {
+    finishImportFlow(flowId: $flowId)
+}
+
+mutation SubmitImportObjects($input: ImportCommands!) {
+    submitImportObjects(input: $input) {
+        ... SubmittedCommands
+        ... PermissionDeniedError
+        ... NotFoundError
+        ... InvalidInputError
+    }
+}

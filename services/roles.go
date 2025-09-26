@@ -4,21 +4,22 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"iter"
 
 	"github.com/Khan/genqlient/graphql"
-	"github.com/aws/smithy-go/ptr"
 
 	"github.com/collibra/access-governance-go-sdk/internal"
 	"github.com/collibra/access-governance-go-sdk/internal/schema"
 	"github.com/collibra/access-governance-go-sdk/types"
+	"github.com/collibra/access-governance-go-sdk/utils"
 )
 
 type RoleClient struct {
 	client graphql.Client
 }
 
-func NewRoleClient(client graphql.Client) RoleClient {
-	return RoleClient{
+func NewRoleClient(client graphql.Client) *RoleClient {
+	return &RoleClient{
 		client: client,
 	}
 }
@@ -58,14 +59,14 @@ func WithRoleListFilter(input *types.RoleFilterInput) func(options *RoleListOpti
 // A filter can be specified with WithRoleListFilter.
 // A channel is returned that can be used to receive the list of types.Role.
 // To close the channel ensure to cancel the context.
-func (c *RoleClient) ListRoles(ctx context.Context, ops ...func(*RoleListOptions)) <-chan types.ListItem[types.Role] { //nolint:dupl
+func (c *RoleClient) ListRoles(ctx context.Context, ops ...func(*RoleListOptions)) iter.Seq2[*types.Role, error] { //nolint:dupl
 	options := RoleListOptions{}
 	for _, op := range ops {
 		op(&options)
 	}
 
 	loadPageFn := func(ctx context.Context, cursor *string) (*types.PageInfo, []types.RoleConnectionEdgesRoleEdge, error) { //nolint:dupl
-		output, err := schema.ListRoles(ctx, c.client, cursor, ptr.Int(internal.MaxPageSize), options.filter, options.order)
+		output, err := schema.ListRoles(ctx, c.client, cursor, utils.Ptr(internal.MaxPageSize), options.filter, options.order)
 		if err != nil {
 			return nil, nil, types.NewErrClient(err)
 		}
@@ -119,14 +120,14 @@ func WithRoleAssignmentListFilter(input *types.RoleAssignmentFilterInput) func(o
 // A filter can be specified with WithRoleAssignmentListFilter
 // A channel is returned that can be used to receive the list of types.RoleAssignment
 // To close the channel ensure to cancel the context.
-func (c *RoleClient) ListRoleAssignments(ctx context.Context, ops ...func(*RoleAssignmentListOptions)) <-chan types.ListItem[types.RoleAssignment] {
+func (c *RoleClient) ListRoleAssignments(ctx context.Context, ops ...func(*RoleAssignmentListOptions)) iter.Seq2[*types.RoleAssignment, error] {
 	options := RoleAssignmentListOptions{}
 	for _, op := range ops {
 		op(&options)
 	}
 
 	loadPageFn := func(ctx context.Context, cursor *string) (*types.PageInfo, []types.RoleAssignmentConnectionEdgesRoleAssignmentEdge, error) { //nolint:dupl
-		output, err := schema.ListRoleAssignments(ctx, c.client, cursor, ptr.Int(internal.MaxPageSize), options.filter, options.order)
+		output, err := schema.ListRoleAssignments(ctx, c.client, cursor, utils.Ptr(internal.MaxPageSize), options.filter, options.order)
 		if err != nil {
 			return nil, nil, types.NewErrClient(err)
 		}
@@ -153,14 +154,14 @@ func (c *RoleClient) ListRoleAssignments(ctx context.Context, ops ...func(*RoleA
 // A filter can be specified with WithRoleAssignmentListFilter.
 // A channel is returned that can be used to receive the list of types.RoleAssignment.
 // To close the channel ensure to cancel the context.
-func (c *RoleClient) ListRoleAssignmentsOnIdentityStore(ctx context.Context, identityId string, ops ...func(*RoleAssignmentListOptions)) <-chan types.ListItem[types.RoleAssignment] {
+func (c *RoleClient) ListRoleAssignmentsOnIdentityStore(ctx context.Context, identityId string, ops ...func(*RoleAssignmentListOptions)) iter.Seq2[*types.RoleAssignment, error] {
 	options := RoleAssignmentListOptions{}
 	for _, op := range ops {
 		op(&options)
 	}
 
 	loadPageFn := func(ctx context.Context, cursor *string) (*types.PageInfo, []types.RoleAssignmentConnectionEdgesRoleAssignmentEdge, error) {
-		output, err := schema.ListRoleAssignmentsOnIdentityStore(ctx, c.client, identityId, cursor, ptr.Int(internal.MaxPageSize), options.filter, options.order)
+		output, err := schema.ListRoleAssignmentsOnIdentityStore(ctx, c.client, identityId, cursor, utils.Ptr(internal.MaxPageSize), options.filter, options.order)
 		if err != nil {
 			return nil, nil, types.NewErrClient(err)
 		}
@@ -194,14 +195,14 @@ func (c *RoleClient) ListRoleAssignmentsOnIdentityStore(ctx context.Context, ide
 // A filter can be specified with WithRoleAssignmentListFilter.
 // A channel is returned that can be used to receive the list of types.RoleAssignment.
 // To close the channel ensure to cancel the context.
-func (c *RoleClient) ListRoleAssignmentsOnDataObject(ctx context.Context, objectId string, ops ...func(*RoleAssignmentListOptions)) <-chan types.ListItem[types.RoleAssignment] {
+func (c *RoleClient) ListRoleAssignmentsOnDataObject(ctx context.Context, objectId string, ops ...func(*RoleAssignmentListOptions)) iter.Seq2[*types.RoleAssignment, error] {
 	options := RoleAssignmentListOptions{}
 	for _, op := range ops {
 		op(&options)
 	}
 
 	loadPageFn := func(ctx context.Context, cursor *string) (*types.PageInfo, []types.RoleAssignmentConnectionEdgesRoleAssignmentEdge, error) {
-		output, err := schema.ListRoleAssignmentsOnDataObject(ctx, c.client, objectId, cursor, ptr.Int(internal.MaxPageSize), options.filter, options.order)
+		output, err := schema.ListRoleAssignmentsOnDataObject(ctx, c.client, objectId, cursor, utils.Ptr(internal.MaxPageSize), options.filter, options.order)
 		if err != nil {
 			return nil, nil, types.NewErrClient(err)
 		}
@@ -228,14 +229,14 @@ func (c *RoleClient) ListRoleAssignmentsOnDataObject(ctx context.Context, object
 // A filter can be specified with WithRoleAssignmentListFilter.
 // A channel is returned that can be used to receive the list of types.RoleAssignment.
 // To close the channel ensure to cancel the context.
-func (c *RoleClient) ListRoleAssignmentsOnDataSource(ctx context.Context, dataSourceId string, ops ...func(*RoleAssignmentListOptions)) <-chan types.ListItem[types.RoleAssignment] { //nolint:dupl
+func (c *RoleClient) ListRoleAssignmentsOnDataSource(ctx context.Context, dataSourceId string, ops ...func(*RoleAssignmentListOptions)) iter.Seq2[*types.RoleAssignment, error] { //nolint:dupl
 	options := RoleAssignmentListOptions{}
 	for _, op := range ops {
 		op(&options)
 	}
 
 	loadPageFn := func(ctx context.Context, cursor *string) (*types.PageInfo, []types.RoleAssignmentConnectionEdgesRoleAssignmentEdge, error) {
-		output, err := schema.ListRoleAssignmentsOnDataSource(ctx, c.client, dataSourceId, cursor, ptr.Int(internal.MaxPageSize), options.filter, options.order)
+		output, err := schema.ListRoleAssignmentsOnDataSource(ctx, c.client, dataSourceId, cursor, utils.Ptr(internal.MaxPageSize), options.filter, options.order)
 		if err != nil {
 			return nil, nil, types.NewErrClient(err)
 		}
@@ -269,14 +270,14 @@ func (c *RoleClient) ListRoleAssignmentsOnDataSource(ctx context.Context, dataSo
 // A filter can be specified with WithRoleAssignmentListFilter.
 // A channel is returned that can be used to receive the list of types.RoleAssignment.
 // To close the channel ensure to cancel the context.
-func (c *RoleClient) ListRoleAssignmentsOnAccessControl(ctx context.Context, accessControlId string, ops ...func(*RoleAssignmentListOptions)) <-chan types.ListItem[types.RoleAssignment] { //nolint:dupl
+func (c *RoleClient) ListRoleAssignmentsOnAccessControl(ctx context.Context, accessControlId string, ops ...func(*RoleAssignmentListOptions)) iter.Seq2[*types.RoleAssignment, error] { //nolint:dupl
 	options := RoleAssignmentListOptions{}
 	for _, op := range ops {
 		op(&options)
 	}
 
 	loadPageFn := func(ctx context.Context, cursor *string) (*types.PageInfo, []types.RoleAssignmentConnectionEdgesRoleAssignmentEdge, error) {
-		output, err := schema.ListRoleAssignmentsOnAccessControl(ctx, c.client, accessControlId, cursor, ptr.Int(internal.MaxPageSize), options.filter, options.order)
+		output, err := schema.ListRoleAssignmentsOnAccessControl(ctx, c.client, accessControlId, cursor, utils.Ptr(internal.MaxPageSize), options.filter, options.order)
 		if err != nil {
 			return nil, nil, types.NewErrClient(err)
 		}
@@ -302,14 +303,14 @@ func (c *RoleClient) ListRoleAssignmentsOnAccessControl(ctx context.Context, acc
 // A filter can be specified with WithRoleAssignmentListFilter.
 // A channel is returned that can be used to receive the list of types.RoleAssignment.
 // To close the channel ensure to cancel the context.
-func (c *RoleClient) ListRoleAssignmentsOnUser(ctx context.Context, userId string, ops ...func(*RoleAssignmentListOptions)) <-chan types.ListItem[types.RoleAssignment] {
+func (c *RoleClient) ListRoleAssignmentsOnUser(ctx context.Context, userId string, ops ...func(*RoleAssignmentListOptions)) iter.Seq2[*types.RoleAssignment, error] {
 	options := RoleAssignmentListOptions{}
 	for _, op := range ops {
 		op(&options)
 	}
 
 	loadPageFn := func(ctx context.Context, cursor *string) (*types.PageInfo, []types.RoleAssignmentConnectionEdgesRoleAssignmentEdge, error) {
-		output, err := schema.ListRoleAssignmentsOnUser(ctx, c.client, userId, cursor, ptr.Int(internal.MaxPageSize), options.filter, options.order)
+		output, err := schema.ListRoleAssignmentsOnUser(ctx, c.client, userId, cursor, utils.Ptr(internal.MaxPageSize), options.filter, options.order)
 		if err != nil {
 			return nil, nil, types.NewErrClient(err)
 		}

@@ -4,21 +4,22 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"iter"
 
 	"github.com/Khan/genqlient/graphql"
-	"github.com/aws/smithy-go/ptr"
 
 	"github.com/collibra/access-governance-go-sdk/internal"
 	"github.com/collibra/access-governance-go-sdk/internal/schema"
 	"github.com/collibra/access-governance-go-sdk/types"
+	"github.com/collibra/access-governance-go-sdk/utils"
 )
 
 type DataObjectClient struct {
 	client graphql.Client
 }
 
-func NewDataObjectClient(client graphql.Client) DataObjectClient {
-	return DataObjectClient{
+func NewDataObjectClient(client graphql.Client) *DataObjectClient {
+	return &DataObjectClient{
 		client: client,
 	}
 }
@@ -57,14 +58,14 @@ func WithDataObjectListFilter(input *types.DataObjectFilterInput) func(options *
 // A filter can be specified with WithDataObjectListFilter
 // A channel is returned that can be used to receive the list of DataObjectListItem
 // To close the channel ensure to cancel the context
-func (c *DataObjectClient) ListDataObjects(ctx context.Context, ops ...func(options *DataObjectListOptions)) <-chan types.ListItem[types.DataObject] { //nolint:dupl
+func (c *DataObjectClient) ListDataObjects(ctx context.Context, ops ...func(options *DataObjectListOptions)) iter.Seq2[*types.DataObject, error] { //nolint:dupl
 	options := DataObjectListOptions{}
 	for _, op := range ops {
 		op(&options)
 	}
 
 	loadPageFn := func(ctx context.Context, cursor *string) (*types.PageInfo, []types.DataObjectConnectionEdgesDataObjectEdge, error) { //nolint:dupl
-		output, err := schema.ListDataObjects(ctx, c.client, cursor, ptr.Int(internal.MaxPageSize), options.filter, options.order)
+		output, err := schema.ListDataObjects(ctx, c.client, cursor, utils.Ptr(internal.MaxPageSize), options.filter, options.order)
 		if err != nil {
 			return nil, nil, types.NewErrClient(err)
 		}
