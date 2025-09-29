@@ -8,7 +8,7 @@ require (
 	// This is a temporary pseudo-version used because an official release
 	// containing a necessary fix is not yet available. It will be replaced
 	// with an official version once it is released.
-	github.com/Khan/genqlient v0.8.2-0.20250814234345-01cfbc3903fc
+	github.com/Khan/genqlient v0.8.2-0.20250910230456-7c070dd710ca
 	github.com/google/uuid v1.6.0
 	github.com/stretchr/testify v1.11.1
 	golang.org/x/tools v0.37.0
