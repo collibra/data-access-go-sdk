@@ -668,6 +668,7 @@ type RoleAssignmentOnPermissionDeniedError = schema.RoleAssignmentOnPermissionDe
 type RoleAssignmentOrderInput = schema.RoleAssignmentOrderInput
 type RoleAssignmentRole = schema.RoleAssignmentRole
 type RoleAssignmentTo = schema.RoleAssignmentTo
+type RoleAssignmentToAccessControl = schema.RoleAssignmentToAccessControl
 type RoleAssignmentToGroup = schema.RoleAssignmentToGroup
 type RoleAssignmentToUser = schema.RoleAssignmentToUser
 type RoleConnection = schema.RoleConnection

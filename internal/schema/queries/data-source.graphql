@@ -53,8 +53,8 @@ query GetDataSource($id: ID!) {
     }
 }
 
-query ListDataSources($after: String, $limit: Int, $filter: DataSourceFilterInput, $search: String, $order: [DataSourceOrderByInput!]) {
-    dataSources(after: $after, limit: $limit, filter: $filter, order: $order, search: $search) {
+query ListDataSources($after: String, $limit: Int, $filter: DataSourceFilterInput, $order: [DataSourceOrderByInput!]) {
+    dataSources(after: $after, limit: $limit, filter: $filter, order: $order) {
         ... DataSourceConnectionResult
     }
 }

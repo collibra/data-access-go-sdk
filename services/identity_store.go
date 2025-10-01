@@ -165,7 +165,7 @@ func (c *IdentityStoreClient) ListIdentityStores(ctx context.Context, ops ...fun
 	}
 
 	loadPageFn := func(ctx context.Context, cursor *string) (*types.PageInfo, []types.IdentityStoreConnectionEdgesIdentityStoreEdge, error) {
-		output, err := schema.ListIdentityStores(ctx, c.client, cursor, utils.Ptr(internal.MaxPageSize), nil, options.filter, options.order)
+		output, err := schema.ListIdentityStores(ctx, c.client, cursor, utils.Ptr(internal.MaxPageSize), options.filter, options.order)
 		if err != nil {
 			return nil, nil, types.NewErrClient(err)
 		}

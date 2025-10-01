@@ -1,9 +1,7 @@
 fragment Group on Group {
     id
     name
-    displayName
     description
-    deleted
 }
 
 fragment GroupConnection on GroupConnection {

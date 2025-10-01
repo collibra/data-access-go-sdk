@@ -37,8 +37,8 @@ query GetIdentityStore($id: ID!) {
     }
 }
 
-query ListIdentityStores($after: String, $limit: Int, $search: String, $filter: IdentityStoreFilterInput, $order: [IdentityStoreOrderByInput!]) {
-    identityStores(after: $after, limit: $limit, search: $search, filter:$filter, order: $order) {
+query ListIdentityStores($after: String, $limit: Int, $filter: IdentityStoreFilterInput, $order: [IdentityStoreOrderByInput!]) {
+    identityStores(after: $after, limit: $limit, filter:$filter, order: $order) {
         ... PermissionDeniedError
         ...IdentityStoreConnectionResult
     }

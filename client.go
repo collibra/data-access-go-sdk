@@ -52,7 +52,7 @@ func NewClient(user, password, url string) *CollibraClient {
 		apiUrl = internal.DefaultApiEndpoint
 	}
 
-	if !strings.HasSuffix(url, "/") {
+	if !strings.HasSuffix(apiUrl, "/") {
 		apiUrl += "/"
 	}
 

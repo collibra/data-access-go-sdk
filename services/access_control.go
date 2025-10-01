@@ -377,7 +377,7 @@ func (a *AccessControlClient) GetAccessControlWhatAccessControlList(ctx context.
 	}
 
 	loadPageFn := func(ctx context.Context, cursor *string) (*types.PageInfo, []types.AccessWhatAccessControlItemConnectionEdgesAccessWhatAccessControlItemEdge, error) {
-		output, err := schema.GetAccessControlWhatAccessControls(ctx, a.client, id, cursor, utils.Ptr(internal.MaxPageSize), nil, options.order, options.filter)
+		output, err := schema.GetAccessControlWhatAccessControls(ctx, a.client, id, cursor, utils.Ptr(internal.MaxPageSize), options.order, options.filter)
 		if err != nil {
 			return nil, nil, types.NewErrClient(err)
 		}

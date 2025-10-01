@@ -1817,16 +1817,12 @@ func (v *AccessControlWhoAbacRule) __premarshalJSON() (*__premarshalAccessContro
 
 type AccessControlWhoFeedbackState struct {
 	Users       []string `json:"users"`
-	Groups      []string `json:"groups"`
 	InheritFrom []string `json:"inheritFrom"`
 	Recipients  []string `json:"recipients"`
 }
 
 // GetUsers returns AccessControlWhoFeedbackState.Users, and is useful for accessing the field via an interface.
 func (v *AccessControlWhoFeedbackState) GetUsers() []string { return v.Users }
-
-// GetGroups returns AccessControlWhoFeedbackState.Groups, and is useful for accessing the field via an interface.
-func (v *AccessControlWhoFeedbackState) GetGroups() []string { return v.Groups }
 
 // GetInheritFrom returns AccessControlWhoFeedbackState.InheritFrom, and is useful for accessing the field via an interface.
 func (v *AccessControlWhoFeedbackState) GetInheritFrom() []string { return v.InheritFrom }
@@ -17301,14 +17297,8 @@ func (v *GetGroupGroup) GetId() string { return v.Group.Id }
 // GetName returns GetGroupGroup.Name, and is useful for accessing the field via an interface.
 func (v *GetGroupGroup) GetName() string { return v.Group.Name }
 
-// GetDisplayName returns GetGroupGroup.DisplayName, and is useful for accessing the field via an interface.
-func (v *GetGroupGroup) GetDisplayName() string { return v.Group.DisplayName }
-
 // GetDescription returns GetGroupGroup.Description, and is useful for accessing the field via an interface.
 func (v *GetGroupGroup) GetDescription() *string { return v.Group.Description }
-
-// GetDeleted returns GetGroupGroup.Deleted, and is useful for accessing the field via an interface.
-func (v *GetGroupGroup) GetDeleted() bool { return v.Group.Deleted }
 
 func (v *GetGroupGroup) UnmarshalJSON(b []byte) error {
 
@@ -17340,11 +17330,7 @@ type __premarshalGetGroupGroup struct {
 
 	Name string `json:"name"`
 
-	DisplayName string `json:"displayName"`
-
 	Description *string `json:"description"`
-
-	Deleted bool `json:"deleted"`
 }
 
 func (v *GetGroupGroup) MarshalJSON() ([]byte, error) {
@@ -17360,9 +17346,7 @@ func (v *GetGroupGroup) __premarshalJSON() (*__premarshalGetGroupGroup, error) {
 
 	retval.Id = v.Group.Id
 	retval.Name = v.Group.Name
-	retval.DisplayName = v.Group.DisplayName
 	retval.Description = v.Group.Description
-	retval.Deleted = v.Group.Deleted
 	return &retval, nil
 }
 
@@ -19343,7 +19327,6 @@ func (v *GrantCategoryAllowedWhatItemsInput) GetDataObject() bool { return v.Dat
 // GrantCategoryAllowedWhoItems includes the GraphQL fields of GrantCategoryAllowedWhoItems requested by the fragment GrantCategoryAllowedWhoItems.
 type GrantCategoryAllowedWhoItems struct {
 	User        bool     `json:"user"`
-	Group       bool     `json:"group"`
 	Inheritance bool     `json:"inheritance"`
 	Self        bool     `json:"self"`
 	Categories  []string `json:"categories"`
@@ -19351,9 +19334,6 @@ type GrantCategoryAllowedWhoItems struct {
 
 // GetUser returns GrantCategoryAllowedWhoItems.User, and is useful for accessing the field via an interface.
 func (v *GrantCategoryAllowedWhoItems) GetUser() bool { return v.User }
-
-// GetGroup returns GrantCategoryAllowedWhoItems.Group, and is useful for accessing the field via an interface.
-func (v *GrantCategoryAllowedWhoItems) GetGroup() bool { return v.Group }
 
 // GetInheritance returns GrantCategoryAllowedWhoItems.Inheritance, and is useful for accessing the field via an interface.
 func (v *GrantCategoryAllowedWhoItems) GetInheritance() bool { return v.Inheritance }
@@ -19366,7 +19346,6 @@ func (v *GrantCategoryAllowedWhoItems) GetCategories() []string { return v.Categ
 
 type GrantCategoryAllowedWhoItemsInput struct {
 	User        bool     `json:"user"`
-	Group       bool     `json:"group"`
 	Inheritance bool     `json:"inheritance"`
 	Self        bool     `json:"self"`
 	Categories  []string `json:"categories"`
@@ -19374,9 +19353,6 @@ type GrantCategoryAllowedWhoItemsInput struct {
 
 // GetUser returns GrantCategoryAllowedWhoItemsInput.User, and is useful for accessing the field via an interface.
 func (v *GrantCategoryAllowedWhoItemsInput) GetUser() bool { return v.User }
-
-// GetGroup returns GrantCategoryAllowedWhoItemsInput.Group, and is useful for accessing the field via an interface.
-func (v *GrantCategoryAllowedWhoItemsInput) GetGroup() bool { return v.Group }
 
 // GetInheritance returns GrantCategoryAllowedWhoItemsInput.Inheritance, and is useful for accessing the field via an interface.
 func (v *GrantCategoryAllowedWhoItemsInput) GetInheritance() bool { return v.Inheritance }
@@ -19517,11 +19493,6 @@ func (v *GrantCategoryDetailsAllowedWhoItemsGrantCategoryAllowedWhoItems) GetUse
 	return v.GrantCategoryAllowedWhoItems.User
 }
 
-// GetGroup returns GrantCategoryDetailsAllowedWhoItemsGrantCategoryAllowedWhoItems.Group, and is useful for accessing the field via an interface.
-func (v *GrantCategoryDetailsAllowedWhoItemsGrantCategoryAllowedWhoItems) GetGroup() bool {
-	return v.GrantCategoryAllowedWhoItems.Group
-}
-
 // GetInheritance returns GrantCategoryDetailsAllowedWhoItemsGrantCategoryAllowedWhoItems.Inheritance, and is useful for accessing the field via an interface.
 func (v *GrantCategoryDetailsAllowedWhoItemsGrantCategoryAllowedWhoItems) GetInheritance() bool {
 	return v.GrantCategoryAllowedWhoItems.Inheritance
@@ -19565,8 +19536,6 @@ func (v *GrantCategoryDetailsAllowedWhoItemsGrantCategoryAllowedWhoItems) Unmars
 type __premarshalGrantCategoryDetailsAllowedWhoItemsGrantCategoryAllowedWhoItems struct {
 	User bool `json:"user"`
 
-	Group bool `json:"group"`
-
 	Inheritance bool `json:"inheritance"`
 
 	Self bool `json:"self"`
@@ -19586,7 +19555,6 @@ func (v *GrantCategoryDetailsAllowedWhoItemsGrantCategoryAllowedWhoItems) __prem
 	var retval __premarshalGrantCategoryDetailsAllowedWhoItemsGrantCategoryAllowedWhoItems
 
 	retval.User = v.GrantCategoryAllowedWhoItems.User
-	retval.Group = v.GrantCategoryAllowedWhoItems.Group
 	retval.Inheritance = v.GrantCategoryAllowedWhoItems.Inheritance
 	retval.Self = v.GrantCategoryAllowedWhoItems.Self
 	retval.Categories = v.GrantCategoryAllowedWhoItems.Categories
@@ -19755,9 +19723,7 @@ func (v *GrantCategoryTypeForDataSourceInput) GetType() string { return v.Type }
 type Group struct {
 	Id          string  `json:"id"`
 	Name        string  `json:"name"`
-	DisplayName string  `json:"displayName"`
 	Description *string `json:"description"`
-	Deleted     bool    `json:"deleted"`
 }
 
 // GetId returns Group.Id, and is useful for accessing the field via an interface.
@@ -19766,14 +19732,8 @@ func (v *Group) GetId() string { return v.Id }
 // GetName returns Group.Name, and is useful for accessing the field via an interface.
 func (v *Group) GetName() string { return v.Name }
 
-// GetDisplayName returns Group.DisplayName, and is useful for accessing the field via an interface.
-func (v *Group) GetDisplayName() string { return v.DisplayName }
-
 // GetDescription returns Group.Description, and is useful for accessing the field via an interface.
 func (v *Group) GetDescription() *string { return v.Description }
-
-// GetDeleted returns Group.Deleted, and is useful for accessing the field via an interface.
-func (v *Group) GetDeleted() bool { return v.Deleted }
 
 // GroupConnection includes the GraphQL fields of GroupConnection requested by the fragment GroupConnection.
 type GroupConnection struct {
@@ -19812,14 +19772,8 @@ func (v *GroupConnectionEdgesGroupEdgeNodeGroup) GetId() string { return v.Group
 // GetName returns GroupConnectionEdgesGroupEdgeNodeGroup.Name, and is useful for accessing the field via an interface.
 func (v *GroupConnectionEdgesGroupEdgeNodeGroup) GetName() string { return v.Group.Name }
 
-// GetDisplayName returns GroupConnectionEdgesGroupEdgeNodeGroup.DisplayName, and is useful for accessing the field via an interface.
-func (v *GroupConnectionEdgesGroupEdgeNodeGroup) GetDisplayName() string { return v.Group.DisplayName }
-
 // GetDescription returns GroupConnectionEdgesGroupEdgeNodeGroup.Description, and is useful for accessing the field via an interface.
 func (v *GroupConnectionEdgesGroupEdgeNodeGroup) GetDescription() *string { return v.Group.Description }
-
-// GetDeleted returns GroupConnectionEdgesGroupEdgeNodeGroup.Deleted, and is useful for accessing the field via an interface.
-func (v *GroupConnectionEdgesGroupEdgeNodeGroup) GetDeleted() bool { return v.Group.Deleted }
 
 func (v *GroupConnectionEdgesGroupEdgeNodeGroup) UnmarshalJSON(b []byte) error {
 
@@ -19851,11 +19805,7 @@ type __premarshalGroupConnectionEdgesGroupEdgeNodeGroup struct {
 
 	Name string `json:"name"`
 
-	DisplayName string `json:"displayName"`
-
 	Description *string `json:"description"`
-
-	Deleted bool `json:"deleted"`
 }
 
 func (v *GroupConnectionEdgesGroupEdgeNodeGroup) MarshalJSON() ([]byte, error) {
@@ -19871,9 +19821,7 @@ func (v *GroupConnectionEdgesGroupEdgeNodeGroup) __premarshalJSON() (*__premarsh
 
 	retval.Id = v.Group.Id
 	retval.Name = v.Group.Name
-	retval.DisplayName = v.Group.DisplayName
 	retval.Description = v.Group.Description
-	retval.Deleted = v.Group.Deleted
 	return &retval, nil
 }
 
@@ -20270,53 +20218,11 @@ func (v *GroupConnectionResultPermissionDeniedError) __premarshalJSON() (*__prem
 }
 
 type GroupFilterInput struct {
-	Search                      *string  `json:"search,omitempty"`
-	DataSources                 []string `json:"dataSources"`
-	IdentityStores              []string `json:"identityStores"`
-	AccessControl               *string  `json:"accessControl,omitempty"`
-	IncludeMasterIdentityStores *bool    `json:"includeMasterIdentityStores,omitempty"`
-	Account                     *string  `json:"account,omitempty"`
-	User                        *string  `json:"user,omitempty"`
-	IncludeAncestors            *bool    `json:"includeAncestors,omitempty"`
-	IncludeDeleted              *bool    `json:"includeDeleted,omitempty"`
-	ContainsACollibraUser       *bool    `json:"containsACollibraUser,omitempty"`
-	Exclude                     []string `json:"exclude"`
+	Search *string `json:"search,omitempty"`
 }
 
 // GetSearch returns GroupFilterInput.Search, and is useful for accessing the field via an interface.
 func (v *GroupFilterInput) GetSearch() *string { return v.Search }
-
-// GetDataSources returns GroupFilterInput.DataSources, and is useful for accessing the field via an interface.
-func (v *GroupFilterInput) GetDataSources() []string { return v.DataSources }
-
-// GetIdentityStores returns GroupFilterInput.IdentityStores, and is useful for accessing the field via an interface.
-func (v *GroupFilterInput) GetIdentityStores() []string { return v.IdentityStores }
-
-// GetAccessControl returns GroupFilterInput.AccessControl, and is useful for accessing the field via an interface.
-func (v *GroupFilterInput) GetAccessControl() *string { return v.AccessControl }
-
-// GetIncludeMasterIdentityStores returns GroupFilterInput.IncludeMasterIdentityStores, and is useful for accessing the field via an interface.
-func (v *GroupFilterInput) GetIncludeMasterIdentityStores() *bool {
-	return v.IncludeMasterIdentityStores
-}
-
-// GetAccount returns GroupFilterInput.Account, and is useful for accessing the field via an interface.
-func (v *GroupFilterInput) GetAccount() *string { return v.Account }
-
-// GetUser returns GroupFilterInput.User, and is useful for accessing the field via an interface.
-func (v *GroupFilterInput) GetUser() *string { return v.User }
-
-// GetIncludeAncestors returns GroupFilterInput.IncludeAncestors, and is useful for accessing the field via an interface.
-func (v *GroupFilterInput) GetIncludeAncestors() *bool { return v.IncludeAncestors }
-
-// GetIncludeDeleted returns GroupFilterInput.IncludeDeleted, and is useful for accessing the field via an interface.
-func (v *GroupFilterInput) GetIncludeDeleted() *bool { return v.IncludeDeleted }
-
-// GetContainsACollibraUser returns GroupFilterInput.ContainsACollibraUser, and is useful for accessing the field via an interface.
-func (v *GroupFilterInput) GetContainsACollibraUser() *bool { return v.ContainsACollibraUser }
-
-// GetExclude returns GroupFilterInput.Exclude, and is useful for accessing the field via an interface.
-func (v *GroupFilterInput) GetExclude() []string { return v.Exclude }
 
 type GroupOrderByInput struct {
 	Name        *Sort `json:"name,omitempty"`
@@ -32201,6 +32107,7 @@ func (v *RoleAssignmentRole) __premarshalJSON() (*__premarshalRoleAssignmentRole
 // RoleAssignmentTo includes the requested fields of the GraphQL interface RoleAssignmentTo.
 //
 // RoleAssignmentTo is implemented by the following types:
+// RoleAssignmentToAccessControl
 // RoleAssignmentToGroup
 // RoleAssignmentToUser
 type RoleAssignmentTo interface {
@@ -32209,8 +32116,9 @@ type RoleAssignmentTo interface {
 	GetTypename() *string
 }
 
-func (v *RoleAssignmentToGroup) implementsGraphQLInterfaceRoleAssignmentTo() {}
-func (v *RoleAssignmentToUser) implementsGraphQLInterfaceRoleAssignmentTo()  {}
+func (v *RoleAssignmentToAccessControl) implementsGraphQLInterfaceRoleAssignmentTo() {}
+func (v *RoleAssignmentToGroup) implementsGraphQLInterfaceRoleAssignmentTo()         {}
+func (v *RoleAssignmentToUser) implementsGraphQLInterfaceRoleAssignmentTo()          {}
 
 func __unmarshalRoleAssignmentTo(b []byte, v *RoleAssignmentTo) error {
 	if string(b) == "null" {
@@ -32226,6 +32134,9 @@ func __unmarshalRoleAssignmentTo(b []byte, v *RoleAssignmentTo) error {
 	}
 
 	switch tn.TypeName {
+	case "AccessControl":
+		*v = new(RoleAssignmentToAccessControl)
+		return json.Unmarshal(b, *v)
 	case "Group":
 		*v = new(RoleAssignmentToGroup)
 		return json.Unmarshal(b, *v)
@@ -32245,6 +32156,14 @@ func __marshalRoleAssignmentTo(v *RoleAssignmentTo) ([]byte, error) {
 
 	var typename string
 	switch v := (*v).(type) {
+	case *RoleAssignmentToAccessControl:
+		typename = "AccessControl"
+
+		result := struct {
+			TypeName string `json:"__typename"`
+			*RoleAssignmentToAccessControl
+		}{typename, v}
+		return json.Marshal(result)
 	case *RoleAssignmentToGroup:
 		typename = "Group"
 
@@ -32268,6 +32187,14 @@ func __marshalRoleAssignmentTo(v *RoleAssignmentTo) ([]byte, error) {
 			`unexpected concrete type for RoleAssignmentTo: "%T"`, v)
 	}
 }
+
+// RoleAssignmentToAccessControl includes the requested fields of the GraphQL type AccessControl.
+type RoleAssignmentToAccessControl struct {
+	Typename *string `json:"__typename"`
+}
+
+// GetTypename returns RoleAssignmentToAccessControl.Typename, and is useful for accessing the field via an interface.
+func (v *RoleAssignmentToAccessControl) GetTypename() *string { return v.Typename }
 
 // RoleAssignmentToGroup includes the requested fields of the GraphQL type Group.
 type RoleAssignmentToGroup struct {
@@ -41278,16 +41205,12 @@ var AllWhoAndWhatType = []WhoAndWhatType{
 
 type WhoItemImport struct {
 	Users          []string `json:"users"`
-	Groups         []string `json:"groups"`
 	AccessControls []string `json:"accessControls"`
 	Recipients     []string `json:"recipients"`
 }
 
 // GetUsers returns WhoItemImport.Users, and is useful for accessing the field via an interface.
 func (v *WhoItemImport) GetUsers() []string { return v.Users }
-
-// GetGroups returns WhoItemImport.Groups, and is useful for accessing the field via an interface.
-func (v *WhoItemImport) GetGroups() []string { return v.Groups }
 
 // GetAccessControls returns WhoItemImport.AccessControls, and is useful for accessing the field via an interface.
 func (v *WhoItemImport) GetAccessControls() []string { return v.AccessControls }
@@ -41297,7 +41220,6 @@ func (v *WhoItemImport) GetRecipients() []string { return v.Recipients }
 
 type WhoItemInput struct {
 	User            *string            `json:"user,omitempty"`
-	Group           *string            `json:"group,omitempty"`
 	AccessControl   *string            `json:"accessControl,omitempty"`
 	DataSource      *string            `json:"dataSource,omitempty"`
 	Recipient       *string            `json:"recipient,omitempty"`
@@ -41308,9 +41230,6 @@ type WhoItemInput struct {
 
 // GetUser returns WhoItemInput.User, and is useful for accessing the field via an interface.
 func (v *WhoItemInput) GetUser() *string { return v.User }
-
-// GetGroup returns WhoItemInput.Group, and is useful for accessing the field via an interface.
-func (v *WhoItemInput) GetGroup() *string { return v.Group }
 
 // GetAccessControl returns WhoItemInput.AccessControl, and is useful for accessing the field via an interface.
 func (v *WhoItemInput) GetAccessControl() *string { return v.AccessControl }
@@ -41531,7 +41450,6 @@ type __GetAccessControlWhatAccessControlsInput struct {
 	Id     string                                     `json:"id"`
 	After  *string                                    `json:"after,omitempty"`
 	Limit  *int                                       `json:"limit,omitempty"`
-	Search *string                                    `json:"search,omitempty"`
 	Order  []AccessWhatOrderByInput                   `json:"order"`
 	Filter *AccessControlWhatAccessControlFilterInput `json:"filter,omitempty"`
 }
@@ -41544,9 +41462,6 @@ func (v *__GetAccessControlWhatAccessControlsInput) GetAfter() *string { return 
 
 // GetLimit returns __GetAccessControlWhatAccessControlsInput.Limit, and is useful for accessing the field via an interface.
 func (v *__GetAccessControlWhatAccessControlsInput) GetLimit() *int { return v.Limit }
-
-// GetSearch returns __GetAccessControlWhatAccessControlsInput.Search, and is useful for accessing the field via an interface.
-func (v *__GetAccessControlWhatAccessControlsInput) GetSearch() *string { return v.Search }
 
 // GetOrder returns __GetAccessControlWhatAccessControlsInput.Order, and is useful for accessing the field via an interface.
 func (v *__GetAccessControlWhatAccessControlsInput) GetOrder() []AccessWhatOrderByInput {
@@ -41779,7 +41694,6 @@ type __ListDataSourcesInput struct {
 	After  *string                  `json:"after,omitempty"`
 	Limit  *int                     `json:"limit,omitempty"`
 	Filter *DataSourceFilterInput   `json:"filter,omitempty"`
-	Search *string                  `json:"search,omitempty"`
 	Order  []DataSourceOrderByInput `json:"order"`
 }
 
@@ -41791,9 +41705,6 @@ func (v *__ListDataSourcesInput) GetLimit() *int { return v.Limit }
 
 // GetFilter returns __ListDataSourcesInput.Filter, and is useful for accessing the field via an interface.
 func (v *__ListDataSourcesInput) GetFilter() *DataSourceFilterInput { return v.Filter }
-
-// GetSearch returns __ListDataSourcesInput.Search, and is useful for accessing the field via an interface.
-func (v *__ListDataSourcesInput) GetSearch() *string { return v.Search }
 
 // GetOrder returns __ListDataSourcesInput.Order, and is useful for accessing the field via an interface.
 func (v *__ListDataSourcesInput) GetOrder() []DataSourceOrderByInput { return v.Order }
@@ -41822,7 +41733,6 @@ func (v *__ListGroupsInput) GetOrder() []GroupOrderByInput { return v.Order }
 type __ListIdentityStoresInput struct {
 	After  *string                     `json:"after,omitempty"`
 	Limit  *int                        `json:"limit,omitempty"`
-	Search *string                     `json:"search,omitempty"`
 	Filter *IdentityStoreFilterInput   `json:"filter,omitempty"`
 	Order  []IdentityStoreOrderByInput `json:"order"`
 }
@@ -41832,9 +41742,6 @@ func (v *__ListIdentityStoresInput) GetAfter() *string { return v.After }
 
 // GetLimit returns __ListIdentityStoresInput.Limit, and is useful for accessing the field via an interface.
 func (v *__ListIdentityStoresInput) GetLimit() *int { return v.Limit }
-
-// GetSearch returns __ListIdentityStoresInput.Search, and is useful for accessing the field via an interface.
-func (v *__ListIdentityStoresInput) GetSearch() *string { return v.Search }
 
 // GetFilter returns __ListIdentityStoresInput.Filter, and is useful for accessing the field via an interface.
 func (v *__ListIdentityStoresInput) GetFilter() *IdentityStoreFilterInput { return v.Filter }
@@ -42854,7 +42761,6 @@ fragment GrantCategoryTypeForDataSource on GrantCategoryTypeForDataSource {
 }
 fragment GrantCategoryAllowedWhoItems on GrantCategoryAllowedWhoItems {
 	user
-	group
 	inheritance
 	self
 	categories
@@ -43915,11 +43821,11 @@ func GetAccessControl(
 
 // The query executed by GetAccessControlWhatAccessControls.
 const GetAccessControlWhatAccessControls_Operation = `
-query GetAccessControlWhatAccessControls ($id: ID!, $after: String, $limit: Int, $search: String, $order: [AccessWhatOrderByInput!], $filter: AccessControlWhatAccessControlFilterInput) {
+query GetAccessControlWhatAccessControls ($id: ID!, $after: String, $limit: Int, $order: [AccessWhatOrderByInput!], $filter: AccessControlWhatAccessControlFilterInput) {
 	accessControl(id: $id) {
 		__typename
 		... on AccessControl {
-			whatAccessControls(after: $after, limit: $limit, search: $search, filter: $filter, order: $order) {
+			whatAccessControls(after: $after, limit: $limit, filter: $filter, order: $order) {
 				__typename
 				... AccessWhatAccessControlItemConnectionResult
 				... PermissionDeniedError
@@ -44063,7 +43969,6 @@ func GetAccessControlWhatAccessControls(
 	id string,
 	after *string,
 	limit *int,
-	search *string,
 	order []AccessWhatOrderByInput,
 	filter *AccessControlWhatAccessControlFilterInput,
 ) (data_ *GetAccessControlWhatAccessControlsResponse, err_ error) {
@@ -44074,7 +43979,6 @@ func GetAccessControlWhatAccessControls(
 			Id:     id,
 			After:  after,
 			Limit:  limit,
-			Search: search,
 			Order:  order,
 			Filter: filter,
 		},
@@ -44434,7 +44338,6 @@ fragment GrantCategoryTypeForDataSource on GrantCategoryTypeForDataSource {
 }
 fragment GrantCategoryAllowedWhoItems on GrantCategoryAllowedWhoItems {
 	user
-	group
 	inheritance
 	self
 	categories
@@ -44479,9 +44382,7 @@ query GetGroup ($id: ID!) {
 fragment Group on Group {
 	id
 	name
-	displayName
 	description
-	deleted
 }
 `
 
@@ -45231,8 +45132,8 @@ func ListDataObjects(
 
 // The query executed by ListDataSources.
 const ListDataSources_Operation = `
-query ListDataSources ($after: String, $limit: Int, $filter: DataSourceFilterInput, $search: String, $order: [DataSourceOrderByInput!]) {
-	dataSources(after: $after, limit: $limit, filter: $filter, order: $order, search: $search) {
+query ListDataSources ($after: String, $limit: Int, $filter: DataSourceFilterInput, $order: [DataSourceOrderByInput!]) {
+	dataSources(after: $after, limit: $limit, filter: $filter, order: $order) {
 		__typename
 		... DataSourceConnectionResult
 	}
@@ -45288,7 +45189,6 @@ func ListDataSources(
 	after *string,
 	limit *int,
 	filter *DataSourceFilterInput,
-	search *string,
 	order []DataSourceOrderByInput,
 ) (data_ *ListDataSourcesResponse, err_ error) {
 	req_ := &graphql.Request{
@@ -45298,7 +45198,6 @@ func ListDataSources(
 			After:  after,
 			Limit:  limit,
 			Filter: filter,
-			Search: search,
 			Order:  order,
 		},
 	}
@@ -45350,7 +45249,6 @@ fragment GrantCategoryTypeForDataSource on GrantCategoryTypeForDataSource {
 }
 fragment GrantCategoryAllowedWhoItems on GrantCategoryAllowedWhoItems {
 	user
-	group
 	inheritance
 	self
 	categories
@@ -45422,9 +45320,7 @@ fragment PageInfo on PageInfo {
 fragment Group on Group {
 	id
 	name
-	displayName
 	description
-	deleted
 }
 `
 
@@ -45461,8 +45357,8 @@ func ListGroups(
 
 // The query executed by ListIdentityStores.
 const ListIdentityStores_Operation = `
-query ListIdentityStores ($after: String, $limit: Int, $search: String, $filter: IdentityStoreFilterInput, $order: [IdentityStoreOrderByInput!]) {
-	identityStores(after: $after, limit: $limit, search: $search, filter: $filter, order: $order) {
+query ListIdentityStores ($after: String, $limit: Int, $filter: IdentityStoreFilterInput, $order: [IdentityStoreOrderByInput!]) {
+	identityStores(after: $after, limit: $limit, filter: $filter, order: $order) {
 		__typename
 		... PermissionDeniedError
 		... IdentityStoreConnectionResult
@@ -45515,7 +45411,6 @@ func ListIdentityStores(
 	client_ graphql.Client,
 	after *string,
 	limit *int,
-	search *string,
 	filter *IdentityStoreFilterInput,
 	order []IdentityStoreOrderByInput,
 ) (data_ *ListIdentityStoresResponse, err_ error) {
@@ -45525,7 +45420,6 @@ func ListIdentityStores(
 		Variables: &__ListIdentityStoresInput{
 			After:  after,
 			Limit:  limit,
-			Search: search,
 			Filter: filter,
 			Order:  order,
 		},
@@ -47070,7 +46964,6 @@ fragment GrantCategoryTypeForDataSource on GrantCategoryTypeForDataSource {
 }
 fragment GrantCategoryAllowedWhoItems on GrantCategoryAllowedWhoItems {
 	user
-	group
 	inheritance
 	self
 	categories

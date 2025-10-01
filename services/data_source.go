@@ -205,7 +205,7 @@ func (c *DataSourceClient) ListDataSources(ctx context.Context, ops ...func(*Dat
 	}
 
 	loadPageFn := func(ctx context.Context, cursor *string) (*types.PageInfo, []types.DataSourceConnectionEdgesDataSourceEdge, error) {
-		output, err := schema.ListDataSources(ctx, c.client, cursor, utils.Ptr(internal.MaxPageSize), options.filter, nil, options.order)
+		output, err := schema.ListDataSources(ctx, c.client, cursor, utils.Ptr(internal.MaxPageSize), options.filter, options.order)
 		if err != nil {
 			return nil, nil, types.NewErrClient(err)
 		}
