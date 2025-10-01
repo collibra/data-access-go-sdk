@@ -47,8 +47,8 @@ func (c *ExporterClient) Export(ctx context.Context, dataSourceId string) iter.S
 			return
 		}
 
-		for _, item := range output {
-			if !yield(item, nil) {
+		for idx := range output {
+			if !yield(output[idx], nil) {
 				return
 			}
 		}

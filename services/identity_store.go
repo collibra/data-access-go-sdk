@@ -158,7 +158,7 @@ func WithListIdentityStoresFilter(input *schema.IdentityStoreFilterInput) func(o
 // A filter can be specified with WithListIdentityStoresFilter.
 // A channel is returned that can be used to receive the list of IdentityStores.
 // To close the channel ensure to cancel the context.
-func (c *IdentityStoreClient) ListIdentityStores(ctx context.Context, ops ...func(options *ListIdentityStoresOptions)) iter.Seq2[*types.IdentityStore, error] {
+func (c *IdentityStoreClient) ListIdentityStores(ctx context.Context, ops ...func(options *ListIdentityStoresOptions)) iter.Seq2[*types.IdentityStore, error] { //nolint:dupl
 	options := ListIdentityStoresOptions{}
 	for _, op := range ops {
 		op(&options)

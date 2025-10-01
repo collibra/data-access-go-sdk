@@ -198,7 +198,7 @@ func WithDataSourceListSearch(input *string) func(options *DataSourceListOptions
 // A filter can be specified with WithDataSourceListFilter.
 // A channel is returned that can be used to receive the list of DataSourceListItem.
 // To close the channel ensure to cancel the context.
-func (c *DataSourceClient) ListDataSources(ctx context.Context, ops ...func(*DataSourceListOptions)) iter.Seq2[*types.DataSource, error] {
+func (c *DataSourceClient) ListDataSources(ctx context.Context, ops ...func(*DataSourceListOptions)) iter.Seq2[*types.DataSource, error] { //nolint:dupl
 	options := DataSourceListOptions{}
 	for _, op := range ops {
 		op(&options)

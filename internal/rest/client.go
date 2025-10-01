@@ -27,7 +27,7 @@ func (c *RestClient) Do(ctx context.Context, method string, path string, ops ...
 		return nil, fmt.Errorf("join path: %w", err)
 	}
 
-	req, err := http.NewRequestWithContext(ctx, method, urlPath, nil)
+	req, err := http.NewRequestWithContext(ctx, method, urlPath, http.NoBody)
 	if err != nil {
 		return nil, fmt.Errorf("create request: %w", err)
 	}
