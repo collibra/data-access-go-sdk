@@ -28819,6 +28819,106 @@ var AllSubtaskStatus = []SubtaskStatus{
 	SubtaskStatusTimedout,
 }
 
+// SupportedCLIVersionResponse is returned by SupportedCLIVersion on success.
+type SupportedCLIVersionResponse struct {
+	SupportedCliVersion SupportedCLIVersionSupportedCliVersionSupportedCLIVersion `json:"supportedCliVersion"`
+}
+
+// GetSupportedCliVersion returns SupportedCLIVersionResponse.SupportedCliVersion, and is useful for accessing the field via an interface.
+func (v *SupportedCLIVersionResponse) GetSupportedCliVersion() SupportedCLIVersionSupportedCliVersionSupportedCLIVersion {
+	return v.SupportedCliVersion
+}
+
+// SupportedCLIVersionSupportedCliVersionSupportedCLIVersion includes the requested fields of the GraphQL type SupportedCLIVersion.
+type SupportedCLIVersionSupportedCliVersionSupportedCLIVersion struct {
+	SupportedCliVersion `json:"-"`
+}
+
+// GetDeprecatedVersions returns SupportedCLIVersionSupportedCliVersionSupportedCLIVersion.DeprecatedVersions, and is useful for accessing the field via an interface.
+func (v *SupportedCLIVersionSupportedCliVersionSupportedCLIVersion) GetDeprecatedVersions() *SupportedCliVersionDeprecatedVersionsDeprecatedCLIVersion {
+	return v.SupportedCliVersion.DeprecatedVersions
+}
+
+// GetSupportedVersions returns SupportedCLIVersionSupportedCliVersionSupportedCLIVersion.SupportedVersions, and is useful for accessing the field via an interface.
+func (v *SupportedCLIVersionSupportedCliVersionSupportedCLIVersion) GetSupportedVersions() string {
+	return v.SupportedCliVersion.SupportedVersions
+}
+
+func (v *SupportedCLIVersionSupportedCliVersionSupportedCLIVersion) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*SupportedCLIVersionSupportedCliVersionSupportedCLIVersion
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.SupportedCLIVersionSupportedCliVersionSupportedCLIVersion = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.SupportedCliVersion)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalSupportedCLIVersionSupportedCliVersionSupportedCLIVersion struct {
+	DeprecatedVersions *SupportedCliVersionDeprecatedVersionsDeprecatedCLIVersion `json:"deprecatedVersions"`
+
+	SupportedVersions string `json:"supportedVersions"`
+}
+
+func (v *SupportedCLIVersionSupportedCliVersionSupportedCLIVersion) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *SupportedCLIVersionSupportedCliVersionSupportedCLIVersion) __premarshalJSON() (*__premarshalSupportedCLIVersionSupportedCliVersionSupportedCLIVersion, error) {
+	var retval __premarshalSupportedCLIVersionSupportedCliVersionSupportedCLIVersion
+
+	retval.DeprecatedVersions = v.SupportedCliVersion.DeprecatedVersions
+	retval.SupportedVersions = v.SupportedCliVersion.SupportedVersions
+	return &retval, nil
+}
+
+// SupportedCliVersion includes the GraphQL fields of SupportedCLIVersion requested by the fragment SupportedCliVersion.
+type SupportedCliVersion struct {
+	DeprecatedVersions *SupportedCliVersionDeprecatedVersionsDeprecatedCLIVersion `json:"deprecatedVersions"`
+	SupportedVersions  string                                                     `json:"supportedVersions"`
+}
+
+// GetDeprecatedVersions returns SupportedCliVersion.DeprecatedVersions, and is useful for accessing the field via an interface.
+func (v *SupportedCliVersion) GetDeprecatedVersions() *SupportedCliVersionDeprecatedVersionsDeprecatedCLIVersion {
+	return v.DeprecatedVersions
+}
+
+// GetSupportedVersions returns SupportedCliVersion.SupportedVersions, and is useful for accessing the field via an interface.
+func (v *SupportedCliVersion) GetSupportedVersions() string { return v.SupportedVersions }
+
+// SupportedCliVersionDeprecatedVersionsDeprecatedCLIVersion includes the requested fields of the GraphQL type DeprecatedCLIVersion.
+type SupportedCliVersionDeprecatedVersionsDeprecatedCLIVersion struct {
+	DeprecatedVersions string  `json:"deprecatedVersions"`
+	Msg                *string `json:"msg"`
+}
+
+// GetDeprecatedVersions returns SupportedCliVersionDeprecatedVersionsDeprecatedCLIVersion.DeprecatedVersions, and is useful for accessing the field via an interface.
+func (v *SupportedCliVersionDeprecatedVersionsDeprecatedCLIVersion) GetDeprecatedVersions() string {
+	return v.DeprecatedVersions
+}
+
+// GetMsg returns SupportedCliVersionDeprecatedVersionsDeprecatedCLIVersion.Msg, and is useful for accessing the field via an interface.
+func (v *SupportedCliVersionDeprecatedVersionsDeprecatedCLIVersion) GetMsg() *string { return v.Msg }
+
 // SyncData includes the GraphQL fields of SyncData requested by the fragment SyncData.
 type SyncData struct {
 	DataSource        SyncDataDataSource         `json:"dataSource"`
@@ -38511,6 +38611,43 @@ func SubmitImportObjects(
 	}
 
 	data_ = &SubmitImportObjectsResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
+// The query executed by SupportedCLIVersion.
+const SupportedCLIVersion_Operation = `
+query SupportedCLIVersion {
+	supportedCliVersion {
+		... SupportedCliVersion
+	}
+}
+fragment SupportedCliVersion on SupportedCLIVersion {
+	deprecatedVersions {
+		deprecatedVersions
+		msg
+	}
+	supportedVersions
+}
+`
+
+func SupportedCLIVersion(
+	ctx_ context.Context,
+	client_ graphql.Client,
+) (data_ *SupportedCLIVersionResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "SupportedCLIVersion",
+		Query:  SupportedCLIVersion_Operation,
+	}
+
+	data_ = &SupportedCLIVersionResponse{}
 	resp_ := &graphql.Response{Data: data_}
 
 	err_ = client_.MakeRequest(

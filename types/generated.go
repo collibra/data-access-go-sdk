@@ -639,6 +639,10 @@ const (
 	SubtaskStatusTimedout     SubtaskStatus = schema.SubtaskStatusTimedout
 )
 
+type SupportedCLIVersionResponse = schema.SupportedCLIVersionResponse
+type SupportedCLIVersionSupportedCliVersionSupportedCLIVersion = schema.SupportedCLIVersionSupportedCliVersionSupportedCLIVersion
+type SupportedCliVersion = schema.SupportedCliVersion
+type SupportedCliVersionDeprecatedVersionsDeprecatedCLIVersion = schema.SupportedCliVersionDeprecatedVersionsDeprecatedCLIVersion
 type SyncData = schema.SyncData
 type SyncDataAccessControlType = schema.SyncDataAccessControlType
 type SyncDataDataSource = schema.SyncDataDataSource
