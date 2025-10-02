@@ -1,12 +1,15 @@
 package sdk
 
 import (
+	"net/http"
 	"strings"
 	"sync"
+	"time"
 
 	gql "github.com/Khan/genqlient/graphql"
 
 	"github.com/collibra/access-governance-go-sdk/internal"
+	"github.com/collibra/access-governance-go-sdk/internal/rest"
 	"github.com/collibra/access-governance-go-sdk/services"
 )
 
@@ -16,7 +19,7 @@ type singletonClient[T any] struct {
 	client  *T
 }
 
-func newSingletonClient[T any](client gql.Client, clientFactory func(client gql.Client) *T) singletonClient[T] {
+func newSingletonClient[C any, T any](client C, clientFactory func(client C) *T) singletonClient[T] {
 	return singletonClient[T]{
 		factory: func() *T {
 			return clientFactory(client)
@@ -36,9 +39,8 @@ type CollibraClient struct {
 	accessControlClient singletonClient[services.AccessControlClient]
 	dataObjectClient    singletonClient[services.DataObjectClient]
 	dataSourceClient    singletonClient[services.DataSourceClient]
+	exporterClient      singletonClient[services.ExporterClient]
 	grantCategoryClient singletonClient[services.GrantCategoryClient]
-	groupClient         singletonClient[services.GroupClient]
-	identityStoreClient singletonClient[services.IdentityStoreClient]
 	importerClient      singletonClient[services.ImporterClient]
 	jobClient           singletonClient[services.JobClient]
 	roleClient          singletonClient[services.RoleClient]
@@ -52,29 +54,35 @@ func NewClient(user, password, url string) *CollibraClient {
 		apiUrl = internal.DefaultApiEndpoint
 	}
 
-	if !strings.HasSuffix(url, "/") {
+	if !strings.HasSuffix(apiUrl, "/") {
 		apiUrl += "/"
 	}
 
-	apiUrl += internal.GqlApiPath
+	gqlApiUrl := apiUrl + internal.GqlApiPath
+	restApiUrl := apiUrl + internal.RestApiPath
 
-	client := gql.NewClient(apiUrl, &internal.BasicAuthedDoer{
+	authDoer := &internal.BasicAuthedDoer{
 		User:     user,
 		Password: password,
 		Url:      apiUrl,
+	}
+
+	glcClient := gql.NewClient(gqlApiUrl, authDoer)
+	restClient := rest.NewRestClient(restApiUrl, &http.Client{
+		Transport: rest.DoerRoundTripWrapper{Doer: authDoer},
+		Timeout:   time.Second * 30,
 	})
 
 	return &CollibraClient{
-		accessControlClient: newSingletonClient(client, services.NewAccessControlClient),
-		dataObjectClient:    newSingletonClient(client, services.NewDataObjectClient),
-		dataSourceClient:    newSingletonClient(client, services.NewDataSourceClient),
-		grantCategoryClient: newSingletonClient(client, services.NewGrantCategoryClient),
-		groupClient:         newSingletonClient(client, services.NewGroupClient),
-		identityStoreClient: newSingletonClient(client, services.NewIdentityStoreClient),
-		importerClient:      newSingletonClient(client, services.NewImporterClient),
-		jobClient:           newSingletonClient(client, services.NewJobClient),
-		roleClient:          newSingletonClient(client, services.NewRoleClient),
-		userClient:          newSingletonClient(client, services.NewUserClient),
+		accessControlClient: newSingletonClient(glcClient, services.NewAccessControlClient),
+		dataObjectClient:    newSingletonClient(glcClient, services.NewDataObjectClient),
+		dataSourceClient:    newSingletonClient(glcClient, services.NewDataSourceClient),
+		exporterClient:      newSingletonClient(restClient, services.NewExporterClient),
+		grantCategoryClient: newSingletonClient(glcClient, services.NewGrantCategoryClient),
+		importerClient:      newSingletonClient(glcClient, services.NewImporterClient),
+		jobClient:           newSingletonClient(glcClient, services.NewJobClient),
+		roleClient:          newSingletonClient(glcClient, services.NewRoleClient),
+		userClient:          newSingletonClient(glcClient, services.NewUserClient),
 	}
 }
 
@@ -93,19 +101,13 @@ func (c *CollibraClient) DataSource() *services.DataSourceClient {
 	return c.dataSourceClient.Get()
 }
 
+func (c *CollibraClient) Exporter() *services.ExporterClient {
+	return c.exporterClient.Get()
+}
+
 // GrantCategory returns the GrantCategoryClient
 func (c *CollibraClient) GrantCategory() *services.GrantCategoryClient {
 	return c.grantCategoryClient.Get()
-}
-
-// Group returns the GroupClient
-func (c *CollibraClient) Group() *services.GroupClient {
-	return c.groupClient.Get()
-}
-
-// IdentityStore returns the IdentityStoreClient
-func (c *CollibraClient) IdentityStore() *services.IdentityStoreClient {
-	return c.identityStoreClient.Get()
 }
 
 // Importer returns the ImporterClient

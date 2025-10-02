@@ -53,21 +53,9 @@ query GetDataSource($id: ID!) {
     }
 }
 
-query ListDataSources($after: String, $limit: Int, $filter: DataSourceFilterInput, $search: String, $order: [DataSourceOrderByInput!]) {
-    dataSources(after: $after, limit: $limit, filter: $filter, order: $order, search: $search) {
+query ListDataSources($after: String, $limit: Int, $filter: DataSourceFilterInput, $order: [DataSourceOrderByInput!]) {
+    dataSources(after: $after, limit: $limit, filter: $filter, order: $order) {
         ... DataSourceConnectionResult
-    }
-}
-
-query DataSourceIdentityStores($id: ID!) {
-    dataSource(id: $id) {
-        ... on DataSource {
-            identityStores {
-                ... IdentityStore
-            }
-        }
-        ...PermissionDeniedError
-        ... NotFoundError
     }
 }
 
@@ -105,22 +93,6 @@ mutation DeleteDataSource($id: ID!) {
         ... on DeleteDataSource {
             success
         }
-    }
-}
-
-mutation AddIdentityStoreToDataSource($dsId: ID! $isId: ID!) {
-    addIdentityStoreToDataSource(dsId: $dsId, isId: $isId) {
-        ...DataSource
-        ...PermissionDeniedError
-        ...NotFoundError
-    }
-}
-
-mutation RemoveIdentityStoreFromDataSource($dsId: ID! $isId: ID!) {
-    removeIdentityStoreFromDataSource(dsId: $dsId, isId:$isId) {
-        ...DataSource
-        ...PermissionDeniedError
-        ...NotFoundError
     }
 }
 

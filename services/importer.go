@@ -71,3 +71,12 @@ func (c *ImporterClient) SubmitImportObjects(ctx context.Context, input types.Im
 		return nil, fmt.Errorf("unexpected response type: %T", response)
 	}
 }
+
+func (c *ImporterClient) SupportedCliVersion(ctx context.Context) (*types.SupportedCliVersion, error) {
+	result, err := schema.SupportedCLIVersion(ctx, c.client)
+	if err != nil {
+		return nil, types.NewErrClient(err)
+	}
+
+	return &result.SupportedCliVersion.SupportedCliVersion, nil
+}

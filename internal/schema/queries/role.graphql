@@ -87,19 +87,6 @@ query ListRoleAssignments($after: String, $limit: Int, $filter: RoleAssignmentFi
     }
 }
 
-query ListRoleAssignmentsOnIdentityStore($isId: ID!, $after: String, $limit: Int, $filter: RoleAssignmentFilterInput, $order: [RoleAssignmentOrderInput!]) {
-    identityStore(id: $isId) {
-        ... on IdentityStore {
-            roleAssignments(after: $after, limit: $limit, filter: $filter, order: $order) {
-                ... RoleAssignmentConnectionResult
-            }
-        }
-        ... PermissionDeniedError
-        ... AlreadyExistsError
-        ... NotFoundError
-    }
-}
-
 query ListRoleAssignmentsOnDataObject($doId: ID!, $after: String, $limit: Int, $filter: RoleAssignmentFilterInput, $order: [RoleAssignmentOrderInput!]) {
     dataObject(id: $doId) {
         roleAssignments(after: $after, limit: $limit, filter: $filter, order: $order) {
@@ -156,14 +143,6 @@ mutation AssignGlobalRole($role: ID!, $to: [ID!]!) {
 
 mutation UnassignGlobalRole($role: ID!, $to: [ID!]!) {
     unassignGlobalRole(role: $role, to: $to) {
-        ... Role
-        ... PermissionDeniedError
-        ... NotFoundError
-    }
-}
-
-mutation UpdateRoleAssigneesOnIdentityStore($isId: ID!, $roleID: ID!, $assignees: [ID!]!) {
-    updateRoleAssigneesOnIdentityStore(identityStore: $isId, roleInput: {roleID: $roleID, assignees: $assignees}) {
         ... Role
         ... PermissionDeniedError
         ... NotFoundError

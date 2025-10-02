@@ -51,7 +51,6 @@ fragment GrantCategoryTypeForDataSource on GrantCategoryTypeForDataSource {
 
 fragment GrantCategoryAllowedWhoItems on GrantCategoryAllowedWhoItems {
     user
-    group
     inheritance
     self
     categories

@@ -1,3 +1,12 @@
+fragment SupportedCliVersion on SupportedCLIVersion {
+    deprecatedVersions {
+        deprecatedVersions
+        msg
+    }
+
+    supportedVersions
+}
+
 fragment SubmittedCommands on SubmittedCommands {
     submitted
 }
@@ -21,5 +30,11 @@ mutation SubmitImportObjects($input: ImportCommands!) {
         ... PermissionDeniedError
         ... NotFoundError
         ... InvalidInputError
+    }
+}
+
+query SupportedCLIVersion {
+    supportedCliVersion {
+        ... SupportedCliVersion
     }
 }
