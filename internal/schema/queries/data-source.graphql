@@ -59,18 +59,6 @@ query ListDataSources($after: String, $limit: Int, $filter: DataSourceFilterInpu
     }
 }
 
-query DataSourceIdentityStores($id: ID!) {
-    dataSource(id: $id) {
-        ... on DataSource {
-            identityStores {
-                ... IdentityStore
-            }
-        }
-        ...PermissionDeniedError
-        ... NotFoundError
-    }
-}
-
 query DataSourceMaskInformation($id: ID!) {
     dataSource(id: $id) {
         ... on DataSource {
@@ -105,22 +93,6 @@ mutation DeleteDataSource($id: ID!) {
         ... on DeleteDataSource {
             success
         }
-    }
-}
-
-mutation AddIdentityStoreToDataSource($dsId: ID! $isId: ID!) {
-    addIdentityStoreToDataSource(dsId: $dsId, isId: $isId) {
-        ...DataSource
-        ...PermissionDeniedError
-        ...NotFoundError
-    }
-}
-
-mutation RemoveIdentityStoreFromDataSource($dsId: ID! $isId: ID!) {
-    removeIdentityStoreFromDataSource(dsId: $dsId, isId:$isId) {
-        ...DataSource
-        ...PermissionDeniedError
-        ...NotFoundError
     }
 }
 

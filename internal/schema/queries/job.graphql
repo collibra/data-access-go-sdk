@@ -12,10 +12,6 @@ fragment Job on Job {
     dataSource {
         ... DataSource
     }
-
-    identityStore {
-        ... IdentityStore
-    }
 }
 
 fragment JobConnection on JobConnection {

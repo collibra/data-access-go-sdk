@@ -1,6 +1,5 @@
 fragment AccessControl on AccessControl {
     id
-    isSample
     createdAt
     modifiedAt
     name

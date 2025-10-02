@@ -84,45 +84,6 @@ func (c *DataSourceClient) DeleteDataSource(ctx context.Context, id string) erro
 	}
 }
 
-// AddIdentityStoreToDataSource adds an existing IdentityStore to an existing DataSource.
-// Returns nil if successful.
-// Otherwise, returns an error.
-func (c *DataSourceClient) AddIdentityStoreToDataSource(ctx context.Context, dsId string, isId string) error {
-	result, err := schema.AddIdentityStoreToDataSource(ctx, c.client, dsId, isId)
-	if err != nil {
-		return types.NewErrClient(err)
-	}
-
-	switch response := result.AddIdentityStoreToDataSource.(type) {
-	case *schema.AddIdentityStoreToDataSourceAddIdentityStoreToDataSource:
-		return nil
-	case *schema.AddIdentityStoreToDataSourceAddIdentityStoreToDataSourceNotFoundError:
-		return types.NewErrNotFound(dsId, response.Typename, response.Message)
-	case *schema.AddIdentityStoreToDataSourceAddIdentityStoreToDataSourcePermissionDeniedError:
-		return types.NewErrPermissionDenied("addIdentityStoreToDataSource", response.Message)
-	default:
-		return fmt.Errorf("unexpected response type: %T", result.AddIdentityStoreToDataSource)
-	}
-}
-
-func (c *DataSourceClient) RemoveIdentityStoreFromDataSource(ctx context.Context, dsId string, isId string) error {
-	result, err := schema.RemoveIdentityStoreFromDataSource(ctx, c.client, dsId, isId)
-	if err != nil {
-		return types.NewErrClient(err)
-	}
-
-	switch response := result.RemoveIdentityStoreFromDataSource.(type) {
-	case *schema.RemoveIdentityStoreFromDataSourceRemoveIdentityStoreFromDataSource:
-		return nil
-	case *schema.RemoveIdentityStoreFromDataSourceRemoveIdentityStoreFromDataSourceNotFoundError:
-		return types.NewErrNotFound(dsId, response.Typename, response.Message)
-	case *schema.RemoveIdentityStoreFromDataSourceRemoveIdentityStoreFromDataSourcePermissionDeniedError:
-		return types.NewErrPermissionDenied("removeIdentityStoreFromDataSource", response.Message)
-	default:
-		return fmt.Errorf("unexpected response type: %T", result.RemoveIdentityStoreFromDataSource)
-	}
-}
-
 // GetDataSource returns an existing DataSource.
 func (c *DataSourceClient) GetDataSource(ctx context.Context, id string) (*types.DataSource, error) {
 	result, err := schema.GetDataSource(ctx, c.client, id)
@@ -231,28 +192,6 @@ func (c *DataSourceClient) ListDataSources(ctx context.Context, ops ...func(*Dat
 	}
 
 	return internal.PaginationExecutor(ctx, loadPageFn, edgeFn)
-}
-
-// ListIdentityStores returns a list of IdentityStores for a given DataSource.
-func (c *DataSourceClient) ListIdentityStores(ctx context.Context, dsId string) ([]types.IdentityStore, error) {
-	result, err := schema.DataSourceIdentityStores(ctx, c.client, dsId)
-	if err != nil {
-		return nil, types.NewErrClient(err)
-	}
-
-	switch datasource := result.DataSource.(type) {
-	case *schema.DataSourceIdentityStoresDataSource:
-		iss := make([]types.IdentityStore, len(datasource.IdentityStores))
-		for i := range datasource.IdentityStores {
-			iss[i] = datasource.IdentityStores[i].IdentityStore
-		}
-
-		return iss, nil
-	case *schema.DataSourceIdentityStoresDataSourcePermissionDeniedError:
-		return nil, types.NewErrPermissionDenied("listIdentityStores", datasource.Message)
-	default:
-		return nil, fmt.Errorf("unexpected type '%T': %w", datasource, types.ErrUnknownType)
-	}
 }
 
 func (c *DataSourceClient) SetDataSourceMetadata(ctx context.Context, id string, metadata types.DataSourceMetaDataInput) (*types.DataSource, error) {

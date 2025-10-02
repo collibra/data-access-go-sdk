@@ -39,7 +39,10 @@ func (c *ExporterClient) Export(ctx context.Context, dataSourceId string) iter.S
 			return
 		}
 
-		var output []types.ExportedAccessControl
+		output := struct {
+			LastCalculated int64                         `yaml:"lastCalculated"`
+			AccessControls []types.ExportedAccessControl `yaml:"accessControls"`
+		}{}
 
 		if err = yaml.NewDecoder(resp.Body).Decode(&output); err != nil {
 			yield(types.ExportedAccessControl{}, fmt.Errorf("decode response: %w", err))
@@ -47,8 +50,8 @@ func (c *ExporterClient) Export(ctx context.Context, dataSourceId string) iter.S
 			return
 		}
 
-		for idx := range output {
-			if !yield(output[idx], nil) {
+		for idx := range output.AccessControls {
+			if !yield(output.AccessControls[idx], nil) {
 				return
 			}
 		}

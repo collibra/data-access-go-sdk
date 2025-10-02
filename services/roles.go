@@ -149,47 +149,6 @@ func (c *RoleClient) ListRoleAssignments(ctx context.Context, ops ...func(*RoleA
 	return internal.PaginationExecutor(ctx, loadPageFn, roleAssignmentsEdgeFn)
 }
 
-// ListRoleAssignmentsOnIdentityStore returns a list of role assignments for a given role on a given identity
-// The order of the list can be specified with WithRoleAssignmentListOrder.
-// A filter can be specified with WithRoleAssignmentListFilter.
-// A channel is returned that can be used to receive the list of types.RoleAssignment.
-// To close the channel ensure to cancel the context.
-func (c *RoleClient) ListRoleAssignmentsOnIdentityStore(ctx context.Context, identityId string, ops ...func(*RoleAssignmentListOptions)) iter.Seq2[*types.RoleAssignment, error] {
-	options := RoleAssignmentListOptions{}
-	for _, op := range ops {
-		op(&options)
-	}
-
-	loadPageFn := func(ctx context.Context, cursor *string) (*types.PageInfo, []types.RoleAssignmentConnectionEdgesRoleAssignmentEdge, error) {
-		output, err := schema.ListRoleAssignmentsOnIdentityStore(ctx, c.client, identityId, cursor, utils.Ptr(internal.MaxPageSize), options.filter, options.order)
-		if err != nil {
-			return nil, nil, types.NewErrClient(err)
-		}
-
-		switch is := output.IdentityStore.(type) {
-		case *schema.ListRoleAssignmentsOnIdentityStoreIdentityStore:
-			switch ra := (is.RoleAssignments).(type) {
-			case *schema.ListRoleAssignmentsOnIdentityStoreIdentityStoreRoleAssignmentsRoleAssignmentConnection:
-				return &ra.PageInfo.PageInfo, ra.Edges, nil
-			case *schema.ListRoleAssignmentsOnIdentityStoreIdentityStoreRoleAssignmentsPermissionDeniedError:
-				return nil, nil, types.NewErrPermissionDenied("listRoleAssignmentsOnIdentityStore", ra.Message)
-			default:
-				return nil, nil, fmt.Errorf("unexpected type '%T'", is)
-			}
-		case *schema.ListRoleAssignmentsOnIdentityStoreIdentityStoreAlreadyExistsError:
-			return nil, nil, types.NewErrAlreadyExists("listRoleAssignmentsOnIdentityStore", is.Message)
-		case *schema.ListRoleAssignmentsOnIdentityStoreIdentityStoreNotFoundError:
-			return nil, nil, types.NewErrNotFound(identityId, is.Typename, is.Message)
-		case *schema.ListRoleAssignmentsOnIdentityStoreIdentityStorePermissionDeniedError:
-			return nil, nil, types.NewErrPermissionDenied("listRoleAssignmentsOnIdentityStore", is.Message)
-		default:
-			return nil, nil, fmt.Errorf("unexpected type '%T'", is)
-		}
-	}
-
-	return internal.PaginationExecutor(ctx, loadPageFn, roleAssignmentsEdgeFn)
-}
-
 // ListRoleAssignmentsOnDataObject returns a list of role assignments for a given role on a given data object
 // The order of the list can be specified with WithRoleAssignmentListOrder.
 // A filter can be specified with WithRoleAssignmentListFilter.
@@ -381,29 +340,6 @@ func (c *RoleClient) UnassignGlobalRole(ctx context.Context, roleId string, from
 		return nil, types.NewErrPermissionDenied("unassignGlobalRole", r.Message)
 	case *schema.UnassignGlobalRoleUnassignGlobalRoleNotFoundError:
 		return nil, types.NewErrNotFound(roleId, r.Typename, r.Message)
-	default:
-		return nil, fmt.Errorf("unexpected type '%T'", r)
-	}
-}
-
-// UpdateRoleAssigneesOnIdentityStore updates a role assignment between an IdentityStore and a set of users.
-// Existing role assignments will be overwritten.
-// isId is the id of the identity store to assign the role to.
-// roleId is the id of the role to assign.
-// assignees is a list of user ids to assign the role to.
-func (c *RoleClient) UpdateRoleAssigneesOnIdentityStore(ctx context.Context, isId string, roleId string, assignees ...string) (*types.Role, error) {
-	output, err := schema.UpdateRoleAssigneesOnIdentityStore(ctx, c.client, isId, roleId, assignees)
-	if err != nil {
-		return nil, types.NewErrClient(err)
-	}
-
-	switch r := output.UpdateRoleAssigneesOnIdentityStore.(type) {
-	case *schema.UpdateRoleAssigneesOnIdentityStoreUpdateRoleAssigneesOnIdentityStoreRole:
-		return &r.Role, nil
-	case *schema.UpdateRoleAssigneesOnIdentityStoreUpdateRoleAssigneesOnIdentityStorePermissionDeniedError:
-		return nil, types.NewErrPermissionDenied("updateRoleAssigneesOnIdentityStore", r.Message)
-	case *schema.UpdateRoleAssigneesOnIdentityStoreUpdateRoleAssigneesOnIdentityStoreNotFoundError:
-		return nil, types.NewErrNotFound(isId, r.Typename, r.Message)
 	default:
 		return nil, fmt.Errorf("unexpected type '%T'", r)
 	}

@@ -41,8 +41,6 @@ type CollibraClient struct {
 	dataSourceClient    singletonClient[services.DataSourceClient]
 	exporterClient      singletonClient[services.ExporterClient]
 	grantCategoryClient singletonClient[services.GrantCategoryClient]
-	groupClient         singletonClient[services.GroupClient]
-	identityStoreClient singletonClient[services.IdentityStoreClient]
 	importerClient      singletonClient[services.ImporterClient]
 	jobClient           singletonClient[services.JobClient]
 	roleClient          singletonClient[services.RoleClient]
@@ -81,8 +79,6 @@ func NewClient(user, password, url string) *CollibraClient {
 		dataSourceClient:    newSingletonClient(glcClient, services.NewDataSourceClient),
 		exporterClient:      newSingletonClient(restClient, services.NewExporterClient),
 		grantCategoryClient: newSingletonClient(glcClient, services.NewGrantCategoryClient),
-		groupClient:         newSingletonClient(glcClient, services.NewGroupClient),
-		identityStoreClient: newSingletonClient(glcClient, services.NewIdentityStoreClient),
 		importerClient:      newSingletonClient(glcClient, services.NewImporterClient),
 		jobClient:           newSingletonClient(glcClient, services.NewJobClient),
 		roleClient:          newSingletonClient(glcClient, services.NewRoleClient),
@@ -112,16 +108,6 @@ func (c *CollibraClient) Exporter() *services.ExporterClient {
 // GrantCategory returns the GrantCategoryClient
 func (c *CollibraClient) GrantCategory() *services.GrantCategoryClient {
 	return c.grantCategoryClient.Get()
-}
-
-// Group returns the GroupClient
-func (c *CollibraClient) Group() *services.GroupClient {
-	return c.groupClient.Get()
-}
-
-// IdentityStore returns the IdentityStoreClient
-func (c *CollibraClient) IdentityStore() *services.IdentityStoreClient {
-	return c.identityStoreClient.Get()
 }
 
 // Importer returns the ImporterClient
