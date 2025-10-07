@@ -2,7 +2,6 @@ package services
 
 import (
 	"context"
-	"errors"
 	"fmt"
 	"iter"
 
@@ -120,9 +119,9 @@ func (c *DataObjectClient) GetDataObjectIdByName(ctx context.Context, fullName s
 	switch response := (result.DataObjects).(type) {
 	case *schema.DataObjectByExternalIdDataObjectsDataObjectConnection:
 		if len(response.Edges) != 1 || response.Edges[0].Node == nil {
-			return "", errors.New("unexpected number of results")
+			return "", fmt.Errorf("expected 1 data object but got %d", len(response.Edges))
 		}
-		return response.Edges[0].Node.DataSource.Id, nil
+		return response.Edges[0].Node.Id, nil
 	case *schema.DataObjectByExternalIdDataObjectsInvalidInputError:
 		return "", types.NewErrInvalidInput(response.Message)
 	case *schema.DataObjectByExternalIdDataObjectsNotFoundError:
