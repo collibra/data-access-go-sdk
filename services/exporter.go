@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"iter"
 	"net/http"
+	"net/url"
 
 	"gopkg.in/yaml.v3"
 
@@ -22,9 +23,36 @@ func NewExporterClient(client *rest.RestClient) *ExporterClient {
 	}
 }
 
-func (c *ExporterClient) Export(ctx context.Context, dataSourceId string) iter.Seq2[types.ExportedAccessControl, error] {
+type ExportOptions struct {
+	OutOfSyncOnly bool
+}
+
+func WithExportOutOfSyncOnly() func(options *ExportOptions) {
+	return func(options *ExportOptions) {
+		options.OutOfSyncOnly = true
+	}
+}
+
+func (c *ExporterClient) Export(ctx context.Context, dataSourceId string, ops ...func(options *ExportOptions)) iter.Seq2[types.ExportedAccessControl, error] {
+	options := &ExportOptions{}
+
+	for _, op := range ops {
+		op(options)
+	}
+
 	return func(yield func(types.ExportedAccessControl, error) bool) {
-		resp, err := c.client.Get(ctx, "access-control/export/"+dataSourceId)
+		path, err := url.JoinPath("access-control/export/", dataSourceId)
+		if err != nil {
+			yield(types.ExportedAccessControl{}, fmt.Errorf("join path: %w", err))
+		}
+
+		resp, err := c.client.Get(ctx, path, func(r *http.Request) {
+			if options.OutOfSyncOnly {
+				q := r.URL.Query()
+				q.Set("notSynced", "true")
+				r.URL.RawQuery = q.Encode()
+			}
+		})
 		if err != nil {
 			yield(types.ExportedAccessControl{}, fmt.Errorf("request: %w", err))
 
