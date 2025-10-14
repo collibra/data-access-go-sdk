@@ -277,10 +277,10 @@ query GetAccessControlWhatAccessControls($id: ID!, $after: String, $limit: Int, 
     }
 }
 
-query GetAccessControlWhoList($id: ID!, $after: String, $limit: Int, $search: String, $order: [AccessControlWhoOrderByInput!]) {
+query GetAccessControlWhoList($id: ID!, $after: String, $limit: Int, $filter: AccessControlWhoListFilter, $order: [AccessControlWhoOrderByInput!]) {
     accessControl(id: $id) {
         ... on AccessControl {
-            whoList(after: $after, limit: $limit, search: $search, order: $order) {
+            whoList(after: $after, limit: $limit, filter: $filter, order: $order) {
                 __typename
                 ...AccessWhoItemConnection
                 ... PermissionDeniedError
