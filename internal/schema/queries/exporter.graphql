@@ -25,55 +25,68 @@ query FetchExportAccessControls($flowId: UUID!, $after: Int) {
     }
 }
 
+fragment ExportWhoItem on ExportWhoItem {
+    users
+    inheritFrom
+    recipients
+}
+
+fragment ExportDataObjectReference on ExportDataObjectReference {
+    id
+    fullName
+    type
+}
+
+fragment ExportWhatItem on ExportWhatItem {
+    dataObject {
+        ... ExportDataObjectReference
+    }
+    permissions
+}
+
+fragment ExportOwner on ExportOwner {
+    email
+    accountName
+    accessControlName
+}
+
+fragment ExportAccessControl on ExportAccessControl {
+    id
+    name
+    description
+    namingHint
+    externalId
+    who {
+        ... ExportWhoItem
+    }
+    deletedWho {
+        ... ExportWhoItem
+    }
+    action
+    delete
+    whoLocked
+    whatLocked
+    inheritanceLocked
+    deleteLocked
+    actualName
+    what {
+        ... ExportWhatItem
+    }
+    deleteWhat {
+        ... ExportWhatItem
+    }
+    type
+    filterCriteria
+    policyRule
+    commonDataObject
+    owners {
+        ... ExportOwner
+    }
+}
+
 fragment ExportAccessControls on ExportAccessControls {
     lastSequenceId
     accessControls {
-        id
-        name
-        description
-        namingHint
-        externalId
-        who {
-            users
-            inheritFrom
-            recipients
-        }
-        deletedWho {
-            users
-            inheritFrom
-            recipients
-        }
-        action
-        delete
-        whoLocked
-        whatLocked
-        inheritanceLocked
-        deleteLocked
-        actualName
-        what {
-            dataObject {
-                fullName
-                id
-                type
-            }
-            permissions
-        }
-        deleteWhat {
-            dataObject {
-                fullName
-                id
-                type
-            }
-            permissions
-        }
-        type
-        filterCriteria
-        policyRule
-        commonDataObject
-        owners {
-            email
-            accountName
-            accessControlName
-        }
+        ... ExportAccessControl
     }
 }

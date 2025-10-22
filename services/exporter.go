@@ -3,6 +3,7 @@ package services
 import (
 	"context"
 	"fmt"
+	"iter"
 	"time"
 
 	"github.com/Khan/genqlient/graphql"
@@ -63,23 +64,48 @@ func (c *ExporterClient) FinishExportFlow(ctx context.Context, startTime time.Ti
 	return result.FinishExportFlow, nil
 }
 
-// FinishExportFlow finishes an export flow.
-func (c *ExporterClient) FetchExportAccessControls(ctx context.Context, flowId uuid.UUID, after *int) (*types.ExportAccessControls, error) {
-	result, err := schema.FetchExportAccessControls(ctx, c.client, flowId, after)
-	if err != nil {
-		return nil, types.NewErrClient(err)
-	}
+// FetchExportAccessControls streams the access controls exported in the given flow.
+func (c *ExporterClient) FetchExportAccessControls(ctx context.Context, flowId uuid.UUID, lastSequenceId int) iter.Seq2[*types.ExportAccessControl, error] {
+	return func(yield func(*types.ExportAccessControl, error) bool) {
+		var after *int
 
-	switch response := result.FetchExportAccessControls.(type) {
-	case *schema.FetchExportAccessControlsFetchExportAccessControls:
-		return &response.ExportAccessControls, nil
-	case *schema.FetchExportAccessControlsFetchExportAccessControlsPermissionDeniedError:
-		return nil, types.NewErrPermissionDenied("fetchExportAccessControls", response.Message)
-	case *schema.FetchExportAccessControlsFetchExportAccessControlsNotFoundError:
-		return nil, types.NewErrNotFound("", response.Typename, response.Message)
-	case *schema.FetchExportAccessControlsFetchExportAccessControlsInvalidInputError:
-		return nil, types.NewErrInvalidInput(response.Message)
-	default:
-		return nil, fmt.Errorf("unexpected response type: %T", response)
+		for {
+			result, err := schema.FetchExportAccessControls(ctx, c.client, flowId, after)
+			if err != nil {
+				yield(nil, types.NewErrClient(err))
+				break
+			}
+
+			var controls *types.ExportAccessControls
+			var fetchErr error
+
+			switch response := result.FetchExportAccessControls.(type) {
+			case *schema.FetchExportAccessControlsFetchExportAccessControls:
+				controls = &response.ExportAccessControls
+			case *schema.FetchExportAccessControlsFetchExportAccessControlsPermissionDeniedError:
+				fetchErr = types.NewErrPermissionDenied("fetchExportAccessControls", response.Message)
+			case *schema.FetchExportAccessControlsFetchExportAccessControlsNotFoundError:
+				fetchErr = types.NewErrNotFound("", response.Typename, response.Message)
+			case *schema.FetchExportAccessControlsFetchExportAccessControlsInvalidInputError:
+				fetchErr = types.NewErrInvalidInput(response.Message)
+			default:
+				fetchErr = fmt.Errorf("unexpected response type: %T", response)
+			}
+
+			if fetchErr != nil {
+				yield(nil, fetchErr)
+				return
+			}
+
+			for _, control := range controls.AccessControls { //nolint:gocritic
+				if !yield(&control.ExportAccessControl, nil) {
+					return
+				}
+			}
+
+			if controls.LastSequenceId == lastSequenceId {
+				return
+			}
+		}
 	}
 }
