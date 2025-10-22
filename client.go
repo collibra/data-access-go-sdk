@@ -1,16 +1,13 @@
 package sdk
 
 import (
-	"net/http"
 	"strings"
 	"sync"
-	"time"
 
 	gql "github.com/Khan/genqlient/graphql"
 
-	"github.com/collibra/access-governance-go-sdk/internal"
-	"github.com/collibra/access-governance-go-sdk/internal/rest"
-	"github.com/collibra/access-governance-go-sdk/services"
+	"github.com/collibra/data-access-go-sdk/internal"
+	"github.com/collibra/data-access-go-sdk/services"
 )
 
 type singletonClient[T any] struct {
@@ -59,7 +56,6 @@ func NewClient(user, password, url string) *CollibraClient {
 	}
 
 	gqlApiUrl := apiUrl + internal.GqlApiPath
-	restApiUrl := apiUrl + internal.RestApiPath
 
 	authDoer := &internal.BasicAuthedDoer{
 		User:     user,
@@ -68,16 +64,12 @@ func NewClient(user, password, url string) *CollibraClient {
 	}
 
 	glcClient := gql.NewClient(gqlApiUrl, authDoer)
-	restClient := rest.NewRestClient(restApiUrl, &http.Client{
-		Transport: rest.DoerRoundTripWrapper{Doer: authDoer},
-		Timeout:   time.Second * 30,
-	})
 
 	return &CollibraClient{
 		accessControlClient: newSingletonClient(glcClient, services.NewAccessControlClient),
 		dataObjectClient:    newSingletonClient(glcClient, services.NewDataObjectClient),
 		dataSourceClient:    newSingletonClient(glcClient, services.NewDataSourceClient),
-		exporterClient:      newSingletonClient(restClient, services.NewExporterClient),
+		exporterClient:      newSingletonClient(glcClient, services.NewExporterClient),
 		grantCategoryClient: newSingletonClient(glcClient, services.NewGrantCategoryClient),
 		importerClient:      newSingletonClient(glcClient, services.NewImporterClient),
 		jobClient:           newSingletonClient(glcClient, services.NewJobClient),

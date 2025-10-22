@@ -12,7 +12,7 @@ type BasicAuthedDoer struct {
 }
 
 func (a *BasicAuthedDoer) Do(req *http.Request) (*http.Response, error) {
-	req.Header.Set("User-Agent", "Collibra Access Governance SDK")
+	req.Header.Set("User-Agent", "Collibra Data Access SDK")
 	req.SetBasicAuth(a.User, a.Password)
 
 	resp, err := http.DefaultClient.Do(req)

@@ -6,9 +6,9 @@ import (
 
 	"github.com/Khan/genqlient/graphql"
 
-	"github.com/collibra/access-governance-go-sdk/internal/schema"
-	"github.com/collibra/access-governance-go-sdk/types"
-	"github.com/collibra/access-governance-go-sdk/utils"
+	"github.com/collibra/data-access-go-sdk/internal/schema"
+	"github.com/collibra/data-access-go-sdk/types"
+	"github.com/collibra/data-access-go-sdk/utils"
 )
 
 type UserClient struct {
@@ -80,7 +80,7 @@ func (c *UserClient) GetUserByEmail(ctx context.Context, email string) (*types.U
 	}
 }
 
-// CreateUser creates a new user in Collibra Access Governance
+// CreateUser creates a new user in Collibra Data Access
 // Returns a User if user is created successfully, otherwise returns an error.
 func (c *UserClient) CreateUser(ctx context.Context, userInput types.UserInput) (*types.User, error) {
 	result, err := schema.CreateUser(ctx, c.client, userInput)
@@ -102,7 +102,7 @@ func (c *UserClient) CreateUser(ctx context.Context, userInput types.UserInput) 
 	}
 }
 
-// UpdateUser updates an existing user in Collibra Access Governance
+// UpdateUser updates an existing user in Collibra Data Access
 // Returns a User if user is updated successfully, otherwise returns an error.
 func (c *UserClient) UpdateUser(ctx context.Context, id string, userInput types.UserInput) (*types.User, error) {
 	result, err := schema.UpdateUser(ctx, c.client, id, userInput)
@@ -121,16 +121,5 @@ func (c *UserClient) UpdateUser(ctx context.Context, id string, userInput types.
 		return nil, types.NewErrPermissionDenied("updateUser", user.Message)
 	default:
 		return nil, types.NewErrClient(fmt.Errorf("unexpected result type: %T", user))
-	}
-}
-
-type InviteAsAccessGovernanceUserOptions struct {
-	NoPassword bool
-}
-
-// WithInviteAsAccessGovernanceUserNoPassword adds the option to not send a password to the invited user.
-func WithInviteAsAccessGovernanceUserNoPassword() func(options *InviteAsAccessGovernanceUserOptions) {
-	return func(options *InviteAsAccessGovernanceUserOptions) {
-		options.NoPassword = true
 	}
 }

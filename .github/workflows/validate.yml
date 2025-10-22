@@ -1,5 +1,5 @@
-name: Validate Collibra Access Governance SDK
-run-name: Validation of Collibra Access Governance SDK
+name: Validate Collibra Data Access SDK
+run-name: Validation of Collibra Data Access SDK
 on:
   push:
     branches:
@@ -54,7 +54,7 @@ jobs:
           SONAR_HOST_URL: https://sonarqube.collibra.dev
         with:
           args: >
-            -Dsonar.pullrequest.github.repository=collibra/access-governance-go-sdk
+            -Dsonar.pullrequest.github.repository=collibra/data-access-go-sdk
 
       - name: SonarQube Quality Gate
         uses: sonarsource/sonarqube-quality-gate-action@v1.1.0

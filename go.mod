@@ -1,4 +1,4 @@
-module github.com/collibra/access-governance-go-sdk
+module github.com/collibra/data-access-go-sdk
 
 go 1.25.0
 

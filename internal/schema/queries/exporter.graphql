@@ -1,0 +1,79 @@
+mutation TriggerExportFlow($input: StartExportFlowInput!) {
+    startExportFlow(input: $input) {
+        ... StartExportFlow
+        ... PermissionDeniedError
+        ... NotFoundError
+        ... InvalidInputError
+    }
+}
+
+fragment StartExportFlow on StartExportFlow {
+    lastSequenceId
+    startTime
+}
+
+mutation FinalizeExportFlow($startTime: Time!, $flowId: UUID!) {
+    finishExportFlow(startTime: $startTime, flowId: $flowId)
+}
+
+query FetchExportAccessControls($flowId: UUID!, $after: Int) {
+    fetchExportAccessControls(flowId: $flowId, after: $after) {
+        ... ExportAccessControls
+        ... PermissionDeniedError
+        ... NotFoundError
+        ... InvalidInputError
+    }
+}
+
+fragment ExportAccessControls on ExportAccessControls {
+    lastSequenceId
+    accessControls {
+        id
+        name
+        description
+        namingHint
+        externalId
+        who {
+            users
+            inheritFrom
+            recipients
+        }
+        deletedWho {
+            users
+            inheritFrom
+            recipients
+        }
+        action
+        delete
+        whoLocked
+        whatLocked
+        inheritanceLocked
+        deleteLocked
+        actualName
+        what {
+            dataObject {
+                fullName
+                id
+                type
+            }
+            permissions
+        }
+        deleteWhat {
+            dataObject {
+                fullName
+                id
+                type
+            }
+            permissions
+        }
+        type
+        filterCriteria
+        policyRule
+        commonDataObject
+        owners {
+            email
+            accountName
+            accessControlName
+        }
+    }
+}

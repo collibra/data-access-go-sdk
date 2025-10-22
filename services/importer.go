@@ -7,8 +7,8 @@ import (
 	"github.com/Khan/genqlient/graphql"
 	"github.com/google/uuid"
 
-	"github.com/collibra/access-governance-go-sdk/internal/schema"
-	"github.com/collibra/access-governance-go-sdk/types"
+	"github.com/collibra/data-access-go-sdk/internal/schema"
+	"github.com/collibra/data-access-go-sdk/types"
 )
 
 type ImporterClient struct {
@@ -22,7 +22,7 @@ func NewImporterClient(client graphql.Client) *ImporterClient {
 }
 
 // StartImportFlow starts a new import flow.
-func (c *ImporterClient) StartImportFlow(ctx context.Context, input types.StartInputFlowInput) (*types.Subtask, error) {
+func (c *ImporterClient) StartImportFlow(ctx context.Context, input types.StartImportFlowInput) (*types.Subtask, error) {
 	result, err := schema.StartImportFlow(ctx, c.client, input)
 	if err != nil {
 		return nil, types.NewErrClient(err)

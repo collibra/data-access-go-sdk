@@ -1,5 +1,5 @@
-name: Release Collibra Access Governance SDK
-run-name: Running Release for Collibra Access Governance SDK
+name: Release Collibra Data Access SDK
+run-name: Running Release for Collibra Data Access SDK
 on:
   push:
     tags:
@@ -30,4 +30,4 @@ jobs:
         run: go mod tidy
 
       - name: Publish package
-        run: GOPROXY=proxy.golang.org go list -m github.com/collibra/access-governance-go-sdk@${{steps.tag.outputs.tag}}
+        run: GOPROXY=proxy.golang.org go list -m github.com/collibra/data-access-go-sdk@${{steps.tag.outputs.tag}}
