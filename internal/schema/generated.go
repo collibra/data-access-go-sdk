@@ -5481,11 +5481,6 @@ func (v *CreateDataSourceCreateDataSource) GetCreatedAt() time.Time { return v.D
 // GetModifiedAt returns CreateDataSourceCreateDataSource.ModifiedAt, and is useful for accessing the field via an interface.
 func (v *CreateDataSourceCreateDataSource) GetModifiedAt() time.Time { return v.DataSource.ModifiedAt }
 
-// GetSyncMethod returns CreateDataSourceCreateDataSource.SyncMethod, and is useful for accessing the field via an interface.
-func (v *CreateDataSourceCreateDataSource) GetSyncMethod() DataSourceSyncMethod {
-	return v.DataSource.SyncMethod
-}
-
 // GetParent returns CreateDataSourceCreateDataSource.Parent, and is useful for accessing the field via an interface.
 func (v *CreateDataSourceCreateDataSource) GetParent() *DataSourceParentDataSource {
 	return v.DataSource.Parent
@@ -5531,8 +5526,6 @@ type __premarshalCreateDataSourceCreateDataSource struct {
 
 	ModifiedAt time.Time `json:"modifiedAt"`
 
-	SyncMethod DataSourceSyncMethod `json:"syncMethod"`
-
 	Parent *DataSourceParentDataSource `json:"parent"`
 }
 
@@ -5554,7 +5547,6 @@ func (v *CreateDataSourceCreateDataSource) __premarshalJSON() (*__premarshalCrea
 	retval.Description = v.DataSource.Description
 	retval.CreatedAt = v.DataSource.CreatedAt
 	retval.ModifiedAt = v.DataSource.ModifiedAt
-	retval.SyncMethod = v.DataSource.SyncMethod
 	retval.Parent = v.DataSource.Parent
 	return &retval, nil
 }
@@ -8571,7 +8563,6 @@ type DataSource struct {
 	Description string                      `json:"description"`
 	CreatedAt   time.Time                   `json:"createdAt"`
 	ModifiedAt  time.Time                   `json:"modifiedAt"`
-	SyncMethod  DataSourceSyncMethod        `json:"syncMethod"`
 	Parent      *DataSourceParentDataSource `json:"parent"`
 }
 
@@ -8592,9 +8583,6 @@ func (v *DataSource) GetCreatedAt() time.Time { return v.CreatedAt }
 
 // GetModifiedAt returns DataSource.ModifiedAt, and is useful for accessing the field via an interface.
 func (v *DataSource) GetModifiedAt() time.Time { return v.ModifiedAt }
-
-// GetSyncMethod returns DataSource.SyncMethod, and is useful for accessing the field via an interface.
-func (v *DataSource) GetSyncMethod() DataSourceSyncMethod { return v.SyncMethod }
 
 // GetParent returns DataSource.Parent, and is useful for accessing the field via an interface.
 func (v *DataSource) GetParent() *DataSourceParentDataSource { return v.Parent }
@@ -8660,11 +8648,6 @@ func (v *DataSourceConnectionEdgesDataSourceEdgeNodeDataSource) GetModifiedAt() 
 	return v.DataSource.ModifiedAt
 }
 
-// GetSyncMethod returns DataSourceConnectionEdgesDataSourceEdgeNodeDataSource.SyncMethod, and is useful for accessing the field via an interface.
-func (v *DataSourceConnectionEdgesDataSourceEdgeNodeDataSource) GetSyncMethod() DataSourceSyncMethod {
-	return v.DataSource.SyncMethod
-}
-
 // GetParent returns DataSourceConnectionEdgesDataSourceEdgeNodeDataSource.Parent, and is useful for accessing the field via an interface.
 func (v *DataSourceConnectionEdgesDataSourceEdgeNodeDataSource) GetParent() *DataSourceParentDataSource {
 	return v.DataSource.Parent
@@ -8708,8 +8691,6 @@ type __premarshalDataSourceConnectionEdgesDataSourceEdgeNodeDataSource struct {
 
 	ModifiedAt time.Time `json:"modifiedAt"`
 
-	SyncMethod DataSourceSyncMethod `json:"syncMethod"`
-
 	Parent *DataSourceParentDataSource `json:"parent"`
 }
 
@@ -8730,7 +8711,6 @@ func (v *DataSourceConnectionEdgesDataSourceEdgeNodeDataSource) __premarshalJSON
 	retval.Description = v.DataSource.Description
 	retval.CreatedAt = v.DataSource.CreatedAt
 	retval.ModifiedAt = v.DataSource.ModifiedAt
-	retval.SyncMethod = v.DataSource.SyncMethod
 	retval.Parent = v.DataSource.Parent
 	return &retval, nil
 }
@@ -9174,12 +9154,12 @@ func (v *DataSourceFilterInput) GetSupportedFeatures() []*DataSourceFeatures {
 }
 
 type DataSourceInput struct {
-	Name                    *string               `json:"name,omitempty"`
-	Description             *string               `json:"description,omitempty"`
-	Parent                  *string               `json:"parent,omitempty"`
-	SyncMethod              *DataSourceSyncMethod `json:"syncMethod,omitempty"`
-	CanRequestAccess        *bool                 `json:"canRequestAccess,omitempty"`
-	CanRequestAccessToTypes []string              `json:"canRequestAccessToTypes"`
+	Name                    *string                      `json:"name,omitempty"`
+	Description             *string                      `json:"description,omitempty"`
+	Parent                  *string                      `json:"parent,omitempty"`
+	CanRequestAccess        *bool                        `json:"canRequestAccess,omitempty"`
+	CanRequestAccessToTypes []string                     `json:"canRequestAccessToTypes"`
+	SyncSchedule            *DataSourceSyncScheduleInput `json:"syncSchedule,omitempty"`
 }
 
 // GetName returns DataSourceInput.Name, and is useful for accessing the field via an interface.
@@ -9191,14 +9171,14 @@ func (v *DataSourceInput) GetDescription() *string { return v.Description }
 // GetParent returns DataSourceInput.Parent, and is useful for accessing the field via an interface.
 func (v *DataSourceInput) GetParent() *string { return v.Parent }
 
-// GetSyncMethod returns DataSourceInput.SyncMethod, and is useful for accessing the field via an interface.
-func (v *DataSourceInput) GetSyncMethod() *DataSourceSyncMethod { return v.SyncMethod }
-
 // GetCanRequestAccess returns DataSourceInput.CanRequestAccess, and is useful for accessing the field via an interface.
 func (v *DataSourceInput) GetCanRequestAccess() *bool { return v.CanRequestAccess }
 
 // GetCanRequestAccessToTypes returns DataSourceInput.CanRequestAccessToTypes, and is useful for accessing the field via an interface.
 func (v *DataSourceInput) GetCanRequestAccessToTypes() []string { return v.CanRequestAccessToTypes }
+
+// GetSyncSchedule returns DataSourceInput.SyncSchedule, and is useful for accessing the field via an interface.
+func (v *DataSourceInput) GetSyncSchedule() *DataSourceSyncScheduleInput { return v.SyncSchedule }
 
 // DataSourceMaskInformationDataSource includes the requested fields of the GraphQL type DataSource.
 type DataSourceMaskInformationDataSource struct {
@@ -9666,17 +9646,34 @@ type DataSourceParentDataSource struct {
 // GetId returns DataSourceParentDataSource.Id, and is useful for accessing the field via an interface.
 func (v *DataSourceParentDataSource) GetId() string { return v.Id }
 
-type DataSourceSyncMethod string
-
-const (
-	DataSourceSyncMethodOnprem             DataSourceSyncMethod = "OnPrem"
-	DataSourceSyncMethodCloudmanualtrigger DataSourceSyncMethod = "CloudManualTrigger"
-)
-
-var AllDataSourceSyncMethod = []DataSourceSyncMethod{
-	DataSourceSyncMethodOnprem,
-	DataSourceSyncMethodCloudmanualtrigger,
+type DataSourceSyncScheduleInput struct {
+	Global               *string `json:"global,omitempty"`
+	DataObjectSync       *string `json:"dataObjectSync,omitempty"`
+	IdentitySync         *string `json:"identitySync,omitempty"`
+	AccessToTargetSync   *string `json:"accessToTargetSync,omitempty"`
+	AccessFromTargetSync *string `json:"accessFromTargetSync,omitempty"`
+	UsageSync            *string `json:"usageSync,omitempty"`
 }
+
+// GetGlobal returns DataSourceSyncScheduleInput.Global, and is useful for accessing the field via an interface.
+func (v *DataSourceSyncScheduleInput) GetGlobal() *string { return v.Global }
+
+// GetDataObjectSync returns DataSourceSyncScheduleInput.DataObjectSync, and is useful for accessing the field via an interface.
+func (v *DataSourceSyncScheduleInput) GetDataObjectSync() *string { return v.DataObjectSync }
+
+// GetIdentitySync returns DataSourceSyncScheduleInput.IdentitySync, and is useful for accessing the field via an interface.
+func (v *DataSourceSyncScheduleInput) GetIdentitySync() *string { return v.IdentitySync }
+
+// GetAccessToTargetSync returns DataSourceSyncScheduleInput.AccessToTargetSync, and is useful for accessing the field via an interface.
+func (v *DataSourceSyncScheduleInput) GetAccessToTargetSync() *string { return v.AccessToTargetSync }
+
+// GetAccessFromTargetSync returns DataSourceSyncScheduleInput.AccessFromTargetSync, and is useful for accessing the field via an interface.
+func (v *DataSourceSyncScheduleInput) GetAccessFromTargetSync() *string {
+	return v.AccessFromTargetSync
+}
+
+// GetUsageSync returns DataSourceSyncScheduleInput.UsageSync, and is useful for accessing the field via an interface.
+func (v *DataSourceSyncScheduleInput) GetUsageSync() *string { return v.UsageSync }
 
 type DataSourceTypeInfo struct {
 	DataSource        string  `json:"dataSource"`
@@ -15878,11 +15875,6 @@ func (v *GetDataSourceDataSource) GetCreatedAt() time.Time { return v.DataSource
 // GetModifiedAt returns GetDataSourceDataSource.ModifiedAt, and is useful for accessing the field via an interface.
 func (v *GetDataSourceDataSource) GetModifiedAt() time.Time { return v.DataSource.ModifiedAt }
 
-// GetSyncMethod returns GetDataSourceDataSource.SyncMethod, and is useful for accessing the field via an interface.
-func (v *GetDataSourceDataSource) GetSyncMethod() DataSourceSyncMethod {
-	return v.DataSource.SyncMethod
-}
-
 // GetParent returns GetDataSourceDataSource.Parent, and is useful for accessing the field via an interface.
 func (v *GetDataSourceDataSource) GetParent() *DataSourceParentDataSource { return v.DataSource.Parent }
 
@@ -15926,8 +15918,6 @@ type __premarshalGetDataSourceDataSource struct {
 
 	ModifiedAt time.Time `json:"modifiedAt"`
 
-	SyncMethod DataSourceSyncMethod `json:"syncMethod"`
-
 	Parent *DataSourceParentDataSource `json:"parent"`
 }
 
@@ -15949,7 +15939,6 @@ func (v *GetDataSourceDataSource) __premarshalJSON() (*__premarshalGetDataSource
 	retval.Description = v.DataSource.Description
 	retval.CreatedAt = v.DataSource.CreatedAt
 	retval.ModifiedAt = v.DataSource.ModifiedAt
-	retval.SyncMethod = v.DataSource.SyncMethod
 	retval.Parent = v.DataSource.Parent
 	return &retval, nil
 }
@@ -19300,9 +19289,6 @@ func (v *JobDataSource) GetCreatedAt() time.Time { return v.DataSource.CreatedAt
 // GetModifiedAt returns JobDataSource.ModifiedAt, and is useful for accessing the field via an interface.
 func (v *JobDataSource) GetModifiedAt() time.Time { return v.DataSource.ModifiedAt }
 
-// GetSyncMethod returns JobDataSource.SyncMethod, and is useful for accessing the field via an interface.
-func (v *JobDataSource) GetSyncMethod() DataSourceSyncMethod { return v.DataSource.SyncMethod }
-
 // GetParent returns JobDataSource.Parent, and is useful for accessing the field via an interface.
 func (v *JobDataSource) GetParent() *DataSourceParentDataSource { return v.DataSource.Parent }
 
@@ -19344,8 +19330,6 @@ type __premarshalJobDataSource struct {
 
 	ModifiedAt time.Time `json:"modifiedAt"`
 
-	SyncMethod DataSourceSyncMethod `json:"syncMethod"`
-
 	Parent *DataSourceParentDataSource `json:"parent"`
 }
 
@@ -19366,7 +19350,6 @@ func (v *JobDataSource) __premarshalJSON() (*__premarshalJobDataSource, error) {
 	retval.Description = v.DataSource.Description
 	retval.CreatedAt = v.DataSource.CreatedAt
 	retval.ModifiedAt = v.DataSource.ModifiedAt
-	retval.SyncMethod = v.DataSource.SyncMethod
 	retval.Parent = v.DataSource.Parent
 	return &retval, nil
 }
@@ -28302,11 +28285,6 @@ func (v *SetDataSourceMetadataSetDataSourceMetaDataDataSource) GetModifiedAt() t
 	return v.DataSource.ModifiedAt
 }
 
-// GetSyncMethod returns SetDataSourceMetadataSetDataSourceMetaDataDataSource.SyncMethod, and is useful for accessing the field via an interface.
-func (v *SetDataSourceMetadataSetDataSourceMetaDataDataSource) GetSyncMethod() DataSourceSyncMethod {
-	return v.DataSource.SyncMethod
-}
-
 // GetParent returns SetDataSourceMetadataSetDataSourceMetaDataDataSource.Parent, and is useful for accessing the field via an interface.
 func (v *SetDataSourceMetadataSetDataSourceMetaDataDataSource) GetParent() *DataSourceParentDataSource {
 	return v.DataSource.Parent
@@ -28352,8 +28330,6 @@ type __premarshalSetDataSourceMetadataSetDataSourceMetaDataDataSource struct {
 
 	ModifiedAt time.Time `json:"modifiedAt"`
 
-	SyncMethod DataSourceSyncMethod `json:"syncMethod"`
-
 	Parent *DataSourceParentDataSource `json:"parent"`
 }
 
@@ -28375,7 +28351,6 @@ func (v *SetDataSourceMetadataSetDataSourceMetaDataDataSource) __premarshalJSON(
 	retval.Description = v.DataSource.Description
 	retval.CreatedAt = v.DataSource.CreatedAt
 	retval.ModifiedAt = v.DataSource.ModifiedAt
-	retval.SyncMethod = v.DataSource.SyncMethod
 	retval.Parent = v.DataSource.Parent
 	return &retval, nil
 }
@@ -28990,9 +28965,13 @@ var AllSort = []Sort{
 
 // StartExportFlow includes the GraphQL fields of StartExportFlow requested by the fragment StartExportFlow.
 type StartExportFlow struct {
+	FlowId         uuid.UUID `json:"flowId"`
 	LastSequenceId int       `json:"lastSequenceId"`
 	StartTime      time.Time `json:"startTime"`
 }
+
+// GetFlowId returns StartExportFlow.FlowId, and is useful for accessing the field via an interface.
+func (v *StartExportFlow) GetFlowId() uuid.UUID { return v.FlowId }
 
 // GetLastSequenceId returns StartExportFlow.LastSequenceId, and is useful for accessing the field via an interface.
 func (v *StartExportFlow) GetLastSequenceId() int { return v.LastSequenceId }
@@ -30273,9 +30252,6 @@ func (v *SyncDataDataSource) GetCreatedAt() time.Time { return v.DataSource.Crea
 // GetModifiedAt returns SyncDataDataSource.ModifiedAt, and is useful for accessing the field via an interface.
 func (v *SyncDataDataSource) GetModifiedAt() time.Time { return v.DataSource.ModifiedAt }
 
-// GetSyncMethod returns SyncDataDataSource.SyncMethod, and is useful for accessing the field via an interface.
-func (v *SyncDataDataSource) GetSyncMethod() DataSourceSyncMethod { return v.DataSource.SyncMethod }
-
 // GetParent returns SyncDataDataSource.Parent, and is useful for accessing the field via an interface.
 func (v *SyncDataDataSource) GetParent() *DataSourceParentDataSource { return v.DataSource.Parent }
 
@@ -30317,8 +30293,6 @@ type __premarshalSyncDataDataSource struct {
 
 	ModifiedAt time.Time `json:"modifiedAt"`
 
-	SyncMethod DataSourceSyncMethod `json:"syncMethod"`
-
 	Parent *DataSourceParentDataSource `json:"parent"`
 }
 
@@ -30339,7 +30313,6 @@ func (v *SyncDataDataSource) __premarshalJSON() (*__premarshalSyncDataDataSource
 	retval.Description = v.DataSource.Description
 	retval.CreatedAt = v.DataSource.CreatedAt
 	retval.ModifiedAt = v.DataSource.ModifiedAt
-	retval.SyncMethod = v.DataSource.SyncMethod
 	retval.Parent = v.DataSource.Parent
 	return &retval, nil
 }
@@ -31254,6 +31227,9 @@ type TriggerExportFlowStartExportFlow struct {
 // GetTypename returns TriggerExportFlowStartExportFlow.Typename, and is useful for accessing the field via an interface.
 func (v *TriggerExportFlowStartExportFlow) GetTypename() *string { return v.Typename }
 
+// GetFlowId returns TriggerExportFlowStartExportFlow.FlowId, and is useful for accessing the field via an interface.
+func (v *TriggerExportFlowStartExportFlow) GetFlowId() uuid.UUID { return v.StartExportFlow.FlowId }
+
 // GetLastSequenceId returns TriggerExportFlowStartExportFlow.LastSequenceId, and is useful for accessing the field via an interface.
 func (v *TriggerExportFlowStartExportFlow) GetLastSequenceId() int {
 	return v.StartExportFlow.LastSequenceId
@@ -31292,6 +31268,8 @@ func (v *TriggerExportFlowStartExportFlow) UnmarshalJSON(b []byte) error {
 type __premarshalTriggerExportFlowStartExportFlow struct {
 	Typename *string `json:"__typename"`
 
+	FlowId uuid.UUID `json:"flowId"`
+
 	LastSequenceId int `json:"lastSequenceId"`
 
 	StartTime time.Time `json:"startTime"`
@@ -31309,6 +31287,7 @@ func (v *TriggerExportFlowStartExportFlow) __premarshalJSON() (*__premarshalTrig
 	var retval __premarshalTriggerExportFlowStartExportFlow
 
 	retval.Typename = v.Typename
+	retval.FlowId = v.StartExportFlow.FlowId
 	retval.LastSequenceId = v.StartExportFlow.LastSequenceId
 	retval.StartTime = v.StartExportFlow.StartTime
 	return &retval, nil
@@ -32911,11 +32890,6 @@ func (v *UpdateDataSourceUpdateDataSource) GetCreatedAt() time.Time { return v.D
 // GetModifiedAt returns UpdateDataSourceUpdateDataSource.ModifiedAt, and is useful for accessing the field via an interface.
 func (v *UpdateDataSourceUpdateDataSource) GetModifiedAt() time.Time { return v.DataSource.ModifiedAt }
 
-// GetSyncMethod returns UpdateDataSourceUpdateDataSource.SyncMethod, and is useful for accessing the field via an interface.
-func (v *UpdateDataSourceUpdateDataSource) GetSyncMethod() DataSourceSyncMethod {
-	return v.DataSource.SyncMethod
-}
-
 // GetParent returns UpdateDataSourceUpdateDataSource.Parent, and is useful for accessing the field via an interface.
 func (v *UpdateDataSourceUpdateDataSource) GetParent() *DataSourceParentDataSource {
 	return v.DataSource.Parent
@@ -32961,8 +32935,6 @@ type __premarshalUpdateDataSourceUpdateDataSource struct {
 
 	ModifiedAt time.Time `json:"modifiedAt"`
 
-	SyncMethod DataSourceSyncMethod `json:"syncMethod"`
-
 	Parent *DataSourceParentDataSource `json:"parent"`
 }
 
@@ -32984,7 +32956,6 @@ func (v *UpdateDataSourceUpdateDataSource) __premarshalJSON() (*__premarshalUpda
 	retval.Description = v.DataSource.Description
 	retval.CreatedAt = v.DataSource.CreatedAt
 	retval.ModifiedAt = v.DataSource.ModifiedAt
-	retval.SyncMethod = v.DataSource.SyncMethod
 	retval.Parent = v.DataSource.Parent
 	return &retval, nil
 }
@@ -36697,7 +36668,6 @@ fragment DataSource on DataSource {
 	createdAt
 	modifiedAt
 	description
-	syncMethod
 	parent {
 		id
 	}
@@ -36985,7 +36955,6 @@ fragment DataSource on DataSource {
 	createdAt
 	modifiedAt
 	description
-	syncMethod
 	parent {
 		id
 	}
@@ -37047,7 +37016,6 @@ fragment DataSource on DataSource {
 	createdAt
 	modifiedAt
 	description
-	syncMethod
 	parent {
 		id
 	}
@@ -37189,7 +37157,6 @@ fragment DataSource on DataSource {
 	createdAt
 	modifiedAt
 	description
-	syncMethod
 	parent {
 		id
 	}
@@ -37537,7 +37504,6 @@ fragment DataSource on DataSource {
 	createdAt
 	modifiedAt
 	description
-	syncMethod
 	parent {
 		id
 	}
@@ -37673,7 +37639,6 @@ fragment DataSource on DataSource {
 	createdAt
 	modifiedAt
 	description
-	syncMethod
 	parent {
 		id
 	}
@@ -38118,7 +38083,6 @@ fragment DataSource on DataSource {
 	createdAt
 	modifiedAt
 	description
-	syncMethod
 	parent {
 		id
 	}
@@ -38286,7 +38250,6 @@ fragment DataSource on DataSource {
 	createdAt
 	modifiedAt
 	description
-	syncMethod
 	parent {
 		id
 	}
@@ -38588,7 +38551,6 @@ fragment DataSource on DataSource {
 	createdAt
 	modifiedAt
 	description
-	syncMethod
 	parent {
 		id
 	}
@@ -38736,7 +38698,6 @@ fragment DataSource on DataSource {
 	createdAt
 	modifiedAt
 	description
-	syncMethod
 	parent {
 		id
 	}
@@ -39228,7 +39189,6 @@ fragment DataSource on DataSource {
 	createdAt
 	modifiedAt
 	description
-	syncMethod
 	parent {
 		id
 	}
@@ -39401,7 +39361,6 @@ fragment DataSource on DataSource {
 	createdAt
 	modifiedAt
 	description
-	syncMethod
 	parent {
 		id
 	}
@@ -39565,7 +39524,6 @@ fragment DataSource on DataSource {
 	createdAt
 	modifiedAt
 	description
-	syncMethod
 	parent {
 		id
 	}
@@ -40343,7 +40301,6 @@ fragment DataSource on DataSource {
 	createdAt
 	modifiedAt
 	description
-	syncMethod
 	parent {
 		id
 	}
@@ -40589,6 +40546,7 @@ mutation TriggerExportFlow ($input: StartExportFlowInput!) {
 	}
 }
 fragment StartExportFlow on StartExportFlow {
+	flowId
 	lastSequenceId
 	startTime
 }
@@ -40781,7 +40739,6 @@ fragment DataSource on DataSource {
 	createdAt
 	modifiedAt
 	description
-	syncMethod
 	parent {
 		id
 	}
@@ -40847,7 +40804,6 @@ fragment DataSource on DataSource {
 	createdAt
 	modifiedAt
 	description
-	syncMethod
 	parent {
 		id
 	}
@@ -40993,7 +40949,6 @@ fragment DataSource on DataSource {
 	createdAt
 	modifiedAt
 	description
-	syncMethod
 	parent {
 		id
 	}

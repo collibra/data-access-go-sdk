@@ -284,13 +284,7 @@ type DataSourceMaskInformationResponse = schema.DataSourceMaskInformationRespons
 type DataSourceMetaDataInput = schema.DataSourceMetaDataInput
 type DataSourceOrderByInput = schema.DataSourceOrderByInput
 type DataSourceParentDataSource = schema.DataSourceParentDataSource
-type DataSourceSyncMethod = schema.DataSourceSyncMethod
-
-const (
-	DataSourceSyncMethodOnprem             DataSourceSyncMethod = schema.DataSourceSyncMethodOnprem
-	DataSourceSyncMethodCloudmanualtrigger DataSourceSyncMethod = schema.DataSourceSyncMethodCloudmanualtrigger
-)
-
+type DataSourceSyncScheduleInput = schema.DataSourceSyncScheduleInput
 type DataSourceTypeInfo = schema.DataSourceTypeInfo
 type DataTypeOrigin = schema.DataTypeOrigin
 
@@ -810,7 +804,6 @@ var AllBinaryExpressionUnaryExpressionOperator = []BinaryExpressionUnaryExpressi
 var AllDataComparisonExpressionComparisonOperator = []DataComparisonExpressionComparisonOperator{DataComparisonExpressionComparisonOperatorEqual, DataComparisonExpressionComparisonOperatorNotequal, DataComparisonExpressionComparisonOperatorLessthan, DataComparisonExpressionComparisonOperatorLessthanorequal, DataComparisonExpressionComparisonOperatorGreaterthan, DataComparisonExpressionComparisonOperatorGreaterthanorequal}
 var AllDataComparisonExpressionEntityType = []DataComparisonExpressionEntityType{DataComparisonExpressionEntityTypeDataobject, DataComparisonExpressionEntityTypeColumnreferencebyname}
 var AllDataSourceFeatures = []DataSourceFeatures{DataSourceFeaturesColumnmasking, DataSourceFeaturesRowfiltering, DataSourceFeaturesDatasharing}
-var AllDataSourceSyncMethod = []DataSourceSyncMethod{DataSourceSyncMethodOnprem, DataSourceSyncMethodCloudmanualtrigger}
 var AllDataTypeOrigin = []DataTypeOrigin{DataTypeOriginInternal, DataTypeOriginExternal, DataTypeOriginShared}
 var AllJobStatus = []JobStatus{JobStatusStarted, JobStatusInprogress, JobStatusCompleted, JobStatusFailed, JobStatusTimedout}
 var AllSort = []Sort{SortAsc, SortDesc}

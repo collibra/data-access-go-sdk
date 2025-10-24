@@ -8,6 +8,7 @@ mutation TriggerExportFlow($input: StartExportFlowInput!) {
 }
 
 fragment StartExportFlow on StartExportFlow {
+    flowId
     lastSequenceId
     startTime
 }

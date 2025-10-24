@@ -6,7 +6,6 @@ fragment DataSource on DataSource {
     createdAt
     modifiedAt
     description
-    syncMethod
     parent {
         id
     }
