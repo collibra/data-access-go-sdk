@@ -30,6 +30,7 @@ fragment ExportWhoItem on ExportWhoItem {
     users
     inheritFrom
     recipients
+    inheritedFromIds
 }
 
 fragment ExportDataObjectReference on ExportDataObjectReference {
