@@ -11984,6 +11984,11 @@ func (v *ExportAccessControlDeletedWhoExportWhoItem) GetRecipients() []string {
 	return v.ExportWhoItem.Recipients
 }
 
+// GetInheritedFromIds returns ExportAccessControlDeletedWhoExportWhoItem.InheritedFromIds, and is useful for accessing the field via an interface.
+func (v *ExportAccessControlDeletedWhoExportWhoItem) GetInheritedFromIds() []string {
+	return v.ExportWhoItem.InheritedFromIds
+}
+
 func (v *ExportAccessControlDeletedWhoExportWhoItem) UnmarshalJSON(b []byte) error {
 
 	if string(b) == "null" {
@@ -12015,6 +12020,8 @@ type __premarshalExportAccessControlDeletedWhoExportWhoItem struct {
 	InheritFrom []string `json:"inheritFrom"`
 
 	Recipients []string `json:"recipients"`
+
+	InheritedFromIds []string `json:"inheritedFromIds"`
 }
 
 func (v *ExportAccessControlDeletedWhoExportWhoItem) MarshalJSON() ([]byte, error) {
@@ -12031,6 +12038,7 @@ func (v *ExportAccessControlDeletedWhoExportWhoItem) __premarshalJSON() (*__prem
 	retval.Users = v.ExportWhoItem.Users
 	retval.InheritFrom = v.ExportWhoItem.InheritFrom
 	retval.Recipients = v.ExportWhoItem.Recipients
+	retval.InheritedFromIds = v.ExportWhoItem.InheritedFromIds
 	return &retval, nil
 }
 
@@ -12182,6 +12190,11 @@ func (v *ExportAccessControlWhoExportWhoItem) GetRecipients() []string {
 	return v.ExportWhoItem.Recipients
 }
 
+// GetInheritedFromIds returns ExportAccessControlWhoExportWhoItem.InheritedFromIds, and is useful for accessing the field via an interface.
+func (v *ExportAccessControlWhoExportWhoItem) GetInheritedFromIds() []string {
+	return v.ExportWhoItem.InheritedFromIds
+}
+
 func (v *ExportAccessControlWhoExportWhoItem) UnmarshalJSON(b []byte) error {
 
 	if string(b) == "null" {
@@ -12213,6 +12226,8 @@ type __premarshalExportAccessControlWhoExportWhoItem struct {
 	InheritFrom []string `json:"inheritFrom"`
 
 	Recipients []string `json:"recipients"`
+
+	InheritedFromIds []string `json:"inheritedFromIds"`
 }
 
 func (v *ExportAccessControlWhoExportWhoItem) MarshalJSON() ([]byte, error) {
@@ -12229,6 +12244,7 @@ func (v *ExportAccessControlWhoExportWhoItem) __premarshalJSON() (*__premarshalE
 	retval.Users = v.ExportWhoItem.Users
 	retval.InheritFrom = v.ExportWhoItem.InheritFrom
 	retval.Recipients = v.ExportWhoItem.Recipients
+	retval.InheritedFromIds = v.ExportWhoItem.InheritedFromIds
 	return &retval, nil
 }
 
@@ -12585,9 +12601,10 @@ func (v *ExportWhatItemDataObjectExportDataObjectReference) __premarshalJSON() (
 
 // ExportWhoItem includes the GraphQL fields of ExportWhoItem requested by the fragment ExportWhoItem.
 type ExportWhoItem struct {
-	Users       []string `json:"users"`
-	InheritFrom []string `json:"inheritFrom"`
-	Recipients  []string `json:"recipients"`
+	Users            []string `json:"users"`
+	InheritFrom      []string `json:"inheritFrom"`
+	Recipients       []string `json:"recipients"`
+	InheritedFromIds []string `json:"inheritedFromIds"`
 }
 
 // GetUsers returns ExportWhoItem.Users, and is useful for accessing the field via an interface.
@@ -12598,6 +12615,9 @@ func (v *ExportWhoItem) GetInheritFrom() []string { return v.InheritFrom }
 
 // GetRecipients returns ExportWhoItem.Recipients, and is useful for accessing the field via an interface.
 func (v *ExportWhoItem) GetRecipients() []string { return v.Recipients }
+
+// GetInheritedFromIds returns ExportWhoItem.InheritedFromIds, and is useful for accessing the field via an interface.
+func (v *ExportWhoItem) GetInheritedFromIds() []string { return v.InheritedFromIds }
 
 // FetchExportAccessControlsFetchExportAccessControls includes the requested fields of the GraphQL type ExportAccessControls.
 type FetchExportAccessControlsFetchExportAccessControls struct {
@@ -37873,6 +37893,7 @@ fragment ExportWhoItem on ExportWhoItem {
 	users
 	inheritFrom
 	recipients
+	inheritedFromIds
 }
 fragment ExportWhatItem on ExportWhatItem {
 	dataObject {
