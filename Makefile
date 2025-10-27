@@ -2,7 +2,7 @@ gotestsum := go run gotest.tools/gotestsum@latest
 
 gql:
 	go run github.com/Khan/genqlient internal/schema/genqlient.yaml
-	go run github.com/collibra/access-governance-go-sdk/agen --input internal/schema/generated.go --output types/generated.go
+	go run github.com/collibra/data-access-go-sdk/agen --input internal/schema/generated.go --output types/generated.go
 
 fetch-schema:
 	.script/fetch-schema.sh --output internal/schema/schema.graphql --login ${COLLIBRA_USERNAME} --password ${COLLIBRA_PASSWORD}

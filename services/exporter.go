@@ -4,20 +4,20 @@ import (
 	"context"
 	"fmt"
 	"iter"
-	"net/http"
-	"net/url"
+	"time"
 
-	"gopkg.in/yaml.v3"
+	"github.com/Khan/genqlient/graphql"
+	"github.com/collibra/data-access-go-sdk/internal/schema"
+	"github.com/google/uuid"
 
-	"github.com/collibra/access-governance-go-sdk/internal/rest"
-	"github.com/collibra/access-governance-go-sdk/types"
+	"github.com/collibra/data-access-go-sdk/types"
 )
 
 type ExporterClient struct {
-	client *rest.RestClient
+	client graphql.Client
 }
 
-func NewExporterClient(client *rest.RestClient) *ExporterClient {
+func NewExporterClient(client graphql.Client) *ExporterClient {
 	return &ExporterClient{
 		client: client,
 	}
@@ -33,53 +33,77 @@ func WithExportOutOfSyncOnly() func(options *ExportOptions) {
 	}
 }
 
-func (c *ExporterClient) Export(ctx context.Context, dataSourceId string, ops ...func(options *ExportOptions)) iter.Seq2[types.ExportedAccessControl, error] {
-	options := &ExportOptions{}
-
-	for _, op := range ops {
-		op(options)
+// StartExportFlow starts a new export flow.
+func (c *ExporterClient) StartExportFlow(ctx context.Context, input types.StartExportFlowInput) (*types.StartExportFlow, error) {
+	result, err := schema.TriggerExportFlow(ctx, c.client, input)
+	if err != nil {
+		return nil, types.NewErrClient(err)
 	}
 
-	return func(yield func(types.ExportedAccessControl, error) bool) {
-		path, err := url.JoinPath("access-control/export/", dataSourceId)
-		if err != nil {
-			yield(types.ExportedAccessControl{}, fmt.Errorf("join path: %w", err))
-		}
+	switch response := result.StartExportFlow.(type) {
+	case *schema.TriggerExportFlowStartExportFlow:
+		return &response.StartExportFlow, nil
+	case *schema.TriggerExportFlowStartExportFlowPermissionDeniedError:
+		return nil, types.NewErrPermissionDenied("startExportFlow", response.Message)
+	case *schema.TriggerExportFlowStartExportFlowNotFoundError:
+		return nil, types.NewErrNotFound("", response.Typename, response.Message)
+	case *schema.TriggerExportFlowStartExportFlowInvalidInputError:
+		return nil, types.NewErrInvalidInput(response.Message)
+	default:
+		return nil, fmt.Errorf("unexpected response type: %T", response)
+	}
+}
 
-		resp, err := c.client.Get(ctx, path, func(r *http.Request) {
-			if options.OutOfSyncOnly {
-				q := r.URL.Query()
-				q.Set("notSynced", "true")
-				r.URL.RawQuery = q.Encode()
+// FinishExportFlow finishes an export flow.
+func (c *ExporterClient) FinishExportFlow(ctx context.Context, startTime time.Time, flowId uuid.UUID) (bool, error) {
+	result, err := schema.FinalizeExportFlow(ctx, c.client, startTime, flowId)
+	if err != nil {
+		return false, types.NewErrClient(err)
+	}
+
+	return result.FinishExportFlow, nil
+}
+
+// FetchExportAccessControls streams the access controls exported in the given flow.
+func (c *ExporterClient) FetchExportAccessControls(ctx context.Context, flowId uuid.UUID, lastSequenceId int) iter.Seq2[*types.ExportAccessControl, error] {
+	return func(yield func(*types.ExportAccessControl, error) bool) {
+		var after *int
+
+		for {
+			result, err := schema.FetchExportAccessControls(ctx, c.client, flowId, after)
+			if err != nil {
+				yield(nil, types.NewErrClient(err))
+				break
 			}
-		})
-		if err != nil {
-			yield(types.ExportedAccessControl{}, fmt.Errorf("request: %w", err))
 
-			return
-		}
+			var controls *types.ExportAccessControls
+			var fetchErr error
 
-		defer resp.Body.Close()
+			switch response := result.FetchExportAccessControls.(type) {
+			case *schema.FetchExportAccessControlsFetchExportAccessControls:
+				controls = &response.ExportAccessControls
+			case *schema.FetchExportAccessControlsFetchExportAccessControlsPermissionDeniedError:
+				fetchErr = types.NewErrPermissionDenied("fetchExportAccessControls", response.Message)
+			case *schema.FetchExportAccessControlsFetchExportAccessControlsNotFoundError:
+				fetchErr = types.NewErrNotFound("", response.Typename, response.Message)
+			case *schema.FetchExportAccessControlsFetchExportAccessControlsInvalidInputError:
+				fetchErr = types.NewErrInvalidInput(response.Message)
+			default:
+				fetchErr = fmt.Errorf("unexpected response type: %T", response)
+			}
 
-		if resp.StatusCode != http.StatusOK {
-			yield(types.ExportedAccessControl{}, fmt.Errorf("unexpected status code: %d", resp.StatusCode))
+			if fetchErr != nil {
+				yield(nil, fetchErr)
+				return
+			}
 
-			return
-		}
+			for i := range controls.AccessControls {
+				if !yield(&controls.AccessControls[i].ExportAccessControl, nil) {
+					return
+				}
+			}
 
-		output := struct {
-			LastCalculated int64                         `yaml:"lastCalculated"`
-			AccessControls []types.ExportedAccessControl `yaml:"accessControls"`
-		}{}
-
-		if err = yaml.NewDecoder(resp.Body).Decode(&output); err != nil {
-			yield(types.ExportedAccessControl{}, fmt.Errorf("decode response: %w", err))
-
-			return
-		}
-
-		for idx := range output.AccessControls {
-			if !yield(output.AccessControls[idx], nil) {
+			if controls.LastSequenceId == lastSequenceId {
 				return
 			}
 		}

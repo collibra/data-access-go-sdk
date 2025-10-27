@@ -4,7 +4,7 @@ import (
 	"context"
 	"iter"
 
-	"github.com/collibra/access-governance-go-sdk/types"
+	"github.com/collibra/data-access-go-sdk/types"
 )
 
 func PaginationExecutor[T any, E any](ctx context.Context, loadPageFn func(ctx context.Context, cursor *string) (*types.PageInfo, []E, error), edgeFn func(edge *E) (*string, *T, error)) iter.Seq2[*T, error] {

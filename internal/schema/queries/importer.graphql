@@ -11,7 +11,7 @@ fragment SubmittedCommands on SubmittedCommands {
     submitted
 }
 
-mutation StartImportFlow($input: StartInputFlowInput!) {
+mutation StartImportFlow($input: StartImportFlowInput!) {
     startImportFlow(input: $input) {
         ... Subtask
         ... PermissionDeniedError

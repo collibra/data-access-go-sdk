@@ -7,10 +7,10 @@ import (
 
 	"github.com/Khan/genqlient/graphql"
 
-	"github.com/collibra/access-governance-go-sdk/internal"
-	"github.com/collibra/access-governance-go-sdk/internal/schema"
-	"github.com/collibra/access-governance-go-sdk/types"
-	"github.com/collibra/access-governance-go-sdk/utils"
+	"github.com/collibra/data-access-go-sdk/internal"
+	"github.com/collibra/data-access-go-sdk/internal/schema"
+	"github.com/collibra/data-access-go-sdk/types"
+	"github.com/collibra/data-access-go-sdk/utils"
 )
 
 type DataObjectClient struct {
