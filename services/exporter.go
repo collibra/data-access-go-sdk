@@ -97,8 +97,8 @@ func (c *ExporterClient) FetchExportAccessControls(ctx context.Context, flowId u
 				return
 			}
 
-			for _, control := range controls.AccessControls { //nolint:gocritic
-				if !yield(&control.ExportAccessControl, nil) {
+			for i := range controls.AccessControls {
+				if !yield(&controls.AccessControls[i].ExportAccessControl, nil) {
 					return
 				}
 			}
