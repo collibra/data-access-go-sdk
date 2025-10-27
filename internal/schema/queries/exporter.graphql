@@ -1,29 +1,7 @@
-mutation TriggerExportFlow($input: StartExportFlowInput!) {
-    startExportFlow(input: $input) {
-        ... StartExportFlow
-        ... PermissionDeniedError
-        ... NotFoundError
-        ... InvalidInputError
-    }
-}
-
 fragment StartExportFlow on StartExportFlow {
     flowId
     lastSequenceId
     startTime
-}
-
-mutation FinalizeExportFlow($startTime: Time!, $flowId: UUID!) {
-    finishExportFlow(startTime: $startTime, flowId: $flowId)
-}
-
-query FetchExportAccessControls($flowId: UUID!, $after: Int) {
-    fetchExportAccessControls(flowId: $flowId, after: $after) {
-        ... ExportAccessControls
-        ... PermissionDeniedError
-        ... NotFoundError
-        ... InvalidInputError
-    }
 }
 
 fragment ExportWhoItem on ExportWhoItem {
@@ -91,4 +69,28 @@ fragment ExportAccessControls on ExportAccessControls {
     accessControls {
         ... ExportAccessControl
     }
+}
+
+query FetchExportAccessControls($flowId: UUID!, $after: Int) {
+    fetchExportAccessControls(flowId: $flowId, after: $after) {
+        ... ExportAccessControls
+        ... PermissionDeniedError
+        ... NotFoundError
+        ... InvalidInputError
+    }
+}
+
+mutation TriggerExportFlow($input: StartExportFlowInput!) {
+    startExportFlow(input: $input) {
+        ... StartExportFlow
+        ... PermissionDeniedError
+        ... NotFoundError
+        ... InvalidInputError
+    }
+}
+
+
+
+mutation FinalizeExportFlow($startTime: Time!, $flowId: UUID!) {
+    finishExportFlow(startTime: $startTime, flowId: $flowId)
 }
