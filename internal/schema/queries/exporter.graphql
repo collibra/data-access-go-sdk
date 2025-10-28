@@ -80,8 +80,8 @@ query FetchExportAccessControls($flowId: UUID!, $after: Int) {
     }
 }
 
-mutation TriggerExportFlow($input: StartExportFlowInput!) {
-    startExportFlow(input: $input) {
+mutation TriggerExportFlow($flowId: UUID!, $options: ExportFlowOptions!) {
+    startExportFlow(flowId: $flowId, options: $options) {
         ... StartExportFlow
         ... PermissionDeniedError
         ... NotFoundError
@@ -89,8 +89,6 @@ mutation TriggerExportFlow($input: StartExportFlowInput!) {
     }
 }
 
-
-
-mutation FinalizeExportFlow($startTime: Time!, $flowId: UUID!) {
-    finishExportFlow(startTime: $startTime, flowId: $flowId)
+mutation FinalizeExportFlow($flowId: UUID!, $startTime: Time!) {
+    finishExportFlow(flowId: $flowId, startTime: $startTime)
 }

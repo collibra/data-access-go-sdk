@@ -28999,25 +28999,6 @@ func (v *StartExportFlow) GetLastSequenceId() int { return v.LastSequenceId }
 // GetStartTime returns StartExportFlow.StartTime, and is useful for accessing the field via an interface.
 func (v *StartExportFlow) GetStartTime() time.Time { return v.StartTime }
 
-type StartExportFlowInput struct {
-	JobId     string             `json:"jobId"`
-	TaskId    string             `json:"taskId"`
-	SubtaskId string             `json:"subtaskId"`
-	Options   *ExportFlowOptions `json:"options,omitempty"`
-}
-
-// GetJobId returns StartExportFlowInput.JobId, and is useful for accessing the field via an interface.
-func (v *StartExportFlowInput) GetJobId() string { return v.JobId }
-
-// GetTaskId returns StartExportFlowInput.TaskId, and is useful for accessing the field via an interface.
-func (v *StartExportFlowInput) GetTaskId() string { return v.TaskId }
-
-// GetSubtaskId returns StartExportFlowInput.SubtaskId, and is useful for accessing the field via an interface.
-func (v *StartExportFlowInput) GetSubtaskId() string { return v.SubtaskId }
-
-// GetOptions returns StartExportFlowInput.Options, and is useful for accessing the field via an interface.
-func (v *StartExportFlowInput) GetOptions() *ExportFlowOptions { return v.Options }
-
 type StartImportFlowInput struct {
 	JobId     string             `json:"jobId"`
 	TaskId    string             `json:"taskId"`
@@ -35964,15 +35945,15 @@ func (v *__FetchExportAccessControlsInput) GetAfter() *int { return v.After }
 
 // __FinalizeExportFlowInput is used internally by genqlient
 type __FinalizeExportFlowInput struct {
-	StartTime time.Time `json:"startTime"`
 	FlowId    uuid.UUID `json:"flowId"`
+	StartTime time.Time `json:"startTime"`
 }
-
-// GetStartTime returns __FinalizeExportFlowInput.StartTime, and is useful for accessing the field via an interface.
-func (v *__FinalizeExportFlowInput) GetStartTime() time.Time { return v.StartTime }
 
 // GetFlowId returns __FinalizeExportFlowInput.FlowId, and is useful for accessing the field via an interface.
 func (v *__FinalizeExportFlowInput) GetFlowId() uuid.UUID { return v.FlowId }
+
+// GetStartTime returns __FinalizeExportFlowInput.StartTime, and is useful for accessing the field via an interface.
+func (v *__FinalizeExportFlowInput) GetStartTime() time.Time { return v.StartTime }
 
 // __FinishImportFlowInput is used internally by genqlient
 type __FinishImportFlowInput struct {
@@ -36460,11 +36441,15 @@ func (v *__SubmitImportObjectsInput) GetInput() ImportCommands { return v.Input 
 
 // __TriggerExportFlowInput is used internally by genqlient
 type __TriggerExportFlowInput struct {
-	Input StartExportFlowInput `json:"input"`
+	FlowId  uuid.UUID         `json:"flowId"`
+	Options ExportFlowOptions `json:"options"`
 }
 
-// GetInput returns __TriggerExportFlowInput.Input, and is useful for accessing the field via an interface.
-func (v *__TriggerExportFlowInput) GetInput() StartExportFlowInput { return v.Input }
+// GetFlowId returns __TriggerExportFlowInput.FlowId, and is useful for accessing the field via an interface.
+func (v *__TriggerExportFlowInput) GetFlowId() uuid.UUID { return v.FlowId }
+
+// GetOptions returns __TriggerExportFlowInput.Options, and is useful for accessing the field via an interface.
+func (v *__TriggerExportFlowInput) GetOptions() ExportFlowOptions { return v.Options }
 
 // __UnassignGlobalRoleInput is used internally by genqlient
 type __UnassignGlobalRoleInput struct {
@@ -37942,23 +37927,23 @@ func FetchExportAccessControls(
 
 // The mutation executed by FinalizeExportFlow.
 const FinalizeExportFlow_Operation = `
-mutation FinalizeExportFlow ($startTime: Time!, $flowId: UUID!) {
-	finishExportFlow(startTime: $startTime, flowId: $flowId)
+mutation FinalizeExportFlow ($flowId: UUID!, $startTime: Time!) {
+	finishExportFlow(flowId: $flowId, startTime: $startTime)
 }
 `
 
 func FinalizeExportFlow(
 	ctx_ context.Context,
 	client_ graphql.Client,
-	startTime time.Time,
 	flowId uuid.UUID,
+	startTime time.Time,
 ) (data_ *FinalizeExportFlowResponse, err_ error) {
 	req_ := &graphql.Request{
 		OpName: "FinalizeExportFlow",
 		Query:  FinalizeExportFlow_Operation,
 		Variables: &__FinalizeExportFlowInput{
-			StartTime: startTime,
 			FlowId:    flowId,
+			StartTime: startTime,
 		},
 	}
 
@@ -40557,8 +40542,8 @@ func SupportedCLIVersion(
 
 // The mutation executed by TriggerExportFlow.
 const TriggerExportFlow_Operation = `
-mutation TriggerExportFlow ($input: StartExportFlowInput!) {
-	startExportFlow(input: $input) {
+mutation TriggerExportFlow ($flowId: UUID!, $options: ExportFlowOptions!) {
+	startExportFlow(flowId: $flowId, options: $options) {
 		__typename
 		... StartExportFlow
 		... PermissionDeniedError
@@ -40585,13 +40570,15 @@ fragment InvalidInputError on InvalidInputError {
 func TriggerExportFlow(
 	ctx_ context.Context,
 	client_ graphql.Client,
-	input StartExportFlowInput,
+	flowId uuid.UUID,
+	options ExportFlowOptions,
 ) (data_ *TriggerExportFlowResponse, err_ error) {
 	req_ := &graphql.Request{
 		OpName: "TriggerExportFlow",
 		Query:  TriggerExportFlow_Operation,
 		Variables: &__TriggerExportFlowInput{
-			Input: input,
+			FlowId:  flowId,
+			Options: options,
 		},
 	}
 
