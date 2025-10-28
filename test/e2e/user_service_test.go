@@ -44,7 +44,7 @@ func TestUserService(t *testing.T) {
 		}
 
 		if user.Email == nil {
-			t.Errorf("Expected non-nil Email, got %s", *user.Email)
+			t.Errorf("Expected non-nil Email, got nil")
 		}
 
 		expectedType := schema.UserTypeHuman
@@ -82,8 +82,17 @@ func TestUserService(t *testing.T) {
 
 		printUser("User Data", userData)
 
-		if userData.Id != createdUser.Id || userData.Name != createdUser.Name || *userData.Email != *createdUser.Email || userData.Type != createdUser.Type {
-			t.Errorf("Expected user data to match created user. Got %+v, expected %+v", userData, createdUser)
+		if userData.Id != createdUser.Id {
+			t.Errorf("Expected user ID to be %s, got %s", createdUser.Id, userData.Id)
+		}
+		if userData.Name != createdUser.Name {
+			t.Errorf("Expected user name to be %s, got %s", createdUser.Name, userData.Name)
+		}
+		if *userData.Email != *createdUser.Email {
+			t.Errorf("Expected user email to be %s, got %s", *createdUser.Email, *userData.Email)
+		}
+		if userData.Type != createdUser.Type {
+			t.Errorf("Expected user type to be %s, got %s", createdUser.Type, userData.Type)
 		}
 	})
 
@@ -95,8 +104,17 @@ func TestUserService(t *testing.T) {
 
 		fmt.Printf("User Data by Email: %+v\n", userData)
 
-		if userData.Id != createdUser.Id || userData.Name != createdUser.Name || *userData.Email != *createdUser.Email || userData.Type != createdUser.Type {
-			t.Errorf("Expected user data to match created user. Got %+v, expected %+v", userData, createdUser)
+		if userData.Id != createdUser.Id {
+			t.Errorf("Expected user ID to be %s, got %s", createdUser.Id, userData.Id)
+		}
+		if userData.Name != createdUser.Name {
+			t.Errorf("Expected user name to be %s, got %s", createdUser.Name, userData.Name)
+		}
+		if *userData.Email != *createdUser.Email {
+			t.Errorf("Expected user email to be %s, got %s", *createdUser.Email, *userData.Email)
+		}
+		if userData.Type != createdUser.Type {
+			t.Errorf("Expected user type to be %s, got %s", createdUser.Type, userData.Type)
 		}
 	})
 
