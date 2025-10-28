@@ -5,11 +5,11 @@ import (
 	"os"
 	"testing"
 
-	collibra "github.com/collibra/data-access-go-sdk"
+	Collibra "github.com/collibra/data-access-go-sdk"
 )
 
 var (
-	client *collibra.CollibraClient
+	client *Collibra.CollibraClient
 
 	ctx context.Context
 )
@@ -28,10 +28,11 @@ func TestMain(m *testing.M) {
 	userName := getEnv("COLLIBRA_USER")
 	password := getEnv("COLLIBRA_PASSWORD")
 
-	client = collibra.NewClient(userName, password, baseURL)
+	client = Collibra.NewClient(userName, password, baseURL)
 	if client == nil {
 		panic("Failed to create Collibra client")
 	}
+
 	ctx = context.Background()
 
 	if ctx == nil {
