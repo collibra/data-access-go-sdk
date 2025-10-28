@@ -2,18 +2,18 @@ package e2e_test
 
 import (
 	"fmt"
-	"testing"
 	"github.com/collibra/data-access-go-sdk/internal/schema"
 	"github.com/google/uuid"
+	"testing"
 )
 
 func printUser(prefix string, user *schema.User) {
-    emailValue := ""
-    if user.Email != nil {
-        emailValue = *user.Email
-    }
-    fmt.Printf("%s: ID=%s,\nName=%s,\nEmail=%s,\nType=%s\n",
-        prefix, user.Id, user.Name, emailValue, user.Type)
+	emailValue := ""
+	if user.Email != nil {
+		emailValue = *user.Email
+	}
+	fmt.Printf("%s: ID=%s,\nName=%s,\nEmail=%s,\nType=%s\n",
+		prefix, user.Id, user.Name, emailValue, user.Type)
 }
 
 func TestUserService(t *testing.T) {
@@ -70,7 +70,7 @@ func TestUserService(t *testing.T) {
 		}
 
 		printUser("User Created", user)
-		
+
 		createdUser = *user
 	})
 
