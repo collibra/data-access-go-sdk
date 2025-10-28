@@ -627,7 +627,6 @@ const (
 )
 
 type StartExportFlow = schema.StartExportFlow
-type StartExportFlowInput = schema.StartExportFlowInput
 type StartImportFlowInput = schema.StartImportFlowInput
 type StartImportFlowResponse = schema.StartImportFlowResponse
 type StartImportFlowStartImportFlowInvalidInputError = schema.StartImportFlowStartImportFlowInvalidInputError

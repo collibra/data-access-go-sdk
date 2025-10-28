@@ -34,8 +34,8 @@ func WithExportOutOfSyncOnly() func(options *ExportOptions) {
 }
 
 // StartExportFlow starts a new export flow.
-func (c *ExporterClient) StartExportFlow(ctx context.Context, input types.StartExportFlowInput) (*types.StartExportFlow, error) {
-	result, err := schema.TriggerExportFlow(ctx, c.client, input)
+func (c *ExporterClient) StartExportFlow(ctx context.Context, flowId uuid.UUID, options types.ExportFlowOptions) (*types.StartExportFlow, error) {
+	result, err := schema.TriggerExportFlow(ctx, c.client, flowId, options)
 	if err != nil {
 		return nil, types.NewErrClient(err)
 	}
@@ -55,8 +55,8 @@ func (c *ExporterClient) StartExportFlow(ctx context.Context, input types.StartE
 }
 
 // FinishExportFlow finishes an export flow.
-func (c *ExporterClient) FinishExportFlow(ctx context.Context, startTime time.Time, flowId uuid.UUID) (bool, error) {
-	result, err := schema.FinalizeExportFlow(ctx, c.client, startTime, flowId)
+func (c *ExporterClient) FinishExportFlow(ctx context.Context, flowId uuid.UUID, startTime time.Time) (bool, error) {
+	result, err := schema.FinalizeExportFlow(ctx, c.client, flowId, startTime)
 	if err != nil {
 		return false, types.NewErrClient(err)
 	}
