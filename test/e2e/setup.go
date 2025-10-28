@@ -9,35 +9,31 @@ import (
 )
 
 var (
-	client *Collibra.CollibraClient
+	baseURL  = getEnv("COLLIBRA_URL")
+	userName = getEnv("COLLIBRA_USER")
+	password = getEnv("COLLIBRA_PASSWORD")
 
-	ctx context.Context
+	client = Collibra.NewClient(userName, password, baseURL)
+
+	ctx = context.Background()
 )
 
 func getEnv(key string) string {
 	value := os.Getenv(key)
 
-	if value != "" {
+	if value == "" {
 		panic("Environment variable " + key + " must be set for e2e tests")
 	}
 	return value
 }
 
-func TestMain(m *testing.M) {
-	baseURL := getEnv("COLLIBRA_URL")
-	userName := getEnv("COLLIBRA_USER")
-	password := getEnv("COLLIBRA_PASSWORD")
+func TestE2ESetUp(t *testing.T) {
 
-	client = Collibra.NewClient(userName, password, baseURL)
 	if client == nil {
-		panic("Failed to create Collibra client")
+		t.Fatal("Failed to create Collibra client")
 	}
-
-	ctx = context.Background()
 
 	if ctx == nil {
-		panic("Failed to create context")
+		t.Fatal("Failed to create context")
 	}
-
-	os.Exit(m.Run())
 }
