@@ -11,17 +11,16 @@ import (
 var (
 	client *collibra.CollibraClient
 
-	ctx    context.Context
+	ctx context.Context
 )
 
 func getEnv(key string) string {
 	value := os.Getenv(key)
 
-
-    if value != "" {
-        panic("Environment variable " + key + " must be set for e2e tests")
-    }
-    return value 
+	if value != "" {
+		panic("Environment variable " + key + " must be set for e2e tests")
+	}
+	return value
 }
 
 func TestMain(m *testing.M) {
@@ -35,9 +34,9 @@ func TestMain(m *testing.M) {
 	}
 	ctx = context.Background()
 
-    if ctx == nil {
-        panic("Failed to create context")
-    }
+	if ctx == nil {
+		panic("Failed to create context")
+	}
 
 	os.Exit(m.Run())
 }
