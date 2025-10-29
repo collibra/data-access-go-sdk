@@ -8,6 +8,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 
 	"github.com/collibra/data-access-go-sdk/types"
 )
@@ -42,7 +43,6 @@ func testPaginationExecutorSuccess(t *testing.T) {
 			edges := []int{pageOffset, pageOffset + 1}
 			return pageInfo, edges, nil
 		}
-
 	}
 	mockEdgeFn := func(edge *int) (*string, *string, error) {
 		cursor := fmt.Sprintf("%d", *edge)
@@ -59,7 +59,9 @@ func testPaginationExecutorSuccess(t *testing.T) {
 			t.Errorf("Error encountered: %v", err)
 			return false
 		}
+
 		items = append(items, *item)
+
 		return true
 	})
 
@@ -80,16 +82,19 @@ func testPaginationExecutorLoadPageError(t *testing.T) {
 
 	var receivedError error
 	var itemsReceived int
+
 	iterator(func(item *string, err error) bool {
 		if err != nil {
 			receivedError = err
 			return false
 		}
+
 		itemsReceived++
+
 		return true
 	})
 
-	assert.ErrorIs(t, receivedError, expectedErr)
+	require.ErrorIs(t, receivedError, expectedErr)
 	assert.Equal(t, 0, itemsReceived)
 }
 
@@ -109,21 +114,25 @@ func testPaginationExecutorEdgeFnError(t *testing.T) {
 
 	var receivedError error
 	var itemsReceived int
+
 	iterator(func(item *string, err error) bool {
 		if err != nil {
 			receivedError = err
 			return false
 		}
+
 		itemsReceived++
+
 		return true
 	})
 
-	assert.ErrorIs(t, receivedError, expectedErr)
+	require.ErrorIs(t, receivedError, expectedErr)
 	assert.Equal(t, 0, itemsReceived)
 }
 
 func testPaginationExecutorCancel(t *testing.T) {
 	ctx := context.Background()
+
 	cancelCtx, cancelFn := context.WithCancel(ctx)
 	defer cancelFn()
 
@@ -147,7 +156,6 @@ func testPaginationExecutorCancel(t *testing.T) {
 			edges := []int{pageOffset, pageOffset + 1}
 			return pageInfo, edges, nil
 		}
-
 	}
 	mockEdgeFn := func(edge *int) (*string, *string, error) {
 		cursor := fmt.Sprintf("%d", *edge)
@@ -165,11 +173,13 @@ func testPaginationExecutorCancel(t *testing.T) {
 			errEncountered = err
 			return false
 		}
+
 		items = append(items, *item)
 
 		if len(items) == 5 {
 			cancelFn()
 		}
+
 		return true
 	})
 
