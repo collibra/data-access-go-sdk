@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	"github.com/collibra/data-access-go-sdk/internal/schema"
+	"github.com/collibra/data-access-go-sdk/test/e2e/utils"
 	"github.com/google/uuid"
 )
 
@@ -92,7 +93,7 @@ func TestUserService(t *testing.T) {
 		if userData.Name != createdUser.Name {
 			t.Errorf("Expected user name to be %s, got %s", createdUser.Name, userData.Name)
 		}
-		if *userData.Email != *createdUser.Email {
+		if !utils.CompareStringPointers(userData.Email, createdUser.Email) {
 			t.Errorf("Expected user email to be %s, got %s", *createdUser.Email, *userData.Email)
 		}
 		if userData.Type != createdUser.Type {
@@ -117,7 +118,7 @@ func TestUserService(t *testing.T) {
 		if userData.Name != createdUser.Name {
 			t.Errorf("Expected user name to be %s, got %s", createdUser.Name, userData.Name)
 		}
-		if *userData.Email != *createdUser.Email {
+		if !utils.CompareStringPointers(userData.Email, createdUser.Email) {
 			t.Errorf("Expected user email to be %s, got %s", *createdUser.Email, *userData.Email)
 		}
 		if userData.Type != createdUser.Type {
