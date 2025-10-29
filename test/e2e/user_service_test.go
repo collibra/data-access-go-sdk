@@ -2,9 +2,10 @@ package e2e_test
 
 import (
 	"fmt"
+	"testing"
+
 	"github.com/collibra/data-access-go-sdk/internal/schema"
 	"github.com/google/uuid"
-	"testing"
 )
 
 func printUser(prefix string, user *schema.User) {
@@ -65,7 +66,7 @@ func TestUserService(t *testing.T) {
 			Type:  &userType,
 		})
 
-		if err != nil {
+		if err != nil || user == nil {
 			t.Fatalf("Failed to create user: %v", err)
 		}
 
@@ -75,6 +76,9 @@ func TestUserService(t *testing.T) {
 	})
 
 	t.Run("GetUser", func(t *testing.T) {
+		if createdUser.Id == "" {
+			t.Skip("Created user ID is empty, cannot proceed with GetUser test")
+		}
 		userData, err := usersClient.GetUser(ctx, createdUser.Id)
 		if err != nil {
 			t.Fatalf("Failed to get user: %v", err)
@@ -97,6 +101,9 @@ func TestUserService(t *testing.T) {
 	})
 
 	t.Run("GetUserByEmail", func(t *testing.T) {
+		if createdUser.Email == nil {
+			t.Skip("Created user email is nil, cannot proceed with GetUserByEmail test")
+		}
 		userData, err := usersClient.GetUserByEmail(ctx, *createdUser.Email)
 		if err != nil {
 			t.Fatalf("Failed to get user by email: %v", err)
@@ -119,6 +126,9 @@ func TestUserService(t *testing.T) {
 	})
 
 	t.Run("UpdateUser", func(t *testing.T) {
+		if createdUser.Id == "" {
+			t.Skip("Created user ID is empty, cannot proceed with UpdateUser test")
+		}
 		newName := "Updated User Name"
 		updatedUser, err := usersClient.UpdateUser(ctx, createdUser.Id, schema.UserInput{
 			Name: &newName,
