@@ -24,11 +24,11 @@ func getEnv(key string) string {
 	if value == "" {
 		panic("Environment variable " + key + " must be set for e2e tests")
 	}
+
 	return value
 }
 
 func TestE2ESetUp(t *testing.T) {
-
 	if client == nil {
 		t.Fatal("Failed to create Collibra client")
 	}
