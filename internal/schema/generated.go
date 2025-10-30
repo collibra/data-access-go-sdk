@@ -8494,6 +8494,8 @@ type DataObjectTypeInput struct {
 	// DataOrigin describes the origin of the data object type.
 	DataOrigin      *DataTypeOrigin                 `json:"dataOrigin,omitempty"`
 	ShareProperties *DataObjectSharePropertiesInput `json:"shareProperties,omitempty"`
+	// CatalogType is used to map the data object type to a catalog type in Collibra. For example, a data object type 'project' for Google BigQuery could map to catalog type 'database' in Collibra.
+	CatalogType *string `json:"catalogType,omitempty"`
 }
 
 // GetName returns DataObjectTypeInput.Name, and is useful for accessing the field via an interface.
@@ -8524,6 +8526,9 @@ func (v *DataObjectTypeInput) GetDataOrigin() *DataTypeOrigin { return v.DataOri
 func (v *DataObjectTypeInput) GetShareProperties() *DataObjectSharePropertiesInput {
 	return v.ShareProperties
 }
+
+// GetCatalogType returns DataObjectTypeInput.CatalogType, and is useful for accessing the field via an interface.
+func (v *DataObjectTypeInput) GetCatalogType() *string { return v.CatalogType }
 
 type DataObjectTypePermissionInput struct {
 	// The name of the permission as used in the datasource
@@ -9160,6 +9165,7 @@ type DataSourceInput struct {
 	CanRequestAccess        *bool                        `json:"canRequestAccess,omitempty"`
 	CanRequestAccessToTypes []string                     `json:"canRequestAccessToTypes"`
 	SyncSchedule            *DataSourceSyncScheduleInput `json:"syncSchedule,omitempty"`
+	CatalogSystemId         *uuid.UUID                   `json:"catalogSystemId,omitempty"`
 }
 
 // GetName returns DataSourceInput.Name, and is useful for accessing the field via an interface.
@@ -9179,6 +9185,9 @@ func (v *DataSourceInput) GetCanRequestAccessToTypes() []string { return v.CanRe
 
 // GetSyncSchedule returns DataSourceInput.SyncSchedule, and is useful for accessing the field via an interface.
 func (v *DataSourceInput) GetSyncSchedule() *DataSourceSyncScheduleInput { return v.SyncSchedule }
+
+// GetCatalogSystemId returns DataSourceInput.CatalogSystemId, and is useful for accessing the field via an interface.
+func (v *DataSourceInput) GetCatalogSystemId() *uuid.UUID { return v.CatalogSystemId }
 
 // DataSourceMaskInformationDataSource includes the requested fields of the GraphQL type DataSource.
 type DataSourceMaskInformationDataSource struct {
@@ -11984,11 +11993,6 @@ func (v *ExportAccessControlDeletedWhoExportWhoItem) GetRecipients() []string {
 	return v.ExportWhoItem.Recipients
 }
 
-// GetInheritedFromIds returns ExportAccessControlDeletedWhoExportWhoItem.InheritedFromIds, and is useful for accessing the field via an interface.
-func (v *ExportAccessControlDeletedWhoExportWhoItem) GetInheritedFromIds() []string {
-	return v.ExportWhoItem.InheritedFromIds
-}
-
 func (v *ExportAccessControlDeletedWhoExportWhoItem) UnmarshalJSON(b []byte) error {
 
 	if string(b) == "null" {
@@ -12020,8 +12024,6 @@ type __premarshalExportAccessControlDeletedWhoExportWhoItem struct {
 	InheritFrom []string `json:"inheritFrom"`
 
 	Recipients []string `json:"recipients"`
-
-	InheritedFromIds []string `json:"inheritedFromIds"`
 }
 
 func (v *ExportAccessControlDeletedWhoExportWhoItem) MarshalJSON() ([]byte, error) {
@@ -12038,7 +12040,6 @@ func (v *ExportAccessControlDeletedWhoExportWhoItem) __premarshalJSON() (*__prem
 	retval.Users = v.ExportWhoItem.Users
 	retval.InheritFrom = v.ExportWhoItem.InheritFrom
 	retval.Recipients = v.ExportWhoItem.Recipients
-	retval.InheritedFromIds = v.ExportWhoItem.InheritedFromIds
 	return &retval, nil
 }
 
@@ -12190,11 +12191,6 @@ func (v *ExportAccessControlWhoExportWhoItem) GetRecipients() []string {
 	return v.ExportWhoItem.Recipients
 }
 
-// GetInheritedFromIds returns ExportAccessControlWhoExportWhoItem.InheritedFromIds, and is useful for accessing the field via an interface.
-func (v *ExportAccessControlWhoExportWhoItem) GetInheritedFromIds() []string {
-	return v.ExportWhoItem.InheritedFromIds
-}
-
 func (v *ExportAccessControlWhoExportWhoItem) UnmarshalJSON(b []byte) error {
 
 	if string(b) == "null" {
@@ -12226,8 +12222,6 @@ type __premarshalExportAccessControlWhoExportWhoItem struct {
 	InheritFrom []string `json:"inheritFrom"`
 
 	Recipients []string `json:"recipients"`
-
-	InheritedFromIds []string `json:"inheritedFromIds"`
 }
 
 func (v *ExportAccessControlWhoExportWhoItem) MarshalJSON() ([]byte, error) {
@@ -12244,7 +12238,6 @@ func (v *ExportAccessControlWhoExportWhoItem) __premarshalJSON() (*__premarshalE
 	retval.Users = v.ExportWhoItem.Users
 	retval.InheritFrom = v.ExportWhoItem.InheritFrom
 	retval.Recipients = v.ExportWhoItem.Recipients
-	retval.InheritedFromIds = v.ExportWhoItem.InheritedFromIds
 	return &retval, nil
 }
 
@@ -12601,10 +12594,9 @@ func (v *ExportWhatItemDataObjectExportDataObjectReference) __premarshalJSON() (
 
 // ExportWhoItem includes the GraphQL fields of ExportWhoItem requested by the fragment ExportWhoItem.
 type ExportWhoItem struct {
-	Users            []string `json:"users"`
-	InheritFrom      []string `json:"inheritFrom"`
-	Recipients       []string `json:"recipients"`
-	InheritedFromIds []string `json:"inheritedFromIds"`
+	Users       []string `json:"users"`
+	InheritFrom []string `json:"inheritFrom"`
+	Recipients  []string `json:"recipients"`
 }
 
 // GetUsers returns ExportWhoItem.Users, and is useful for accessing the field via an interface.
@@ -12615,9 +12607,6 @@ func (v *ExportWhoItem) GetInheritFrom() []string { return v.InheritFrom }
 
 // GetRecipients returns ExportWhoItem.Recipients, and is useful for accessing the field via an interface.
 func (v *ExportWhoItem) GetRecipients() []string { return v.Recipients }
-
-// GetInheritedFromIds returns ExportWhoItem.InheritedFromIds, and is useful for accessing the field via an interface.
-func (v *ExportWhoItem) GetInheritedFromIds() []string { return v.InheritedFromIds }
 
 // FetchExportAccessControlsFetchExportAccessControls includes the requested fields of the GraphQL type ExportAccessControls.
 type FetchExportAccessControlsFetchExportAccessControls struct {
@@ -37878,7 +37867,6 @@ fragment ExportWhoItem on ExportWhoItem {
 	users
 	inheritFrom
 	recipients
-	inheritedFromIds
 }
 fragment ExportWhatItem on ExportWhatItem {
 	dataObject {
