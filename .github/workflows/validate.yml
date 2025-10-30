@@ -46,6 +46,10 @@ jobs:
 
       - name: Test
         run: make test
+        env:
+          COLLIBRA_URL: ${{ secrets.COLLIBRA_URL }}
+          COLLIBRA_USER: ${{ secrets.COLLIBRA_USER }}
+          COLLIBRA_PASSWORD: ${{ secrets.COLLIBRA_PASSWORD }}
 
       - name: SonarQube Scan
         uses: sonarsource/sonarqube-scan-action@v5
