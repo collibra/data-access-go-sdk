@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"github.com/Khan/genqlient/graphql"
+	"github.com/collibra/data-access-go-sdk/internal/scalar"
 	"github.com/google/uuid"
 )
 
@@ -11583,6 +11584,162 @@ type DeleteGrantCategoryResult struct {
 
 // GetSuccess returns DeleteGrantCategoryResult.Success, and is useful for accessing the field via an interface.
 func (v *DeleteGrantCategoryResult) GetSuccess() bool { return v.Success }
+
+type EdgeSiteConnectorInfoInput struct {
+	DataSourceType       string                       `json:"dataSourceType"`
+	AgentVersion         *scalar.Version              `json:"-"`
+	ConnectorVersion     *scalar.Version              `json:"-"`
+	SupportedSyncMethods []string                     `json:"supportedSyncMethods"`
+	ParameterDefinition  RootParameterDefinitionInput `json:"parameterDefinition"`
+}
+
+// GetDataSourceType returns EdgeSiteConnectorInfoInput.DataSourceType, and is useful for accessing the field via an interface.
+func (v *EdgeSiteConnectorInfoInput) GetDataSourceType() string { return v.DataSourceType }
+
+// GetAgentVersion returns EdgeSiteConnectorInfoInput.AgentVersion, and is useful for accessing the field via an interface.
+func (v *EdgeSiteConnectorInfoInput) GetAgentVersion() *scalar.Version { return v.AgentVersion }
+
+// GetConnectorVersion returns EdgeSiteConnectorInfoInput.ConnectorVersion, and is useful for accessing the field via an interface.
+func (v *EdgeSiteConnectorInfoInput) GetConnectorVersion() *scalar.Version { return v.ConnectorVersion }
+
+// GetSupportedSyncMethods returns EdgeSiteConnectorInfoInput.SupportedSyncMethods, and is useful for accessing the field via an interface.
+func (v *EdgeSiteConnectorInfoInput) GetSupportedSyncMethods() []string {
+	return v.SupportedSyncMethods
+}
+
+// GetParameterDefinition returns EdgeSiteConnectorInfoInput.ParameterDefinition, and is useful for accessing the field via an interface.
+func (v *EdgeSiteConnectorInfoInput) GetParameterDefinition() RootParameterDefinitionInput {
+	return v.ParameterDefinition
+}
+
+func (v *EdgeSiteConnectorInfoInput) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*EdgeSiteConnectorInfoInput
+		AgentVersion     json.RawMessage `json:"agentVersion"`
+		ConnectorVersion json.RawMessage `json:"connectorVersion"`
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.EdgeSiteConnectorInfoInput = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	{
+		dst := &v.AgentVersion
+		src := firstPass.AgentVersion
+		if len(src) != 0 && string(src) != "null" {
+			*dst = new(scalar.Version)
+			err = scalar.UnmarshalVersion(
+				src, *dst)
+			if err != nil {
+				return fmt.Errorf(
+					"unable to unmarshal EdgeSiteConnectorInfoInput.AgentVersion: %w", err)
+			}
+		}
+	}
+
+	{
+		dst := &v.ConnectorVersion
+		src := firstPass.ConnectorVersion
+		if len(src) != 0 && string(src) != "null" {
+			*dst = new(scalar.Version)
+			err = scalar.UnmarshalVersion(
+				src, *dst)
+			if err != nil {
+				return fmt.Errorf(
+					"unable to unmarshal EdgeSiteConnectorInfoInput.ConnectorVersion: %w", err)
+			}
+		}
+	}
+	return nil
+}
+
+type __premarshalEdgeSiteConnectorInfoInput struct {
+	DataSourceType string `json:"dataSourceType"`
+
+	AgentVersion json.RawMessage `json:"agentVersion,omitempty"`
+
+	ConnectorVersion json.RawMessage `json:"connectorVersion,omitempty"`
+
+	SupportedSyncMethods []string `json:"supportedSyncMethods"`
+
+	ParameterDefinition RootParameterDefinitionInput `json:"parameterDefinition"`
+}
+
+func (v *EdgeSiteConnectorInfoInput) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *EdgeSiteConnectorInfoInput) __premarshalJSON() (*__premarshalEdgeSiteConnectorInfoInput, error) {
+	var retval __premarshalEdgeSiteConnectorInfoInput
+
+	retval.DataSourceType = v.DataSourceType
+	{
+
+		dst := &retval.AgentVersion
+		src := v.AgentVersion
+		if src != nil {
+			var err error
+			*dst, err = scalar.MarshalVersion(
+				src)
+			if err != nil {
+				return nil, fmt.Errorf(
+					"unable to marshal EdgeSiteConnectorInfoInput.AgentVersion: %w", err)
+			}
+		}
+	}
+	{
+
+		dst := &retval.ConnectorVersion
+		src := v.ConnectorVersion
+		if src != nil {
+			var err error
+			*dst, err = scalar.MarshalVersion(
+				src)
+			if err != nil {
+				return nil, fmt.Errorf(
+					"unable to marshal EdgeSiteConnectorInfoInput.ConnectorVersion: %w", err)
+			}
+		}
+	}
+	retval.SupportedSyncMethods = v.SupportedSyncMethods
+	retval.ParameterDefinition = v.ParameterDefinition
+	return &retval, nil
+}
+
+type EdgeSiteInfoInput struct {
+	EdgeSite   string                       `json:"edgeSite"`
+	External   bool                         `json:"external"`
+	Connectors []EdgeSiteConnectorInfoInput `json:"connectors"`
+}
+
+// GetEdgeSite returns EdgeSiteInfoInput.EdgeSite, and is useful for accessing the field via an interface.
+func (v *EdgeSiteInfoInput) GetEdgeSite() string { return v.EdgeSite }
+
+// GetExternal returns EdgeSiteInfoInput.External, and is useful for accessing the field via an interface.
+func (v *EdgeSiteInfoInput) GetExternal() bool { return v.External }
+
+// GetConnectors returns EdgeSiteInfoInput.Connectors, and is useful for accessing the field via an interface.
+func (v *EdgeSiteInfoInput) GetConnectors() []EdgeSiteConnectorInfoInput { return v.Connectors }
+
+// EdgeSiteUpdateResponse includes the GraphQL fields of EdgeSiteUpdateResponse requested by the fragment EdgeSiteUpdateResponse.
+type EdgeSiteUpdateResponse struct {
+	Success bool `json:"success"`
+}
+
+// GetSuccess returns EdgeSiteUpdateResponse.Success, and is useful for accessing the field via an interface.
+func (v *EdgeSiteUpdateResponse) GetSuccess() bool { return v.Success }
 
 // EndOfTargetsSyncEndOfTargetsSync includes the requested fields of the GraphQL type EndOfTargetsSync.
 type EndOfTargetsSyncEndOfTargetsSync struct {
@@ -26431,6 +26588,527 @@ func (v *MaskingMetadataMaskTypesMaskType) __premarshalJSON() (*__premarshalMask
 	return &retval, nil
 }
 
+// NextSyncJobForSiteNextSyncJobForSiteInvalidInputError includes the requested fields of the GraphQL type InvalidInputError.
+type NextSyncJobForSiteNextSyncJobForSiteInvalidInputError struct {
+	Typename          *string `json:"__typename"`
+	InvalidInputError `json:"-"`
+}
+
+// GetTypename returns NextSyncJobForSiteNextSyncJobForSiteInvalidInputError.Typename, and is useful for accessing the field via an interface.
+func (v *NextSyncJobForSiteNextSyncJobForSiteInvalidInputError) GetTypename() *string {
+	return v.Typename
+}
+
+// GetMessage returns NextSyncJobForSiteNextSyncJobForSiteInvalidInputError.Message, and is useful for accessing the field via an interface.
+func (v *NextSyncJobForSiteNextSyncJobForSiteInvalidInputError) GetMessage() string {
+	return v.InvalidInputError.Message
+}
+
+func (v *NextSyncJobForSiteNextSyncJobForSiteInvalidInputError) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*NextSyncJobForSiteNextSyncJobForSiteInvalidInputError
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.NextSyncJobForSiteNextSyncJobForSiteInvalidInputError = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.InvalidInputError)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalNextSyncJobForSiteNextSyncJobForSiteInvalidInputError struct {
+	Typename *string `json:"__typename"`
+
+	Message string `json:"message"`
+}
+
+func (v *NextSyncJobForSiteNextSyncJobForSiteInvalidInputError) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *NextSyncJobForSiteNextSyncJobForSiteInvalidInputError) __premarshalJSON() (*__premarshalNextSyncJobForSiteNextSyncJobForSiteInvalidInputError, error) {
+	var retval __premarshalNextSyncJobForSiteNextSyncJobForSiteInvalidInputError
+
+	retval.Typename = v.Typename
+	retval.Message = v.InvalidInputError.Message
+	return &retval, nil
+}
+
+// NextSyncJobForSiteNextSyncJobForSiteNotFoundError includes the requested fields of the GraphQL type NotFoundError.
+type NextSyncJobForSiteNextSyncJobForSiteNotFoundError struct {
+	Typename      *string `json:"__typename"`
+	NotFoundError `json:"-"`
+}
+
+// GetTypename returns NextSyncJobForSiteNextSyncJobForSiteNotFoundError.Typename, and is useful for accessing the field via an interface.
+func (v *NextSyncJobForSiteNextSyncJobForSiteNotFoundError) GetTypename() *string { return v.Typename }
+
+// GetMessage returns NextSyncJobForSiteNextSyncJobForSiteNotFoundError.Message, and is useful for accessing the field via an interface.
+func (v *NextSyncJobForSiteNextSyncJobForSiteNotFoundError) GetMessage() string {
+	return v.NotFoundError.Message
+}
+
+func (v *NextSyncJobForSiteNextSyncJobForSiteNotFoundError) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*NextSyncJobForSiteNextSyncJobForSiteNotFoundError
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.NextSyncJobForSiteNextSyncJobForSiteNotFoundError = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.NotFoundError)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalNextSyncJobForSiteNextSyncJobForSiteNotFoundError struct {
+	Typename *string `json:"__typename"`
+
+	Message string `json:"message"`
+}
+
+func (v *NextSyncJobForSiteNextSyncJobForSiteNotFoundError) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *NextSyncJobForSiteNextSyncJobForSiteNotFoundError) __premarshalJSON() (*__premarshalNextSyncJobForSiteNextSyncJobForSiteNotFoundError, error) {
+	var retval __premarshalNextSyncJobForSiteNextSyncJobForSiteNotFoundError
+
+	retval.Typename = v.Typename
+	retval.Message = v.NotFoundError.Message
+	return &retval, nil
+}
+
+// NextSyncJobForSiteNextSyncJobForSitePermissionDeniedError includes the requested fields of the GraphQL type PermissionDeniedError.
+type NextSyncJobForSiteNextSyncJobForSitePermissionDeniedError struct {
+	Typename              *string `json:"__typename"`
+	PermissionDeniedError `json:"-"`
+}
+
+// GetTypename returns NextSyncJobForSiteNextSyncJobForSitePermissionDeniedError.Typename, and is useful for accessing the field via an interface.
+func (v *NextSyncJobForSiteNextSyncJobForSitePermissionDeniedError) GetTypename() *string {
+	return v.Typename
+}
+
+// GetMessage returns NextSyncJobForSiteNextSyncJobForSitePermissionDeniedError.Message, and is useful for accessing the field via an interface.
+func (v *NextSyncJobForSiteNextSyncJobForSitePermissionDeniedError) GetMessage() string {
+	return v.PermissionDeniedError.Message
+}
+
+func (v *NextSyncJobForSiteNextSyncJobForSitePermissionDeniedError) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*NextSyncJobForSiteNextSyncJobForSitePermissionDeniedError
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.NextSyncJobForSiteNextSyncJobForSitePermissionDeniedError = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.PermissionDeniedError)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalNextSyncJobForSiteNextSyncJobForSitePermissionDeniedError struct {
+	Typename *string `json:"__typename"`
+
+	Message string `json:"message"`
+}
+
+func (v *NextSyncJobForSiteNextSyncJobForSitePermissionDeniedError) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *NextSyncJobForSiteNextSyncJobForSitePermissionDeniedError) __premarshalJSON() (*__premarshalNextSyncJobForSiteNextSyncJobForSitePermissionDeniedError, error) {
+	var retval __premarshalNextSyncJobForSiteNextSyncJobForSitePermissionDeniedError
+
+	retval.Typename = v.Typename
+	retval.Message = v.PermissionDeniedError.Message
+	return &retval, nil
+}
+
+// NextSyncJobForSiteNextSyncJobForSiteSyncJob includes the requested fields of the GraphQL type SyncJob.
+type NextSyncJobForSiteNextSyncJobForSiteSyncJob struct {
+	Typename *string `json:"__typename"`
+	SyncJob  `json:"-"`
+}
+
+// GetTypename returns NextSyncJobForSiteNextSyncJobForSiteSyncJob.Typename, and is useful for accessing the field via an interface.
+func (v *NextSyncJobForSiteNextSyncJobForSiteSyncJob) GetTypename() *string { return v.Typename }
+
+// GetConfiguration returns NextSyncJobForSiteNextSyncJobForSiteSyncJob.Configuration, and is useful for accessing the field via an interface.
+func (v *NextSyncJobForSiteNextSyncJobForSiteSyncJob) GetConfiguration() map[string]interface{} {
+	return v.SyncJob.Configuration
+}
+
+// GetCreatedAt returns NextSyncJobForSiteNextSyncJobForSiteSyncJob.CreatedAt, and is useful for accessing the field via an interface.
+func (v *NextSyncJobForSiteNextSyncJobForSiteSyncJob) GetCreatedAt() time.Time {
+	return v.SyncJob.CreatedAt
+}
+
+// GetDataSource returns NextSyncJobForSiteNextSyncJobForSiteSyncJob.DataSource, and is useful for accessing the field via an interface.
+func (v *NextSyncJobForSiteNextSyncJobForSiteSyncJob) GetDataSource() *SyncJobDataSourceDataSourceResult {
+	return v.SyncJob.DataSource
+}
+
+// GetEdgeJobId returns NextSyncJobForSiteNextSyncJobForSiteSyncJob.EdgeJobId, and is useful for accessing the field via an interface.
+func (v *NextSyncJobForSiteNextSyncJobForSiteSyncJob) GetEdgeJobId() *string {
+	return v.SyncJob.EdgeJobId
+}
+
+// GetJob returns NextSyncJobForSiteNextSyncJobForSiteSyncJob.Job, and is useful for accessing the field via an interface.
+func (v *NextSyncJobForSiteNextSyncJobForSiteSyncJob) GetJob() *SyncJobJobJobResult {
+	return v.SyncJob.Job
+}
+
+// GetModifiedAt returns NextSyncJobForSiteNextSyncJobForSiteSyncJob.ModifiedAt, and is useful for accessing the field via an interface.
+func (v *NextSyncJobForSiteNextSyncJobForSiteSyncJob) GetModifiedAt() time.Time {
+	return v.SyncJob.ModifiedAt
+}
+
+// GetTriggered returns NextSyncJobForSiteNextSyncJobForSiteSyncJob.Triggered, and is useful for accessing the field via an interface.
+func (v *NextSyncJobForSiteNextSyncJobForSiteSyncJob) GetTriggered() bool { return v.SyncJob.Triggered }
+
+func (v *NextSyncJobForSiteNextSyncJobForSiteSyncJob) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*NextSyncJobForSiteNextSyncJobForSiteSyncJob
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.NextSyncJobForSiteNextSyncJobForSiteSyncJob = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.SyncJob)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalNextSyncJobForSiteNextSyncJobForSiteSyncJob struct {
+	Typename *string `json:"__typename"`
+
+	Configuration json.RawMessage `json:"configuration"`
+
+	CreatedAt time.Time `json:"createdAt"`
+
+	DataSource json.RawMessage `json:"dataSource"`
+
+	EdgeJobId *string `json:"edgeJobId"`
+
+	Job json.RawMessage `json:"job"`
+
+	ModifiedAt time.Time `json:"modifiedAt"`
+
+	Triggered bool `json:"triggered"`
+}
+
+func (v *NextSyncJobForSiteNextSyncJobForSiteSyncJob) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *NextSyncJobForSiteNextSyncJobForSiteSyncJob) __premarshalJSON() (*__premarshalNextSyncJobForSiteNextSyncJobForSiteSyncJob, error) {
+	var retval __premarshalNextSyncJobForSiteNextSyncJobForSiteSyncJob
+
+	retval.Typename = v.Typename
+	{
+
+		dst := &retval.Configuration
+		src := v.SyncJob.Configuration
+		var err error
+		*dst, err = scalar.MarshalSyncConfiguration(
+			&src)
+		if err != nil {
+			return nil, fmt.Errorf(
+				"unable to marshal NextSyncJobForSiteNextSyncJobForSiteSyncJob.SyncJob.Configuration: %w", err)
+		}
+	}
+	retval.CreatedAt = v.SyncJob.CreatedAt
+	{
+
+		dst := &retval.DataSource
+		src := v.SyncJob.DataSource
+		if src != nil {
+			var err error
+			*dst, err = __marshalSyncJobDataSourceDataSourceResult(
+				src)
+			if err != nil {
+				return nil, fmt.Errorf(
+					"unable to marshal NextSyncJobForSiteNextSyncJobForSiteSyncJob.SyncJob.DataSource: %w", err)
+			}
+		}
+	}
+	retval.EdgeJobId = v.SyncJob.EdgeJobId
+	{
+
+		dst := &retval.Job
+		src := v.SyncJob.Job
+		if src != nil {
+			var err error
+			*dst, err = __marshalSyncJobJobJobResult(
+				src)
+			if err != nil {
+				return nil, fmt.Errorf(
+					"unable to marshal NextSyncJobForSiteNextSyncJobForSiteSyncJob.SyncJob.Job: %w", err)
+			}
+		}
+	}
+	retval.ModifiedAt = v.SyncJob.ModifiedAt
+	retval.Triggered = v.SyncJob.Triggered
+	return &retval, nil
+}
+
+// NextSyncJobForSiteNextSyncJobForSiteSyncJobResult includes the requested fields of the GraphQL interface SyncJobResult.
+//
+// NextSyncJobForSiteNextSyncJobForSiteSyncJobResult is implemented by the following types:
+// NextSyncJobForSiteNextSyncJobForSiteInvalidInputError
+// NextSyncJobForSiteNextSyncJobForSiteNotFoundError
+// NextSyncJobForSiteNextSyncJobForSitePermissionDeniedError
+// NextSyncJobForSiteNextSyncJobForSiteSyncJob
+type NextSyncJobForSiteNextSyncJobForSiteSyncJobResult interface {
+	implementsGraphQLInterfaceNextSyncJobForSiteNextSyncJobForSiteSyncJobResult()
+	// GetTypename returns the receiver's concrete GraphQL type-name (see interface doc for possible values).
+	GetTypename() *string
+}
+
+func (v *NextSyncJobForSiteNextSyncJobForSiteInvalidInputError) implementsGraphQLInterfaceNextSyncJobForSiteNextSyncJobForSiteSyncJobResult() {
+}
+func (v *NextSyncJobForSiteNextSyncJobForSiteNotFoundError) implementsGraphQLInterfaceNextSyncJobForSiteNextSyncJobForSiteSyncJobResult() {
+}
+func (v *NextSyncJobForSiteNextSyncJobForSitePermissionDeniedError) implementsGraphQLInterfaceNextSyncJobForSiteNextSyncJobForSiteSyncJobResult() {
+}
+func (v *NextSyncJobForSiteNextSyncJobForSiteSyncJob) implementsGraphQLInterfaceNextSyncJobForSiteNextSyncJobForSiteSyncJobResult() {
+}
+
+func __unmarshalNextSyncJobForSiteNextSyncJobForSiteSyncJobResult(b []byte, v *NextSyncJobForSiteNextSyncJobForSiteSyncJobResult) error {
+	if string(b) == "null" {
+		return nil
+	}
+
+	var tn struct {
+		TypeName string `json:"__typename"`
+	}
+	err := json.Unmarshal(b, &tn)
+	if err != nil {
+		return err
+	}
+
+	switch tn.TypeName {
+	case "InvalidInputError":
+		*v = new(NextSyncJobForSiteNextSyncJobForSiteInvalidInputError)
+		return json.Unmarshal(b, *v)
+	case "NotFoundError":
+		*v = new(NextSyncJobForSiteNextSyncJobForSiteNotFoundError)
+		return json.Unmarshal(b, *v)
+	case "PermissionDeniedError":
+		*v = new(NextSyncJobForSiteNextSyncJobForSitePermissionDeniedError)
+		return json.Unmarshal(b, *v)
+	case "SyncJob":
+		*v = new(NextSyncJobForSiteNextSyncJobForSiteSyncJob)
+		return json.Unmarshal(b, *v)
+	case "":
+		return fmt.Errorf(
+			"response was missing SyncJobResult.__typename")
+	default:
+		return fmt.Errorf(
+			`unexpected concrete type for NextSyncJobForSiteNextSyncJobForSiteSyncJobResult: "%v"`, tn.TypeName)
+	}
+}
+
+func __marshalNextSyncJobForSiteNextSyncJobForSiteSyncJobResult(v *NextSyncJobForSiteNextSyncJobForSiteSyncJobResult) ([]byte, error) {
+
+	var typename string
+	switch v := (*v).(type) {
+	case *NextSyncJobForSiteNextSyncJobForSiteInvalidInputError:
+		typename = "InvalidInputError"
+
+		premarshaled, err := v.__premarshalJSON()
+		if err != nil {
+			return nil, err
+		}
+		result := struct {
+			TypeName string `json:"__typename"`
+			*__premarshalNextSyncJobForSiteNextSyncJobForSiteInvalidInputError
+		}{typename, premarshaled}
+		return json.Marshal(result)
+	case *NextSyncJobForSiteNextSyncJobForSiteNotFoundError:
+		typename = "NotFoundError"
+
+		premarshaled, err := v.__premarshalJSON()
+		if err != nil {
+			return nil, err
+		}
+		result := struct {
+			TypeName string `json:"__typename"`
+			*__premarshalNextSyncJobForSiteNextSyncJobForSiteNotFoundError
+		}{typename, premarshaled}
+		return json.Marshal(result)
+	case *NextSyncJobForSiteNextSyncJobForSitePermissionDeniedError:
+		typename = "PermissionDeniedError"
+
+		premarshaled, err := v.__premarshalJSON()
+		if err != nil {
+			return nil, err
+		}
+		result := struct {
+			TypeName string `json:"__typename"`
+			*__premarshalNextSyncJobForSiteNextSyncJobForSitePermissionDeniedError
+		}{typename, premarshaled}
+		return json.Marshal(result)
+	case *NextSyncJobForSiteNextSyncJobForSiteSyncJob:
+		typename = "SyncJob"
+
+		premarshaled, err := v.__premarshalJSON()
+		if err != nil {
+			return nil, err
+		}
+		result := struct {
+			TypeName string `json:"__typename"`
+			*__premarshalNextSyncJobForSiteNextSyncJobForSiteSyncJob
+		}{typename, premarshaled}
+		return json.Marshal(result)
+	case nil:
+		return []byte("null"), nil
+	default:
+		return nil, fmt.Errorf(
+			`unexpected concrete type for NextSyncJobForSiteNextSyncJobForSiteSyncJobResult: "%T"`, v)
+	}
+}
+
+// NextSyncJobForSiteResponse is returned by NextSyncJobForSite on success.
+type NextSyncJobForSiteResponse struct {
+	NextSyncJobForSite NextSyncJobForSiteNextSyncJobForSiteSyncJobResult `json:"-"`
+}
+
+// GetNextSyncJobForSite returns NextSyncJobForSiteResponse.NextSyncJobForSite, and is useful for accessing the field via an interface.
+func (v *NextSyncJobForSiteResponse) GetNextSyncJobForSite() NextSyncJobForSiteNextSyncJobForSiteSyncJobResult {
+	return v.NextSyncJobForSite
+}
+
+func (v *NextSyncJobForSiteResponse) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*NextSyncJobForSiteResponse
+		NextSyncJobForSite json.RawMessage `json:"nextSyncJobForSite"`
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.NextSyncJobForSiteResponse = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	{
+		dst := &v.NextSyncJobForSite
+		src := firstPass.NextSyncJobForSite
+		if len(src) != 0 && string(src) != "null" {
+			err = __unmarshalNextSyncJobForSiteNextSyncJobForSiteSyncJobResult(
+				src, dst)
+			if err != nil {
+				return fmt.Errorf(
+					"unable to unmarshal NextSyncJobForSiteResponse.NextSyncJobForSite: %w", err)
+			}
+		}
+	}
+	return nil
+}
+
+type __premarshalNextSyncJobForSiteResponse struct {
+	NextSyncJobForSite json.RawMessage `json:"nextSyncJobForSite"`
+}
+
+func (v *NextSyncJobForSiteResponse) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *NextSyncJobForSiteResponse) __premarshalJSON() (*__premarshalNextSyncJobForSiteResponse, error) {
+	var retval __premarshalNextSyncJobForSiteResponse
+
+	{
+
+		dst := &retval.NextSyncJobForSite
+		src := v.NextSyncJobForSite
+		var err error
+		*dst, err = __marshalNextSyncJobForSiteNextSyncJobForSiteSyncJobResult(
+			&src)
+		if err != nil {
+			return nil, fmt.Errorf(
+				"unable to marshal NextSyncJobForSiteResponse.NextSyncJobForSite: %w", err)
+		}
+	}
+	return &retval, nil
+}
+
 // NotFoundError includes the GraphQL fields of NotFoundError requested by the fragment NotFoundError.
 type NotFoundError struct {
 	Message string `json:"message"`
@@ -26470,6 +27148,105 @@ func (v *PageInfo) GetHasNextPage() *bool { return v.HasNextPage }
 
 // GetStartCursor returns PageInfo.StartCursor, and is useful for accessing the field via an interface.
 func (v *PageInfo) GetStartCursor() *string { return v.StartCursor }
+
+type ParameterDataType string
+
+const (
+	ParameterDataTypeString         ParameterDataType = "String"
+	ParameterDataTypeInteger        ParameterDataType = "Integer"
+	ParameterDataTypeFloat          ParameterDataType = "Float"
+	ParameterDataTypeBoolean        ParameterDataType = "Boolean"
+	ParameterDataTypeTimestamp      ParameterDataType = "Timestamp"
+	ParameterDataTypeStringarray    ParameterDataType = "StringArray"
+	ParameterDataTypeIntegerarray   ParameterDataType = "IntegerArray"
+	ParameterDataTypeFloatarray     ParameterDataType = "FloatArray"
+	ParameterDataTypeBooleanarray   ParameterDataType = "BooleanArray"
+	ParameterDataTypeTimestamparray ParameterDataType = "TimestampArray"
+)
+
+var AllParameterDataType = []ParameterDataType{
+	ParameterDataTypeString,
+	ParameterDataTypeInteger,
+	ParameterDataTypeFloat,
+	ParameterDataTypeBoolean,
+	ParameterDataTypeTimestamp,
+	ParameterDataTypeStringarray,
+	ParameterDataTypeIntegerarray,
+	ParameterDataTypeFloatarray,
+	ParameterDataTypeBooleanarray,
+	ParameterDataTypeTimestamparray,
+}
+
+type ParameterDefinitionInput struct {
+	Type         ParameterType              `json:"type"`
+	Key          string                     `json:"key"`
+	DisplayName  string                     `json:"displayName"`
+	Description  *string                    `json:"description,omitempty"`
+	DataType     *ParameterDataType         `json:"dataType,omitempty"`
+	Required     *bool                      `json:"required,omitempty"`
+	Source       *ParameterSource           `json:"source,omitempty"`
+	DefaultValue *interface{}               `json:"defaultValue,omitempty"`
+	Parameters   []ParameterDefinitionInput `json:"parameters"`
+}
+
+// GetType returns ParameterDefinitionInput.Type, and is useful for accessing the field via an interface.
+func (v *ParameterDefinitionInput) GetType() ParameterType { return v.Type }
+
+// GetKey returns ParameterDefinitionInput.Key, and is useful for accessing the field via an interface.
+func (v *ParameterDefinitionInput) GetKey() string { return v.Key }
+
+// GetDisplayName returns ParameterDefinitionInput.DisplayName, and is useful for accessing the field via an interface.
+func (v *ParameterDefinitionInput) GetDisplayName() string { return v.DisplayName }
+
+// GetDescription returns ParameterDefinitionInput.Description, and is useful for accessing the field via an interface.
+func (v *ParameterDefinitionInput) GetDescription() *string { return v.Description }
+
+// GetDataType returns ParameterDefinitionInput.DataType, and is useful for accessing the field via an interface.
+func (v *ParameterDefinitionInput) GetDataType() *ParameterDataType { return v.DataType }
+
+// GetRequired returns ParameterDefinitionInput.Required, and is useful for accessing the field via an interface.
+func (v *ParameterDefinitionInput) GetRequired() *bool { return v.Required }
+
+// GetSource returns ParameterDefinitionInput.Source, and is useful for accessing the field via an interface.
+func (v *ParameterDefinitionInput) GetSource() *ParameterSource { return v.Source }
+
+// GetDefaultValue returns ParameterDefinitionInput.DefaultValue, and is useful for accessing the field via an interface.
+func (v *ParameterDefinitionInput) GetDefaultValue() *interface{} { return v.DefaultValue }
+
+// GetParameters returns ParameterDefinitionInput.Parameters, and is useful for accessing the field via an interface.
+func (v *ParameterDefinitionInput) GetParameters() []ParameterDefinitionInput { return v.Parameters }
+
+type ParameterSource string
+
+const (
+	ParameterSourceAgent           ParameterSource = "Agent"
+	ParameterSourceAgentruntime    ParameterSource = "AgentRuntime"
+	ParameterSourceConnector       ParameterSource = "Connector"
+	ParameterSourceConnectorsecure ParameterSource = "ConnectorSecure"
+)
+
+var AllParameterSource = []ParameterSource{
+	ParameterSourceAgent,
+	ParameterSourceAgentruntime,
+	ParameterSourceConnector,
+	ParameterSourceConnectorsecure,
+}
+
+type ParameterType string
+
+const (
+	ParameterTypeParameter ParameterType = "Parameter"
+	ParameterTypeObject    ParameterType = "Object"
+	ParameterTypeAdvanced  ParameterType = "Advanced"
+	ParameterTypeArray     ParameterType = "Array"
+)
+
+var AllParameterType = []ParameterType{
+	ParameterTypeParameter,
+	ParameterTypeObject,
+	ParameterTypeAdvanced,
+	ParameterTypeArray,
+}
 
 // PermissionDeniedError includes the GraphQL fields of PermissionDeniedError requested by the fragment PermissionDeniedError.
 type PermissionDeniedError struct {
@@ -28181,6 +28958,47 @@ type RoleOrderByInput struct {
 
 // GetName returns RoleOrderByInput.Name, and is useful for accessing the field via an interface.
 func (v *RoleOrderByInput) GetName() *Sort { return v.Name }
+
+type RootParameterDefinitionInput struct {
+	Global               []ParameterDefinitionInput `json:"global"`
+	Connection           []ParameterDefinitionInput `json:"connection"`
+	DataObjectSync       []ParameterDefinitionInput `json:"dataObjectSync"`
+	IdentitySync         []ParameterDefinitionInput `json:"identitySync"`
+	AccessToTargetSync   []ParameterDefinitionInput `json:"accessToTargetSync"`
+	AccessFromTargetSync []ParameterDefinitionInput `json:"accessFromTargetSync"`
+	UsageSync            []ParameterDefinitionInput `json:"usageSync"`
+}
+
+// GetGlobal returns RootParameterDefinitionInput.Global, and is useful for accessing the field via an interface.
+func (v *RootParameterDefinitionInput) GetGlobal() []ParameterDefinitionInput { return v.Global }
+
+// GetConnection returns RootParameterDefinitionInput.Connection, and is useful for accessing the field via an interface.
+func (v *RootParameterDefinitionInput) GetConnection() []ParameterDefinitionInput {
+	return v.Connection
+}
+
+// GetDataObjectSync returns RootParameterDefinitionInput.DataObjectSync, and is useful for accessing the field via an interface.
+func (v *RootParameterDefinitionInput) GetDataObjectSync() []ParameterDefinitionInput {
+	return v.DataObjectSync
+}
+
+// GetIdentitySync returns RootParameterDefinitionInput.IdentitySync, and is useful for accessing the field via an interface.
+func (v *RootParameterDefinitionInput) GetIdentitySync() []ParameterDefinitionInput {
+	return v.IdentitySync
+}
+
+// GetAccessToTargetSync returns RootParameterDefinitionInput.AccessToTargetSync, and is useful for accessing the field via an interface.
+func (v *RootParameterDefinitionInput) GetAccessToTargetSync() []ParameterDefinitionInput {
+	return v.AccessToTargetSync
+}
+
+// GetAccessFromTargetSync returns RootParameterDefinitionInput.AccessFromTargetSync, and is useful for accessing the field via an interface.
+func (v *RootParameterDefinitionInput) GetAccessFromTargetSync() []ParameterDefinitionInput {
+	return v.AccessFromTargetSync
+}
+
+// GetUsageSync returns RootParameterDefinitionInput.UsageSync, and is useful for accessing the field via an interface.
+func (v *RootParameterDefinitionInput) GetUsageSync() []ParameterDefinitionInput { return v.UsageSync }
 
 // SetDataSourceMetadataResponse is returned by SetDataSourceMetadata on success.
 type SetDataSourceMetadataResponse struct {
@@ -30374,6 +31192,962 @@ func (v *SyncDataMaskType) __premarshalJSON() (*__premarshalSyncDataMaskType, er
 	retval.DisplayName = v.MaskType.DisplayName
 	retval.Description = v.MaskType.Description
 	retval.DataTypes = v.MaskType.DataTypes
+	return &retval, nil
+}
+
+// SyncJob includes the GraphQL fields of SyncJob requested by the fragment SyncJob.
+type SyncJob struct {
+	Configuration map[string]interface{}             `json:"-"`
+	CreatedAt     time.Time                          `json:"createdAt"`
+	DataSource    *SyncJobDataSourceDataSourceResult `json:"-"`
+	EdgeJobId     *string                            `json:"edgeJobId"`
+	Job           *SyncJobJobJobResult               `json:"-"`
+	ModifiedAt    time.Time                          `json:"modifiedAt"`
+	Triggered     bool                               `json:"triggered"`
+}
+
+// GetConfiguration returns SyncJob.Configuration, and is useful for accessing the field via an interface.
+func (v *SyncJob) GetConfiguration() map[string]interface{} { return v.Configuration }
+
+// GetCreatedAt returns SyncJob.CreatedAt, and is useful for accessing the field via an interface.
+func (v *SyncJob) GetCreatedAt() time.Time { return v.CreatedAt }
+
+// GetDataSource returns SyncJob.DataSource, and is useful for accessing the field via an interface.
+func (v *SyncJob) GetDataSource() *SyncJobDataSourceDataSourceResult { return v.DataSource }
+
+// GetEdgeJobId returns SyncJob.EdgeJobId, and is useful for accessing the field via an interface.
+func (v *SyncJob) GetEdgeJobId() *string { return v.EdgeJobId }
+
+// GetJob returns SyncJob.Job, and is useful for accessing the field via an interface.
+func (v *SyncJob) GetJob() *SyncJobJobJobResult { return v.Job }
+
+// GetModifiedAt returns SyncJob.ModifiedAt, and is useful for accessing the field via an interface.
+func (v *SyncJob) GetModifiedAt() time.Time { return v.ModifiedAt }
+
+// GetTriggered returns SyncJob.Triggered, and is useful for accessing the field via an interface.
+func (v *SyncJob) GetTriggered() bool { return v.Triggered }
+
+func (v *SyncJob) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*SyncJob
+		Configuration json.RawMessage `json:"configuration"`
+		DataSource    json.RawMessage `json:"dataSource"`
+		Job           json.RawMessage `json:"job"`
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.SyncJob = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	{
+		dst := &v.Configuration
+		src := firstPass.Configuration
+		if len(src) != 0 && string(src) != "null" {
+			err = scalar.UnmarshalSyncConfiguration(
+				src, dst)
+			if err != nil {
+				return fmt.Errorf(
+					"unable to unmarshal SyncJob.Configuration: %w", err)
+			}
+		}
+	}
+
+	{
+		dst := &v.DataSource
+		src := firstPass.DataSource
+		if len(src) != 0 && string(src) != "null" {
+			*dst = new(SyncJobDataSourceDataSourceResult)
+			err = __unmarshalSyncJobDataSourceDataSourceResult(
+				src, *dst)
+			if err != nil {
+				return fmt.Errorf(
+					"unable to unmarshal SyncJob.DataSource: %w", err)
+			}
+		}
+	}
+
+	{
+		dst := &v.Job
+		src := firstPass.Job
+		if len(src) != 0 && string(src) != "null" {
+			*dst = new(SyncJobJobJobResult)
+			err = __unmarshalSyncJobJobJobResult(
+				src, *dst)
+			if err != nil {
+				return fmt.Errorf(
+					"unable to unmarshal SyncJob.Job: %w", err)
+			}
+		}
+	}
+	return nil
+}
+
+type __premarshalSyncJob struct {
+	Configuration json.RawMessage `json:"configuration"`
+
+	CreatedAt time.Time `json:"createdAt"`
+
+	DataSource json.RawMessage `json:"dataSource"`
+
+	EdgeJobId *string `json:"edgeJobId"`
+
+	Job json.RawMessage `json:"job"`
+
+	ModifiedAt time.Time `json:"modifiedAt"`
+
+	Triggered bool `json:"triggered"`
+}
+
+func (v *SyncJob) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *SyncJob) __premarshalJSON() (*__premarshalSyncJob, error) {
+	var retval __premarshalSyncJob
+
+	{
+
+		dst := &retval.Configuration
+		src := v.Configuration
+		var err error
+		*dst, err = scalar.MarshalSyncConfiguration(
+			&src)
+		if err != nil {
+			return nil, fmt.Errorf(
+				"unable to marshal SyncJob.Configuration: %w", err)
+		}
+	}
+	retval.CreatedAt = v.CreatedAt
+	{
+
+		dst := &retval.DataSource
+		src := v.DataSource
+		if src != nil {
+			var err error
+			*dst, err = __marshalSyncJobDataSourceDataSourceResult(
+				src)
+			if err != nil {
+				return nil, fmt.Errorf(
+					"unable to marshal SyncJob.DataSource: %w", err)
+			}
+		}
+	}
+	retval.EdgeJobId = v.EdgeJobId
+	{
+
+		dst := &retval.Job
+		src := v.Job
+		if src != nil {
+			var err error
+			*dst, err = __marshalSyncJobJobJobResult(
+				src)
+			if err != nil {
+				return nil, fmt.Errorf(
+					"unable to marshal SyncJob.Job: %w", err)
+			}
+		}
+	}
+	retval.ModifiedAt = v.ModifiedAt
+	retval.Triggered = v.Triggered
+	return &retval, nil
+}
+
+// SyncJobDataSource includes the requested fields of the GraphQL type DataSource.
+type SyncJobDataSource struct {
+	Typename   *string `json:"__typename"`
+	DataSource `json:"-"`
+}
+
+// GetTypename returns SyncJobDataSource.Typename, and is useful for accessing the field via an interface.
+func (v *SyncJobDataSource) GetTypename() *string { return v.Typename }
+
+// GetId returns SyncJobDataSource.Id, and is useful for accessing the field via an interface.
+func (v *SyncJobDataSource) GetId() string { return v.DataSource.Id }
+
+// GetName returns SyncJobDataSource.Name, and is useful for accessing the field via an interface.
+func (v *SyncJobDataSource) GetName() string { return v.DataSource.Name }
+
+// GetType returns SyncJobDataSource.Type, and is useful for accessing the field via an interface.
+func (v *SyncJobDataSource) GetType() string { return v.DataSource.Type }
+
+// GetDescription returns SyncJobDataSource.Description, and is useful for accessing the field via an interface.
+func (v *SyncJobDataSource) GetDescription() string { return v.DataSource.Description }
+
+// GetCreatedAt returns SyncJobDataSource.CreatedAt, and is useful for accessing the field via an interface.
+func (v *SyncJobDataSource) GetCreatedAt() time.Time { return v.DataSource.CreatedAt }
+
+// GetModifiedAt returns SyncJobDataSource.ModifiedAt, and is useful for accessing the field via an interface.
+func (v *SyncJobDataSource) GetModifiedAt() time.Time { return v.DataSource.ModifiedAt }
+
+// GetParent returns SyncJobDataSource.Parent, and is useful for accessing the field via an interface.
+func (v *SyncJobDataSource) GetParent() *DataSourceParentDataSource { return v.DataSource.Parent }
+
+func (v *SyncJobDataSource) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*SyncJobDataSource
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.SyncJobDataSource = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.DataSource)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalSyncJobDataSource struct {
+	Typename *string `json:"__typename"`
+
+	Id string `json:"id"`
+
+	Name string `json:"name"`
+
+	Type string `json:"type"`
+
+	Description string `json:"description"`
+
+	CreatedAt time.Time `json:"createdAt"`
+
+	ModifiedAt time.Time `json:"modifiedAt"`
+
+	Parent *DataSourceParentDataSource `json:"parent"`
+}
+
+func (v *SyncJobDataSource) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *SyncJobDataSource) __premarshalJSON() (*__premarshalSyncJobDataSource, error) {
+	var retval __premarshalSyncJobDataSource
+
+	retval.Typename = v.Typename
+	retval.Id = v.DataSource.Id
+	retval.Name = v.DataSource.Name
+	retval.Type = v.DataSource.Type
+	retval.Description = v.DataSource.Description
+	retval.CreatedAt = v.DataSource.CreatedAt
+	retval.ModifiedAt = v.DataSource.ModifiedAt
+	retval.Parent = v.DataSource.Parent
+	return &retval, nil
+}
+
+// SyncJobDataSourceDataSourceResult includes the requested fields of the GraphQL interface DataSourceResult.
+//
+// SyncJobDataSourceDataSourceResult is implemented by the following types:
+// SyncJobDataSource
+// SyncJobDataSourceInvalidInputError
+// SyncJobDataSourceNotFoundError
+// SyncJobDataSourcePermissionDeniedError
+type SyncJobDataSourceDataSourceResult interface {
+	implementsGraphQLInterfaceSyncJobDataSourceDataSourceResult()
+	// GetTypename returns the receiver's concrete GraphQL type-name (see interface doc for possible values).
+	GetTypename() *string
+}
+
+func (v *SyncJobDataSource) implementsGraphQLInterfaceSyncJobDataSourceDataSourceResult() {}
+func (v *SyncJobDataSourceInvalidInputError) implementsGraphQLInterfaceSyncJobDataSourceDataSourceResult() {
+}
+func (v *SyncJobDataSourceNotFoundError) implementsGraphQLInterfaceSyncJobDataSourceDataSourceResult() {
+}
+func (v *SyncJobDataSourcePermissionDeniedError) implementsGraphQLInterfaceSyncJobDataSourceDataSourceResult() {
+}
+
+func __unmarshalSyncJobDataSourceDataSourceResult(b []byte, v *SyncJobDataSourceDataSourceResult) error {
+	if string(b) == "null" {
+		return nil
+	}
+
+	var tn struct {
+		TypeName string `json:"__typename"`
+	}
+	err := json.Unmarshal(b, &tn)
+	if err != nil {
+		return err
+	}
+
+	switch tn.TypeName {
+	case "DataSource":
+		*v = new(SyncJobDataSource)
+		return json.Unmarshal(b, *v)
+	case "InvalidInputError":
+		*v = new(SyncJobDataSourceInvalidInputError)
+		return json.Unmarshal(b, *v)
+	case "NotFoundError":
+		*v = new(SyncJobDataSourceNotFoundError)
+		return json.Unmarshal(b, *v)
+	case "PermissionDeniedError":
+		*v = new(SyncJobDataSourcePermissionDeniedError)
+		return json.Unmarshal(b, *v)
+	case "":
+		return fmt.Errorf(
+			"response was missing DataSourceResult.__typename")
+	default:
+		return fmt.Errorf(
+			`unexpected concrete type for SyncJobDataSourceDataSourceResult: "%v"`, tn.TypeName)
+	}
+}
+
+func __marshalSyncJobDataSourceDataSourceResult(v *SyncJobDataSourceDataSourceResult) ([]byte, error) {
+
+	var typename string
+	switch v := (*v).(type) {
+	case *SyncJobDataSource:
+		typename = "DataSource"
+
+		premarshaled, err := v.__premarshalJSON()
+		if err != nil {
+			return nil, err
+		}
+		result := struct {
+			TypeName string `json:"__typename"`
+			*__premarshalSyncJobDataSource
+		}{typename, premarshaled}
+		return json.Marshal(result)
+	case *SyncJobDataSourceInvalidInputError:
+		typename = "InvalidInputError"
+
+		premarshaled, err := v.__premarshalJSON()
+		if err != nil {
+			return nil, err
+		}
+		result := struct {
+			TypeName string `json:"__typename"`
+			*__premarshalSyncJobDataSourceInvalidInputError
+		}{typename, premarshaled}
+		return json.Marshal(result)
+	case *SyncJobDataSourceNotFoundError:
+		typename = "NotFoundError"
+
+		premarshaled, err := v.__premarshalJSON()
+		if err != nil {
+			return nil, err
+		}
+		result := struct {
+			TypeName string `json:"__typename"`
+			*__premarshalSyncJobDataSourceNotFoundError
+		}{typename, premarshaled}
+		return json.Marshal(result)
+	case *SyncJobDataSourcePermissionDeniedError:
+		typename = "PermissionDeniedError"
+
+		premarshaled, err := v.__premarshalJSON()
+		if err != nil {
+			return nil, err
+		}
+		result := struct {
+			TypeName string `json:"__typename"`
+			*__premarshalSyncJobDataSourcePermissionDeniedError
+		}{typename, premarshaled}
+		return json.Marshal(result)
+	case nil:
+		return []byte("null"), nil
+	default:
+		return nil, fmt.Errorf(
+			`unexpected concrete type for SyncJobDataSourceDataSourceResult: "%T"`, v)
+	}
+}
+
+// SyncJobDataSourceInvalidInputError includes the requested fields of the GraphQL type InvalidInputError.
+type SyncJobDataSourceInvalidInputError struct {
+	Typename          *string `json:"__typename"`
+	InvalidInputError `json:"-"`
+}
+
+// GetTypename returns SyncJobDataSourceInvalidInputError.Typename, and is useful for accessing the field via an interface.
+func (v *SyncJobDataSourceInvalidInputError) GetTypename() *string { return v.Typename }
+
+// GetMessage returns SyncJobDataSourceInvalidInputError.Message, and is useful for accessing the field via an interface.
+func (v *SyncJobDataSourceInvalidInputError) GetMessage() string { return v.InvalidInputError.Message }
+
+func (v *SyncJobDataSourceInvalidInputError) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*SyncJobDataSourceInvalidInputError
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.SyncJobDataSourceInvalidInputError = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.InvalidInputError)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalSyncJobDataSourceInvalidInputError struct {
+	Typename *string `json:"__typename"`
+
+	Message string `json:"message"`
+}
+
+func (v *SyncJobDataSourceInvalidInputError) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *SyncJobDataSourceInvalidInputError) __premarshalJSON() (*__premarshalSyncJobDataSourceInvalidInputError, error) {
+	var retval __premarshalSyncJobDataSourceInvalidInputError
+
+	retval.Typename = v.Typename
+	retval.Message = v.InvalidInputError.Message
+	return &retval, nil
+}
+
+// SyncJobDataSourceNotFoundError includes the requested fields of the GraphQL type NotFoundError.
+type SyncJobDataSourceNotFoundError struct {
+	Typename      *string `json:"__typename"`
+	NotFoundError `json:"-"`
+}
+
+// GetTypename returns SyncJobDataSourceNotFoundError.Typename, and is useful for accessing the field via an interface.
+func (v *SyncJobDataSourceNotFoundError) GetTypename() *string { return v.Typename }
+
+// GetMessage returns SyncJobDataSourceNotFoundError.Message, and is useful for accessing the field via an interface.
+func (v *SyncJobDataSourceNotFoundError) GetMessage() string { return v.NotFoundError.Message }
+
+func (v *SyncJobDataSourceNotFoundError) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*SyncJobDataSourceNotFoundError
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.SyncJobDataSourceNotFoundError = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.NotFoundError)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalSyncJobDataSourceNotFoundError struct {
+	Typename *string `json:"__typename"`
+
+	Message string `json:"message"`
+}
+
+func (v *SyncJobDataSourceNotFoundError) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *SyncJobDataSourceNotFoundError) __premarshalJSON() (*__premarshalSyncJobDataSourceNotFoundError, error) {
+	var retval __premarshalSyncJobDataSourceNotFoundError
+
+	retval.Typename = v.Typename
+	retval.Message = v.NotFoundError.Message
+	return &retval, nil
+}
+
+// SyncJobDataSourcePermissionDeniedError includes the requested fields of the GraphQL type PermissionDeniedError.
+type SyncJobDataSourcePermissionDeniedError struct {
+	Typename              *string `json:"__typename"`
+	PermissionDeniedError `json:"-"`
+}
+
+// GetTypename returns SyncJobDataSourcePermissionDeniedError.Typename, and is useful for accessing the field via an interface.
+func (v *SyncJobDataSourcePermissionDeniedError) GetTypename() *string { return v.Typename }
+
+// GetMessage returns SyncJobDataSourcePermissionDeniedError.Message, and is useful for accessing the field via an interface.
+func (v *SyncJobDataSourcePermissionDeniedError) GetMessage() string {
+	return v.PermissionDeniedError.Message
+}
+
+func (v *SyncJobDataSourcePermissionDeniedError) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*SyncJobDataSourcePermissionDeniedError
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.SyncJobDataSourcePermissionDeniedError = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.PermissionDeniedError)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalSyncJobDataSourcePermissionDeniedError struct {
+	Typename *string `json:"__typename"`
+
+	Message string `json:"message"`
+}
+
+func (v *SyncJobDataSourcePermissionDeniedError) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *SyncJobDataSourcePermissionDeniedError) __premarshalJSON() (*__premarshalSyncJobDataSourcePermissionDeniedError, error) {
+	var retval __premarshalSyncJobDataSourcePermissionDeniedError
+
+	retval.Typename = v.Typename
+	retval.Message = v.PermissionDeniedError.Message
+	return &retval, nil
+}
+
+// SyncJobJob includes the requested fields of the GraphQL type Job.
+type SyncJobJob struct {
+	Typename *string `json:"__typename"`
+	Job      `json:"-"`
+}
+
+// GetTypename returns SyncJobJob.Typename, and is useful for accessing the field via an interface.
+func (v *SyncJobJob) GetTypename() *string { return v.Typename }
+
+// GetId returns SyncJobJob.Id, and is useful for accessing the field via an interface.
+func (v *SyncJobJob) GetId() string { return v.Job.Id }
+
+// GetStatus returns SyncJobJob.Status, and is useful for accessing the field via an interface.
+func (v *SyncJobJob) GetStatus() JobStatus { return v.Job.Status }
+
+// GetStartTime returns SyncJobJob.StartTime, and is useful for accessing the field via an interface.
+func (v *SyncJobJob) GetStartTime() time.Time { return v.Job.StartTime }
+
+// GetLastUpdate returns SyncJobJob.LastUpdate, and is useful for accessing the field via an interface.
+func (v *SyncJobJob) GetLastUpdate() time.Time { return v.Job.LastUpdate }
+
+// GetEndTime returns SyncJobJob.EndTime, and is useful for accessing the field via an interface.
+func (v *SyncJobJob) GetEndTime() *time.Time { return v.Job.EndTime }
+
+// GetDuration returns SyncJobJob.Duration, and is useful for accessing the field via an interface.
+func (v *SyncJobJob) GetDuration() *int64 { return v.Job.Duration }
+
+// GetHasErrors returns SyncJobJob.HasErrors, and is useful for accessing the field via an interface.
+func (v *SyncJobJob) GetHasErrors() *bool { return v.Job.HasErrors }
+
+// GetHasWarnings returns SyncJobJob.HasWarnings, and is useful for accessing the field via an interface.
+func (v *SyncJobJob) GetHasWarnings() *bool { return v.Job.HasWarnings }
+
+// GetDataSource returns SyncJobJob.DataSource, and is useful for accessing the field via an interface.
+func (v *SyncJobJob) GetDataSource() *JobDataSource { return v.Job.DataSource }
+
+func (v *SyncJobJob) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*SyncJobJob
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.SyncJobJob = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.Job)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalSyncJobJob struct {
+	Typename *string `json:"__typename"`
+
+	Id string `json:"id"`
+
+	Status JobStatus `json:"status"`
+
+	StartTime time.Time `json:"startTime"`
+
+	LastUpdate time.Time `json:"lastUpdate"`
+
+	EndTime *time.Time `json:"endTime"`
+
+	Duration *int64 `json:"duration"`
+
+	HasErrors *bool `json:"hasErrors"`
+
+	HasWarnings *bool `json:"hasWarnings"`
+
+	DataSource *JobDataSource `json:"dataSource"`
+}
+
+func (v *SyncJobJob) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *SyncJobJob) __premarshalJSON() (*__premarshalSyncJobJob, error) {
+	var retval __premarshalSyncJobJob
+
+	retval.Typename = v.Typename
+	retval.Id = v.Job.Id
+	retval.Status = v.Job.Status
+	retval.StartTime = v.Job.StartTime
+	retval.LastUpdate = v.Job.LastUpdate
+	retval.EndTime = v.Job.EndTime
+	retval.Duration = v.Job.Duration
+	retval.HasErrors = v.Job.HasErrors
+	retval.HasWarnings = v.Job.HasWarnings
+	retval.DataSource = v.Job.DataSource
+	return &retval, nil
+}
+
+// SyncJobJobInvalidInputError includes the requested fields of the GraphQL type InvalidInputError.
+type SyncJobJobInvalidInputError struct {
+	Typename          *string `json:"__typename"`
+	InvalidInputError `json:"-"`
+}
+
+// GetTypename returns SyncJobJobInvalidInputError.Typename, and is useful for accessing the field via an interface.
+func (v *SyncJobJobInvalidInputError) GetTypename() *string { return v.Typename }
+
+// GetMessage returns SyncJobJobInvalidInputError.Message, and is useful for accessing the field via an interface.
+func (v *SyncJobJobInvalidInputError) GetMessage() string { return v.InvalidInputError.Message }
+
+func (v *SyncJobJobInvalidInputError) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*SyncJobJobInvalidInputError
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.SyncJobJobInvalidInputError = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.InvalidInputError)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalSyncJobJobInvalidInputError struct {
+	Typename *string `json:"__typename"`
+
+	Message string `json:"message"`
+}
+
+func (v *SyncJobJobInvalidInputError) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *SyncJobJobInvalidInputError) __premarshalJSON() (*__premarshalSyncJobJobInvalidInputError, error) {
+	var retval __premarshalSyncJobJobInvalidInputError
+
+	retval.Typename = v.Typename
+	retval.Message = v.InvalidInputError.Message
+	return &retval, nil
+}
+
+// SyncJobJobJobResult includes the requested fields of the GraphQL interface JobResult.
+//
+// SyncJobJobJobResult is implemented by the following types:
+// SyncJobJobInvalidInputError
+// SyncJobJob
+// SyncJobJobNotFoundError
+// SyncJobJobPermissionDeniedError
+type SyncJobJobJobResult interface {
+	implementsGraphQLInterfaceSyncJobJobJobResult()
+	// GetTypename returns the receiver's concrete GraphQL type-name (see interface doc for possible values).
+	GetTypename() *string
+}
+
+func (v *SyncJobJobInvalidInputError) implementsGraphQLInterfaceSyncJobJobJobResult()     {}
+func (v *SyncJobJob) implementsGraphQLInterfaceSyncJobJobJobResult()                      {}
+func (v *SyncJobJobNotFoundError) implementsGraphQLInterfaceSyncJobJobJobResult()         {}
+func (v *SyncJobJobPermissionDeniedError) implementsGraphQLInterfaceSyncJobJobJobResult() {}
+
+func __unmarshalSyncJobJobJobResult(b []byte, v *SyncJobJobJobResult) error {
+	if string(b) == "null" {
+		return nil
+	}
+
+	var tn struct {
+		TypeName string `json:"__typename"`
+	}
+	err := json.Unmarshal(b, &tn)
+	if err != nil {
+		return err
+	}
+
+	switch tn.TypeName {
+	case "InvalidInputError":
+		*v = new(SyncJobJobInvalidInputError)
+		return json.Unmarshal(b, *v)
+	case "Job":
+		*v = new(SyncJobJob)
+		return json.Unmarshal(b, *v)
+	case "NotFoundError":
+		*v = new(SyncJobJobNotFoundError)
+		return json.Unmarshal(b, *v)
+	case "PermissionDeniedError":
+		*v = new(SyncJobJobPermissionDeniedError)
+		return json.Unmarshal(b, *v)
+	case "":
+		return fmt.Errorf(
+			"response was missing JobResult.__typename")
+	default:
+		return fmt.Errorf(
+			`unexpected concrete type for SyncJobJobJobResult: "%v"`, tn.TypeName)
+	}
+}
+
+func __marshalSyncJobJobJobResult(v *SyncJobJobJobResult) ([]byte, error) {
+
+	var typename string
+	switch v := (*v).(type) {
+	case *SyncJobJobInvalidInputError:
+		typename = "InvalidInputError"
+
+		premarshaled, err := v.__premarshalJSON()
+		if err != nil {
+			return nil, err
+		}
+		result := struct {
+			TypeName string `json:"__typename"`
+			*__premarshalSyncJobJobInvalidInputError
+		}{typename, premarshaled}
+		return json.Marshal(result)
+	case *SyncJobJob:
+		typename = "Job"
+
+		premarshaled, err := v.__premarshalJSON()
+		if err != nil {
+			return nil, err
+		}
+		result := struct {
+			TypeName string `json:"__typename"`
+			*__premarshalSyncJobJob
+		}{typename, premarshaled}
+		return json.Marshal(result)
+	case *SyncJobJobNotFoundError:
+		typename = "NotFoundError"
+
+		premarshaled, err := v.__premarshalJSON()
+		if err != nil {
+			return nil, err
+		}
+		result := struct {
+			TypeName string `json:"__typename"`
+			*__premarshalSyncJobJobNotFoundError
+		}{typename, premarshaled}
+		return json.Marshal(result)
+	case *SyncJobJobPermissionDeniedError:
+		typename = "PermissionDeniedError"
+
+		premarshaled, err := v.__premarshalJSON()
+		if err != nil {
+			return nil, err
+		}
+		result := struct {
+			TypeName string `json:"__typename"`
+			*__premarshalSyncJobJobPermissionDeniedError
+		}{typename, premarshaled}
+		return json.Marshal(result)
+	case nil:
+		return []byte("null"), nil
+	default:
+		return nil, fmt.Errorf(
+			`unexpected concrete type for SyncJobJobJobResult: "%T"`, v)
+	}
+}
+
+// SyncJobJobNotFoundError includes the requested fields of the GraphQL type NotFoundError.
+type SyncJobJobNotFoundError struct {
+	Typename      *string `json:"__typename"`
+	NotFoundError `json:"-"`
+}
+
+// GetTypename returns SyncJobJobNotFoundError.Typename, and is useful for accessing the field via an interface.
+func (v *SyncJobJobNotFoundError) GetTypename() *string { return v.Typename }
+
+// GetMessage returns SyncJobJobNotFoundError.Message, and is useful for accessing the field via an interface.
+func (v *SyncJobJobNotFoundError) GetMessage() string { return v.NotFoundError.Message }
+
+func (v *SyncJobJobNotFoundError) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*SyncJobJobNotFoundError
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.SyncJobJobNotFoundError = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.NotFoundError)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalSyncJobJobNotFoundError struct {
+	Typename *string `json:"__typename"`
+
+	Message string `json:"message"`
+}
+
+func (v *SyncJobJobNotFoundError) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *SyncJobJobNotFoundError) __premarshalJSON() (*__premarshalSyncJobJobNotFoundError, error) {
+	var retval __premarshalSyncJobJobNotFoundError
+
+	retval.Typename = v.Typename
+	retval.Message = v.NotFoundError.Message
+	return &retval, nil
+}
+
+// SyncJobJobPermissionDeniedError includes the requested fields of the GraphQL type PermissionDeniedError.
+type SyncJobJobPermissionDeniedError struct {
+	Typename              *string `json:"__typename"`
+	PermissionDeniedError `json:"-"`
+}
+
+// GetTypename returns SyncJobJobPermissionDeniedError.Typename, and is useful for accessing the field via an interface.
+func (v *SyncJobJobPermissionDeniedError) GetTypename() *string { return v.Typename }
+
+// GetMessage returns SyncJobJobPermissionDeniedError.Message, and is useful for accessing the field via an interface.
+func (v *SyncJobJobPermissionDeniedError) GetMessage() string { return v.PermissionDeniedError.Message }
+
+func (v *SyncJobJobPermissionDeniedError) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*SyncJobJobPermissionDeniedError
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.SyncJobJobPermissionDeniedError = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.PermissionDeniedError)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalSyncJobJobPermissionDeniedError struct {
+	Typename *string `json:"__typename"`
+
+	Message string `json:"message"`
+}
+
+func (v *SyncJobJobPermissionDeniedError) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *SyncJobJobPermissionDeniedError) __premarshalJSON() (*__premarshalSyncJobJobPermissionDeniedError, error) {
+	var retval __premarshalSyncJobJobPermissionDeniedError
+
+	retval.Typename = v.Typename
+	retval.Message = v.PermissionDeniedError.Message
 	return &retval, nil
 }
 
@@ -35044,6 +36818,286 @@ func __marshalUpdateRoleAssigneesOnDataSourceUpdateRoleAssigneesOnDataSourceRole
 	}
 }
 
+// UpdateSiteSettingsResponse is returned by UpdateSiteSettings on success.
+type UpdateSiteSettingsResponse struct {
+	UpdateEdgeSiteParameterDefinitions UpdateSiteSettingsUpdateEdgeSiteParameterDefinitionsEdgeSiteUpdateResult `json:"-"`
+}
+
+// GetUpdateEdgeSiteParameterDefinitions returns UpdateSiteSettingsResponse.UpdateEdgeSiteParameterDefinitions, and is useful for accessing the field via an interface.
+func (v *UpdateSiteSettingsResponse) GetUpdateEdgeSiteParameterDefinitions() UpdateSiteSettingsUpdateEdgeSiteParameterDefinitionsEdgeSiteUpdateResult {
+	return v.UpdateEdgeSiteParameterDefinitions
+}
+
+func (v *UpdateSiteSettingsResponse) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*UpdateSiteSettingsResponse
+		UpdateEdgeSiteParameterDefinitions json.RawMessage `json:"updateEdgeSiteParameterDefinitions"`
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.UpdateSiteSettingsResponse = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	{
+		dst := &v.UpdateEdgeSiteParameterDefinitions
+		src := firstPass.UpdateEdgeSiteParameterDefinitions
+		if len(src) != 0 && string(src) != "null" {
+			err = __unmarshalUpdateSiteSettingsUpdateEdgeSiteParameterDefinitionsEdgeSiteUpdateResult(
+				src, dst)
+			if err != nil {
+				return fmt.Errorf(
+					"unable to unmarshal UpdateSiteSettingsResponse.UpdateEdgeSiteParameterDefinitions: %w", err)
+			}
+		}
+	}
+	return nil
+}
+
+type __premarshalUpdateSiteSettingsResponse struct {
+	UpdateEdgeSiteParameterDefinitions json.RawMessage `json:"updateEdgeSiteParameterDefinitions"`
+}
+
+func (v *UpdateSiteSettingsResponse) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *UpdateSiteSettingsResponse) __premarshalJSON() (*__premarshalUpdateSiteSettingsResponse, error) {
+	var retval __premarshalUpdateSiteSettingsResponse
+
+	{
+
+		dst := &retval.UpdateEdgeSiteParameterDefinitions
+		src := v.UpdateEdgeSiteParameterDefinitions
+		var err error
+		*dst, err = __marshalUpdateSiteSettingsUpdateEdgeSiteParameterDefinitionsEdgeSiteUpdateResult(
+			&src)
+		if err != nil {
+			return nil, fmt.Errorf(
+				"unable to marshal UpdateSiteSettingsResponse.UpdateEdgeSiteParameterDefinitions: %w", err)
+		}
+	}
+	return &retval, nil
+}
+
+// UpdateSiteSettingsUpdateEdgeSiteParameterDefinitionsEdgeSiteUpdateResponse includes the requested fields of the GraphQL type EdgeSiteUpdateResponse.
+type UpdateSiteSettingsUpdateEdgeSiteParameterDefinitionsEdgeSiteUpdateResponse struct {
+	Typename               *string `json:"__typename"`
+	EdgeSiteUpdateResponse `json:"-"`
+}
+
+// GetTypename returns UpdateSiteSettingsUpdateEdgeSiteParameterDefinitionsEdgeSiteUpdateResponse.Typename, and is useful for accessing the field via an interface.
+func (v *UpdateSiteSettingsUpdateEdgeSiteParameterDefinitionsEdgeSiteUpdateResponse) GetTypename() *string {
+	return v.Typename
+}
+
+// GetSuccess returns UpdateSiteSettingsUpdateEdgeSiteParameterDefinitionsEdgeSiteUpdateResponse.Success, and is useful for accessing the field via an interface.
+func (v *UpdateSiteSettingsUpdateEdgeSiteParameterDefinitionsEdgeSiteUpdateResponse) GetSuccess() bool {
+	return v.EdgeSiteUpdateResponse.Success
+}
+
+func (v *UpdateSiteSettingsUpdateEdgeSiteParameterDefinitionsEdgeSiteUpdateResponse) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*UpdateSiteSettingsUpdateEdgeSiteParameterDefinitionsEdgeSiteUpdateResponse
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.UpdateSiteSettingsUpdateEdgeSiteParameterDefinitionsEdgeSiteUpdateResponse = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.EdgeSiteUpdateResponse)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalUpdateSiteSettingsUpdateEdgeSiteParameterDefinitionsEdgeSiteUpdateResponse struct {
+	Typename *string `json:"__typename"`
+
+	Success bool `json:"success"`
+}
+
+func (v *UpdateSiteSettingsUpdateEdgeSiteParameterDefinitionsEdgeSiteUpdateResponse) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *UpdateSiteSettingsUpdateEdgeSiteParameterDefinitionsEdgeSiteUpdateResponse) __premarshalJSON() (*__premarshalUpdateSiteSettingsUpdateEdgeSiteParameterDefinitionsEdgeSiteUpdateResponse, error) {
+	var retval __premarshalUpdateSiteSettingsUpdateEdgeSiteParameterDefinitionsEdgeSiteUpdateResponse
+
+	retval.Typename = v.Typename
+	retval.Success = v.EdgeSiteUpdateResponse.Success
+	return &retval, nil
+}
+
+// UpdateSiteSettingsUpdateEdgeSiteParameterDefinitionsEdgeSiteUpdateResult includes the requested fields of the GraphQL interface EdgeSiteUpdateResult.
+//
+// UpdateSiteSettingsUpdateEdgeSiteParameterDefinitionsEdgeSiteUpdateResult is implemented by the following types:
+// UpdateSiteSettingsUpdateEdgeSiteParameterDefinitionsEdgeSiteUpdateResponse
+// UpdateSiteSettingsUpdateEdgeSiteParameterDefinitionsPermissionDeniedError
+type UpdateSiteSettingsUpdateEdgeSiteParameterDefinitionsEdgeSiteUpdateResult interface {
+	implementsGraphQLInterfaceUpdateSiteSettingsUpdateEdgeSiteParameterDefinitionsEdgeSiteUpdateResult()
+	// GetTypename returns the receiver's concrete GraphQL type-name (see interface doc for possible values).
+	GetTypename() *string
+}
+
+func (v *UpdateSiteSettingsUpdateEdgeSiteParameterDefinitionsEdgeSiteUpdateResponse) implementsGraphQLInterfaceUpdateSiteSettingsUpdateEdgeSiteParameterDefinitionsEdgeSiteUpdateResult() {
+}
+func (v *UpdateSiteSettingsUpdateEdgeSiteParameterDefinitionsPermissionDeniedError) implementsGraphQLInterfaceUpdateSiteSettingsUpdateEdgeSiteParameterDefinitionsEdgeSiteUpdateResult() {
+}
+
+func __unmarshalUpdateSiteSettingsUpdateEdgeSiteParameterDefinitionsEdgeSiteUpdateResult(b []byte, v *UpdateSiteSettingsUpdateEdgeSiteParameterDefinitionsEdgeSiteUpdateResult) error {
+	if string(b) == "null" {
+		return nil
+	}
+
+	var tn struct {
+		TypeName string `json:"__typename"`
+	}
+	err := json.Unmarshal(b, &tn)
+	if err != nil {
+		return err
+	}
+
+	switch tn.TypeName {
+	case "EdgeSiteUpdateResponse":
+		*v = new(UpdateSiteSettingsUpdateEdgeSiteParameterDefinitionsEdgeSiteUpdateResponse)
+		return json.Unmarshal(b, *v)
+	case "PermissionDeniedError":
+		*v = new(UpdateSiteSettingsUpdateEdgeSiteParameterDefinitionsPermissionDeniedError)
+		return json.Unmarshal(b, *v)
+	case "":
+		return fmt.Errorf(
+			"response was missing EdgeSiteUpdateResult.__typename")
+	default:
+		return fmt.Errorf(
+			`unexpected concrete type for UpdateSiteSettingsUpdateEdgeSiteParameterDefinitionsEdgeSiteUpdateResult: "%v"`, tn.TypeName)
+	}
+}
+
+func __marshalUpdateSiteSettingsUpdateEdgeSiteParameterDefinitionsEdgeSiteUpdateResult(v *UpdateSiteSettingsUpdateEdgeSiteParameterDefinitionsEdgeSiteUpdateResult) ([]byte, error) {
+
+	var typename string
+	switch v := (*v).(type) {
+	case *UpdateSiteSettingsUpdateEdgeSiteParameterDefinitionsEdgeSiteUpdateResponse:
+		typename = "EdgeSiteUpdateResponse"
+
+		premarshaled, err := v.__premarshalJSON()
+		if err != nil {
+			return nil, err
+		}
+		result := struct {
+			TypeName string `json:"__typename"`
+			*__premarshalUpdateSiteSettingsUpdateEdgeSiteParameterDefinitionsEdgeSiteUpdateResponse
+		}{typename, premarshaled}
+		return json.Marshal(result)
+	case *UpdateSiteSettingsUpdateEdgeSiteParameterDefinitionsPermissionDeniedError:
+		typename = "PermissionDeniedError"
+
+		premarshaled, err := v.__premarshalJSON()
+		if err != nil {
+			return nil, err
+		}
+		result := struct {
+			TypeName string `json:"__typename"`
+			*__premarshalUpdateSiteSettingsUpdateEdgeSiteParameterDefinitionsPermissionDeniedError
+		}{typename, premarshaled}
+		return json.Marshal(result)
+	case nil:
+		return []byte("null"), nil
+	default:
+		return nil, fmt.Errorf(
+			`unexpected concrete type for UpdateSiteSettingsUpdateEdgeSiteParameterDefinitionsEdgeSiteUpdateResult: "%T"`, v)
+	}
+}
+
+// UpdateSiteSettingsUpdateEdgeSiteParameterDefinitionsPermissionDeniedError includes the requested fields of the GraphQL type PermissionDeniedError.
+type UpdateSiteSettingsUpdateEdgeSiteParameterDefinitionsPermissionDeniedError struct {
+	Typename              *string `json:"__typename"`
+	PermissionDeniedError `json:"-"`
+}
+
+// GetTypename returns UpdateSiteSettingsUpdateEdgeSiteParameterDefinitionsPermissionDeniedError.Typename, and is useful for accessing the field via an interface.
+func (v *UpdateSiteSettingsUpdateEdgeSiteParameterDefinitionsPermissionDeniedError) GetTypename() *string {
+	return v.Typename
+}
+
+// GetMessage returns UpdateSiteSettingsUpdateEdgeSiteParameterDefinitionsPermissionDeniedError.Message, and is useful for accessing the field via an interface.
+func (v *UpdateSiteSettingsUpdateEdgeSiteParameterDefinitionsPermissionDeniedError) GetMessage() string {
+	return v.PermissionDeniedError.Message
+}
+
+func (v *UpdateSiteSettingsUpdateEdgeSiteParameterDefinitionsPermissionDeniedError) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*UpdateSiteSettingsUpdateEdgeSiteParameterDefinitionsPermissionDeniedError
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.UpdateSiteSettingsUpdateEdgeSiteParameterDefinitionsPermissionDeniedError = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.PermissionDeniedError)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalUpdateSiteSettingsUpdateEdgeSiteParameterDefinitionsPermissionDeniedError struct {
+	Typename *string `json:"__typename"`
+
+	Message string `json:"message"`
+}
+
+func (v *UpdateSiteSettingsUpdateEdgeSiteParameterDefinitionsPermissionDeniedError) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *UpdateSiteSettingsUpdateEdgeSiteParameterDefinitionsPermissionDeniedError) __premarshalJSON() (*__premarshalUpdateSiteSettingsUpdateEdgeSiteParameterDefinitionsPermissionDeniedError, error) {
+	var retval __premarshalUpdateSiteSettingsUpdateEdgeSiteParameterDefinitionsPermissionDeniedError
+
+	retval.Typename = v.Typename
+	retval.Message = v.PermissionDeniedError.Message
+	return &retval, nil
+}
+
 // UpdateUserResponse is returned by UpdateUser on success.
 type UpdateUserResponse struct {
 	UpdateUser UpdateUserUpdateUserUserResult `json:"-"`
@@ -36388,6 +38442,14 @@ func (v *__ListTasksOfJobInput) GetAfter() *string { return v.After }
 // GetLimit returns __ListTasksOfJobInput.Limit, and is useful for accessing the field via an interface.
 func (v *__ListTasksOfJobInput) GetLimit() *int { return v.Limit }
 
+// __NextSyncJobForSiteInput is used internally by genqlient
+type __NextSyncJobForSiteInput struct {
+	Site string `json:"site"`
+}
+
+// GetSite returns __NextSyncJobForSiteInput.Site, and is useful for accessing the field via an interface.
+func (v *__NextSyncJobForSiteInput) GetSite() string { return v.Site }
+
 // __SetDataSourceMetadataInput is used internally by genqlient
 type __SetDataSourceMetadataInput struct {
 	DsID  string                  `json:"dsID"`
@@ -36551,6 +38613,14 @@ func (v *__UpdateRoleAssigneesOnDataSourceInput) GetRoleID() string { return v.R
 
 // GetAssignees returns __UpdateRoleAssigneesOnDataSourceInput.Assignees, and is useful for accessing the field via an interface.
 func (v *__UpdateRoleAssigneesOnDataSourceInput) GetAssignees() []string { return v.Assignees }
+
+// __UpdateSiteSettingsInput is used internally by genqlient
+type __UpdateSiteSettingsInput struct {
+	Input EdgeSiteInfoInput `json:"input"`
+}
+
+// GetInput returns __UpdateSiteSettingsInput.Input, and is useful for accessing the field via an interface.
+func (v *__UpdateSiteSettingsInput) GetInput() EdgeSiteInfoInput { return v.Input }
 
 // __UpdateUserInput is used internally by genqlient
 type __UpdateUserInput struct {
@@ -40276,6 +42346,100 @@ func ListTasksOfJob(
 	return data_, err_
 }
 
+// The query executed by NextSyncJobForSite.
+const NextSyncJobForSite_Operation = `
+query NextSyncJobForSite ($site: String!) {
+	nextSyncJobForSite(edgeSite: $site) {
+		__typename
+		... SyncJob
+		... PermissionDeniedError
+		... NotFoundError
+		... InvalidInputError
+	}
+}
+fragment SyncJob on SyncJob {
+	configuration
+	createdAt
+	dataSource {
+		__typename
+		... DataSource
+		... PermissionDeniedError
+		... InvalidInputError
+		... NotFoundError
+	}
+	edgeJobId
+	job {
+		__typename
+		... Job
+		... PermissionDeniedError
+		... NotFoundError
+		... InvalidInputError
+	}
+	createdAt
+	modifiedAt
+	triggered
+}
+fragment PermissionDeniedError on PermissionDeniedError {
+	message
+}
+fragment NotFoundError on NotFoundError {
+	message
+}
+fragment InvalidInputError on InvalidInputError {
+	message
+}
+fragment DataSource on DataSource {
+	id
+	name
+	type
+	description
+	createdAt
+	modifiedAt
+	description
+	parent {
+		id
+	}
+}
+fragment Job on Job {
+	id: jobId
+	status
+	startTime
+	lastUpdate
+	endTime
+	duration
+	hasErrors
+	hasWarnings
+	dataSource {
+		... DataSource
+	}
+}
+`
+
+func NextSyncJobForSite(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	site string,
+) (data_ *NextSyncJobForSiteResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "NextSyncJobForSite",
+		Query:  NextSyncJobForSite_Operation,
+		Variables: &__NextSyncJobForSiteInput{
+			Site: site,
+		},
+	}
+
+	data_ = &NextSyncJobForSiteResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
 // The mutation executed by SetDataSourceMetadata.
 const SetDataSourceMetadata_Operation = `
 mutation SetDataSourceMetadata ($dsID: ID!, $input: DataSourceMetaDataInput!) {
@@ -41123,6 +43287,48 @@ func UpdateRoleAssigneesOnDataSource(
 	}
 
 	data_ = &UpdateRoleAssigneesOnDataSourceResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
+// The mutation executed by UpdateSiteSettings.
+const UpdateSiteSettings_Operation = `
+mutation UpdateSiteSettings ($input: EdgeSiteInfoInput!) {
+	updateEdgeSiteParameterDefinitions(input: $input) {
+		__typename
+		... EdgeSiteUpdateResponse
+		... PermissionDeniedError
+	}
+}
+fragment EdgeSiteUpdateResponse on EdgeSiteUpdateResponse {
+	success
+}
+fragment PermissionDeniedError on PermissionDeniedError {
+	message
+}
+`
+
+func UpdateSiteSettings(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	input EdgeSiteInfoInput,
+) (data_ *UpdateSiteSettingsResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "UpdateSiteSettings",
+		Query:  UpdateSiteSettings_Operation,
+		Variables: &__UpdateSiteSettingsInput{
+			Input: input,
+		},
+	}
+
+	data_ = &UpdateSiteSettingsResponse{}
 	resp_ := &graphql.Response{Data: data_}
 
 	err_ = client_.MakeRequest(

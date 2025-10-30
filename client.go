@@ -42,6 +42,7 @@ type CollibraClient struct {
 	jobClient           singletonClient[services.JobClient]
 	roleClient          singletonClient[services.RoleClient]
 	userClient          singletonClient[services.UserClient]
+	siteClient          singletonClient[services.SiteService]
 }
 
 // NewClient creates a new CollibraClient with the given credentials.
@@ -75,6 +76,7 @@ func NewClient(user, password, url string) *CollibraClient {
 		jobClient:           newSingletonClient(glcClient, services.NewJobClient),
 		roleClient:          newSingletonClient(glcClient, services.NewRoleClient),
 		userClient:          newSingletonClient(glcClient, services.NewUserClient),
+		siteClient:          newSingletonClient(glcClient, services.NewSiteService),
 	}
 }
 
@@ -120,4 +122,9 @@ func (c *CollibraClient) Role() *services.RoleClient {
 // User returns the UserClient
 func (c *CollibraClient) User() *services.UserClient {
 	return c.userClient.Get()
+}
+
+// Site returns the SiteService
+func (c *CollibraClient) Site() *services.SiteService {
+	return c.siteClient.Get()
 }

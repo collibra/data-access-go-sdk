@@ -319,6 +319,9 @@ type DeleteGrantCategoryDeleteGrantCategoryNotFoundError = schema.DeleteGrantCat
 type DeleteGrantCategoryDeleteGrantCategoryPermissionDeniedError = schema.DeleteGrantCategoryDeleteGrantCategoryPermissionDeniedError
 type DeleteGrantCategoryResponse = schema.DeleteGrantCategoryResponse
 type DeleteGrantCategoryResult = schema.DeleteGrantCategoryResult
+type EdgeSiteConnectorInfoInput = schema.EdgeSiteConnectorInfoInput
+type EdgeSiteInfoInput = schema.EdgeSiteInfoInput
+type EdgeSiteUpdateResponse = schema.EdgeSiteUpdateResponse
 type EndOfTargetsSyncEndOfTargetsSync = schema.EndOfTargetsSyncEndOfTargetsSync
 type EndOfTargetsSyncEndOfTargetsSyncEndOfTargetsSyncResult = schema.EndOfTargetsSyncEndOfTargetsSyncEndOfTargetsSyncResult
 type EndOfTargetsSyncEndOfTargetsSyncPermissionDeniedError = schema.EndOfTargetsSyncEndOfTargetsSyncPermissionDeniedError
@@ -564,9 +567,49 @@ type MaskTypeInput = schema.MaskTypeInput
 type MaskingMetadata = schema.MaskingMetadata
 type MaskingMetadataInput = schema.MaskingMetadataInput
 type MaskingMetadataMaskTypesMaskType = schema.MaskingMetadataMaskTypesMaskType
+type NextSyncJobForSiteNextSyncJobForSiteInvalidInputError = schema.NextSyncJobForSiteNextSyncJobForSiteInvalidInputError
+type NextSyncJobForSiteNextSyncJobForSiteNotFoundError = schema.NextSyncJobForSiteNextSyncJobForSiteNotFoundError
+type NextSyncJobForSiteNextSyncJobForSitePermissionDeniedError = schema.NextSyncJobForSiteNextSyncJobForSitePermissionDeniedError
+type NextSyncJobForSiteNextSyncJobForSiteSyncJob = schema.NextSyncJobForSiteNextSyncJobForSiteSyncJob
+type NextSyncJobForSiteNextSyncJobForSiteSyncJobResult = schema.NextSyncJobForSiteNextSyncJobForSiteSyncJobResult
+type NextSyncJobForSiteResponse = schema.NextSyncJobForSiteResponse
 type NotFoundError = schema.NotFoundError
 type ObjectTypeTaskResult = schema.ObjectTypeTaskResult
 type PageInfo = schema.PageInfo
+type ParameterDataType = schema.ParameterDataType
+
+const (
+	ParameterDataTypeString         ParameterDataType = schema.ParameterDataTypeString
+	ParameterDataTypeInteger        ParameterDataType = schema.ParameterDataTypeInteger
+	ParameterDataTypeFloat          ParameterDataType = schema.ParameterDataTypeFloat
+	ParameterDataTypeBoolean        ParameterDataType = schema.ParameterDataTypeBoolean
+	ParameterDataTypeTimestamp      ParameterDataType = schema.ParameterDataTypeTimestamp
+	ParameterDataTypeStringarray    ParameterDataType = schema.ParameterDataTypeStringarray
+	ParameterDataTypeIntegerarray   ParameterDataType = schema.ParameterDataTypeIntegerarray
+	ParameterDataTypeFloatarray     ParameterDataType = schema.ParameterDataTypeFloatarray
+	ParameterDataTypeBooleanarray   ParameterDataType = schema.ParameterDataTypeBooleanarray
+	ParameterDataTypeTimestamparray ParameterDataType = schema.ParameterDataTypeTimestamparray
+)
+
+type ParameterDefinitionInput = schema.ParameterDefinitionInput
+type ParameterSource = schema.ParameterSource
+
+const (
+	ParameterSourceAgent           ParameterSource = schema.ParameterSourceAgent
+	ParameterSourceAgentruntime    ParameterSource = schema.ParameterSourceAgentruntime
+	ParameterSourceConnector       ParameterSource = schema.ParameterSourceConnector
+	ParameterSourceConnectorsecure ParameterSource = schema.ParameterSourceConnectorsecure
+)
+
+type ParameterType = schema.ParameterType
+
+const (
+	ParameterTypeParameter ParameterType = schema.ParameterTypeParameter
+	ParameterTypeObject    ParameterType = schema.ParameterTypeObject
+	ParameterTypeAdvanced  ParameterType = schema.ParameterTypeAdvanced
+	ParameterTypeArray     ParameterType = schema.ParameterTypeArray
+)
+
 type PermissionDeniedError = schema.PermissionDeniedError
 type QueryStatementImport = schema.QueryStatementImport
 type Role = schema.Role
@@ -606,6 +649,7 @@ type RoleConnectionResultPermissionDeniedError = schema.RoleConnectionResultPerm
 type RoleConnectionResultRoleConnection = schema.RoleConnectionResultRoleConnection
 type RoleFilterInput = schema.RoleFilterInput
 type RoleOrderByInput = schema.RoleOrderByInput
+type RootParameterDefinitionInput = schema.RootParameterDefinitionInput
 type SetDataSourceMetadataResponse = schema.SetDataSourceMetadataResponse
 type SetDataSourceMetadataSetDataSourceMetaDataDataSource = schema.SetDataSourceMetadataSetDataSourceMetaDataDataSource
 type SetDataSourceMetadataSetDataSourceMetaDataDataSourceResult = schema.SetDataSourceMetadataSetDataSourceMetaDataDataSourceResult
@@ -664,6 +708,17 @@ type SyncData = schema.SyncData
 type SyncDataAccessControlType = schema.SyncDataAccessControlType
 type SyncDataDataSource = schema.SyncDataDataSource
 type SyncDataMaskType = schema.SyncDataMaskType
+type SyncJob = schema.SyncJob
+type SyncJobDataSource = schema.SyncJobDataSource
+type SyncJobDataSourceDataSourceResult = schema.SyncJobDataSourceDataSourceResult
+type SyncJobDataSourceInvalidInputError = schema.SyncJobDataSourceInvalidInputError
+type SyncJobDataSourceNotFoundError = schema.SyncJobDataSourceNotFoundError
+type SyncJobDataSourcePermissionDeniedError = schema.SyncJobDataSourcePermissionDeniedError
+type SyncJobJob = schema.SyncJobJob
+type SyncJobJobInvalidInputError = schema.SyncJobJobInvalidInputError
+type SyncJobJobJobResult = schema.SyncJobJobJobResult
+type SyncJobJobNotFoundError = schema.SyncJobJobNotFoundError
+type SyncJobJobPermissionDeniedError = schema.SyncJobJobPermissionDeniedError
 type SyncStatus = schema.SyncStatus
 
 const (
@@ -756,6 +811,10 @@ type UpdateRoleAssigneesOnDataSourceUpdateRoleAssigneesOnDataSourceNotFoundError
 type UpdateRoleAssigneesOnDataSourceUpdateRoleAssigneesOnDataSourcePermissionDeniedError = schema.UpdateRoleAssigneesOnDataSourceUpdateRoleAssigneesOnDataSourcePermissionDeniedError
 type UpdateRoleAssigneesOnDataSourceUpdateRoleAssigneesOnDataSourceRole = schema.UpdateRoleAssigneesOnDataSourceUpdateRoleAssigneesOnDataSourceRole
 type UpdateRoleAssigneesOnDataSourceUpdateRoleAssigneesOnDataSourceRoleResult = schema.UpdateRoleAssigneesOnDataSourceUpdateRoleAssigneesOnDataSourceRoleResult
+type UpdateSiteSettingsResponse = schema.UpdateSiteSettingsResponse
+type UpdateSiteSettingsUpdateEdgeSiteParameterDefinitionsEdgeSiteUpdateResponse = schema.UpdateSiteSettingsUpdateEdgeSiteParameterDefinitionsEdgeSiteUpdateResponse
+type UpdateSiteSettingsUpdateEdgeSiteParameterDefinitionsEdgeSiteUpdateResult = schema.UpdateSiteSettingsUpdateEdgeSiteParameterDefinitionsEdgeSiteUpdateResult
+type UpdateSiteSettingsUpdateEdgeSiteParameterDefinitionsPermissionDeniedError = schema.UpdateSiteSettingsUpdateEdgeSiteParameterDefinitionsPermissionDeniedError
 type UpdateUserResponse = schema.UpdateUserResponse
 type UpdateUserUpdateUser = schema.UpdateUserUpdateUser
 type UpdateUserUpdateUserInvalidEmailError = schema.UpdateUserUpdateUserInvalidEmailError
@@ -805,6 +864,9 @@ var AllDataComparisonExpressionEntityType = []DataComparisonExpressionEntityType
 var AllDataSourceFeatures = []DataSourceFeatures{DataSourceFeaturesColumnmasking, DataSourceFeaturesRowfiltering, DataSourceFeaturesDatasharing}
 var AllDataTypeOrigin = []DataTypeOrigin{DataTypeOriginInternal, DataTypeOriginExternal, DataTypeOriginShared}
 var AllJobStatus = []JobStatus{JobStatusStarted, JobStatusInprogress, JobStatusCompleted, JobStatusFailed, JobStatusTimedout}
+var AllParameterDataType = []ParameterDataType{ParameterDataTypeString, ParameterDataTypeInteger, ParameterDataTypeFloat, ParameterDataTypeBoolean, ParameterDataTypeTimestamp, ParameterDataTypeStringarray, ParameterDataTypeIntegerarray, ParameterDataTypeFloatarray, ParameterDataTypeBooleanarray, ParameterDataTypeTimestamparray}
+var AllParameterSource = []ParameterSource{ParameterSourceAgent, ParameterSourceAgentruntime, ParameterSourceConnector, ParameterSourceConnectorsecure}
+var AllParameterType = []ParameterType{ParameterTypeParameter, ParameterTypeObject, ParameterTypeAdvanced, ParameterTypeArray}
 var AllSort = []Sort{SortAsc, SortDesc}
 var AllSubtaskStatus = []SubtaskStatus{SubtaskStatusStarted, SubtaskStatusQueued, SubtaskStatusDataretrieve, SubtaskStatusInprogress, SubtaskStatusCompleted, SubtaskStatusFailed, SubtaskStatusTimedout}
 var AllSyncStatus = []SyncStatus{SyncStatusNotconnected, SyncStatusFailed, SyncStatusOutofdate, SyncStatusInprogress, SyncStatusSynced, SyncStatusOutofsync}

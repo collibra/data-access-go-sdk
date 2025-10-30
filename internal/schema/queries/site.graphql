@@ -1,0 +1,40 @@
+fragment EdgeSiteUpdateResponse on EdgeSiteUpdateResponse {
+    success
+}
+
+fragment SyncJob on SyncJob {
+    configuration
+    createdAt
+    dataSource {
+        ... DataSource
+        ... PermissionDeniedError
+        ... InvalidInputError
+        ... NotFoundError
+    }
+    edgeJobId
+    job {
+        ... Job
+        ... PermissionDeniedError
+        ... NotFoundError
+        ... InvalidInputError
+    }
+    createdAt
+    modifiedAt
+    triggered
+}
+
+query NextSyncJobForSite($site: String!) {
+    nextSyncJobForSite(edgeSite: $site) {
+        ... SyncJob
+        ... PermissionDeniedError
+        ... NotFoundError
+        ... InvalidInputError
+    }
+}
+
+mutation UpdateSiteSettings($input: EdgeSiteInfoInput!) {
+    updateEdgeSiteParameterDefinitions(input: $input) {
+        ... EdgeSiteUpdateResponse
+        ... PermissionDeniedError
+    }
+}

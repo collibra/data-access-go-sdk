@@ -13,6 +13,7 @@ import (
 
 type UserServiceTestSuite struct {
 	suite.Suite
+
 	UserClient  *services.UserClient
 	createdUser schema.User
 }
@@ -37,18 +38,23 @@ func (suite *UserServiceTestSuite) SetupSuite() {
 	if client == nil {
 		suite.FailNow("Failed to create Collibra client")
 	}
+
 	userClient := client.User()
 	if userClient == nil {
 		suite.FailNow("Failed to create User client")
 	}
+
 	suite.UserClient = userClient
 }
 
 func printUser(t *testing.T, prefix string, user *schema.User) {
+	t.Helper()
+
 	emailValue := ""
 	if user.Email != nil {
 		emailValue = *user.Email
 	}
+
 	t.Logf("%s: ID=%s, Name=%s, Email=%s, Type=%s\n",
 		prefix, user.Id, user.Name, emailValue, user.Type)
 }
@@ -59,13 +65,14 @@ func (suite *UserServiceTestSuite) TestGetCurrentUser() {
 	userClient := suite.UserClient
 
 	user, err := userClient.GetCurrentUser(ctx)
-	suite.NoError(err, "Failed to get current user")
+	suite.Require().NoError(err, "Failed to get current user")
 
 	printUser(t, "Current User", user)
 
 	suite.NotNil(user)
 
 	suite.NotEmpty(user.Id)
+
 	expectedName := "Admin Istrator"
 	suite.Equal(expectedName, user.Name)
 
@@ -91,7 +98,7 @@ func (suite *UserServiceTestSuite) TestCreateUser() {
 		Type:  &userType,
 	})
 
-	suite.NoError(err, "Failed to create user")
+	suite.Require().NoError(err, "Failed to create user")
 	suite.NotNil(user)
 
 	printUser(t, "User Created", user)
@@ -104,13 +111,14 @@ func (suite *UserServiceTestSuite) TestGetUser() {
 	if createdUser.Id == "" {
 		suite.T().Skip("Created user ID is empty, cannot proceed with GetUser test")
 	}
+
 	t := suite.T()
 	ctx := t.Context()
 
 	userClient := suite.UserClient
 
 	userData, err := userClient.GetUser(ctx, createdUser.Id)
-	suite.NoError(err, "Failed to get user")
+	suite.Require().NoError(err, "Failed to get user")
 
 	printUser(t, "User Data", userData)
 
@@ -125,13 +133,14 @@ func (suite *UserServiceTestSuite) TestGetUserByEmail() {
 	if createdUser.Email == nil {
 		suite.T().Skip("Created user email is nil, cannot proceed with GetUserByEmail test")
 	}
+
 	t := suite.T()
 	ctx := t.Context()
 
 	userClient := suite.UserClient
 
 	userData, err := userClient.GetUserByEmail(ctx, *createdUser.Email)
-	suite.NoError(err, "Failed to get user by email")
+	suite.Require().NoError(err, "Failed to get user by email")
 
 	printUser(t, "User Data by Email", userData)
 
@@ -146,6 +155,7 @@ func (suite *UserServiceTestSuite) TestUpdateUser() {
 	if createdUser.Id == "" {
 		suite.T().Skip("Created user ID is empty, cannot proceed with UpdateUser test")
 	}
+
 	t := suite.T()
 	ctx := t.Context()
 
@@ -156,13 +166,13 @@ func (suite *UserServiceTestSuite) TestUpdateUser() {
 		Name: &newName,
 	})
 
-	suite.NoError(err, "Failed to update user")
+	suite.Require().NoError(err, "Failed to update user")
 
 	printUser(t, "Updated User", updatedUser)
 
 	userData, err := userClient.GetUser(ctx, createdUser.Id)
 
-	suite.NoError(err, "Failed to get user after update")
+	suite.Require().NoError(err, "Failed to get user after update")
 
 	printUser(t, "User Data After Update", userData)
 
