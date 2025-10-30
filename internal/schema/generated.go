@@ -4707,6 +4707,24 @@ func (v *CanLinkFilter) GetWhoAccessControls() []string { return v.WhoAccessCont
 // GetWhatAccessControls returns CanLinkFilter.WhatAccessControls, and is useful for accessing the field via an interface.
 func (v *CanLinkFilter) GetWhatAccessControls() []string { return v.WhatAccessControls }
 
+type CatalogType string
+
+const (
+	CatalogTypeDatabase CatalogType = "Database"
+	CatalogTypeSchema   CatalogType = "Schema"
+	CatalogTypeTable    CatalogType = "Table"
+	CatalogTypeView     CatalogType = "View"
+	CatalogTypeColumn   CatalogType = "Column"
+)
+
+var AllCatalogType = []CatalogType{
+	CatalogTypeDatabase,
+	CatalogTypeSchema,
+	CatalogTypeTable,
+	CatalogTypeView,
+	CatalogTypeColumn,
+}
+
 // CreateAccessControlCreateAccessControl includes the requested fields of the GraphQL type AccessControl.
 type CreateAccessControlCreateAccessControl struct {
 	Typename      *string `json:"__typename"`
@@ -8495,7 +8513,7 @@ type DataObjectTypeInput struct {
 	DataOrigin      *DataTypeOrigin                 `json:"dataOrigin,omitempty"`
 	ShareProperties *DataObjectSharePropertiesInput `json:"shareProperties,omitempty"`
 	// CatalogType is used to map the data object type to a catalog type in Collibra. For example, a data object type 'project' for Google BigQuery could map to catalog type 'database' in Collibra.
-	CatalogType *string `json:"catalogType,omitempty"`
+	CatalogType *CatalogType `json:"catalogType,omitempty"`
 }
 
 // GetName returns DataObjectTypeInput.Name, and is useful for accessing the field via an interface.
@@ -8528,7 +8546,7 @@ func (v *DataObjectTypeInput) GetShareProperties() *DataObjectSharePropertiesInp
 }
 
 // GetCatalogType returns DataObjectTypeInput.CatalogType, and is useful for accessing the field via an interface.
-func (v *DataObjectTypeInput) GetCatalogType() *string { return v.CatalogType }
+func (v *DataObjectTypeInput) GetCatalogType() *CatalogType { return v.CatalogType }
 
 type DataObjectTypePermissionInput struct {
 	// The name of the permission as used in the datasource

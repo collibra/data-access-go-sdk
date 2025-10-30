@@ -171,6 +171,16 @@ const (
 )
 
 type CanLinkFilter = schema.CanLinkFilter
+type CatalogType = schema.CatalogType
+
+const (
+	CatalogTypeDatabase CatalogType = schema.CatalogTypeDatabase
+	CatalogTypeSchema   CatalogType = schema.CatalogTypeSchema
+	CatalogTypeTable    CatalogType = schema.CatalogTypeTable
+	CatalogTypeView     CatalogType = schema.CatalogTypeView
+	CatalogTypeColumn   CatalogType = schema.CatalogTypeColumn
+)
+
 type CreateAccessControlCreateAccessControl = schema.CreateAccessControlCreateAccessControl
 type CreateAccessControlCreateAccessControlAccessControlWithOptionalAccessRequests = schema.CreateAccessControlCreateAccessControlAccessControlWithOptionalAccessRequests
 type CreateAccessControlCreateAccessControlAccessControlWithOptionalAccessRequestsAccessControl = schema.CreateAccessControlCreateAccessControlAccessControlWithOptionalAccessRequestsAccessControl
@@ -800,6 +810,7 @@ var AllAccessWhoItemType = []AccessWhoItemType{AccessWhoItemTypeWhogrant, Access
 var AllActionType = []ActionType{ActionTypeRead, ActionTypeWrite, ActionTypeAdmin}
 var AllBinaryExpressionAggregatorOperator = []BinaryExpressionAggregatorOperator{BinaryExpressionAggregatorOperatorAnd, BinaryExpressionAggregatorOperatorOr}
 var AllBinaryExpressionUnaryExpressionOperator = []BinaryExpressionUnaryExpressionOperator{BinaryExpressionUnaryExpressionOperatorNot}
+var AllCatalogType = []CatalogType{CatalogTypeDatabase, CatalogTypeSchema, CatalogTypeTable, CatalogTypeView, CatalogTypeColumn}
 var AllDataComparisonExpressionComparisonOperator = []DataComparisonExpressionComparisonOperator{DataComparisonExpressionComparisonOperatorEqual, DataComparisonExpressionComparisonOperatorNotequal, DataComparisonExpressionComparisonOperatorLessthan, DataComparisonExpressionComparisonOperatorLessthanorequal, DataComparisonExpressionComparisonOperatorGreaterthan, DataComparisonExpressionComparisonOperatorGreaterthanorequal}
 var AllDataComparisonExpressionEntityType = []DataComparisonExpressionEntityType{DataComparisonExpressionEntityTypeDataobject, DataComparisonExpressionEntityTypeColumnreferencebyname}
 var AllDataSourceFeatures = []DataSourceFeatures{DataSourceFeaturesColumnmasking, DataSourceFeaturesRowfiltering, DataSourceFeaturesDatasharing}
