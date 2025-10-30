@@ -8494,6 +8494,8 @@ type DataObjectTypeInput struct {
 	// DataOrigin describes the origin of the data object type.
 	DataOrigin      *DataTypeOrigin                 `json:"dataOrigin,omitempty"`
 	ShareProperties *DataObjectSharePropertiesInput `json:"shareProperties,omitempty"`
+	// CatalogType is used to map the data object type to a catalog type in Collibra. For example, a data object type 'project' for Google BigQuery could map to catalog type 'database' in Collibra.
+	CatalogType *string `json:"catalogType,omitempty"`
 }
 
 // GetName returns DataObjectTypeInput.Name, and is useful for accessing the field via an interface.
@@ -8524,6 +8526,9 @@ func (v *DataObjectTypeInput) GetDataOrigin() *DataTypeOrigin { return v.DataOri
 func (v *DataObjectTypeInput) GetShareProperties() *DataObjectSharePropertiesInput {
 	return v.ShareProperties
 }
+
+// GetCatalogType returns DataObjectTypeInput.CatalogType, and is useful for accessing the field via an interface.
+func (v *DataObjectTypeInput) GetCatalogType() *string { return v.CatalogType }
 
 type DataObjectTypePermissionInput struct {
 	// The name of the permission as used in the datasource
@@ -9160,6 +9165,7 @@ type DataSourceInput struct {
 	CanRequestAccess        *bool                        `json:"canRequestAccess,omitempty"`
 	CanRequestAccessToTypes []string                     `json:"canRequestAccessToTypes"`
 	SyncSchedule            *DataSourceSyncScheduleInput `json:"syncSchedule,omitempty"`
+	CatalogSystemId         *uuid.UUID                   `json:"catalogSystemId,omitempty"`
 }
 
 // GetName returns DataSourceInput.Name, and is useful for accessing the field via an interface.
@@ -9179,6 +9185,9 @@ func (v *DataSourceInput) GetCanRequestAccessToTypes() []string { return v.CanRe
 
 // GetSyncSchedule returns DataSourceInput.SyncSchedule, and is useful for accessing the field via an interface.
 func (v *DataSourceInput) GetSyncSchedule() *DataSourceSyncScheduleInput { return v.SyncSchedule }
+
+// GetCatalogSystemId returns DataSourceInput.CatalogSystemId, and is useful for accessing the field via an interface.
+func (v *DataSourceInput) GetCatalogSystemId() *uuid.UUID { return v.CatalogSystemId }
 
 // DataSourceMaskInformationDataSource includes the requested fields of the GraphQL type DataSource.
 type DataSourceMaskInformationDataSource struct {
