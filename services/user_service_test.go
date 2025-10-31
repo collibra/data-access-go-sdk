@@ -1,12 +1,12 @@
 package services_test
 
 import (
-	"os"
 	"testing"
 
 	sdk "github.com/collibra/data-access-go-sdk"
 	"github.com/collibra/data-access-go-sdk/internal/schema"
 	"github.com/collibra/data-access-go-sdk/services"
+	"github.com/collibra/data-access-go-sdk/utils"
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/suite"
 )
@@ -18,21 +18,12 @@ type UserServiceTestSuite struct {
 	createdUser schema.User
 }
 
-func getEnv(suite *UserServiceTestSuite, key string) string {
-	value := os.Getenv(key)
-
-	if value == "" {
-		suite.FailNowf("Environment variable %s must be set for e2e tests", key)
-	}
-
-	return value
-}
-
 func (suite *UserServiceTestSuite) SetupSuite() {
+	config := utils.GetEnvConfig(&suite.Suite)
 	client := sdk.NewClient(
-		getEnv(suite, "COLLIBRA_USER"),
-		getEnv(suite, "COLLIBRA_PASSWORD"),
-		getEnv(suite, "COLLIBRA_URL"),
+		config.User,
+		config.Password,
+		config.URL,
 	)
 
 	if client == nil {
@@ -82,7 +73,7 @@ func (suite *UserServiceTestSuite) TestGetCurrentUser() {
 	suite.Equal(expectedType, user.Type)
 }
 
-func (suite *UserServiceTestSuite) TestCreateUser() {
+func (suite *UserServiceTestSuite) TestA_CreateUser() {
 	t := suite.T()
 	ctx := t.Context()
 	userClient := suite.UserClient
@@ -106,7 +97,7 @@ func (suite *UserServiceTestSuite) TestCreateUser() {
 	suite.createdUser = *user
 }
 
-func (suite *UserServiceTestSuite) TestGetUser() {
+func (suite *UserServiceTestSuite) TestB_GetUser() {
 	createdUser := suite.createdUser
 	if createdUser.Id == "" {
 		suite.T().Skip("Created user ID is empty, cannot proceed with GetUser test")
@@ -128,7 +119,7 @@ func (suite *UserServiceTestSuite) TestGetUser() {
 	suite.Equal(createdUser.Type, userData.Type)
 }
 
-func (suite *UserServiceTestSuite) TestGetUserByEmail() {
+func (suite *UserServiceTestSuite) TestC_GetUserByEmail() {
 	createdUser := suite.createdUser
 	if createdUser.Email == nil {
 		suite.T().Skip("Created user email is nil, cannot proceed with GetUserByEmail test")
@@ -150,7 +141,7 @@ func (suite *UserServiceTestSuite) TestGetUserByEmail() {
 	suite.Equal(createdUser.Type, userData.Type)
 }
 
-func (suite *UserServiceTestSuite) TestUpdateUser() {
+func (suite *UserServiceTestSuite) TestD_UpdateUser() {
 	createdUser := suite.createdUser
 	if createdUser.Id == "" {
 		suite.T().Skip("Created user ID is empty, cannot proceed with UpdateUser test")
