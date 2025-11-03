@@ -12,7 +12,7 @@ jobs:
       - runner=sm
       - env=production-eu
       - run-id=${{ github.run_id }}
-      - tag=validation-build
+      - tag=release
     steps:
       - name: Check out repository code
         uses: actions/checkout@v4
