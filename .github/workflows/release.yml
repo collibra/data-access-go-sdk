@@ -7,7 +7,12 @@ on:
 
 jobs:
   release:
-    runs-on: ubuntu-latest
+    runs-on:
+      - runs-on
+      - runner=sm
+      - env=production-eu
+      - run-id=${{ github.run_id }}
+      - tag=release
     steps:
       - name: Check out repository code
         uses: actions/checkout@v4

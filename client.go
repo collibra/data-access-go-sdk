@@ -3,12 +3,16 @@ package sdk
 import (
 	"strings"
 	"sync"
+	"time"
 
 	gql "github.com/Khan/genqlient/graphql"
+	"github.com/hashicorp/go-retryablehttp"
 
 	"github.com/collibra/data-access-go-sdk/internal"
 	"github.com/collibra/data-access-go-sdk/services"
 )
+
+type ClientOptions = func(*internal.ClientOptions)
 
 type singletonClient[T any] struct {
 	factory func() *T
@@ -45,8 +49,52 @@ type CollibraClient struct {
 	siteClient          singletonClient[services.SiteService]
 }
 
+func WithRetryWaitMin(d time.Duration) ClientOptions {
+	return func(ops *internal.ClientOptions) {
+		ops.RetryWaitMin = d
+	}
+}
+
+func WithRetryWaitMax(d time.Duration) ClientOptions {
+	return func(ops *internal.ClientOptions) {
+		ops.RetryWaitMax = d
+	}
+}
+
+func WithRetryMax(retries int) ClientOptions {
+	return func(ops *internal.ClientOptions) {
+		ops.RetryMax = retries
+	}
+}
+
+func WithLinearJitterBackoff() ClientOptions {
+	return func(ops *internal.ClientOptions) {
+		ops.Backoff = retryablehttp.LinearJitterBackoff
+	}
+}
+
+func WithRateLimitLinearJitterBackoff() ClientOptions {
+	return func(ops *internal.ClientOptions) {
+		ops.Backoff = retryablehttp.RateLimitLinearJitterBackoff
+	}
+}
+
 // NewClient creates a new CollibraClient with the given credentials.
-func NewClient(user, password, url string) *CollibraClient {
+func NewClient(user, password, url string, options ...ClientOptions) *CollibraClient {
+	ops := internal.ClientOptions{
+		Username: user,
+		Password: password,
+
+		RetryWaitMin: 550 * time.Millisecond,
+		RetryWaitMax: 30 * time.Second,
+		RetryMax:     4,
+		Backoff:      retryablehttp.DefaultBackoff,
+	}
+
+	for _, op := range options {
+		op(&ops)
+	}
+
 	apiUrl := url
 	if apiUrl == "" {
 		apiUrl = internal.DefaultApiEndpoint
@@ -58,13 +106,9 @@ func NewClient(user, password, url string) *CollibraClient {
 
 	gqlApiUrl := apiUrl + internal.GqlApiPath
 
-	authDoer := &internal.BasicAuthedDoer{
-		User:     user,
-		Password: password,
-		Url:      apiUrl,
-	}
+	client := internal.CreateHttpClient(&ops)
 
-	glcClient := gql.NewClient(gqlApiUrl, authDoer)
+	glcClient := gql.NewClient(gqlApiUrl, client)
 
 	return &CollibraClient{
 		accessControlClient: newSingletonClient(glcClient, services.NewAccessControlClient),

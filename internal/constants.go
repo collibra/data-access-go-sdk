@@ -1,6 +1,6 @@
 package internal
 
-const DefaultApiEndpoint = "https://access-governance.collibra.tech/accessGovernance/"
+const DefaultApiEndpoint = "https://access-governance.collibra.tech/dataAccess/"
 const GqlApiPath = "query"
 const RestApiPath = "rest"
 

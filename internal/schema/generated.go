@@ -18857,6 +18857,526 @@ func (v *ImportFlowOptions) GetExecuteDeleteUntouched() *bool { return v.Execute
 // GetTagSourcesScope returns ImportFlowOptions.TagSourcesScope, and is useful for accessing the field via an interface.
 func (v *ImportFlowOptions) GetTagSourcesScope() []string { return v.TagSourcesScope }
 
+// ImportHeartbeatDataFetchingHeartbeatInvalidInputError includes the requested fields of the GraphQL type InvalidInputError.
+type ImportHeartbeatDataFetchingHeartbeatInvalidInputError struct {
+	Typename          *string `json:"__typename"`
+	InvalidInputError `json:"-"`
+}
+
+// GetTypename returns ImportHeartbeatDataFetchingHeartbeatInvalidInputError.Typename, and is useful for accessing the field via an interface.
+func (v *ImportHeartbeatDataFetchingHeartbeatInvalidInputError) GetTypename() *string {
+	return v.Typename
+}
+
+// GetMessage returns ImportHeartbeatDataFetchingHeartbeatInvalidInputError.Message, and is useful for accessing the field via an interface.
+func (v *ImportHeartbeatDataFetchingHeartbeatInvalidInputError) GetMessage() string {
+	return v.InvalidInputError.Message
+}
+
+func (v *ImportHeartbeatDataFetchingHeartbeatInvalidInputError) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*ImportHeartbeatDataFetchingHeartbeatInvalidInputError
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.ImportHeartbeatDataFetchingHeartbeatInvalidInputError = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.InvalidInputError)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalImportHeartbeatDataFetchingHeartbeatInvalidInputError struct {
+	Typename *string `json:"__typename"`
+
+	Message string `json:"message"`
+}
+
+func (v *ImportHeartbeatDataFetchingHeartbeatInvalidInputError) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *ImportHeartbeatDataFetchingHeartbeatInvalidInputError) __premarshalJSON() (*__premarshalImportHeartbeatDataFetchingHeartbeatInvalidInputError, error) {
+	var retval __premarshalImportHeartbeatDataFetchingHeartbeatInvalidInputError
+
+	retval.Typename = v.Typename
+	retval.Message = v.InvalidInputError.Message
+	return &retval, nil
+}
+
+// ImportHeartbeatDataFetchingHeartbeatNotFoundError includes the requested fields of the GraphQL type NotFoundError.
+type ImportHeartbeatDataFetchingHeartbeatNotFoundError struct {
+	Typename      *string `json:"__typename"`
+	NotFoundError `json:"-"`
+}
+
+// GetTypename returns ImportHeartbeatDataFetchingHeartbeatNotFoundError.Typename, and is useful for accessing the field via an interface.
+func (v *ImportHeartbeatDataFetchingHeartbeatNotFoundError) GetTypename() *string { return v.Typename }
+
+// GetMessage returns ImportHeartbeatDataFetchingHeartbeatNotFoundError.Message, and is useful for accessing the field via an interface.
+func (v *ImportHeartbeatDataFetchingHeartbeatNotFoundError) GetMessage() string {
+	return v.NotFoundError.Message
+}
+
+func (v *ImportHeartbeatDataFetchingHeartbeatNotFoundError) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*ImportHeartbeatDataFetchingHeartbeatNotFoundError
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.ImportHeartbeatDataFetchingHeartbeatNotFoundError = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.NotFoundError)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalImportHeartbeatDataFetchingHeartbeatNotFoundError struct {
+	Typename *string `json:"__typename"`
+
+	Message string `json:"message"`
+}
+
+func (v *ImportHeartbeatDataFetchingHeartbeatNotFoundError) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *ImportHeartbeatDataFetchingHeartbeatNotFoundError) __premarshalJSON() (*__premarshalImportHeartbeatDataFetchingHeartbeatNotFoundError, error) {
+	var retval __premarshalImportHeartbeatDataFetchingHeartbeatNotFoundError
+
+	retval.Typename = v.Typename
+	retval.Message = v.NotFoundError.Message
+	return &retval, nil
+}
+
+// ImportHeartbeatDataFetchingHeartbeatPermissionDeniedError includes the requested fields of the GraphQL type PermissionDeniedError.
+type ImportHeartbeatDataFetchingHeartbeatPermissionDeniedError struct {
+	Typename              *string `json:"__typename"`
+	PermissionDeniedError `json:"-"`
+}
+
+// GetTypename returns ImportHeartbeatDataFetchingHeartbeatPermissionDeniedError.Typename, and is useful for accessing the field via an interface.
+func (v *ImportHeartbeatDataFetchingHeartbeatPermissionDeniedError) GetTypename() *string {
+	return v.Typename
+}
+
+// GetMessage returns ImportHeartbeatDataFetchingHeartbeatPermissionDeniedError.Message, and is useful for accessing the field via an interface.
+func (v *ImportHeartbeatDataFetchingHeartbeatPermissionDeniedError) GetMessage() string {
+	return v.PermissionDeniedError.Message
+}
+
+func (v *ImportHeartbeatDataFetchingHeartbeatPermissionDeniedError) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*ImportHeartbeatDataFetchingHeartbeatPermissionDeniedError
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.ImportHeartbeatDataFetchingHeartbeatPermissionDeniedError = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.PermissionDeniedError)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalImportHeartbeatDataFetchingHeartbeatPermissionDeniedError struct {
+	Typename *string `json:"__typename"`
+
+	Message string `json:"message"`
+}
+
+func (v *ImportHeartbeatDataFetchingHeartbeatPermissionDeniedError) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *ImportHeartbeatDataFetchingHeartbeatPermissionDeniedError) __premarshalJSON() (*__premarshalImportHeartbeatDataFetchingHeartbeatPermissionDeniedError, error) {
+	var retval __premarshalImportHeartbeatDataFetchingHeartbeatPermissionDeniedError
+
+	retval.Typename = v.Typename
+	retval.Message = v.PermissionDeniedError.Message
+	return &retval, nil
+}
+
+// ImportHeartbeatDataFetchingHeartbeatSubtask includes the requested fields of the GraphQL type Subtask.
+type ImportHeartbeatDataFetchingHeartbeatSubtask struct {
+	Typename *string `json:"__typename"`
+	Subtask  `json:"-"`
+}
+
+// GetTypename returns ImportHeartbeatDataFetchingHeartbeatSubtask.Typename, and is useful for accessing the field via an interface.
+func (v *ImportHeartbeatDataFetchingHeartbeatSubtask) GetTypename() *string { return v.Typename }
+
+// GetJobId returns ImportHeartbeatDataFetchingHeartbeatSubtask.JobId, and is useful for accessing the field via an interface.
+func (v *ImportHeartbeatDataFetchingHeartbeatSubtask) GetJobId() string { return v.Subtask.JobId }
+
+// GetTaskType returns ImportHeartbeatDataFetchingHeartbeatSubtask.TaskType, and is useful for accessing the field via an interface.
+func (v *ImportHeartbeatDataFetchingHeartbeatSubtask) GetTaskType() string { return v.Subtask.TaskType }
+
+// GetSubtaskId returns ImportHeartbeatDataFetchingHeartbeatSubtask.SubtaskId, and is useful for accessing the field via an interface.
+func (v *ImportHeartbeatDataFetchingHeartbeatSubtask) GetSubtaskId() string {
+	return v.Subtask.SubtaskId
+}
+
+// GetStatus returns ImportHeartbeatDataFetchingHeartbeatSubtask.Status, and is useful for accessing the field via an interface.
+func (v *ImportHeartbeatDataFetchingHeartbeatSubtask) GetStatus() SubtaskStatus {
+	return v.Subtask.Status
+}
+
+// GetLastUpdate returns ImportHeartbeatDataFetchingHeartbeatSubtask.LastUpdate, and is useful for accessing the field via an interface.
+func (v *ImportHeartbeatDataFetchingHeartbeatSubtask) GetLastUpdate() time.Time {
+	return v.Subtask.LastUpdate
+}
+
+// GetIsStreaming returns ImportHeartbeatDataFetchingHeartbeatSubtask.IsStreaming, and is useful for accessing the field via an interface.
+func (v *ImportHeartbeatDataFetchingHeartbeatSubtask) GetIsStreaming() bool {
+	return v.Subtask.IsStreaming
+}
+
+// GetFlowId returns ImportHeartbeatDataFetchingHeartbeatSubtask.FlowId, and is useful for accessing the field via an interface.
+func (v *ImportHeartbeatDataFetchingHeartbeatSubtask) GetFlowId() *uuid.UUID { return v.Subtask.FlowId }
+
+// GetIngestionFinished returns ImportHeartbeatDataFetchingHeartbeatSubtask.IngestionFinished, and is useful for accessing the field via an interface.
+func (v *ImportHeartbeatDataFetchingHeartbeatSubtask) GetIngestionFinished() *bool {
+	return v.Subtask.IngestionFinished
+}
+
+// GetFlowClosed returns ImportHeartbeatDataFetchingHeartbeatSubtask.FlowClosed, and is useful for accessing the field via an interface.
+func (v *ImportHeartbeatDataFetchingHeartbeatSubtask) GetFlowClosed() *bool {
+	return v.Subtask.FlowClosed
+}
+
+// GetFlowCommandsAdded returns ImportHeartbeatDataFetchingHeartbeatSubtask.FlowCommandsAdded, and is useful for accessing the field via an interface.
+func (v *ImportHeartbeatDataFetchingHeartbeatSubtask) GetFlowCommandsAdded() int {
+	return v.Subtask.FlowCommandsAdded
+}
+
+// GetFlowCommandsUpdated returns ImportHeartbeatDataFetchingHeartbeatSubtask.FlowCommandsUpdated, and is useful for accessing the field via an interface.
+func (v *ImportHeartbeatDataFetchingHeartbeatSubtask) GetFlowCommandsUpdated() int {
+	return v.Subtask.FlowCommandsUpdated
+}
+
+// GetFlowCommandsRemoved returns ImportHeartbeatDataFetchingHeartbeatSubtask.FlowCommandsRemoved, and is useful for accessing the field via an interface.
+func (v *ImportHeartbeatDataFetchingHeartbeatSubtask) GetFlowCommandsRemoved() int {
+	return v.Subtask.FlowCommandsRemoved
+}
+
+func (v *ImportHeartbeatDataFetchingHeartbeatSubtask) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*ImportHeartbeatDataFetchingHeartbeatSubtask
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.ImportHeartbeatDataFetchingHeartbeatSubtask = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.Subtask)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalImportHeartbeatDataFetchingHeartbeatSubtask struct {
+	Typename *string `json:"__typename"`
+
+	JobId string `json:"jobId"`
+
+	TaskType string `json:"taskType"`
+
+	SubtaskId string `json:"subtaskId"`
+
+	Status SubtaskStatus `json:"status"`
+
+	LastUpdate time.Time `json:"lastUpdate"`
+
+	IsStreaming bool `json:"isStreaming"`
+
+	FlowId *uuid.UUID `json:"flowId"`
+
+	IngestionFinished *bool `json:"ingestionFinished"`
+
+	FlowClosed *bool `json:"flowClosed"`
+
+	FlowCommandsAdded int `json:"flowCommandsAdded"`
+
+	FlowCommandsUpdated int `json:"flowCommandsUpdated"`
+
+	FlowCommandsRemoved int `json:"flowCommandsRemoved"`
+}
+
+func (v *ImportHeartbeatDataFetchingHeartbeatSubtask) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *ImportHeartbeatDataFetchingHeartbeatSubtask) __premarshalJSON() (*__premarshalImportHeartbeatDataFetchingHeartbeatSubtask, error) {
+	var retval __premarshalImportHeartbeatDataFetchingHeartbeatSubtask
+
+	retval.Typename = v.Typename
+	retval.JobId = v.Subtask.JobId
+	retval.TaskType = v.Subtask.TaskType
+	retval.SubtaskId = v.Subtask.SubtaskId
+	retval.Status = v.Subtask.Status
+	retval.LastUpdate = v.Subtask.LastUpdate
+	retval.IsStreaming = v.Subtask.IsStreaming
+	retval.FlowId = v.Subtask.FlowId
+	retval.IngestionFinished = v.Subtask.IngestionFinished
+	retval.FlowClosed = v.Subtask.FlowClosed
+	retval.FlowCommandsAdded = v.Subtask.FlowCommandsAdded
+	retval.FlowCommandsUpdated = v.Subtask.FlowCommandsUpdated
+	retval.FlowCommandsRemoved = v.Subtask.FlowCommandsRemoved
+	return &retval, nil
+}
+
+// ImportHeartbeatDataFetchingHeartbeatSubtaskReturnResult includes the requested fields of the GraphQL interface SubtaskReturnResult.
+//
+// ImportHeartbeatDataFetchingHeartbeatSubtaskReturnResult is implemented by the following types:
+// ImportHeartbeatDataFetchingHeartbeatInvalidInputError
+// ImportHeartbeatDataFetchingHeartbeatNotFoundError
+// ImportHeartbeatDataFetchingHeartbeatPermissionDeniedError
+// ImportHeartbeatDataFetchingHeartbeatSubtask
+type ImportHeartbeatDataFetchingHeartbeatSubtaskReturnResult interface {
+	implementsGraphQLInterfaceImportHeartbeatDataFetchingHeartbeatSubtaskReturnResult()
+	// GetTypename returns the receiver's concrete GraphQL type-name (see interface doc for possible values).
+	GetTypename() *string
+}
+
+func (v *ImportHeartbeatDataFetchingHeartbeatInvalidInputError) implementsGraphQLInterfaceImportHeartbeatDataFetchingHeartbeatSubtaskReturnResult() {
+}
+func (v *ImportHeartbeatDataFetchingHeartbeatNotFoundError) implementsGraphQLInterfaceImportHeartbeatDataFetchingHeartbeatSubtaskReturnResult() {
+}
+func (v *ImportHeartbeatDataFetchingHeartbeatPermissionDeniedError) implementsGraphQLInterfaceImportHeartbeatDataFetchingHeartbeatSubtaskReturnResult() {
+}
+func (v *ImportHeartbeatDataFetchingHeartbeatSubtask) implementsGraphQLInterfaceImportHeartbeatDataFetchingHeartbeatSubtaskReturnResult() {
+}
+
+func __unmarshalImportHeartbeatDataFetchingHeartbeatSubtaskReturnResult(b []byte, v *ImportHeartbeatDataFetchingHeartbeatSubtaskReturnResult) error {
+	if string(b) == "null" {
+		return nil
+	}
+
+	var tn struct {
+		TypeName string `json:"__typename"`
+	}
+	err := json.Unmarshal(b, &tn)
+	if err != nil {
+		return err
+	}
+
+	switch tn.TypeName {
+	case "InvalidInputError":
+		*v = new(ImportHeartbeatDataFetchingHeartbeatInvalidInputError)
+		return json.Unmarshal(b, *v)
+	case "NotFoundError":
+		*v = new(ImportHeartbeatDataFetchingHeartbeatNotFoundError)
+		return json.Unmarshal(b, *v)
+	case "PermissionDeniedError":
+		*v = new(ImportHeartbeatDataFetchingHeartbeatPermissionDeniedError)
+		return json.Unmarshal(b, *v)
+	case "Subtask":
+		*v = new(ImportHeartbeatDataFetchingHeartbeatSubtask)
+		return json.Unmarshal(b, *v)
+	case "":
+		return fmt.Errorf(
+			"response was missing SubtaskReturnResult.__typename")
+	default:
+		return fmt.Errorf(
+			`unexpected concrete type for ImportHeartbeatDataFetchingHeartbeatSubtaskReturnResult: "%v"`, tn.TypeName)
+	}
+}
+
+func __marshalImportHeartbeatDataFetchingHeartbeatSubtaskReturnResult(v *ImportHeartbeatDataFetchingHeartbeatSubtaskReturnResult) ([]byte, error) {
+
+	var typename string
+	switch v := (*v).(type) {
+	case *ImportHeartbeatDataFetchingHeartbeatInvalidInputError:
+		typename = "InvalidInputError"
+
+		premarshaled, err := v.__premarshalJSON()
+		if err != nil {
+			return nil, err
+		}
+		result := struct {
+			TypeName string `json:"__typename"`
+			*__premarshalImportHeartbeatDataFetchingHeartbeatInvalidInputError
+		}{typename, premarshaled}
+		return json.Marshal(result)
+	case *ImportHeartbeatDataFetchingHeartbeatNotFoundError:
+		typename = "NotFoundError"
+
+		premarshaled, err := v.__premarshalJSON()
+		if err != nil {
+			return nil, err
+		}
+		result := struct {
+			TypeName string `json:"__typename"`
+			*__premarshalImportHeartbeatDataFetchingHeartbeatNotFoundError
+		}{typename, premarshaled}
+		return json.Marshal(result)
+	case *ImportHeartbeatDataFetchingHeartbeatPermissionDeniedError:
+		typename = "PermissionDeniedError"
+
+		premarshaled, err := v.__premarshalJSON()
+		if err != nil {
+			return nil, err
+		}
+		result := struct {
+			TypeName string `json:"__typename"`
+			*__premarshalImportHeartbeatDataFetchingHeartbeatPermissionDeniedError
+		}{typename, premarshaled}
+		return json.Marshal(result)
+	case *ImportHeartbeatDataFetchingHeartbeatSubtask:
+		typename = "Subtask"
+
+		premarshaled, err := v.__premarshalJSON()
+		if err != nil {
+			return nil, err
+		}
+		result := struct {
+			TypeName string `json:"__typename"`
+			*__premarshalImportHeartbeatDataFetchingHeartbeatSubtask
+		}{typename, premarshaled}
+		return json.Marshal(result)
+	case nil:
+		return []byte("null"), nil
+	default:
+		return nil, fmt.Errorf(
+			`unexpected concrete type for ImportHeartbeatDataFetchingHeartbeatSubtaskReturnResult: "%T"`, v)
+	}
+}
+
+// ImportHeartbeatResponse is returned by ImportHeartbeat on success.
+type ImportHeartbeatResponse struct {
+	DataFetchingHeartbeat ImportHeartbeatDataFetchingHeartbeatSubtaskReturnResult `json:"-"`
+}
+
+// GetDataFetchingHeartbeat returns ImportHeartbeatResponse.DataFetchingHeartbeat, and is useful for accessing the field via an interface.
+func (v *ImportHeartbeatResponse) GetDataFetchingHeartbeat() ImportHeartbeatDataFetchingHeartbeatSubtaskReturnResult {
+	return v.DataFetchingHeartbeat
+}
+
+func (v *ImportHeartbeatResponse) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*ImportHeartbeatResponse
+		DataFetchingHeartbeat json.RawMessage `json:"dataFetchingHeartbeat"`
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.ImportHeartbeatResponse = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	{
+		dst := &v.DataFetchingHeartbeat
+		src := firstPass.DataFetchingHeartbeat
+		if len(src) != 0 && string(src) != "null" {
+			err = __unmarshalImportHeartbeatDataFetchingHeartbeatSubtaskReturnResult(
+				src, dst)
+			if err != nil {
+				return fmt.Errorf(
+					"unable to unmarshal ImportHeartbeatResponse.DataFetchingHeartbeat: %w", err)
+			}
+		}
+	}
+	return nil
+}
+
+type __premarshalImportHeartbeatResponse struct {
+	DataFetchingHeartbeat json.RawMessage `json:"dataFetchingHeartbeat"`
+}
+
+func (v *ImportHeartbeatResponse) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *ImportHeartbeatResponse) __premarshalJSON() (*__premarshalImportHeartbeatResponse, error) {
+	var retval __premarshalImportHeartbeatResponse
+
+	{
+
+		dst := &retval.DataFetchingHeartbeat
+		src := v.DataFetchingHeartbeat
+		var err error
+		*dst, err = __marshalImportHeartbeatDataFetchingHeartbeatSubtaskReturnResult(
+			&src)
+		if err != nil {
+			return nil, fmt.Errorf(
+				"unable to marshal ImportHeartbeatResponse.DataFetchingHeartbeat: %w", err)
+		}
+	}
+	return &retval, nil
+}
+
 // InvalidEmailError includes the GraphQL fields of InvalidEmailError requested by the fragment InvalidEmailError.
 type InvalidEmailError struct {
 	ErrEmail string `json:"errEmail"`
@@ -38178,6 +38698,14 @@ type __GetUserInput struct {
 // GetId returns __GetUserInput.Id, and is useful for accessing the field via an interface.
 func (v *__GetUserInput) GetId() string { return v.Id }
 
+// __ImportHeartbeatInput is used internally by genqlient
+type __ImportHeartbeatInput struct {
+	FlowId uuid.UUID `json:"flowId"`
+}
+
+// GetFlowId returns __ImportHeartbeatInput.FlowId, and is useful for accessing the field via an interface.
+func (v *__ImportHeartbeatInput) GetFlowId() uuid.UUID { return v.FlowId }
+
 // __ListAccessControlAbacWhatScopeInput is used internally by genqlient
 type __ListAccessControlAbacWhatScopeInput struct {
 	Id     string                   `json:"id"`
@@ -41040,6 +41568,67 @@ func GetUserByEmail(
 	}
 
 	data_ = &GetUserByEmailResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
+// The mutation executed by ImportHeartbeat.
+const ImportHeartbeat_Operation = `
+mutation ImportHeartbeat ($flowId: UUID!) {
+	dataFetchingHeartbeat(flowId: $flowId) {
+		__typename
+		... Subtask
+		... PermissionDeniedError
+		... NotFoundError
+		... InvalidInputError
+	}
+}
+fragment Subtask on Subtask {
+	jobId
+	taskType: jobType
+	subtaskId
+	status
+	lastUpdate
+	isStreaming
+	flowId
+	ingestionFinished
+	flowClosed
+	flowCommandsAdded
+	flowCommandsUpdated
+	flowCommandsRemoved
+}
+fragment PermissionDeniedError on PermissionDeniedError {
+	message
+}
+fragment NotFoundError on NotFoundError {
+	message
+}
+fragment InvalidInputError on InvalidInputError {
+	message
+}
+`
+
+func ImportHeartbeat(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	flowId uuid.UUID,
+) (data_ *ImportHeartbeatResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "ImportHeartbeat",
+		Query:  ImportHeartbeat_Operation,
+		Variables: &__ImportHeartbeatInput{
+			FlowId: flowId,
+		},
+	}
+
+	data_ = &ImportHeartbeatResponse{}
 	resp_ := &graphql.Response{Data: data_}
 
 	err_ = client_.MakeRequest(

@@ -12,6 +12,8 @@ require github.com/Khan/genqlient v0.8.2-0.20250910230456-7c070dd710ca
 require (
 	github.com/Masterminds/semver/v3 v3.4.0
 	github.com/google/uuid v1.6.0
+	github.com/hashicorp/go-cleanhttp v0.5.2
+	github.com/hashicorp/go-retryablehttp v0.7.8
 	github.com/stretchr/testify v1.11.1
 	golang.org/x/tools v0.38.0
 	gopkg.in/yaml.v3 v3.0.1
