@@ -20,6 +20,15 @@ mutation StartImportFlow($input: StartImportFlowInput!) {
     }
 }
 
+mutation ImportHeartbeat($flowId: UUID!) {
+    dataFetchingHeartbeat(flowId: $flowId){
+        ... Subtask
+        ... PermissionDeniedError
+        ... NotFoundError
+        ... InvalidInputError
+    }
+}
+
 mutation FinishImportFlow($flowId: UUID!) {
     finishImportFlow(flowId: $flowId)
 }

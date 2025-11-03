@@ -42,6 +42,24 @@ func (c *ImporterClient) StartImportFlow(ctx context.Context, input types.StartI
 	}
 }
 
+func (c *ImporterClient) ImportHeartbeat(ctx context.Context, flowId uuid.UUID) (*types.Subtask, error) {
+	result, err := schema.ImportHeartbeat(ctx, c.client, flowId)
+	if err != nil {
+		return nil, types.NewErrClient(err)
+	}
+
+	switch response := result.DataFetchingHeartbeat.(type) {
+	case *schema.ImportHeartbeatDataFetchingHeartbeatSubtask:
+		return &response.Subtask, nil
+	case *schema.ImportHeartbeatDataFetchingHeartbeatPermissionDeniedError:
+		return nil, types.NewErrPermissionDenied("importHeartbeat", response.Message)
+	case *schema.ImportHeartbeatDataFetchingHeartbeatNotFoundError:
+		return nil, types.NewErrNotFound("", response.Typename, response.Message)
+	default:
+		return nil, fmt.Errorf("unexpected response type: %T", response)
+	}
+}
+
 // FinishImportFlow finishes an import flow.
 func (c *ImporterClient) FinishImportFlow(ctx context.Context, flowId uuid.UUID) error {
 	_, err := schema.FinishImportFlow(ctx, c.client, flowId)

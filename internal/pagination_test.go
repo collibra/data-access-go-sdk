@@ -54,6 +54,7 @@ func testPaginationExecutorSuccess(t *testing.T) {
 	iterator := PaginationExecutor(ctx, mockLoadPageFn, mockEdgeFn)
 
 	var items []string
+
 	iterator(func(item *string, err error) bool {
 		if err != nil {
 			t.Errorf("Error encountered: %v", err)
@@ -168,6 +169,7 @@ func testPaginationExecutorCancel(t *testing.T) {
 
 	var items []string
 	var errEncountered error
+
 	iterator(func(item *string, err error) bool {
 		if err != nil {
 			errEncountered = err

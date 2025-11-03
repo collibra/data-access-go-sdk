@@ -136,6 +136,7 @@ func main() {
 	// Parse command line flags
 	inputFile := flag.String("input", "", "Input Go file path")
 	outputFile := flag.String("output", "", "Output Go file path")
+
 	flag.Parse()
 
 	// Validate input parameters
