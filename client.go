@@ -1,18 +1,18 @@
 package sdk
 
 import (
-	"net/http"
 	"strings"
 	"sync"
 	"time"
 
 	gql "github.com/Khan/genqlient/graphql"
-	"github.com/hashicorp/go-cleanhttp"
 	"github.com/hashicorp/go-retryablehttp"
 
 	"github.com/collibra/data-access-go-sdk/internal"
 	"github.com/collibra/data-access-go-sdk/services"
 )
+
+type ClientOptions = func(*internal.ClientOptions)
 
 type singletonClient[T any] struct {
 	factory func() *T
@@ -49,48 +49,42 @@ type CollibraClient struct {
 	siteClient          singletonClient[services.SiteService]
 }
 
-type clientOptions struct {
-	// MaxRetries specifies the maximum number of retries for failed requests.
-	RetryWaitMin time.Duration
-	RetryWaitMax time.Duration
-	RetryMax     int
-
-	Backoff retryablehttp.Backoff
-}
-
-func WithRetryWaitMin(d time.Duration) func(*clientOptions) {
-	return func(ops *clientOptions) {
+func WithRetryWaitMin(d time.Duration) ClientOptions {
+	return func(ops *internal.ClientOptions) {
 		ops.RetryWaitMin = d
 	}
 }
 
-func WithRetryWaitMax(d time.Duration) func(*clientOptions) {
-	return func(ops *clientOptions) {
+func WithRetryWaitMax(d time.Duration) ClientOptions {
+	return func(ops *internal.ClientOptions) {
 		ops.RetryWaitMax = d
 	}
 }
 
-func WithRetryMax(retries int) func(*clientOptions) {
-	return func(ops *clientOptions) {
+func WithRetryMax(retries int) ClientOptions {
+	return func(ops *internal.ClientOptions) {
 		ops.RetryMax = retries
 	}
 }
 
-func WithLinearJitterBackoff() func(*clientOptions) {
-	return func(ops *clientOptions) {
+func WithLinearJitterBackoff() ClientOptions {
+	return func(ops *internal.ClientOptions) {
 		ops.Backoff = retryablehttp.LinearJitterBackoff
 	}
 }
 
-func WithRateLimitLinearJitterBackoff() func(*clientOptions) {
-	return func(ops *clientOptions) {
+func WithRateLimitLinearJitterBackoff() ClientOptions {
+	return func(ops *internal.ClientOptions) {
 		ops.Backoff = retryablehttp.RateLimitLinearJitterBackoff
 	}
 }
 
 // NewClient creates a new CollibraClient with the given credentials.
-func NewClient(user, password, url string, options ...func(*clientOptions)) *CollibraClient {
-	ops := clientOptions{
+func NewClient(user, password, url string, options ...ClientOptions) *CollibraClient {
+	ops := internal.ClientOptions{
+		Username: user,
+		Password: password,
+
 		RetryWaitMin: 550 * time.Millisecond,
 		RetryWaitMax: 30 * time.Second,
 		RetryMax:     4,
@@ -112,7 +106,7 @@ func NewClient(user, password, url string, options ...func(*clientOptions)) *Col
 
 	gqlApiUrl := apiUrl + internal.GqlApiPath
 
-	client := createHttpClient(user, password, &ops)
+	client := internal.CreateHttpClient(&ops)
 
 	glcClient := gql.NewClient(gqlApiUrl, client)
 
@@ -128,33 +122,6 @@ func NewClient(user, password, url string, options ...func(*clientOptions)) *Col
 		userClient:          newSingletonClient(glcClient, services.NewUserClient),
 		siteClient:          newSingletonClient(glcClient, services.NewSiteService),
 	}
-}
-
-func createHttpClient(user, password string, ops *clientOptions) gql.Doer {
-	// 1. Create clean http transport
-	transport := cleanhttp.DefaultPooledTransport()
-
-	// 2. Wrap it with an auth round tripper
-	authRoundTripper := &internal.BasicAuthRoundTripper{
-		User:     user,
-		Password: password,
-		Proxied:  transport,
-	}
-
-	// 3. Create a retryable http client
-	retryableClient := &retryablehttp.Client{
-		HTTPClient: &http.Client{
-			Transport: authRoundTripper,
-		},
-		Logger:       nil,
-		RetryWaitMin: ops.RetryWaitMin,
-		RetryWaitMax: ops.RetryWaitMax,
-		RetryMax:     ops.RetryMax,
-		CheckRetry:   retryablehttp.DefaultRetryPolicy,
-		Backoff:      ops.Backoff,
-	}
-
-	return retryableClient.StandardClient()
 }
 
 // AccessControl returns the AccessControlClient
