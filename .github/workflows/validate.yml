@@ -21,7 +21,12 @@ jobs:
 #          git diff --compact-summary --exit-code || \
 #            (echo; echo "Unexpected difference in directories after code generation. Run 'go generate ./...' command and commit."; exit 1)
   build:
-    runs-on: ubuntu-latest
+    runs-on:
+      - runs-on
+      - runner=md
+      - env=production-eu
+      - run-id=${{ github.run_id }}
+      - tag=validation-build
     steps:
       - name: Check out repository code
         uses: actions/checkout@v4
