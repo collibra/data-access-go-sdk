@@ -29,8 +29,8 @@ mutation ImportHeartbeat($flowId: UUID!) {
     }
 }
 
-mutation FinishImportFlow($flowId: UUID!) {
-    finishImportFlow(flowId: $flowId)
+mutation FinishImportFlow($flowId: UUID!, $options: FinishImportFlowOptionsInput) {
+    finishImportFlow(flowId: $flowId, options: $options)
 }
 
 mutation SubmitImportObjects($input: ImportCommands!) {
