@@ -5,7 +5,6 @@ import (
 	"fmt"
 
 	"github.com/Khan/genqlient/graphql"
-	"github.com/collibra/data-access-go-sdk/utils"
 	"github.com/google/uuid"
 
 	"github.com/collibra/data-access-go-sdk/internal/schema"
@@ -63,9 +62,9 @@ func (c *ImporterClient) ImportHeartbeat(ctx context.Context, flowId uuid.UUID) 
 
 type ImporterFinishImportFlowOption func(input *types.FinishImportFlowOptionsInput)
 
-func WithImporterFinishImportFlowSkipCleanup() ImporterFinishImportFlowOption {
+func WithImporterFinishImportFlowSkipCleanup(skip bool) ImporterFinishImportFlowOption {
 	return func(input *types.FinishImportFlowOptionsInput) {
-		input.SkipCleanup = utils.Ptr(true)
+		input.SkipCleanup = &skip
 	}
 }
 
