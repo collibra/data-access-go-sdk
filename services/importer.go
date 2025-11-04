@@ -79,6 +79,7 @@ func (c *ImporterClient) FinishImportFlow(ctx context.Context, flowId uuid.UUID,
 	if err != nil {
 		return types.NewErrClient(err)
 	}
+
 	return nil
 }
 
