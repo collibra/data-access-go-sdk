@@ -43,6 +43,7 @@ linters:
     - ineffassign
     - intrange
     - misspell
+    - modernize
     # - mnd # Magic numbers should be fixed and enable gomnd,
     - nakedret
     - nilerr

@@ -15,7 +15,7 @@ func MarshalVersion(v *Version) ([]byte, error) {
 
 	versionStr := v.String()
 
-	return []byte(fmt.Sprintf("%q", versionStr)), nil
+	return fmt.Appendf(nil, "%q", versionStr), nil
 }
 
 func UnmarshalVersion(b []byte, v *Version) error {

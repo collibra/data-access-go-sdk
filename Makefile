@@ -1,3 +1,5 @@
+.PHONY: gql fetch-schema fetch-local-schema fix-lint lint build test
+
 gotestsum := go run gotest.tools/gotestsum@latest
 
 gql:
@@ -9,6 +11,10 @@ fetch-schema:
 
 fetch-local-schema:
 	npx --yes @apollo/rover graph introspect http://localhost:8080/query --output internal/schema/schema.graphql
+
+fix-lint:
+	go fmt ./...
+	golangci-lint run --fix ./...
 
 lint:
 	golangci-lint run ./...
