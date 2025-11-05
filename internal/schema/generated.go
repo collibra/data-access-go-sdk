@@ -18854,12 +18854,8 @@ func (v *ImportCommands) GetFlowId() uuid.UUID { return v.FlowId }
 func (v *ImportCommands) GetCommands() []ImportCommand { return v.Commands }
 
 type ImportFlowOptions struct {
-	ExecuteDeleteUntouched *bool    `json:"executeDeleteUntouched,omitempty"`
-	TagSourcesScope        []string `json:"tagSourcesScope"`
+	TagSourcesScope []string `json:"tagSourcesScope"`
 }
-
-// GetExecuteDeleteUntouched returns ImportFlowOptions.ExecuteDeleteUntouched, and is useful for accessing the field via an interface.
-func (v *ImportFlowOptions) GetExecuteDeleteUntouched() *bool { return v.ExecuteDeleteUntouched }
 
 // GetTagSourcesScope returns ImportFlowOptions.TagSourcesScope, and is useful for accessing the field via an interface.
 func (v *ImportFlowOptions) GetTagSourcesScope() []string { return v.TagSourcesScope }
