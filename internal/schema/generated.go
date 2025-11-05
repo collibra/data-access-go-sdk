@@ -6438,7 +6438,7 @@ func (v *CreateJobCreateJob) GetHasErrors() *bool { return v.Job.HasErrors }
 func (v *CreateJobCreateJob) GetHasWarnings() *bool { return v.Job.HasWarnings }
 
 // GetDataSource returns CreateJobCreateJob.DataSource, and is useful for accessing the field via an interface.
-func (v *CreateJobCreateJob) GetDataSource() *JobDataSource { return v.Job.DataSource }
+func (v *CreateJobCreateJob) GetDataSource() JobDataSource { return v.Job.DataSource }
 
 func (v *CreateJobCreateJob) UnmarshalJSON(b []byte) error {
 
@@ -6482,7 +6482,7 @@ type __premarshalCreateJobCreateJob struct {
 
 	HasWarnings *bool `json:"hasWarnings"`
 
-	DataSource *JobDataSource `json:"dataSource"`
+	DataSource JobDataSource `json:"dataSource"`
 }
 
 func (v *CreateJobCreateJob) MarshalJSON() ([]byte, error) {
@@ -13234,6 +13234,13 @@ type FinalizeExportFlowResponse struct {
 // GetFinishExportFlow returns FinalizeExportFlowResponse.FinishExportFlow, and is useful for accessing the field via an interface.
 func (v *FinalizeExportFlowResponse) GetFinishExportFlow() bool { return v.FinishExportFlow }
 
+type FinishImportFlowOptionsInput struct {
+	SkipCleanup *bool `json:"skipCleanup,omitempty"`
+}
+
+// GetSkipCleanup returns FinishImportFlowOptionsInput.SkipCleanup, and is useful for accessing the field via an interface.
+func (v *FinishImportFlowOptionsInput) GetSkipCleanup() *bool { return v.SkipCleanup }
+
 // FinishImportFlowResponse is returned by FinishImportFlow on success.
 type FinishImportFlowResponse struct {
 	FinishImportFlow bool `json:"finishImportFlow"`
@@ -16979,7 +16986,7 @@ func (v *GetJobJob) GetHasErrors() *bool { return v.Job.HasErrors }
 func (v *GetJobJob) GetHasWarnings() *bool { return v.Job.HasWarnings }
 
 // GetDataSource returns GetJobJob.DataSource, and is useful for accessing the field via an interface.
-func (v *GetJobJob) GetDataSource() *JobDataSource { return v.Job.DataSource }
+func (v *GetJobJob) GetDataSource() JobDataSource { return v.Job.DataSource }
 
 func (v *GetJobJob) UnmarshalJSON(b []byte) error {
 
@@ -17023,7 +17030,7 @@ type __premarshalGetJobJob struct {
 
 	HasWarnings *bool `json:"hasWarnings"`
 
-	DataSource *JobDataSource `json:"dataSource"`
+	DataSource JobDataSource `json:"dataSource"`
 }
 
 func (v *GetJobJob) MarshalJSON() ([]byte, error) {
@@ -18847,12 +18854,8 @@ func (v *ImportCommands) GetFlowId() uuid.UUID { return v.FlowId }
 func (v *ImportCommands) GetCommands() []ImportCommand { return v.Commands }
 
 type ImportFlowOptions struct {
-	ExecuteDeleteUntouched *bool    `json:"executeDeleteUntouched,omitempty"`
-	TagSourcesScope        []string `json:"tagSourcesScope"`
+	TagSourcesScope []string `json:"tagSourcesScope"`
 }
-
-// GetExecuteDeleteUntouched returns ImportFlowOptions.ExecuteDeleteUntouched, and is useful for accessing the field via an interface.
-func (v *ImportFlowOptions) GetExecuteDeleteUntouched() *bool { return v.ExecuteDeleteUntouched }
 
 // GetTagSourcesScope returns ImportFlowOptions.TagSourcesScope, and is useful for accessing the field via an interface.
 func (v *ImportFlowOptions) GetTagSourcesScope() []string { return v.TagSourcesScope }
@@ -19399,15 +19402,15 @@ func (v *InvalidInputError) GetMessage() string { return v.Message }
 
 // Job includes the GraphQL fields of Job requested by the fragment Job.
 type Job struct {
-	Id          string         `json:"id"`
-	Status      JobStatus      `json:"status"`
-	StartTime   time.Time      `json:"startTime"`
-	LastUpdate  time.Time      `json:"lastUpdate"`
-	EndTime     *time.Time     `json:"endTime"`
-	Duration    *int64         `json:"duration"`
-	HasErrors   *bool          `json:"hasErrors"`
-	HasWarnings *bool          `json:"hasWarnings"`
-	DataSource  *JobDataSource `json:"dataSource"`
+	Id          string        `json:"id"`
+	Status      JobStatus     `json:"status"`
+	StartTime   time.Time     `json:"startTime"`
+	LastUpdate  time.Time     `json:"lastUpdate"`
+	EndTime     *time.Time    `json:"endTime"`
+	Duration    *int64        `json:"duration"`
+	HasErrors   *bool         `json:"hasErrors"`
+	HasWarnings *bool         `json:"hasWarnings"`
+	DataSource  JobDataSource `json:"dataSource"`
 }
 
 // GetId returns Job.Id, and is useful for accessing the field via an interface.
@@ -19435,7 +19438,7 @@ func (v *Job) GetHasErrors() *bool { return v.HasErrors }
 func (v *Job) GetHasWarnings() *bool { return v.HasWarnings }
 
 // GetDataSource returns Job.DataSource, and is useful for accessing the field via an interface.
-func (v *Job) GetDataSource() *JobDataSource { return v.DataSource }
+func (v *Job) GetDataSource() JobDataSource { return v.DataSource }
 
 // JobConnection includes the GraphQL fields of JobConnection requested by the fragment JobConnection.
 type JobConnection struct {
@@ -19491,7 +19494,7 @@ func (v *JobConnectionEdgesJobEdgeNodeJob) GetHasErrors() *bool { return v.Job.H
 func (v *JobConnectionEdgesJobEdgeNodeJob) GetHasWarnings() *bool { return v.Job.HasWarnings }
 
 // GetDataSource returns JobConnectionEdgesJobEdgeNodeJob.DataSource, and is useful for accessing the field via an interface.
-func (v *JobConnectionEdgesJobEdgeNodeJob) GetDataSource() *JobDataSource { return v.Job.DataSource }
+func (v *JobConnectionEdgesJobEdgeNodeJob) GetDataSource() JobDataSource { return v.Job.DataSource }
 
 func (v *JobConnectionEdgesJobEdgeNodeJob) UnmarshalJSON(b []byte) error {
 
@@ -19535,7 +19538,7 @@ type __premarshalJobConnectionEdgesJobEdgeNodeJob struct {
 
 	HasWarnings *bool `json:"hasWarnings"`
 
-	DataSource *JobDataSource `json:"dataSource"`
+	DataSource JobDataSource `json:"dataSource"`
 }
 
 func (v *JobConnectionEdgesJobEdgeNodeJob) MarshalJSON() ([]byte, error) {
@@ -32308,7 +32311,7 @@ func (v *SyncJobJob) GetHasErrors() *bool { return v.Job.HasErrors }
 func (v *SyncJobJob) GetHasWarnings() *bool { return v.Job.HasWarnings }
 
 // GetDataSource returns SyncJobJob.DataSource, and is useful for accessing the field via an interface.
-func (v *SyncJobJob) GetDataSource() *JobDataSource { return v.Job.DataSource }
+func (v *SyncJobJob) GetDataSource() JobDataSource { return v.Job.DataSource }
 
 func (v *SyncJobJob) UnmarshalJSON(b []byte) error {
 
@@ -32354,7 +32357,7 @@ type __premarshalSyncJobJob struct {
 
 	HasWarnings *bool `json:"hasWarnings"`
 
-	DataSource *JobDataSource `json:"dataSource"`
+	DataSource JobDataSource `json:"dataSource"`
 }
 
 func (v *SyncJobJob) MarshalJSON() ([]byte, error) {
@@ -36065,7 +36068,7 @@ func (v *UpdateJobUpdateJob) GetHasErrors() *bool { return v.Job.HasErrors }
 func (v *UpdateJobUpdateJob) GetHasWarnings() *bool { return v.Job.HasWarnings }
 
 // GetDataSource returns UpdateJobUpdateJob.DataSource, and is useful for accessing the field via an interface.
-func (v *UpdateJobUpdateJob) GetDataSource() *JobDataSource { return v.Job.DataSource }
+func (v *UpdateJobUpdateJob) GetDataSource() JobDataSource { return v.Job.DataSource }
 
 func (v *UpdateJobUpdateJob) UnmarshalJSON(b []byte) error {
 
@@ -36109,7 +36112,7 @@ type __premarshalUpdateJobUpdateJob struct {
 
 	HasWarnings *bool `json:"hasWarnings"`
 
-	DataSource *JobDataSource `json:"dataSource"`
+	DataSource JobDataSource `json:"dataSource"`
 }
 
 func (v *UpdateJobUpdateJob) MarshalJSON() ([]byte, error) {
@@ -38520,11 +38523,15 @@ func (v *__FinalizeExportFlowInput) GetStartTime() time.Time { return v.StartTim
 
 // __FinishImportFlowInput is used internally by genqlient
 type __FinishImportFlowInput struct {
-	FlowId uuid.UUID `json:"flowId"`
+	FlowId  uuid.UUID                     `json:"flowId"`
+	Options *FinishImportFlowOptionsInput `json:"options,omitempty"`
 }
 
 // GetFlowId returns __FinishImportFlowInput.FlowId, and is useful for accessing the field via an interface.
 func (v *__FinishImportFlowInput) GetFlowId() uuid.UUID { return v.FlowId }
+
+// GetOptions returns __FinishImportFlowInput.Options, and is useful for accessing the field via an interface.
+func (v *__FinishImportFlowInput) GetOptions() *FinishImportFlowOptionsInput { return v.Options }
 
 // __GetAccessControlInput is used internally by genqlient
 type __GetAccessControlInput struct {
@@ -40547,8 +40554,8 @@ func FinalizeExportFlow(
 
 // The mutation executed by FinishImportFlow.
 const FinishImportFlow_Operation = `
-mutation FinishImportFlow ($flowId: UUID!) {
-	finishImportFlow(flowId: $flowId)
+mutation FinishImportFlow ($flowId: UUID!, $options: FinishImportFlowOptionsInput) {
+	finishImportFlow(flowId: $flowId, options: $options)
 }
 `
 
@@ -40556,12 +40563,14 @@ func FinishImportFlow(
 	ctx_ context.Context,
 	client_ graphql.Client,
 	flowId uuid.UUID,
+	options *FinishImportFlowOptionsInput,
 ) (data_ *FinishImportFlowResponse, err_ error) {
 	req_ := &graphql.Request{
 		OpName: "FinishImportFlow",
 		Query:  FinishImportFlow_Operation,
 		Variables: &__FinishImportFlowInput{
-			FlowId: flowId,
+			FlowId:  flowId,
+			Options: options,
 		},
 	}
 

@@ -60,12 +60,26 @@ func (c *ImporterClient) ImportHeartbeat(ctx context.Context, flowId uuid.UUID) 
 	}
 }
 
+type ImporterFinishImportFlowOption func(input *types.FinishImportFlowOptionsInput)
+
+func WithImporterFinishImportFlowSkipCleanup(skip bool) ImporterFinishImportFlowOption {
+	return func(input *types.FinishImportFlowOptionsInput) {
+		input.SkipCleanup = &skip
+	}
+}
+
 // FinishImportFlow finishes an import flow.
-func (c *ImporterClient) FinishImportFlow(ctx context.Context, flowId uuid.UUID) error {
-	_, err := schema.FinishImportFlow(ctx, c.client, flowId)
+func (c *ImporterClient) FinishImportFlow(ctx context.Context, flowId uuid.UUID, options ...ImporterFinishImportFlowOption) error {
+	ops := &types.FinishImportFlowOptionsInput{}
+	for _, opt := range options {
+		opt(ops)
+	}
+
+	_, err := schema.FinishImportFlow(ctx, c.client, flowId, ops)
 	if err != nil {
 		return types.NewErrClient(err)
 	}
+
 	return nil
 }
 

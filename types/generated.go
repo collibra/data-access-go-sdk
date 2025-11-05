@@ -349,6 +349,7 @@ type FetchExportAccessControlsFetchExportAccessControlsPermissionDeniedError = s
 type FetchExportAccessControlsResponse = schema.FetchExportAccessControlsResponse
 type FilterMetadataInput = schema.FilterMetadataInput
 type FinalizeExportFlowResponse = schema.FinalizeExportFlowResponse
+type FinishImportFlowOptionsInput = schema.FinishImportFlowOptionsInput
 type FinishImportFlowResponse = schema.FinishImportFlowResponse
 type GetAccessControlAccessControl = schema.GetAccessControlAccessControl
 type GetAccessControlAccessControlAccessControlResult = schema.GetAccessControlAccessControlAccessControlResult
