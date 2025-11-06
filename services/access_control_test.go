@@ -1,8 +1,6 @@
 package services_test
 
 import (
-	"encoding/json"
-	"os"
 	"testing"
 
 	sdk "github.com/collibra/data-access-go-sdk"
@@ -33,8 +31,8 @@ func (suite *AccessControlServiceTestSuite) SetupSuite() {
 
 	suite.Require().NotNil(sdkClient, "Failed to create SDK client")
 	suite.sdkClient = sdkClient
-
-	suite.accessControlClient = sdkClient.AccessControl()
+	accessControlClient := sdkClient.AccessControl()
+	suite.accessControlClient = accessControlClient
 	suite.Require().NotNil(suite.accessControlClient, "Failed to create Access Control client")
 	// create data source
 	dataSourceClient := sdkClient.DataSource()
@@ -45,7 +43,7 @@ func (suite *AccessControlServiceTestSuite) SetupSuite() {
 
 	suite.createdDataSource = dataSourceWithMetaData
 	// import data objects
-	importWhat(suite)
+	importDataObjects(&suite.Suite, sdkClient, suite.createdDataSource.Id)
 	// create test user
 	userName := "Test User " + uuid.NewString()
 	userEmail := "test.user+" + uuid.NewString() + "@example.com"
@@ -58,24 +56,6 @@ func (suite *AccessControlServiceTestSuite) SetupSuite() {
 	suite.Require().NoError(err, "Failed to create test user")
 	suite.Require().NotNil(user, "Created user is nil")
 	suite.createdUser = user
-}
-
-func importWhat(suite *AccessControlServiceTestSuite) {
-	dataObjectsJson, err := os.ReadFile("testdata/test_data_objects.json")
-	suite.Require().NoError(err, "Failed to read data objects file")
-	var dataObjects []schema.DataObjectImport
-
-	err = json.Unmarshal(dataObjectsJson, &dataObjects)
-	suite.Require().NoError(err, "Failed to unmarshal data objects json")
-
-	commands := make([]schema.ImportCommand, 0, len(dataObjects))
-	for i := range dataObjects {
-		commands = append(commands, schema.ImportCommand{
-			UpsertDataObject: &dataObjects[i],
-		})
-	}
-	// import using imported client
-	submitObjects(&suite.Suite, suite.sdkClient.Job(), suite.sdkClient.Importer(), suite.createdDataSource.Id, "DS", "DataObjectImport", commands)
 }
 
 func (suite *AccessControlServiceTestSuite) TearDownSuite() {
@@ -123,7 +103,7 @@ func (suite *AccessControlServiceTestSuite) TestB_ListAccessControlsWithFilterBy
 	createdAccessControl := suite.createdAccessControl
 	suite.Require().NotNil(createdAccessControl, "Created access control is nil")
 	ctx := suite.T().Context()
-	client := suite.sdkClient.AccessControl()
+	client := suite.accessControlClient
 	filter := &schema.AccessControlFilterInput{
 		DataSource: &suite.createdDataSource.Id,
 	}
@@ -145,7 +125,7 @@ func (suite *AccessControlServiceTestSuite) TestC_UpdateAccessControl() {
 	createdAccessControl := suite.createdAccessControl
 	suite.Require().NotNil(createdAccessControl, "Created access control is nil")
 	ctx := suite.T().Context()
-	client := suite.sdkClient.AccessControl()
+	client := suite.accessControlClient
 	newName := "Updated Access Control Name " + uuid.New().String()
 	updatedAccessControl, err := client.UpdateAccessControl(ctx, createdAccessControl.Id, schema.AccessControlInput{
 		Name: &newName,
@@ -160,7 +140,7 @@ func (suite *AccessControlServiceTestSuite) TestD_DeactivateAccessControl() {
 	createdAccessControl := suite.createdAccessControl
 	suite.Require().NotNil(createdAccessControl, "Created access control is nil")
 	ctx := suite.T().Context()
-	client := suite.sdkClient.AccessControl()
+	client := suite.accessControlClient
 	// deactivate access control. Test assumes that created access control is active
 	_, err := client.DeactivateAccessControl(ctx, createdAccessControl.Id)
 	suite.Require().NoError(err, "Failed to deactivate access control")
@@ -176,7 +156,7 @@ func (suite *AccessControlServiceTestSuite) TestE_ActivateAccessControl() {
 	createdAccessControl := suite.createdAccessControl
 	suite.Require().NotNil(createdAccessControl, "Created access control is nil")
 	ctx := suite.T().Context()
-	client := suite.sdkClient.AccessControl()
+	client := suite.accessControlClient
 	// activate access control back
 	_, err := client.ActivateAccessControl(ctx, createdAccessControl.Id)
 	suite.Require().NoError(err, "Failed to activate access control")
@@ -194,7 +174,7 @@ func (suite *AccessControlServiceTestSuite) TestF_GetAccessControlWhoListWithAsc
 	createdUser := suite.createdUser
 	suite.Require().NotNil(createdUser, "Created user is nil")
 	ctx := suite.T().Context()
-	client := suite.sdkClient.AccessControl()
+	client := suite.accessControlClient
 	sortOrder := schema.SortAsc
 	response := client.GetAccessControlWhoList(ctx, createdAccessControl.Id, services.WithAccessControlWhoListOrder(schema.AccessControlWhoOrderByInput{
 		Name: &sortOrder,
@@ -221,7 +201,7 @@ func (suite *AccessControlServiceTestSuite) TestF_GetAccessControlWhoListWithAsc
 
 func (suite *AccessControlServiceTestSuite) TestG_GetAccessControlWhatDataObjectListWithDescOrder() {
 	ctx := suite.T().Context()
-	client := suite.sdkClient.AccessControl()
+	client := suite.accessControlClient
 	sortOrder := schema.SortDesc
 	response := client.GetAccessControlWhatDataObjectList(ctx, suite.createdAccessControl.Id, services.WithAccessControlWhatListOrder(schema.AccessWhatOrderByInput{
 		Name: &sortOrder,
@@ -245,7 +225,7 @@ func (suite *AccessControlServiceTestSuite) TestH_GetAccessControlABACWhatScope(
 	suite.Require().NotNil(createdUser, "Created user is nil")
 
 	ctx := suite.T().Context()
-	client := suite.sdkClient.AccessControl()
+	client := suite.accessControlClient
 	name := "Test Access Control for WhatAccessControlList " + uuid.New().String()
 	action := schema.AccessControlActionGrant
 	dataSource := suite.createdDataSource.Id
@@ -256,6 +236,7 @@ func (suite *AccessControlServiceTestSuite) TestH_GetAccessControlABACWhatScope(
 	whatAbacRule := schema.WhatAbacRuleInput{
 		DoTypes:     []string{"schema"},
 		Permissions: []string{"READ"},
+		Scope: []string{"RAITO_DBT"},
 		Rule: schema.AbacComparisonExpressionInput{
 			Comparison: &schema.AbacComparisonExpressionComparisonInput{Operator: schema.AbacComparisonExpressionComparisonOperatorHastag,
 				LeftOperand: "source_system",
@@ -300,7 +281,7 @@ func (suite *AccessControlServiceTestSuite) TestI_GetAccessControlWhatAccessCont
 	createdAccessControl := suite.createdAccessControl
 	suite.Require().NotNil(createdAccessControl, "Created access control is nil")
 	ctx := suite.T().Context()
-	client := suite.sdkClient.AccessControl()
+	client := suite.accessControlClient
 	// create another access control that references the first one in WhatAccessControlList
 	name := "Test Access Control for WhatAccessControlList " + uuid.New().String()
 	action := schema.AccessControlActionGrant
@@ -347,7 +328,7 @@ func (suite *AccessControlServiceTestSuite) TestJ_DeleteAccessControl() {
 	createdAccessControl := suite.createdAccessControl
 	suite.Require().NotNil(createdAccessControl, "Created access control is nil")
 	ctx := suite.T().Context()
-	client := suite.sdkClient.AccessControl()
+	client := suite.accessControlClient
 
 	err := client.DeleteAccessControl(ctx, createdAccessControl.Id)
 	suite.Require().NoError(err, "Failed to delete access control")

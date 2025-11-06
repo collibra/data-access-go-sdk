@@ -92,7 +92,8 @@ func (suite *DataSourceServiceTestSuite) SetupSuite() {
 }
 
 func (suite *DataSourceServiceTestSuite) TestA_CreateDataSource_WithParent() {
-	parentDataSource := createDataSource(&suite.Suite, suite.dataSourceClient, nil)
+	dataSourceClient := suite.dataSourceClient
+	parentDataSource := createDataSource(&suite.Suite, dataSourceClient, nil)
 	suite.parentDataSource = parentDataSource
 
 	dataSourceName := "Test Data Source " + uuid.New().String()
@@ -103,7 +104,7 @@ func (suite *DataSourceServiceTestSuite) TestA_CreateDataSource_WithParent() {
 		Parent:      &parentDataSource.Id,
 	}
 
-	createdDataSource := createDataSource(&suite.Suite, suite.dataSourceClient, input)
+	createdDataSource := createDataSource(&suite.Suite, dataSourceClient, input)
 	suite.Equal(dataSourceName, createdDataSource.Name)
 	suite.Equal(dataSourceDescription, createdDataSource.Description)
 	suite.createdDataSource = createdDataSource

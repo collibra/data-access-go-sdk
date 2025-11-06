@@ -41,13 +41,14 @@ func (suite *DataObjectServiceTestSuite) SetupSuite() {
 
 	suite.createdDataSource = dataSourceWithMetaData
 	// import data objects
-	importDataObjects(suite)
+	importDataObjects(&suite.Suite, sdkClient, suite.createdDataSource.Id)
 
-	suite.dataObjectClient = sdkClient.DataObject()
+	dataObjectClient := sdkClient.DataObject()
+	suite.dataObjectClient = dataObjectClient
 	suite.Require().NotNil(suite.dataObjectClient, "Failed to create Data Object client")
 }
 
-func importDataObjects(suite *DataObjectServiceTestSuite) {
+func importDataObjects(suite *suite.Suite, sdkClient *sdk.CollibraClient, dataSourceId string) {
 	dataObjectsJson, err := os.ReadFile("testdata/test_data_objects.json")
 	suite.Require().NoError(err, "Failed to read data objects file")
 	var dataObjects []schema.DataObjectImport
@@ -61,8 +62,10 @@ func importDataObjects(suite *DataObjectServiceTestSuite) {
 			UpsertDataObject: &dataObjects[i],
 		})
 	}
+	jobClient := sdkClient.Job()
+	importerClient := sdkClient.Importer()
 	// import using imported client
-	submitObjects(&suite.Suite, suite.sdkClient.Job(), suite.sdkClient.Importer(), suite.createdDataSource.Id, "DS", "DataObjectImport", commands)
+	submitObjects(suite, jobClient, importerClient, dataSourceId, "DS", "DataObjectImport", commands)
 }
 
 func (suite *DataObjectServiceTestSuite) TearDownSuite() {
