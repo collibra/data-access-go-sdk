@@ -17,10 +17,10 @@ type ExporterServiceTestSuite struct {
 	createdDataSource    *schema.DataSource
 	createdUser          *schema.User
 	createdAccessControl *schema.AccessControl
-	job 				*schema.Job
-	task 				*schema.Task
-	subtask 			*schema.Subtask
-	jobType 			string
+	job                  *schema.Job
+	task                 *schema.Task
+	subtask              *schema.Subtask
+	jobType              string
 }
 
 func createAccessControl(suite *ExporterServiceTestSuite) {
@@ -99,19 +99,19 @@ func (suite *ExporterServiceTestSuite) SetupSuite() {
 	startedJobStatus := schema.JobStatusStarted
 	job, err := jobClient.CreateJob(ctx, schema.JobInput{
 		DataSourceId: &dataSource.Id,
-		Status: &startedJobStatus,
-		EventTime: time.Now(),
+		Status:       &startedJobStatus,
+		EventTime:    time.Now(),
 	})
 	suite.Require().NoError(err, "Failed to create Job")
 	suite.job = job
 	suite.jobType = "DA"
 	// start task
-	task,  err := jobClient.AddTaskEvent(ctx, schema.TaskEventInput{
+	task, err := jobClient.AddTaskEvent(ctx, schema.TaskEventInput{
 		DataSourceId: &dataSource.Id,
-		JobId: job.Id,
-		JobType: suite.jobType,
-		Status: schema.TaskStatusStarted,
-		EventTime: time.Now(),
+		JobId:        job.Id,
+		JobType:      suite.jobType,
+		Status:       schema.TaskStatusStarted,
+		EventTime:    time.Now(),
 	})
 	suite.Require().NoError(err, "Failed to create Task")
 	suite.task = task
@@ -119,11 +119,11 @@ func (suite *ExporterServiceTestSuite) SetupSuite() {
 	// start subtask
 	subtask, err := jobClient.AddSubtaskEvent(ctx, schema.SubtaskInput{
 		DataSourceId: &dataSource.Id,
-		JobId: job.Id,
-		JobType: suite.jobType,
-		SubtaskId: "AccessControlFeedbackImport",
-		Status: schema.SubtaskStatusStarted,
-		EventTime: time.Now(),
+		JobId:        job.Id,
+		JobType:      suite.jobType,
+		SubtaskId:    "AccessControlFeedbackImport",
+		Status:       schema.SubtaskStatusStarted,
+		EventTime:    time.Now(),
 	})
 	suite.Require().NoError(err, "Failed to create Subtask")
 	suite.Require().NotNil(subtask)
@@ -132,8 +132,8 @@ func (suite *ExporterServiceTestSuite) SetupSuite() {
 	// start import flow
 	importerClient := sdkClient.Importer()
 	subtask, err = importerClient.StartImportFlow(ctx, schema.StartImportFlowInput{
-		JobId: job.Id,
-		TaskId: suite.jobType,
+		JobId:     job.Id,
+		TaskId:    suite.jobType,
 		SubtaskId: subtask.SubtaskId,
 	})
 	suite.Require().NoError(err, "Failed to start import flow")
@@ -143,30 +143,32 @@ func (suite *ExporterServiceTestSuite) SetupSuite() {
 
 func (suite *ExporterServiceTestSuite) TearDownSuite() {
 	ctx := suite.T().Context()
-	flowId := suite.subtask.FlowId
 	sdkClient := suite.sdkClient
 	importerClient := sdkClient.Importer()
-	err := importerClient.FinishImportFlow(ctx, *flowId)
+	err := importerClient.FinishImportFlow(ctx, *suite.subtask.FlowId)
 	suite.Require().NoError(err, "Failed to finish import flow")
 	jobClient := sdkClient.Job()
 	_, err = jobClient.AddSubtaskEvent(ctx, schema.SubtaskInput{
 		DataSourceId: &suite.createdDataSource.Id,
-		JobId: suite.job.Id,
-		JobType: suite.jobType,
-		SubtaskId: "AccessControlFeedbackImport",
-		Status: schema.SubtaskStatusCompleted,
-		EventTime: time.Now(),
+		JobId:        suite.job.Id,
+		JobType:      suite.jobType,
+		SubtaskId:    "AccessControlFeedbackImport",
+		Status:       schema.SubtaskStatusCompleted,
+		EventTime:    time.Now(),
 	})
 	suite.Require().NoError(err, "Failed to complete Subtask")
 
 	_, err = jobClient.AddTaskEvent(ctx, schema.TaskEventInput{
 		DataSourceId: &suite.createdDataSource.Id,
-		JobId: suite.job.Id,
-		JobType: suite.jobType,
-		Status: schema.TaskStatusStarted,
-		EventTime: time.Now(),
+		JobId:        suite.job.Id,
+		JobType:      suite.jobType,
+		Status:       schema.TaskStatusStarted,
+		EventTime:    time.Now(),
 	})
 	suite.Require().NoError(err, "Failed to create Task")
+	// Delete Data Source
+	err = sdkClient.DataSource().DeleteDataSource(ctx, suite.createdDataSource.Id)
+	suite.Require().NoError(err, "Failed to delete Data Source")
 }
 
 func (suite *ExporterServiceTestSuite) TestA_ExportAccessControls_WithExportOutOfSyncOnly() {
