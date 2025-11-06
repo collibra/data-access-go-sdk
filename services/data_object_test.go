@@ -36,7 +36,10 @@ func (suite *DataObjectServiceTestSuite) SetupSuite() {
 	dataSourceClient := sdkClient.DataSource()
 	suite.Require().NotNil(dataSourceClient, "Failed to create Data Source client")
 
-	suite.createdDataSource = createDataSource(&suite.Suite, dataSourceClient)
+	dataSource := createDataSource(&suite.Suite, dataSourceClient, nil)
+	dataSourceWithMetaData := setDataSourceMetadata(&suite.Suite, dataSourceClient, dataSource.Id, nil)
+
+	suite.createdDataSource = dataSourceWithMetaData
 	// import data objects
 	importDataObjects(suite)
 

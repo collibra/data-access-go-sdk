@@ -40,7 +40,10 @@ func (suite *AccessControlServiceTestSuite) SetupSuite() {
 	dataSourceClient := sdkClient.DataSource()
 	suite.Require().NotNil(dataSourceClient, "Failed to create Data Source client")
 
-	suite.createdDataSource = createDataSource(&suite.Suite, dataSourceClient)
+	dataSource := createDataSource(&suite.Suite, dataSourceClient, nil)
+	dataSourceWithMetaData := setDataSourceMetadata(&suite.Suite, dataSourceClient, dataSource.Id, nil)
+
+	suite.createdDataSource = dataSourceWithMetaData
 	// import data objects
 	importWhat(suite)
 	// create test user
@@ -165,7 +168,7 @@ func (suite *AccessControlServiceTestSuite) TestD_DeactivateAccessControl() {
 	deactivatedAccessControl, err := client.GetAccessControl(ctx, createdAccessControl.Id)
 	suite.Require().NoError(err, "Failed to get access control after deactivation")
 	suite.Require().NotNil(deactivatedAccessControl, "Deactivated access control is nil")
-	suite.Require().Equal(deactivatedAccessControl.State, schema.AccessControlStateInactive, "Access control was not deactivated") 
+	suite.Require().Equal(deactivatedAccessControl.State, schema.AccessControlStateInactive, "Access control was not deactivated")
 	suite.createdAccessControl = deactivatedAccessControl
 }
 
@@ -181,7 +184,7 @@ func (suite *AccessControlServiceTestSuite) TestE_ActivateAccessControl() {
 	activatedAccessControl, err := client.GetAccessControl(ctx, createdAccessControl.Id)
 	suite.Require().NoError(err, "Failed to get access control after activation")
 	suite.Require().NotNil(activatedAccessControl, "Activated access control is nil")
-	suite.Require().Equal(activatedAccessControl.State, schema.AccessControlStateActive, "Access control was not activated") 
+	suite.Require().Equal(activatedAccessControl.State, schema.AccessControlStateActive, "Access control was not activated")
 	suite.createdAccessControl = activatedAccessControl
 }
 
@@ -251,17 +254,16 @@ func (suite *AccessControlServiceTestSuite) TestH_GetAccessControlABACWhatScope(
 	stringLiteral := "Stripe"
 	// TODO: adjust data here so the GetAccessControlAbacWhatScope response contains at least one item
 	whatAbacRule := schema.WhatAbacRuleInput{
-		DoTypes: []string{"schema"},
+		DoTypes:     []string{"schema"},
 		Permissions: []string{"READ"},
 		Rule: schema.AbacComparisonExpressionInput{
 			Comparison: &schema.AbacComparisonExpressionComparisonInput{Operator: schema.AbacComparisonExpressionComparisonOperatorHastag,
-			LeftOperand: "source_system",
-			RightOperand: schema.AbacComparisonExpressionOperandInput{
-				Literal: &schema.AbacComparisonExpressionLiteral{
-					String: &stringLiteral,
-				},
-			}},
-			
+				LeftOperand: "source_system",
+				RightOperand: schema.AbacComparisonExpressionOperandInput{
+					Literal: &schema.AbacComparisonExpressionLiteral{
+						String: &stringLiteral,
+					},
+				}},
 		},
 	}
 
@@ -277,7 +279,7 @@ func (suite *AccessControlServiceTestSuite) TestH_GetAccessControlABACWhatScope(
 		},
 		WhatAbacRule: &whatAbacRule,
 	})
-	suite.Require().NoError(err, "Failed to create access control with ABAC what scope") 
+	suite.Require().NoError(err, "Failed to create access control with ABAC what scope")
 	suite.Require().NotNil(accessControl, "Created access control is nil")
 
 	// get WhatAbacRuleList for the created access control and verify that the rule is listed there
@@ -352,7 +354,7 @@ func (suite *AccessControlServiceTestSuite) TestJ_DeleteAccessControl() {
 
 	// try to get deleted access control
 	deletedAccessControl, err := client.GetAccessControl(ctx, createdAccessControl.Id)
-	suite.Require().NoError(err, "Expected error when getting deleted access control")	
+	suite.Require().NoError(err, "Expected error when getting deleted access control")
 	suite.Require().Equal(deletedAccessControl.State, schema.AccessControlStateDeleted, "Deleted access control should have a 'Deleted' state")
 }
 
