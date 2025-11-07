@@ -22,7 +22,7 @@ type ImporterServiceTestSuite struct {
 	jobType           string
 }
 
-func readUsersFromFile(suite *suite.Suite, filePath string) []schema.ImportCommand {
+func constructCommandFromUsersTestFile(suite *suite.Suite) []schema.ImportCommand {
 	usersJson, err := os.ReadFile("testdata/test_users.json")
 	suite.Require().NoError(err, "Failed to read users file")
 	var users []schema.UserImport
@@ -103,7 +103,7 @@ func (suite *ImporterServiceTestSuite) SetupSuite() {
 	suite.subtask = subtask
 }
 
-func (suite *ImporterServiceTestSuite) TestImportHeartbeat() {
+func (suite *ImporterServiceTestSuite) TestA_ImportHeartbeat() {
 	ctx := suite.T().Context()
 	importerClient := suite.sdkClient.Importer()
 	subtask := suite.subtask
@@ -111,6 +111,31 @@ func (suite *ImporterServiceTestSuite) TestImportHeartbeat() {
 	suite.Require().NoError(err, "Failed to send import heartbeat")
 	suite.Require().NotNil(importHeartBeatSubtask, "Import heartbeat returned nil subtask")
 	suite.Equal(subtask, importHeartBeatSubtask, "Import heartbeat subtask does not match original subtask")
+}
+
+func (suite *ImporterServiceTestSuite) TestB_SupportedCliVersions() {
+	ctx := suite.T().Context()
+	importerClient := suite.sdkClient.Importer()
+
+	versions, err := importerClient.SupportedCliVersion(ctx)
+	suite.Require().NoError(err, "Failed to get supported CLI versions")
+	suite.Require().NotEmpty(versions.SupportedVersions, "Supported CLI versions is empty")
+	suite.Require().NotEqual("", versions.SupportedVersions, "Supported CLI versions is empty")
+	suite.Require().NotEqual("", versions.DeprecatedVersions.DeprecatedVersions, "Deprecated CLI versions is empty")
+}
+
+func (suite *ImporterServiceTestSuite) TestC_SubmitImportObjects() {
+	ctx := suite.T().Context()
+	importerClient := suite.sdkClient.Importer()
+	commands := constructCommandFromUsersTestFile(&suite.Suite)
+	submittedCommands, err := importerClient.SubmitImportObjects(ctx, schema.ImportCommands{
+		FlowId:   *suite.subtask.FlowId,
+		Commands: commands,
+	})
+	
+	suite.Require().NoError(err, "Failed to submit import objects")
+	suite.Require().NotNil(submittedCommands, "Submitted commands is nil")
+	suite.Require().Equal(len(commands), submittedCommands.Submitted, "Submitted commands length does not match")
 }
 
 func (suite *ImporterServiceTestSuite) TearDownSuite() {
