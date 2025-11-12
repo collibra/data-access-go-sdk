@@ -339,7 +339,7 @@ func (suite *AccessControlServiceTestSuite) TestK_GetAccessControlWhatAccessCont
 		},
 	}
 
-	accessControl, err := suite.accessControlClient.CreateAccessControl(ctx, schema.AccessControlInput{
+	accessControlThanRefersExistingOne, err := suite.accessControlClient.CreateAccessControl(ctx, schema.AccessControlInput{
 		Name:   &name,
 		Action: &action,
 		DataSources: []schema.AccessControlDataSourceInput{
@@ -351,15 +351,13 @@ func (suite *AccessControlServiceTestSuite) TestK_GetAccessControlWhatAccessCont
 		WhatDataObjects: []schema.AccessControlWhatInputDO{whatDataObjects},
 	})
 	suite.Require().NoError(err, "Failed to create access control referencing another one")
-	suite.Require().NotNil(accessControl, "Created access control is nil")
+	suite.Require().NotNil(accessControlThanRefersExistingOne, "Created access control is nil")
 
-	// get WhatAccessControlList for the first created access control and verify that the second one is listed there
 	response := client.GetAccessControlWhatAccessControlList(ctx, createdAccessControl.Id)
 	found := false
 	for item, err := range response {
-		// todo: create a better comparison and check properly the access control IDs
 		suite.Require().NoError(err, "Error listing access control what data objects")
-		if item.AccessControl.Id == accessControl.Id {
+		if item.AccessControl.Id == accessControlThanRefersExistingOne.Id {
 			found = true
 			return
 		}
