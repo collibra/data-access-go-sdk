@@ -96,8 +96,9 @@ func (suite *JobServiceTestSuite) TestC_UpdateJob() {
 }
 
 func (suite *JobServiceTestSuite) TestD_ListJobs() {
-	ctx := suite.T().Context()
 	suite.T().Skip("Skipping until https://engineering-collibra.atlassian.net/browse/DEV-151222 implemented")
+
+	ctx := suite.T().Context()
 	if suite.createdJob == nil {
 		suite.T().Skip("Skipping test as createdJob is nil")
 	}
