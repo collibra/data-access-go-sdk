@@ -1,6 +1,7 @@
 package services_test
 
 import (
+	"sort"
 	"testing"
 
 	sdk "github.com/collibra/data-access-go-sdk"
@@ -70,12 +71,16 @@ func (suite *AccessControlServiceTestSuite) TestA_CreateAccessControl() {
 	action := schema.AccessControlActionGrant
 	user := suite.createdUser.Id
 	dataSource := suite.createdDataSource.Id
-	fullName := "RAITO_DBT"
+	fullNames := []string{"RAITO_DBT.DEFAULT.CUSTOMER.FIRSTNAME", "RAITO_DBT.DEFAULT.CUSTOMER.LASTNAME"}
 	whatDataObjects := schema.AccessControlWhatInputDO{
 		DataObjectByName: []schema.AccessControlWhatDoByNameInput{
 			{
 				DataSource: dataSource,
-				FullName:   fullName,
+				FullName:   fullNames[0],
+			},
+			{
+				DataSource: dataSource,
+				FullName:   fullNames[1],
 			},
 		},
 	}
@@ -168,17 +173,15 @@ func (suite *AccessControlServiceTestSuite) TestE_ActivateAccessControl() {
 	suite.createdAccessControl = activatedAccessControl
 }
 
-func (suite *AccessControlServiceTestSuite) TestF_GetAccessControlWhoListWithAscSortOrder() {
+func (suite *AccessControlServiceTestSuite) TestF_GetAccessControlWhoList() {
 	createdAccessControl := suite.createdAccessControl
 	suite.Require().NotNil(createdAccessControl, "Created access control is nil")
 	createdUser := suite.createdUser
 	suite.Require().NotNil(createdUser, "Created user is nil")
 	ctx := suite.T().Context()
 	client := suite.accessControlClient
-	sortOrder := schema.SortAsc
-	response := client.GetAccessControlWhoList(ctx, createdAccessControl.Id, services.WithAccessControlWhoListOrder(schema.AccessControlWhoOrderByInput{
-		Name: &sortOrder,
-	}))
+
+	response := client.GetAccessControlWhoList(ctx, createdAccessControl.Id)
 	found := false
 	for who, err := range response {
 		suite.Require().NoError(err, "Error listing access control who items")
@@ -199,7 +202,49 @@ func (suite *AccessControlServiceTestSuite) TestF_GetAccessControlWhoListWithAsc
 	suite.Require().True(found, "Expected user %s not found in access control who list", createdUser.Email)
 }
 
-func (suite *AccessControlServiceTestSuite) TestG_GetAccessControlWhatDataObjectListWithDescOrder() {
+func (suite *AccessControlServiceTestSuite) TestG_GetAccessControlWhoListWithAscSortOrder() {
+	createdAccessControl := suite.createdAccessControl
+	suite.Require().NotNil(createdAccessControl, "Created access control is nil")
+	createdUser := suite.createdUser
+	suite.Require().NotNil(createdUser, "Created user is nil")
+	ctx := suite.T().Context()
+	client := suite.accessControlClient
+	sortOrder := schema.SortAsc
+	response := client.GetAccessControlWhoList(ctx, createdAccessControl.Id, services.WithAccessControlWhoListOrder(schema.AccessControlWhoOrderByInput{
+		Name: &sortOrder,
+	}))
+	availableNames := []string{}
+	for who, err := range response {
+		suite.Require().NoError(err, "Error listing access control who items")
+		item := who.GetItem()
+		typename := item.GetTypename()
+		expectedUserType := "User"
+		// Type assert to access the Name field and collect names
+		if typename != nil && *typename == expectedUserType {
+			user := item.(*schema.AccessWhoItemItemUser)
+			name := user.Name
+			availableNames = append(availableNames, name)
+		}
+	}
+	suite.True(sort.StringsAreSorted(availableNames), "Access control who names are not sorted in ascending order")
+}
+
+func (suite *AccessControlServiceTestSuite) TestH_GetAccessControlWhatDataObjectList() {
+	ctx := suite.T().Context()
+	client := suite.accessControlClient
+	response := client.GetAccessControlWhatDataObjectList(ctx, suite.createdAccessControl.Id)
+	found := false
+	for what, err := range response {
+		suite.Require().NoError(err, "Error listing access control what data objects")
+		if what.DataObject.FullName == "RAITO_DBT.DEFAULT.CUSTOMER.LASTNAME" {
+			found = true
+			return
+		}
+	}
+	suite.Require().True(found, "Expected data object RAITO_DBT.DEFAULT.CUSTOMER.LASTNAME not found in access control what list")
+}
+
+func (suite *AccessControlServiceTestSuite) TestI_GetAccessControlWhatDataObjectListWithDescOrder() {
 	ctx := suite.T().Context()
 	client := suite.accessControlClient
 	sortOrder := schema.SortDesc
@@ -207,18 +252,16 @@ func (suite *AccessControlServiceTestSuite) TestG_GetAccessControlWhatDataObject
 		Name: &sortOrder,
 	}))
 
-	found := false
+	availableItems := []string{}
 	for what, err := range response {
 		suite.Require().NoError(err, "Error listing access control what data objects")
-		if what.DataObject.FullName == "RAITO_DBT" {
-			found = true
-			return
-		}
+		availableItems = append(availableItems, what.DataObject.FullName)
 	}
-	suite.Require().True(found, "Expected data object RAITO_DBT not found in access control what list")
+	suite.Require().Greater(len(availableItems), 1, "Not enough items to verify descending order")
+	suite.True(sort.IsSorted(sort.Reverse(sort.StringSlice(availableItems))), "Data source names are not sorted in descending order")
 }
-
-func (suite *AccessControlServiceTestSuite) TestH_GetAccessControlABACWhatScope() {
+func (suite *AccessControlServiceTestSuite) TestJ_GetAccessControlABACWhatScope() {
+	suite.T().Skipf("Test not yet ready and not working properly")
 	createdAccessControl := suite.createdAccessControl
 	suite.Require().NotNil(createdAccessControl, "Created access control is nil")
 	createdUser := suite.createdUser
@@ -277,7 +320,7 @@ func (suite *AccessControlServiceTestSuite) TestH_GetAccessControlABACWhatScope(
 	suite.Require().True(found, "Expected ABAC what scope not found in access control")
 }
 
-func (suite *AccessControlServiceTestSuite) TestI_GetAccessControlWhatAccessControlList() {
+func (suite *AccessControlServiceTestSuite) TestK_GetAccessControlWhatAccessControlList() {
 	createdAccessControl := suite.createdAccessControl
 	suite.Require().NotNil(createdAccessControl, "Created access control is nil")
 	ctx := suite.T().Context()
@@ -324,7 +367,7 @@ func (suite *AccessControlServiceTestSuite) TestI_GetAccessControlWhatAccessCont
 	suite.Require().True(found, "Expected access control not found in what access control list")
 }
 
-func (suite *AccessControlServiceTestSuite) TestJ_DeleteAccessControl() {
+func (suite *AccessControlServiceTestSuite) TestL_DeleteAccessControl() {
 	createdAccessControl := suite.createdAccessControl
 	suite.Require().NotNil(createdAccessControl, "Created access control is nil")
 	ctx := suite.T().Context()

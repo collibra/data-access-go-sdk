@@ -56,5 +56,15 @@
     "parentExternalId": "RAITO_DBT.DEFAULT.CUSTOMER",
     "tags": null,
     "dataType": "TEXT"
+  },
+  {
+    "externalId": "RAITO_DBT.DEFAULT.CUSTOMER.FIRSTNAME",
+    "name": "FIRSTNAME",
+    "fullName": "RAITO_DBT.DEFAULT.CUSTOMER.FIRSTNAME",
+    "type": "column",
+    "description": "",
+    "parentExternalId": "RAITO_DBT.DEFAULT.CUSTOMER",
+    "tags": null,
+    "dataType": "TEXT"
   }
 ]
