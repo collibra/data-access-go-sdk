@@ -22,7 +22,7 @@ type JobServiceTestSuite struct {
 	createdSubtask    *schema.Subtask
 }
 
-func (suite *JobServiceTestSuite) SetupTest() {
+func (suite *JobServiceTestSuite) SetupSuite() {
 	config := utils.GetEnvConfig(&suite.Suite)
 	sdkClient := sdk.NewClient(
 		config.User,
@@ -97,6 +97,7 @@ func (suite *JobServiceTestSuite) TestC_UpdateJob() {
 
 func (suite *JobServiceTestSuite) TestD_ListJobs() {
 	ctx := suite.T().Context()
+	// suite.T().Skip("Skipping until https://engineering-collibra.atlassian.net/browse/DEV-151222 implemented")
 	if suite.createdJob == nil {
 		suite.T().Skip("Skipping test as createdJob is nil")
 	}
