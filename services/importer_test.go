@@ -14,6 +14,7 @@ import (
 
 type ImporterServiceTestSuite struct {
 	suite.Suite
+
 	sdkClient         *sdk.CollibraClient
 	createdDataSource *schema.DataSource
 	job               *schema.Job
@@ -36,6 +37,7 @@ func constructCommandFromUsersTestFile(suite *suite.Suite) []schema.ImportComman
 			UpsertUser: &users[i],
 		})
 	}
+
 	return commands
 }
 
@@ -58,6 +60,7 @@ func (suite *ImporterServiceTestSuite) SetupSuite() {
 	// setup job -> task -> subtask
 	jobClient := sdkClient.Job()
 	suite.Require().NotNil(jobClient, "Failed to create Job client")
+
 	startedJobStatus := schema.JobStatusStarted
 	job, err := jobClient.CreateJob(ctx, schema.JobInput{
 		DataSourceId: &dataSource.Id,
@@ -120,8 +123,8 @@ func (suite *ImporterServiceTestSuite) TestB_SupportedCliVersions() {
 	versions, err := importerClient.SupportedCliVersion(ctx)
 	suite.Require().NoError(err, "Failed to get supported CLI versions")
 	suite.Require().NotEmpty(versions.SupportedVersions, "Supported CLI versions is empty")
-	suite.Require().NotEqual("", versions.SupportedVersions, "Supported CLI versions is empty")
-	suite.Require().NotEqual("", versions.DeprecatedVersions.DeprecatedVersions, "Deprecated CLI versions is empty")
+	suite.Require().NotEmpty(versions.DeprecatedVersions, "Deprecated versions is empty")
+	suite.Require().NotEmpty(versions.DeprecatedVersions.DeprecatedVersions, "Deprecated CLI versions is empty")
 }
 
 func (suite *ImporterServiceTestSuite) TestC_SubmitImportObjects() {
@@ -132,40 +135,14 @@ func (suite *ImporterServiceTestSuite) TestC_SubmitImportObjects() {
 		FlowId:   *suite.subtask.FlowId,
 		Commands: commands,
 	})
-	
+
 	suite.Require().NoError(err, "Failed to submit import objects")
 	suite.Require().NotNil(submittedCommands, "Submitted commands is nil")
 	suite.Require().Equal(len(commands), submittedCommands.Submitted, "Submitted commands length does not match")
 }
 
 func (suite *ImporterServiceTestSuite) TearDownSuite() {
-	ctx := suite.T().Context()
-	sdkClient := suite.sdkClient
-	importerClient := sdkClient.Importer()
-	err := importerClient.FinishImportFlow(ctx, *suite.subtask.FlowId)
-	suite.Require().NoError(err, "Failed to finish import flow")
-	jobClient := sdkClient.Job()
-	_, err = jobClient.AddSubtaskEvent(ctx, schema.SubtaskInput{
-		DataSourceId: &suite.createdDataSource.Id,
-		JobId:        suite.job.Id,
-		JobType:      suite.jobType,
-		SubtaskId:    "UserImport",
-		Status:       schema.SubtaskStatusCompleted,
-		EventTime:    time.Now(),
-	})
-	suite.Require().NoError(err, "Failed to complete Subtask")
-
-	_, err = jobClient.AddTaskEvent(ctx, schema.TaskEventInput{
-		DataSourceId: &suite.createdDataSource.Id,
-		JobId:        suite.job.Id,
-		JobType:      suite.jobType,
-		Status:       schema.TaskStatusStarted,
-		EventTime:    time.Now(),
-	})
-	suite.Require().NoError(err, "Failed to create Task")
-
-	err = sdkClient.DataSource().DeleteDataSource(ctx, suite.createdDataSource.Id)
-	suite.Require().NoError(err, "Failed to delete Data Source")
+	TearDown_FinishJobAndTask_DeleteDataSource(&suite.Suite, suite.sdkClient, suite.subtask.FlowId, suite.createdDataSource.Id, suite.jobType, &suite.job.Id)
 }
 
 func Test_ImporterServiceTestSuite(t *testing.T) {

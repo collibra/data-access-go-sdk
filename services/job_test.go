@@ -13,6 +13,7 @@ import (
 
 type JobServiceTestSuite struct {
 	suite.Suite
+
 	sdkClient         *sdk.CollibraClient
 	createdDataSource *schema.DataSource
 	jobClient         *services.JobClient
@@ -62,6 +63,7 @@ func (suite *JobServiceTestSuite) TestA_CreateJob() {
 
 func (suite *JobServiceTestSuite) TestB_GetJob() {
 	ctx := suite.T().Context()
+
 	createdJob := suite.createdJob
 	if createdJob == nil {
 		suite.T().Skip("Skipping test as createdJob is nil")
@@ -75,6 +77,7 @@ func (suite *JobServiceTestSuite) TestB_GetJob() {
 
 func (suite *JobServiceTestSuite) TestC_UpdateJob() {
 	ctx := suite.T().Context()
+
 	createdJob := suite.createdJob
 	if createdJob == nil {
 		suite.T().Skip("Skipping test as createdJob is nil")
@@ -83,7 +86,7 @@ func (suite *JobServiceTestSuite) TestC_UpdateJob() {
 	jobStatusToUpdate := schema.JobStatusInprogress
 
 	updatedJob, err := suite.jobClient.UpdateJob(ctx, createdJob.Id, schema.JobInput{
-		Status: &jobStatusToUpdate,
+		Status:    &jobStatusToUpdate,
 		EventTime: time.Now(),
 	})
 	suite.Require().NoError(err, "Failed to update job")
@@ -101,15 +104,18 @@ func (suite *JobServiceTestSuite) TestD_ListJobs() {
 	response := suite.jobClient.ListJobs(ctx)
 
 	found := false
+
 	for job, err := range response {
 		suite.Require().NoError(err, "Failed to list jobs in the response")
 		suite.Require().NotNil(job, "Listed job is nil in the response")
 		// check if created job is in the list
 		if job.Id == suite.createdJob.Id {
 			suite.Require().Equal(suite.createdJob, job, "Listed job does not match the created job")
+
 			found = true
 		}
 	}
+
 	suite.Require().True(found, "Created job not found in the list")
 }
 
@@ -121,20 +127,24 @@ func (suite *JobServiceTestSuite) TestE_ListJobs_WithJobListFilter() {
 
 	response := suite.jobClient.ListJobs(ctx, services.WithJobListFilter(&schema.JobsFilter{DataSource: &suite.createdDataSource.Id}))
 	found := false
+
 	for job, err := range response {
 		suite.Require().NoError(err, "Failed to list jobs in the response")
 		suite.Require().NotNil(job, "Listed job is nil in the response")
 		// check if created job is in the list
 		if job.Id == suite.createdJob.Id {
 			suite.Require().Equal(suite.createdJob, job, "Listed job does not match the created job")
+
 			found = true
 		}
 	}
+
 	suite.Require().True(found, "Created job not found in the list")
 }
 
 func (suite *JobServiceTestSuite) TestF_AddTaskEvent() {
 	ctx := suite.T().Context()
+
 	createdJob := suite.createdJob
 	if createdJob == nil {
 		suite.T().Skip("Skipping test as createdJob is nil")
@@ -156,6 +166,7 @@ func (suite *JobServiceTestSuite) TestF_AddTaskEvent() {
 func (suite *JobServiceTestSuite) TestG_GetTask() {
 	ctx := suite.T().Context()
 	createdJob := suite.createdJob
+
 	createdTask := suite.createdTask
 	if createdJob == nil || createdTask == nil {
 		suite.T().Skip("Skipping test as createdJob or createdTask is nil")
@@ -170,6 +181,7 @@ func (suite *JobServiceTestSuite) TestG_GetTask() {
 func (suite *JobServiceTestSuite) TestH_ListTasksOfJob() {
 	ctx := suite.T().Context()
 	createdJob := suite.createdJob
+
 	createdTask := suite.createdTask
 	if createdJob == nil || createdTask == nil {
 		suite.T().Skip("Skipping test as createdJob or createdTask is nil")
@@ -178,20 +190,24 @@ func (suite *JobServiceTestSuite) TestH_ListTasksOfJob() {
 	response := suite.jobClient.ListTasksOfJob(ctx, createdJob.Id)
 
 	found := false
+
 	for task, err := range response {
 		suite.Require().NoError(err, "Failed to list tasks in the response")
 		suite.Require().NotNil(task, "Listed task is nil in the response")
 		// check if created task is in the list
 		if task.JobId == createdTask.JobId && task.TaskType == createdTask.TaskType {
 			suite.Require().Equal(createdTask, task, "Listed task does not match the created task")
+
 			found = true
 		}
 	}
+
 	suite.Require().True(found, "Created task not found in the list")
 }
 
 func (suite *JobServiceTestSuite) TestI_AddSubTaskEvent() {
 	ctx := suite.T().Context()
+
 	createdTask := suite.createdTask
 	if createdTask == nil {
 		suite.T().Skip("Skipping test as createdTask is nil")
@@ -212,6 +228,7 @@ func (suite *JobServiceTestSuite) TestI_AddSubTaskEvent() {
 func (suite *JobServiceTestSuite) TestJ_GetSubtaskOfTask() {
 	ctx := suite.T().Context()
 	createdTask := suite.createdTask
+
 	createdSubtask := suite.createdSubtask
 	if createdTask == nil || createdSubtask == nil {
 		suite.T().Skip("Skipping test as createdTask or createdSubtask is nil")

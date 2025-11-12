@@ -13,6 +13,7 @@ import (
 
 type ExporterServiceTestSuite struct {
 	suite.Suite
+
 	sdkClient            *sdk.CollibraClient
 	createdDataSource    *schema.DataSource
 	createdUser          *schema.User
@@ -96,6 +97,7 @@ func (suite *ExporterServiceTestSuite) SetupSuite() {
 	// setup job -> task -> subtask
 	jobClient := sdkClient.Job()
 	suite.Require().NotNil(jobClient, "Failed to create Job client")
+
 	startedJobStatus := schema.JobStatusStarted
 	job, err := jobClient.CreateJob(ctx, schema.JobInput{
 		DataSourceId: &dataSource.Id,
@@ -142,39 +144,14 @@ func (suite *ExporterServiceTestSuite) SetupSuite() {
 }
 
 func (suite *ExporterServiceTestSuite) TearDownSuite() {
-	ctx := suite.T().Context()
-	sdkClient := suite.sdkClient
-	importerClient := sdkClient.Importer()
-	err := importerClient.FinishImportFlow(ctx, *suite.subtask.FlowId)
-	suite.Require().NoError(err, "Failed to finish import flow")
-	jobClient := sdkClient.Job()
-	_, err = jobClient.AddSubtaskEvent(ctx, schema.SubtaskInput{
-		DataSourceId: &suite.createdDataSource.Id,
-		JobId:        suite.job.Id,
-		JobType:      suite.jobType,
-		SubtaskId:    "AccessControlFeedbackImport",
-		Status:       schema.SubtaskStatusCompleted,
-		EventTime:    time.Now(),
-	})
-	suite.Require().NoError(err, "Failed to complete Subtask")
-
-	_, err = jobClient.AddTaskEvent(ctx, schema.TaskEventInput{
-		DataSourceId: &suite.createdDataSource.Id,
-		JobId:        suite.job.Id,
-		JobType:      suite.jobType,
-		Status:       schema.TaskStatusStarted,
-		EventTime:    time.Now(),
-	})
-	suite.Require().NoError(err, "Failed to create Task")
-	// Delete Data Source
-	err = sdkClient.DataSource().DeleteDataSource(ctx, suite.createdDataSource.Id)
-	suite.Require().NoError(err, "Failed to delete Data Source")
+	TearDown_FinishJobAndTask_DeleteDataSource(&suite.Suite, suite.sdkClient, suite.subtask.FlowId, suite.createdDataSource.Id, suite.jobType, &suite.job.Id)
 }
 
 func (suite *ExporterServiceTestSuite) TestA_ExportAccessControls_WithExportOutOfSyncOnly() {
 	ctx := suite.T().Context()
 	exporter := suite.sdkClient.Exporter()
 	suite.Require().NotNil(exporter, "Failed to create Exporter client")
+
 	OnlyOutOfSync := true
 
 	_, err := exporter.StartExportFlow(ctx, *suite.subtask.FlowId, schema.ExportFlowOptions{
@@ -184,16 +161,20 @@ func (suite *ExporterServiceTestSuite) TestA_ExportAccessControls_WithExportOutO
 
 	response := exporter.FetchExportAccessControls(ctx, *suite.subtask.FlowId, 0)
 	found := false
+
 	for accessControl, err := range response {
 		suite.Require().NoError(err, "Error while exporting access controls")
 		suite.NotNil(accessControl, "Exported access control is nil")
+
 		if accessControl.Id == suite.createdAccessControl.Id {
 			suite.Equal(suite.createdAccessControl.Name, accessControl.Name)
 			suite.Equal(suite.createdAccessControl.Action, accessControl.Action)
+
 			found = true
-			return
+			break
 		}
 	}
+
 	suite.Require().True(found, "Failed to find exported access control")
 
 	_, err = exporter.FinishExportFlow(ctx, *suite.subtask.FlowId, time.Now())

@@ -5,8 +5,10 @@ import (
 	"fmt"
 	"time"
 
+	sdk "github.com/collibra/data-access-go-sdk"
 	"github.com/collibra/data-access-go-sdk/internal/schema"
 	"github.com/collibra/data-access-go-sdk/services"
+	"github.com/google/uuid"
 	"github.com/stretchr/testify/suite"
 )
 
@@ -132,4 +134,34 @@ func submitObjects(suite *suite.Suite, jobClient *services.JobClient, importer *
 	})
 	suite.Require().NoError(err, "Failed to end targets sync")
 	suite.Require().NotNil(job, "Job update result is nil")
+}
+
+func TearDown_FinishJobAndTask_DeleteDataSource(suite *suite.Suite, sdkClient *sdk.CollibraClient, flowId *uuid.UUID, dataSourceId string, jobType string, jobId *string) {
+	ctx := suite.T().Context()
+	importerClient := sdkClient.Importer()
+	err := importerClient.FinishImportFlow(ctx, *flowId)
+	suite.Require().NoError(err, "Failed to finish import flow")
+
+	jobClient := sdkClient.Job()
+	_, err = jobClient.AddSubtaskEvent(ctx, schema.SubtaskInput{
+		DataSourceId: &dataSourceId,
+		JobId:        *jobId,
+		JobType:      jobType,
+		SubtaskId:    "UserImport",
+		Status:       schema.SubtaskStatusCompleted,
+		EventTime:    time.Now(),
+	})
+	suite.Require().NoError(err, "Failed to complete Subtask")
+
+	_, err = jobClient.AddTaskEvent(ctx, schema.TaskEventInput{
+		DataSourceId: &dataSourceId,
+		JobId:        *jobId,
+		JobType:      jobType,
+		Status:       schema.TaskStatusStarted,
+		EventTime:    time.Now(),
+	})
+	suite.Require().NoError(err, "Failed to create Task")
+
+	err = sdkClient.DataSource().DeleteDataSource(ctx, dataSourceId)
+	suite.Require().NoError(err, "Failed to delete Data Source")
 }

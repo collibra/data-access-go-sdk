@@ -99,7 +99,7 @@ func (suite *AccessControlServiceTestSuite) TestA_CreateAccessControl() {
 	suite.Require().NotNil(accessControl)
 	suite.Require().Equal(name, accessControl.Name)
 	suite.Require().Equal(action, accessControl.Action)
-	suite.Require().Equal(dataSource, accessControl.SyncData[0].DataSource.DataSource.Id)
+	suite.Require().Equal(dataSource, accessControl.SyncData[0].DataSource.Id)
 	// store created access control for further tests
 	suite.createdAccessControl = accessControl
 }
@@ -113,16 +113,20 @@ func (suite *AccessControlServiceTestSuite) TestB_ListAccessControlsWithFilterBy
 		DataSource: &suite.createdDataSource.Id,
 	}
 	found := false
+
 	response := client.ListAccessControls(ctx, services.WithAccessControlListFilter(filter))
 	for accessControl, err := range response {
 		suite.Require().NoError(err, "Error listing access controls")
+
 		if accessControl.Id == createdAccessControl.Id {
 			suite.Equal(createdAccessControl.Name, accessControl.Name)
 			suite.Equal(createdAccessControl.Action, accessControl.Action)
+
 			found = true
-			return
+			break
 		}
 	}
+
 	suite.Require().True(found, "Created access control not found in list")
 }
 
@@ -153,7 +157,7 @@ func (suite *AccessControlServiceTestSuite) TestD_DeactivateAccessControl() {
 	deactivatedAccessControl, err := client.GetAccessControl(ctx, createdAccessControl.Id)
 	suite.Require().NoError(err, "Failed to get access control after deactivation")
 	suite.Require().NotNil(deactivatedAccessControl, "Deactivated access control is nil")
-	suite.Require().Equal(deactivatedAccessControl.State, schema.AccessControlStateInactive, "Access control was not deactivated")
+	suite.Require().Equal(schema.AccessControlStateInactive, deactivatedAccessControl.State, "Access control was not deactivated")
 	suite.createdAccessControl = deactivatedAccessControl
 }
 
@@ -169,7 +173,7 @@ func (suite *AccessControlServiceTestSuite) TestE_ActivateAccessControl() {
 	activatedAccessControl, err := client.GetAccessControl(ctx, createdAccessControl.Id)
 	suite.Require().NoError(err, "Failed to get access control after activation")
 	suite.Require().NotNil(activatedAccessControl, "Activated access control is nil")
-	suite.Require().Equal(activatedAccessControl.State, schema.AccessControlStateActive, "Access control was not activated")
+	suite.Require().Equal(schema.AccessControlStateActive, activatedAccessControl.State, "Access control was not activated")
 	suite.createdAccessControl = activatedAccessControl
 }
 
@@ -183,8 +187,10 @@ func (suite *AccessControlServiceTestSuite) TestF_GetAccessControlWhoList() {
 
 	response := client.GetAccessControlWhoList(ctx, createdAccessControl.Id)
 	found := false
+
 	for who, err := range response {
 		suite.Require().NoError(err, "Error listing access control who items")
+
 		item := who.GetItem()
 		typename := item.GetTypename()
 		expectedUserType := "User"
@@ -192,13 +198,15 @@ func (suite *AccessControlServiceTestSuite) TestF_GetAccessControlWhoList() {
 		if typename != nil && *typename == expectedUserType {
 			user := item.(*schema.AccessWhoItemItemUser)
 			email := user.Email
+
 			expectedEmail := createdUser.Email
 			if email != nil && expectedEmail != nil && *email == *expectedEmail {
 				found = true
-				return
+				break
 			}
 		}
 	}
+
 	suite.Require().True(found, "Expected user %s not found in access control who list", createdUser.Email)
 }
 
@@ -214,8 +222,10 @@ func (suite *AccessControlServiceTestSuite) TestG_GetAccessControlWhoListWithAsc
 		Name: &sortOrder,
 	}))
 	availableNames := []string{}
+
 	for who, err := range response {
 		suite.Require().NoError(err, "Error listing access control who items")
+
 		item := who.GetItem()
 		typename := item.GetTypename()
 		expectedUserType := "User"
@@ -226,6 +236,7 @@ func (suite *AccessControlServiceTestSuite) TestG_GetAccessControlWhoListWithAsc
 			availableNames = append(availableNames, name)
 		}
 	}
+
 	suite.True(sort.StringsAreSorted(availableNames), "Access control who names are not sorted in ascending order")
 }
 
@@ -234,13 +245,16 @@ func (suite *AccessControlServiceTestSuite) TestH_GetAccessControlWhatDataObject
 	client := suite.accessControlClient
 	response := client.GetAccessControlWhatDataObjectList(ctx, suite.createdAccessControl.Id)
 	found := false
+
 	for what, err := range response {
 		suite.Require().NoError(err, "Error listing access control what data objects")
+
 		if what.DataObject.FullName == "RAITO_DBT.DEFAULT.CUSTOMER.LASTNAME" {
 			found = true
-			return
+			break
 		}
 	}
+
 	suite.Require().True(found, "Expected data object RAITO_DBT.DEFAULT.CUSTOMER.LASTNAME not found in access control what list")
 }
 
@@ -253,10 +267,13 @@ func (suite *AccessControlServiceTestSuite) TestI_GetAccessControlWhatDataObject
 	}))
 
 	availableItems := []string{}
+
 	for what, err := range response {
 		suite.Require().NoError(err, "Error listing access control what data objects")
+
 		availableItems = append(availableItems, what.DataObject.FullName)
 	}
+
 	suite.Require().Greater(len(availableItems), 1, "Not enough items to verify descending order")
 	suite.True(sort.IsSorted(sort.Reverse(sort.StringSlice(availableItems))), "Data source names are not sorted in descending order")
 }
@@ -279,7 +296,7 @@ func (suite *AccessControlServiceTestSuite) TestJ_GetAccessControlABACWhatScope(
 	whatAbacRule := schema.WhatAbacRuleInput{
 		DoTypes:     []string{"schema"},
 		Permissions: []string{"READ"},
-		Scope: []string{"RAITO_DBT"},
+		Scope:       []string{"RAITO_DBT"},
 		Rule: schema.AbacComparisonExpressionInput{
 			Comparison: &schema.AbacComparisonExpressionComparisonInput{Operator: schema.AbacComparisonExpressionComparisonOperatorHastag,
 				LeftOperand: "source_system",
@@ -309,14 +326,17 @@ func (suite *AccessControlServiceTestSuite) TestJ_GetAccessControlABACWhatScope(
 	// get WhatAbacRuleList for the created access control and verify that the rule is listed there
 	response := client.GetAccessControlAbacWhatScope(ctx, accessControl.Id) // Empty list here
 	found := false
+
 	for item, err := range response {
 		// TODO: implement this comparison properly
 		suite.Require().NoError(err, "Error listing access control what ABAC rules")
+
 		if item != nil {
 			found = true
 			break
 		}
 	}
+
 	suite.Require().True(found, "Expected ABAC what scope not found in access control")
 }
 
@@ -355,13 +375,16 @@ func (suite *AccessControlServiceTestSuite) TestK_GetAccessControlWhatAccessCont
 
 	response := client.GetAccessControlWhatAccessControlList(ctx, createdAccessControl.Id)
 	found := false
+
 	for item, err := range response {
 		suite.Require().NoError(err, "Error listing access control what data objects")
+
 		if item.AccessControl.Id == accessControlThanRefersExistingOne.Id {
 			found = true
-			return
+			break
 		}
 	}
+
 	suite.Require().True(found, "Expected access control not found in what access control list")
 }
 
@@ -377,7 +400,7 @@ func (suite *AccessControlServiceTestSuite) TestL_DeleteAccessControl() {
 	// try to get deleted access control
 	deletedAccessControl, err := client.GetAccessControl(ctx, createdAccessControl.Id)
 	suite.Require().NoError(err, "Expected error when getting deleted access control")
-	suite.Require().Equal(deletedAccessControl.State, schema.AccessControlStateDeleted, "Deleted access control should have a 'Deleted' state")
+	suite.Require().Equal(schema.AccessControlStateDeleted, deletedAccessControl.State, "Deleted access control should have a 'Deleted' state")
 }
 
 func TestAccessControlServiceTestSuite(t *testing.T) {

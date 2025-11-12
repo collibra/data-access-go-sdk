@@ -62,6 +62,7 @@ func importDataObjects(suite *suite.Suite, sdkClient *sdk.CollibraClient, dataSo
 			UpsertDataObject: &dataObjects[i],
 		})
 	}
+
 	jobClient := sdkClient.Job()
 	importerClient := sdkClient.Importer()
 	// import using imported client
@@ -90,13 +91,15 @@ func (suite *DataObjectServiceTestSuite) TestA_ListDataObjects() {
 		FullName: &sortingOrder,
 	}))
 	fullNamesList := make([]string, 0)
+
 	for dataObject, err := range response {
 		suite.Require().NoError(err, "Error while iterating data objects")
 		suite.Require().NotNil(dataObject, "Data object should not be nil")
 		fullNamesList = append(fullNamesList, dataObject.FullName)
 	}
 
-	suite.Equal(len(expectedFullNames), len(fullNamesList), "Number of data objects does not match expected")
+	suite.Len(expectedFullNames, len(fullNamesList), "Number of data objects does not match expected")
+
 	for _, expected := range expectedFullNames {
 		suite.Contains(fullNamesList, expected, "Data object name %s not found", expected)
 	}
@@ -111,11 +114,11 @@ func (suite *DataObjectServiceTestSuite) TestB_GetDataObjectByName_Than_ById_And
 	dataObjectClient := suite.dataObjectClient
 
 	dataObject, err := dataObjectClient.GetDataObjectIdByName(ctx, dataObjectName, suite.createdDataSource.Id, services.WithDataObjectByExternalIdIncludeDataSource())
-	suite.NoError(err, "Failed to get data object by name")
+	suite.Require().NoError(err, "Failed to get data object by name")
 	suite.NotNil(dataObject, "Data object should not be nil")
 
 	dataObjectDetails, err := dataObjectClient.GetDataObject(ctx, dataObject)
-	suite.NoError(err, "Failed to get data object details")
+	suite.Require().NoError(err, "Failed to get data object details")
 	suite.NotNil(dataObjectDetails, "Data object details should not be nil")
 
 	suite.Equal(dataObjectName, dataObjectDetails.FullName, "Data object name should match")

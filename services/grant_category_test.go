@@ -13,6 +13,7 @@ import (
 
 type GrantCategoryServiceTestSuite struct {
 	suite.Suite
+
 	GrantCategoryClient  *services.GrantCategoryClient
 	createdGrantCategory *schema.GrantCategoryDetails
 }
@@ -28,10 +29,12 @@ func (suite *GrantCategoryServiceTestSuite) SetupSuite() {
 	if client == nil {
 		suite.FailNow("Failed to create Collibra client")
 	}
+
 	grantCategoryClient := client.GrantCategory()
 	if grantCategoryClient == nil {
 		suite.FailNow("Failed to create GrantCategory client")
 	}
+
 	suite.GrantCategoryClient = grantCategoryClient
 }
 
@@ -54,7 +57,7 @@ func (suite *GrantCategoryServiceTestSuite) TestA_CreateGrantCategory() {
 
 	createdGrant, err := suite.GrantCategoryClient.CreateGrantCategory(ctx, *input)
 
-	suite.NoError(err, "Failed to create GrantCategory")
+	suite.Require().NoError(err, "Failed to create GrantCategory")
 
 	suite.NotNil(createdGrant)
 	suite.Equal(name, createdGrant.Name)
@@ -67,75 +70,75 @@ func (suite *GrantCategoryServiceTestSuite) TestA_CreateGrantCategory() {
 }
 
 func (suite *GrantCategoryServiceTestSuite) TestB_GetGrantCategory() {
-    ctx := suite.T().Context()
-    createdGrantCategory := suite.createdGrantCategory
+	ctx := suite.T().Context()
+	createdGrantCategory := suite.createdGrantCategory
 	// Fail the test if no grant category was created in previous test
-	if createdGrantCategory == nil {
-		suite.FailNow("No GrantCategory created to test GetGrantCategory")
-	}
+	suite.Require().NotNil(createdGrantCategory, "No GrantCategory created to test GetGrantCategory")
 
-    retrievedGrantCategory, err := suite.GrantCategoryClient.GetGrantCategory(ctx, createdGrantCategory.Id)
+	retrievedGrantCategory, err := suite.GrantCategoryClient.GetGrantCategory(ctx, createdGrantCategory.Id)
 
-    suite.NoError(err, "Failed to get GrantCategory with id %s: %v", createdGrantCategory.Id, err)
-	
-    suite.Equal(createdGrantCategory.Id, retrievedGrantCategory.Id)
-    suite.Equal(createdGrantCategory.Name, retrievedGrantCategory.Name)
-    suite.Equal(createdGrantCategory.Description, retrievedGrantCategory.Description)
-    suite.Equal(createdGrantCategory.Icon, retrievedGrantCategory.Icon)
-    suite.Equal(createdGrantCategory.CanCreate, retrievedGrantCategory.CanCreate)
-    suite.Equal(createdGrantCategory.AllowDuplicateNames, retrievedGrantCategory.AllowDuplicateNames)
+	suite.Require().NoError(err, "Failed to get GrantCategory with id %s: %v", createdGrantCategory.Id, err)
+	suite.Require().NotNil(retrievedGrantCategory, "Retrieved GrantCategory is nil")
+	suite.Equal(createdGrantCategory.Id, retrievedGrantCategory.Id)
+	suite.Equal(createdGrantCategory.Name, retrievedGrantCategory.Name)
+	suite.Equal(createdGrantCategory.Description, retrievedGrantCategory.Description)
+	suite.Equal(createdGrantCategory.Icon, retrievedGrantCategory.Icon)
+	suite.Equal(createdGrantCategory.CanCreate, retrievedGrantCategory.CanCreate)
+	suite.Equal(createdGrantCategory.AllowDuplicateNames, retrievedGrantCategory.AllowDuplicateNames)
 }
 
 func (suite *GrantCategoryServiceTestSuite) TestC_UpdateGrantCategory() {
-    ctx := suite.T().Context()
-    createdGrantCategoryId := suite.createdGrantCategory.Id
+	ctx := suite.T().Context()
+	createdGrantCategoryId := suite.createdGrantCategory.Id
 
-    updatedName := suite.createdGrantCategory.Name + " Updated"
-    updatedDescription := suite.createdGrantCategory.Description + " Updated"
-    updateInput := &schema.GrantCategoryInput{
-        Name:        &updatedName,
-        Description: &updatedDescription,
-    }
+	updatedName := suite.createdGrantCategory.Name + " Updated"
+	updatedDescription := suite.createdGrantCategory.Description + " Updated"
+	updateInput := &schema.GrantCategoryInput{
+		Name:        &updatedName,
+		Description: &updatedDescription,
+	}
 
-    updatedGrantCategory, err := suite.GrantCategoryClient.UpdateGrantCategory(ctx, createdGrantCategoryId, *updateInput)
-    suite.NoErrorf(err, "Failed to update Test Grant with id %s: %v", createdGrantCategoryId, err)
+	updatedGrantCategory, err := suite.GrantCategoryClient.UpdateGrantCategory(ctx, createdGrantCategoryId, *updateInput)
+	suite.Require().NoErrorf(err, "Failed to update Test Grant with id %s: %v", createdGrantCategoryId, err)
 
-    suite.Require().NotNil(updatedGrantCategory)
-    suite.Require().Equal(createdGrantCategoryId, updatedGrantCategory.Id)
-    suite.Require().Equal(updatedName, updatedGrantCategory.Name)
-    suite.Require().Equal(updatedDescription, updatedGrantCategory.Description)
+	suite.Require().NotNil(updatedGrantCategory)
+	suite.Require().Equal(createdGrantCategoryId, updatedGrantCategory.Id)
+	suite.Require().Equal(updatedName, updatedGrantCategory.Name)
+	suite.Require().Equal(updatedDescription, updatedGrantCategory.Description)
 
-    // Update the suite's createdGrantCategory for subsequent tests
-    suite.createdGrantCategory = updatedGrantCategory
+	// Update the suite's createdGrantCategory for subsequent tests
+	suite.createdGrantCategory = updatedGrantCategory
 }
 
 func (suite *GrantCategoryServiceTestSuite) TestD_ListGrantCategories() {
-    ctx := suite.T().Context()
+	ctx := suite.T().Context()
 
-    grantCategories, err := suite.GrantCategoryClient.ListGrantCategories(ctx)
-    if err != nil {
-        suite.FailNow("Failed to list GrantCategories: %v", err)
-    }
+	grantCategories, err := suite.GrantCategoryClient.ListGrantCategories(ctx)
+	if err != nil {
+		suite.Failf("Failed to list GrantCategories", "Error: %v", err)
+	}
 
-    suite.NotEmpty(grantCategories)
+	suite.NotEmpty(grantCategories)
 	expectedName := suite.createdGrantCategory.Name
-	var retrievedNames []string
-    for _, category := range grantCategories {
-        retrievedNames = append(retrievedNames, category.Name)
-    }
+
+	retrievedNames := make([]string, 0, len(grantCategories))
+	for i := range grantCategories {
+		retrievedNames = append(retrievedNames, grantCategories[i].Name)
+	}
+
 	suite.Containsf(retrievedNames, expectedName, "Created grant category not found in list by name %s", expectedName)
 }
 
 func (suite *GrantCategoryServiceTestSuite) TestE_DeleteGrantCategory() {
-    ctx := suite.T().Context()
-    createdGrantCategory := suite.createdGrantCategory
+	ctx := suite.T().Context()
+	createdGrantCategory := suite.createdGrantCategory
 
-    err := suite.GrantCategoryClient.DeleteGrantCategory(ctx, createdGrantCategory.Id)
-    suite.NoError(err)
+	err := suite.GrantCategoryClient.DeleteGrantCategory(ctx, createdGrantCategory.Id)
+	suite.Require().NoError(err)
 
-    // Verify that the grant category is actually deleted
-    _, err = suite.GrantCategoryClient.GetGrantCategory(ctx, createdGrantCategory.Id)
-    suite.Require().Error(err, "Expected an error when getting a deleted grant category")
+	// Verify that the grant category is actually deleted
+	_, err = suite.GrantCategoryClient.GetGrantCategory(ctx, createdGrantCategory.Id)
+	suite.Require().Error(err, "Expected an error when getting a deleted grant category")
 }
 
 func TestGrantCategoryServiceTestSuite(t *testing.T) {
