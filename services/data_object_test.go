@@ -81,7 +81,7 @@ func TestDataObjectServiceTestSuite(t *testing.T) {
 func (suite *DataObjectServiceTestSuite) TestA_ListDataObjects() {
 	ctx := suite.T().Context()
 	dataObjectClient := suite.dataObjectClient
-	expectedFullNames := []string{"RAITO_DBT", "RAITO_DBT.DEFAULT", "RAITO_DBT.DEFAULT.CUSTOMER", "RAITO_DBT.DEFAULT.CUSTOMER.LASTNAME"}
+	expectedFullNames := []string{"RAITO_DBT", "RAITO_DBT.DEFAULT", "RAITO_DBT.DEFAULT.CUSTOMER", "RAITO_DBT.DEFAULT.CUSTOMER.LASTNAME", "RAITO_DBT.DEFAULT.CUSTOMER.FIRSTNAME"}
 	sortingOrder := schema.SortAsc
 
 	response := dataObjectClient.ListDataObjects(ctx, services.WithDataObjectListFilter(&schema.DataObjectFilterInput{

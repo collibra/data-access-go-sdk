@@ -94,7 +94,7 @@ func (suite *JobServiceTestSuite) TestC_UpdateJob() {
 
 func (suite *JobServiceTestSuite) TestD_ListJobs() {
 	ctx := suite.T().Context()
-	if suite.createdJob != nil {
+	if suite.createdJob == nil {
 		suite.T().Skip("Skipping test as createdJob is nil")
 	}
 
@@ -115,7 +115,7 @@ func (suite *JobServiceTestSuite) TestD_ListJobs() {
 
 func (suite *JobServiceTestSuite) TestE_ListJobs_WithJobListFilter() {
 	ctx := suite.T().Context()
-	if suite.createdJob != nil {
+	if suite.createdJob == nil {
 		suite.T().Skip("Skipping test as createdJob is nil")
 	}
 
