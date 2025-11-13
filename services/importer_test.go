@@ -41,6 +41,10 @@ func constructCommandFromUsersTestFile(suite *suite.Suite) []schema.ImportComman
 	return commands
 }
 
+func Test_ImporterServiceTestSuite(t *testing.T) {
+	suite.Run(t, new(ImporterServiceTestSuite))
+}
+
 func (suite *ImporterServiceTestSuite) SetupSuite() {
 	config := utils.GetEnvConfig(&suite.Suite)
 	sdkClient := sdk.NewClient(
@@ -106,7 +110,7 @@ func (suite *ImporterServiceTestSuite) SetupSuite() {
 	suite.subtask = subtask
 }
 
-func (suite *ImporterServiceTestSuite) TestA_ImportHeartbeat() {
+func (suite *ImporterServiceTestSuite) Test_ImportHeartbeat() {
 	ctx := suite.T().Context()
 	importerClient := suite.sdkClient.Importer()
 	subtask := suite.subtask
@@ -116,7 +120,7 @@ func (suite *ImporterServiceTestSuite) TestA_ImportHeartbeat() {
 	suite.Equal(subtask, importHeartBeatSubtask, "Import heartbeat subtask does not match original subtask")
 }
 
-func (suite *ImporterServiceTestSuite) TestB_SupportedCliVersions() {
+func (suite *ImporterServiceTestSuite) Test_SupportedCliVersions() {
 	ctx := suite.T().Context()
 	importerClient := suite.sdkClient.Importer()
 
@@ -127,7 +131,7 @@ func (suite *ImporterServiceTestSuite) TestB_SupportedCliVersions() {
 	suite.Require().NotEmpty(versions.DeprecatedVersions.DeprecatedVersions, "Deprecated CLI versions is empty")
 }
 
-func (suite *ImporterServiceTestSuite) TestC_SubmitImportObjects() {
+func (suite *ImporterServiceTestSuite) Test_SubmitImportObjects() {
 	ctx := suite.T().Context()
 	importerClient := suite.sdkClient.Importer()
 	commands := constructCommandFromUsersTestFile(&suite.Suite)
@@ -143,8 +147,4 @@ func (suite *ImporterServiceTestSuite) TestC_SubmitImportObjects() {
 
 func (suite *ImporterServiceTestSuite) TearDownSuite() {
 	TearDown_FinishJobAndTask_DeleteDataSource(&suite.Suite, suite.sdkClient, suite.subtask.FlowId, suite.createdDataSource.Id, suite.jobType, &suite.job.Id)
-}
-
-func Test_ImporterServiceTestSuite(t *testing.T) {
-	suite.Run(t, new(ImporterServiceTestSuite))
 }
