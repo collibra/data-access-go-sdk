@@ -49,6 +49,11 @@ func printUser(t *testing.T, prefix string, user *schema.User) {
 	t.Logf("%s: ID=%s, Name=%s, Email=%s, Type=%s\n",
 		prefix, user.Id, user.Name, emailValue, user.Type)
 }
+
+func TestUserServiceTestSuite(t *testing.T) {
+	suite.Run(t, new(UserServiceTestSuite))
+}
+
 func (suite *UserServiceTestSuite) TestGetCurrentUser() {
 	// Test assumes we are authenticated as Admin user
 	t := suite.T()
@@ -73,103 +78,86 @@ func (suite *UserServiceTestSuite) TestGetCurrentUser() {
 	suite.Equal(expectedType, user.Type)
 }
 
-func (suite *UserServiceTestSuite) TestA_CreateUser() {
+func (suite *UserServiceTestSuite) TestUsers() {
 	t := suite.T()
 	ctx := t.Context()
 	userClient := suite.UserClient
 
-	uuidString := uuid.NewString()
-	userName := "SDK Automated Test User " + uuidString
-	userEmail := "sdk_automated_test_user_" + uuidString + "@collibra.com"
-	userType := schema.UserTypeHuman
+	var createdUser schema.User
 
-	user, err := userClient.CreateUser(ctx, schema.UserInput{
-		Name:  &userName,
-		Email: &userEmail,
-		Type:  &userType,
+	suite.Run("Create a New User", func() {
+		uuidString := uuid.NewString()
+		userName := "SDK Automated Test User " + uuidString
+		userEmail := "sdk_automated_test_user_" + uuidString + "@collibra.com"
+		userType := schema.UserTypeHuman
+
+		user, err := userClient.CreateUser(ctx, schema.UserInput{
+			Name:  &userName,
+			Email: &userEmail,
+			Type:  &userType,
+		})
+
+		suite.Require().NoError(err, "Failed to create user")
+		suite.NotNil(user)
+
+		printUser(t, "User Created", user)
+
+		createdUser = *user
 	})
 
-	suite.Require().NoError(err, "Failed to create user")
-	suite.NotNil(user)
+	suite.Run("Get User", func() {
+		if createdUser.Id == "" {
+			suite.T().Skip("Created user ID is empty, cannot proceed with GetUser test")
+		}
 
-	printUser(t, "User Created", user)
+		userData, err := userClient.GetUser(ctx, createdUser.Id)
+		suite.Require().NoError(err, "Failed to get user")
 
-	suite.createdUser = *user
-}
+		printUser(t, "User Data", userData)
 
-func (suite *UserServiceTestSuite) TestB_GetUser() {
-	createdUser := suite.createdUser
-	if createdUser.Id == "" {
-		suite.T().Skip("Created user ID is empty, cannot proceed with GetUser test")
-	}
-
-	t := suite.T()
-	ctx := t.Context()
-
-	userClient := suite.UserClient
-
-	userData, err := userClient.GetUser(ctx, createdUser.Id)
-	suite.Require().NoError(err, "Failed to get user")
-
-	printUser(t, "User Data", userData)
-
-	suite.Equal(createdUser.Id, userData.Id)
-	suite.Equal(createdUser.Name, userData.Name)
-	suite.Equal(createdUser.Email, userData.Email)
-	suite.Equal(createdUser.Type, userData.Type)
-}
-
-func (suite *UserServiceTestSuite) TestC_GetUserByEmail() {
-	createdUser := suite.createdUser
-	if createdUser.Email == nil {
-		suite.T().Skip("Created user email is nil, cannot proceed with GetUserByEmail test")
-	}
-
-	t := suite.T()
-	ctx := t.Context()
-
-	userClient := suite.UserClient
-
-	userData, err := userClient.GetUserByEmail(ctx, *createdUser.Email)
-	suite.Require().NoError(err, "Failed to get user by email")
-
-	printUser(t, "User Data by Email", userData)
-
-	suite.Equal(createdUser.Id, userData.Id)
-	suite.Equal(createdUser.Name, userData.Name)
-	suite.Equal(createdUser.Email, userData.Email)
-	suite.Equal(createdUser.Type, userData.Type)
-}
-
-func (suite *UserServiceTestSuite) TestD_UpdateUser() {
-	createdUser := suite.createdUser
-	if createdUser.Id == "" {
-		suite.T().Skip("Created user ID is empty, cannot proceed with UpdateUser test")
-	}
-
-	t := suite.T()
-	ctx := t.Context()
-
-	userClient := suite.UserClient
-
-	newName := "Updated User Name"
-	updatedUser, err := userClient.UpdateUser(ctx, createdUser.Id, schema.UserInput{
-		Name: &newName,
+		suite.Equal(createdUser.Id, userData.Id)
+		suite.Equal(createdUser.Name, userData.Name)
+		suite.Equal(createdUser.Email, userData.Email)
+		suite.Equal(createdUser.Type, userData.Type)
 	})
 
-	suite.Require().NoError(err, "Failed to update user")
+	suite.Run("Get User By Email", func() {
 
-	printUser(t, "Updated User", updatedUser)
+		if createdUser.Email == nil {
+			suite.T().Skip("Created user email is nil, cannot proceed with GetUserByEmail test")
+		}
 
-	userData, err := userClient.GetUser(ctx, createdUser.Id)
+		userData, err := userClient.GetUserByEmail(ctx, *createdUser.Email)
+		suite.Require().NoError(err, "Failed to get user by email")
 
-	suite.Require().NoError(err, "Failed to get user after update")
+		printUser(t, "User Data by Email", userData)
 
-	printUser(t, "User Data After Update", userData)
+		suite.Equal(createdUser.Id, userData.Id)
+		suite.Equal(createdUser.Name, userData.Name)
+		suite.Equal(createdUser.Email, userData.Email)
+		suite.Equal(createdUser.Type, userData.Type)
+	})
 
-	suite.Require().Equal(newName, userData.Name)
-}
+	suite.Run("Update User", func() {
+		if createdUser.Id == "" {
+			suite.T().Skip("Created user ID is empty, cannot proceed with UpdateUser test")
+		}
 
-func TestUserServiceTestSuite(t *testing.T) {
-	suite.Run(t, new(UserServiceTestSuite))
+		newName := "Updated User Name"
+		updatedUser, err := userClient.UpdateUser(ctx, createdUser.Id, schema.UserInput{
+			Name: &newName,
+		})
+
+		suite.Require().NoError(err, "Failed to update user")
+
+		printUser(t, "Updated User", updatedUser)
+
+		userData, err := userClient.GetUser(ctx, createdUser.Id)
+
+		suite.Require().NoError(err, "Failed to get user after update")
+
+		printUser(t, "User Data After Update", userData)
+
+		suite.Require().Equal(newName, userData.Name)
+	})
 }
