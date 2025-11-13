@@ -9,6 +9,7 @@ import (
 	sdk "github.com/collibra/data-access-go-sdk"
 	"github.com/collibra/data-access-go-sdk/internal/schema"
 	"github.com/collibra/data-access-go-sdk/services"
+	"github.com/collibra/data-access-go-sdk/types"
 	"github.com/collibra/data-access-go-sdk/utils"
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/suite"
@@ -64,10 +65,8 @@ func setDataSourceMetadata(suite *suite.Suite, dataSourceClient *services.DataSo
 type DataSourceServiceTestSuite struct {
 	suite.Suite
 
-	createdDataSource *schema.DataSource
-	parentDataSource  *schema.DataSource
-	dataSourceClient  *services.DataSourceClient
-	metadata          *schema.DataSourceMetaDataInput
+	dataSourceClient *services.DataSourceClient
+	metadata         *schema.DataSourceMetaDataInput
 }
 
 func TestDataSourceServiceTestSuite(t *testing.T) {
@@ -91,164 +90,201 @@ func (suite *DataSourceServiceTestSuite) SetupSuite() {
 	suite.metadata = &metadata
 }
 
-func (suite *DataSourceServiceTestSuite) TestA_CreateDataSource_WithParent() {
+func (suite *DataSourceServiceTestSuite) TestDataSources() {
+	ctx := suite.T().Context()
 	dataSourceClient := suite.dataSourceClient
-	parentDataSource := createDataSource(&suite.Suite, dataSourceClient, nil)
-	suite.parentDataSource = parentDataSource
+	var createdDataSource *schema.DataSource
+	var parentDataSource *schema.DataSource
 
-	dataSourceName := "Test Data Source " + uuid.New().String()
-	dataSourceDescription := "SDK Tests DataSource Description"
-	input := &schema.DataSourceInput{
-		Name:        &dataSourceName,
-		Description: &dataSourceDescription,
-		Parent:      &parentDataSource.Id,
-	}
+	suite.Run("Create a Data Source With Parent", func() {
+		parentDataSource = createDataSource(&suite.Suite, dataSourceClient, nil)
 
-	createdDataSource := createDataSource(&suite.Suite, dataSourceClient, input)
-	suite.Equal(dataSourceName, createdDataSource.Name)
-	suite.Equal(dataSourceDescription, createdDataSource.Description)
-	suite.createdDataSource = createdDataSource
-}
+		dataSourceName := "Test Data Source " + uuid.New().String()
+		dataSourceDescription := "SDK Tests DataSource Description"
+		input := &schema.DataSourceInput{
+			Name:        &dataSourceName,
+			Description: &dataSourceDescription,
+			Parent:      &parentDataSource.Id,
+		}
 
-func (suite *DataSourceServiceTestSuite) TestB_ListDataSources_WithDataSourceListFilter() {
-	ctx := suite.T().Context()
-	if suite.createdDataSource == nil || suite.parentDataSource == nil {
-		suite.T().Log("Skipping TestB_ListDataSources as no data sources were created")
-		suite.T().SkipNow()
-	}
-
-	response := suite.dataSourceClient.ListDataSources(ctx, services.WithDataSourceListFilter(&schema.DataSourceFilterInput{
-		Parent: &suite.parentDataSource.Id,
-	}))
-	for ds, err := range response {
-		suite.Require().NoError(err, "Error while listing data sources")
-		suite.NotNil(ds, "Data source is nil")
-	}
-}
-
-func (suite *DataSourceServiceTestSuite) TestC_ListDataSources_WithDataSourceListSearch_And_WithDataSourceListOrder() {
-	ctx := suite.T().Context()
-	if suite.createdDataSource == nil || suite.parentDataSource == nil {
-		suite.T().Log("Skipping TestC_ListDataSources_WithDataSourceListSearch_And_WithDataSourceListOrder as no data sources were created")
-		suite.T().SkipNow()
-	}
-
-	searchString := "Test"
-	listOrder := schema.SortDesc
-	listOrderInput := schema.DataSourceOrderByInput{
-		Name: &listOrder,
-	}
-
-	response := suite.dataSourceClient.ListDataSources(ctx,
-		services.WithDataSourceListSearch(&searchString),
-		services.WithDataSourceListOrder(listOrderInput),
-	)
-	availableNames := make([]string, 0)
-
-	for ds, err := range response {
-		suite.Require().NoError(err, "Error while listing data sources with search and order")
-		suite.NotNil(ds, "Data source is nil")
-		availableNames = append(availableNames, ds.Name)
-	}
-
-	suite.Contains(availableNames, suite.createdDataSource.Name, "Created data source name not found in the list")
-	suite.Contains(availableNames, suite.parentDataSource.Name, "Parent data source name not found in the list")
-	suite.True(sort.IsSorted(sort.Reverse(sort.StringSlice(availableNames))), "Data source names are not sorted in descending order")
-}
-
-func (suite *DataSourceServiceTestSuite) TestD_UpdateDataSource() {
-	ctx := suite.T().Context()
-
-	if suite.createdDataSource == nil {
-		suite.T().Log("Skipping TestD_UpdateDataSource as no data sources were created")
-		suite.T().SkipNow()
-	}
-
-	createDataSource := suite.createdDataSource
-
-	newName := "Updated" + createDataSource.Name
-
-	updatedDataSource, err := suite.dataSourceClient.UpdateDataSource(ctx, createDataSource.Id, schema.DataSourceInput{
-		Name: &newName,
+		createdDataSource = createDataSource(&suite.Suite, dataSourceClient, input)
+		suite.Equal(dataSourceName, createdDataSource.Name)
+		suite.Equal(dataSourceDescription, createdDataSource.Description)
 	})
-	suite.Require().NoError(err, "Failed to update data source")
-	suite.Require().NotNil(updatedDataSource, "Updated data source is nil")
-	suite.Equal(newName, updatedDataSource.Name, "Data source name was not updated")
-	suite.createdDataSource = updatedDataSource
+
+	suite.Run("List Data Sources With Data Source List Filter", func() {
+		if createdDataSource == nil || parentDataSource == nil {
+			suite.T().Log("Skipping List Data Sources With Data Source List Filter as no data sources were created")
+			suite.T().SkipNow()
+		}
+
+		response := suite.dataSourceClient.ListDataSources(ctx, services.WithDataSourceListFilter(&schema.DataSourceFilterInput{
+			Parent: &parentDataSource.Id,
+		}))
+		found := false
+
+		for ds, err := range response {
+			suite.Require().NoError(err, "Error while listing data sources")
+			suite.NotNil(ds, "Data source is nil")
+
+			if ds.Id == createdDataSource.Id {
+				found = true
+				break
+			}
+		}
+
+		suite.Require().True(found, "Created data source not found in the list")
+	})
+
+	suite.Run("List Data Sources", func() {
+		if createdDataSource == nil || parentDataSource == nil {
+			suite.T().Log("Skipping List Data Sources With Data Source List Search And With Data Source List Order as no data sources were created")
+			suite.T().SkipNow()
+		}
+
+		response := suite.dataSourceClient.ListDataSources(ctx)
+		found := false
+
+		for ds, err := range response {
+			suite.Require().NoError(err, "Error while listing data sources with search and order")
+			suite.NotNil(ds, "Data source is nil")
+
+			if ds.Id == createdDataSource.Id {
+				found = true
+				break
+			}
+		}
+
+		suite.Require().True(found, "Created data source not found in the list")
+	})
+
+	suite.Run("List Data Sources With Data Source List Search And With Data Source List Order", func() {
+		if createdDataSource == nil || parentDataSource == nil {
+			suite.T().Log("Skipping List Data Sources With Data Source List Search And With Data Source List Order as no data sources were created")
+			suite.T().SkipNow()
+		}
+
+		searchString := "Test"
+		listOrder := schema.SortDesc
+		listOrderInput := schema.DataSourceOrderByInput{
+			Name: &listOrder,
+		}
+
+		response := suite.dataSourceClient.ListDataSources(ctx,
+			services.WithDataSourceListSearch(&searchString),
+			services.WithDataSourceListOrder(listOrderInput),
+		)
+		availableNames := make([]string, 0)
+
+		for ds, err := range response {
+			suite.Require().NoError(err, "Error while listing data sources with search and order")
+			suite.NotNil(ds, "Data source is nil")
+			availableNames = append(availableNames, ds.Name)
+		}
+
+		suite.Contains(availableNames, createdDataSource.Name, "Created data source name not found in the list")
+		suite.Contains(availableNames, parentDataSource.Name, "Parent data source name not found in the list")
+		suite.True(sort.IsSorted(sort.Reverse(sort.StringSlice(availableNames))), "Data source names are not sorted in descending order")
+	})
+
+	suite.Run("Update Data Source", func() {
+		if createdDataSource == nil {
+			suite.T().Log("Skipping TestD_UpdateDataSource as no data sources were created")
+			suite.T().SkipNow()
+		}
+
+		newName := "Updated" + createdDataSource.Name
+
+		updatedDataSource, err := suite.dataSourceClient.UpdateDataSource(ctx, createdDataSource.Id, schema.DataSourceInput{
+			Name: &newName,
+		})
+		suite.Require().NoError(err, "Failed to update data source")
+		suite.Require().NotNil(updatedDataSource, "Updated data source is nil")
+		suite.Equal(newName, updatedDataSource.Name, "Data source name was not updated")
+		createdDataSource = updatedDataSource
+	})
+
+	suite.Run("Get Data Source", func() {
+		if createdDataSource == nil {
+			suite.T().Log("Skipping TestE_GetDataSource as no data sources were created")
+			suite.T().SkipNow()
+		}
+
+		retrievedDataSource, err := suite.dataSourceClient.GetDataSource(ctx, createdDataSource.Id)
+		suite.Require().NoError(err, "Failed to get data source")
+		suite.Require().NotNil(retrievedDataSource, "Retrieved data source is nil")
+		suite.Require().Equal(createdDataSource, retrievedDataSource)
+	})
+
+	suite.Run("Get Masking Metadata", func() {
+		if createdDataSource == nil || suite.metadata == nil {
+			suite.T().Log("Skipping TestF_GetMaskingMetadata as no data sources were created or metadata is nil")
+			suite.T().SkipNow()
+		}
+
+		metadata := suite.metadata
+		dataSourceWithMetadata := setDataSourceMetadata(&suite.Suite, dataSourceClient, createdDataSource.Id, metadata)
+		suite.Equal(createdDataSource.Id, dataSourceWithMetadata.Id, "Data source ID should match")
+	})
+
+	suite.Run("Get Masking Metadata", func() {
+		if createdDataSource == nil || suite.metadata == nil {
+			suite.T().Log("Skipping TestF_GetMaskingMetadata as no data sources were created or metadata is nil")
+			suite.T().SkipNow()
+		}
+
+		retrievedMaskingMetaData, err := suite.dataSourceClient.GetMaskingMetadata(suite.T().Context(), createdDataSource.Id)
+		suite.Require().NoError(err, "Failed to get masking metadata")
+		suite.Require().NotNil(retrievedMaskingMetaData, "Retrieved masking metadata is nil")
+		suite.NotEmpty(retrievedMaskingMetaData.MaskTypes, "Mask types should not be empty")
+		suite.Equal(*suite.metadata.MaskingMetadata.DefaultMaskExternalName, *retrievedMaskingMetaData.DefaultMaskExternalName, "Default mask external name should match")
+	})
+
+	suite.Run("Delete Data Source", func() {
+		if createdDataSource == nil {
+			suite.T().Log("Skipping TestH_DeleteDataSource as no data sources were created")
+			suite.T().SkipNow()
+		}
+
+		err := dataSourceClient.DeleteDataSource(ctx, createdDataSource.Id)
+		suite.Require().NoError(err, "Failed to delete data source")
+
+		// Verify deletion by attempting to get the data source
+		_, err = dataSourceClient.GetDataSource(ctx, createdDataSource.Id)
+		suite.Require().Error(err, "Expected error when getting deleted data source")
+	})
+
+	suite.Run("Delete Parent Data Source", func() {
+		if parentDataSource == nil {
+			suite.T().Log("Skipping TestI_DeleteParentDataSource as no parent data source was created")
+			suite.T().SkipNow()
+		}
+
+		err := dataSourceClient.DeleteDataSource(ctx, parentDataSource.Id)
+		suite.Require().NoError(err, "Failed to delete parent data source")
+	})
 }
 
-func (suite *DataSourceServiceTestSuite) TestE_GetDataSource() {
-	ctx := suite.T().Context()
-
-	if suite.createdDataSource == nil {
-		suite.T().Log("Skipping TestE_GetDataSource as no data sources were created")
-		suite.T().SkipNow()
-	}
-
-	createDataSource := suite.createdDataSource
-
-	retrievedDataSource, err := suite.dataSourceClient.GetDataSource(ctx, createDataSource.Id)
-	suite.Require().NoError(err, "Failed to get data source")
-	suite.Require().NotNil(retrievedDataSource, "Retrieved data source is nil")
-	suite.Require().Equal(createDataSource, retrievedDataSource)
-}
-
-func (suite *DataSourceServiceTestSuite) TestF_SetMaskingMetadata() {
-	if suite.createdDataSource == nil || suite.metadata == nil {
-		suite.T().Log("Skipping TestF_SetMaskingMetadata as no data sources were created or metadata is nil")
-		suite.T().SkipNow()
-	}
-
-	metadata := suite.metadata
-	dataSourceWithMetadata := setDataSourceMetadata(&suite.Suite, suite.dataSourceClient, suite.createdDataSource.Id, metadata)
-	suite.Equal(suite.createdDataSource.Id, dataSourceWithMetadata.Id, "Data source ID should match")
-}
-
-func (suite *DataSourceServiceTestSuite) TestG_GetMaskingMetadata() {
-	if suite.createdDataSource == nil || suite.metadata == nil {
-		suite.T().Log("Skipping TestG_GetMaskingMetadata as no data sources were created or metadata is nil")
-		suite.T().SkipNow()
-	}
-
-	retrievedMaskingMetaData, err := suite.dataSourceClient.GetMaskingMetadata(suite.T().Context(), suite.createdDataSource.Id)
-	suite.Require().NoError(err, "Failed to get masking metadata")
-	suite.Require().NotNil(retrievedMaskingMetaData, "Retrieved masking metadata is nil")
-	suite.NotEmpty(retrievedMaskingMetaData.MaskTypes, "Mask types should not be empty")
-	suite.Equal(*suite.metadata.MaskingMetadata.DefaultMaskExternalName, *retrievedMaskingMetaData.DefaultMaskExternalName, "Default mask external name should match")
-}
-
-func (suite *DataSourceServiceTestSuite) TestH_DeleteDataSource() {
-	ctx := suite.T().Context()
-
-	if suite.createdDataSource == nil {
-		suite.T().Log("Skipping TestH_DeleteDataSource as no data sources were created")
-		suite.T().SkipNow()
-	}
-
-	err := suite.dataSourceClient.DeleteDataSource(ctx, suite.createdDataSource.Id)
-	suite.Require().NoError(err, "Failed to delete data source")
-
-	// Verify deletion by attempting to get the data source
-	_, err = suite.dataSourceClient.GetDataSource(ctx, suite.createdDataSource.Id)
-	suite.Require().Error(err, "Expected error when getting deleted data source")
-}
-
-func (suite *DataSourceServiceTestSuite) TestI_DeleteParentDataSource() {
-	ctx := suite.T().Context()
-
-	if suite.parentDataSource == nil {
-		suite.T().Log("Skipping TestI_DeleteParentDataSource as no parent data source was created")
-		suite.T().SkipNow()
-	}
-
-	err := suite.dataSourceClient.DeleteDataSource(ctx, suite.parentDataSource.Id)
-	suite.Require().NoError(err, "Failed to delete parent data source")
-}
-
-func (suite *DataSourceServiceTestSuite) TestJ_GetDataSource_NotFound() {
+func (suite *DataSourceServiceTestSuite) TestGetUnexistingDataSource() {
 	ctx := suite.T().Context()
 	nonExistentId := "non-existent-id"
 
 	_, err := suite.dataSourceClient.GetDataSource(ctx, nonExistentId)
 	suite.Require().Error(err, "Expected error when getting non-existent data source")
+
+	var notFoundErr *types.ErrNotFound
+	suite.Require().ErrorAs(err, &notFoundErr)
+	suite.Require().ErrorContains(notFoundErr, "Data source not found")
+}
+
+func (suite *DataSourceServiceTestSuite) TestDeleteNonExistentDataSource() {
+	ctx := suite.T().Context()
+	nonExistentId := "non-existent-id"
+
+	err := suite.dataSourceClient.DeleteDataSource(ctx, nonExistentId)
+	suite.Require().Error(err, "Expected error when deleting non-existent data source")
+
+	var permErr *types.ErrPermissionDenied
+	suite.Require().ErrorAs(err, &permErr)
+	suite.Require().ErrorContains(permErr, "permission denied (data_source, delete) (non-existent-id)")
 }
