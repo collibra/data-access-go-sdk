@@ -14,8 +14,7 @@ import (
 type UserServiceTestSuite struct {
 	suite.Suite
 
-	UserClient  *services.UserClient
-	createdUser schema.User
+	UserClient *services.UserClient
 }
 
 func (suite *UserServiceTestSuite) SetupSuite() {
@@ -122,7 +121,6 @@ func (suite *UserServiceTestSuite) TestUsers() {
 	})
 
 	suite.Run("Get User By Email", func() {
-
 		if createdUser.Email == nil {
 			suite.T().Skip("Created user email is nil, cannot proceed with GetUserByEmail test")
 		}

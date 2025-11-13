@@ -14,8 +14,7 @@ import (
 type GrantCategoryServiceTestSuite struct {
 	suite.Suite
 
-	GrantCategoryClient  *services.GrantCategoryClient
-	createdGrantCategory *schema.GrantCategoryDetails
+	GrantCategoryClient *services.GrantCategoryClient
 }
 
 func TestGrantCategoryServiceTestSuite(t *testing.T) {
@@ -33,6 +32,7 @@ func (suite *GrantCategoryServiceTestSuite) TestGrantCategory() {
 	if client == nil {
 		suite.FailNow("Failed to create Collibra client")
 	}
+
 	grantCategoryClient := client.GrantCategory()
 	if grantCategoryClient == nil {
 		suite.FailNow("Failed to create GrantCategory client")
@@ -43,7 +43,6 @@ func (suite *GrantCategoryServiceTestSuite) TestGrantCategory() {
 	var createdGrantCategory *schema.GrantCategoryDetails
 
 	suite.Run("Create Grant Category", func() {
-		ctx := suite.T().Context()
 		name := "Test Category " + uuid.New().String()
 		description := "Test Category Description"
 		canCreate := true
@@ -92,7 +91,6 @@ func (suite *GrantCategoryServiceTestSuite) TestGrantCategory() {
 	})
 
 	suite.Run("Update Grant Category", func() {
-
 		updatedName := createdGrantCategory.Name + " Updated"
 		updatedDescription := createdGrantCategory.Description + " Updated"
 		updateInput := &schema.GrantCategoryInput{
@@ -119,6 +117,7 @@ func (suite *GrantCategoryServiceTestSuite) TestGrantCategory() {
 		}
 
 		suite.NotEmpty(grantCategories)
+
 		expectedName := createdGrantCategory.Name
 
 		retrievedNames := make([]string, 0, len(grantCategories))

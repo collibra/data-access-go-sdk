@@ -30,7 +30,6 @@ func (suite *JobServiceTestSuite) SetupSuite() {
 	suite.sdkClient = sdkClient
 	datasource := createDataSource(&suite.Suite, sdkClient.DataSource(), nil)
 	suite.createdDataSource = datasource
-
 }
 
 func (suite *JobServiceTestSuite) TearDownSuite() {
@@ -233,5 +232,4 @@ func (suite *JobServiceTestSuite) TestJobs() {
 		suite.Require().NotNil(subtask, "Fetched subtask is nil")
 		suite.Require().Equal(createdSubtask, subtask, "Subtask details do not match")
 	})
-
 }
