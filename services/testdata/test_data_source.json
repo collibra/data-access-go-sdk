@@ -1,0 +1,940 @@
+{
+  "dataObjectTypes": [
+    {
+      "name": "datasource",
+      "type": "datasource",
+      "children": [
+        "database",
+        "shared-database",
+        "warehouse",
+        "integration",
+        "application"
+      ],
+      "permissions": [
+        {
+          "permission": "APPLY MASKING POLICY",
+          "globalPermissions": [
+            "ADMIN"
+          ],
+          "description": "Grants ability to set a Column-level Security masking policy on a table or view column and to set a masking policy on a tag. This global privilege also allows executing the DESCRIBE operation on tables and views.",
+          "cannotBeGranted": false
+        },
+        {
+          "permission": "APPLY ROW ACCESS POLICY",
+          "globalPermissions": [
+            "ADMIN"
+          ],
+          "description": "Grants the ability to add and drop a row access policy on a table or view. This global privilege also allows executing the DESCRIBE operation on tables and views.",
+          "cannotBeGranted": false
+        },
+        {
+          "permission": "APPLY ROW ACCESS POLICY",
+          "globalPermissions": [
+            "ADMIN"
+          ],
+          "description": "Grants the ability to add and drop a row access policy on a table or view. This global privilege also allows executing the DESCRIBE operation on tables and views.",
+          "cannotBeGranted": false
+        },
+        {
+          "permission": "APPLY SESSION POLICY",
+          "globalPermissions": [
+            "ADMIN"
+          ],
+          "description": "Grants the ability to set or unset a session policy on an account or user.",
+          "cannotBeGranted": false
+        },
+        {
+          "permission": "APPLY TAG",
+          "globalPermissions": [
+            "ADMIN"
+
+          ],
+          "description": "Grants the ability to add or drop a tag on a Snowflake object.",
+          "cannotBeGranted": false
+        },
+        {
+          "permission": "ATTACH POLICY",
+          "globalPermissions": [
+            "ADMIN"
+          ],
+          "description": "Grants ability to activate a network policy by associating it with your account.",
+          "cannotBeGranted": false
+        },
+        {
+          "permission": "CREATE ACCOUNT",
+          "globalPermissions": [
+            "ADMIN"
+          ],
+          "description": "Enables a data provider to create a new managed account (i.e. reader account).",
+          "cannotBeGranted": false
+        },
+        {
+          "permission": "CREATE ROLE",
+          "globalPermissions": [
+            "ADMIN"
+          ],
+          "description": "Enables creating a new role.",
+          "cannotBeGranted": false
+        },
+        {
+          "permission": "CREATE USER",
+          "globalPermissions": [
+            "ADMIN"
+          ],
+          "description": "Enables creating a new user.",
+          "cannotBeGranted": false
+        },
+        {
+          "permission": "MANAGE GRANTS",
+          "globalPermissions": [
+            "ADMIN"
+          ],
+          "description": "Enables granting or revoking privileges on objects for which the role is not the owner.",
+          "cannotBeGranted": false
+        },
+        {
+          "permission": "CREATE DATA EXCHANGE LISTING",
+          "globalPermissions": [
+            "ADMIN"
+          ],
+          "description": "Enables creating a new Data Exchange listing.",
+          "cannotBeGranted": false
+        },
+        {
+          "permission": "CREATE INTEGRATION",
+          "globalPermissions": [
+            "ADMIN"
+          ],
+          "description": "Enables creating a new notification, security, or storage integration.",
+          "cannotBeGranted": false
+        },
+        {
+          "permission": "CREATE NETWORK POLICY",
+          "globalPermissions": [
+            "ADMIN"
+          ],
+          "description": "Enables creating a new network policy.",
+          "cannotBeGranted": false
+        },
+        {
+          "permission": "CREATE WAREHOUSE",
+          "globalPermissions": [
+            "ADMIN"
+          ],
+          "description": "Enables creating a new virtual warehouse.",
+          "cannotBeGranted": false
+        },
+        {
+          "permission": "EXECUTE MANAGED TASK",
+          "globalPermissions": null,
+          "description": "Grants ability to create tasks that rely on Snowflake-managed compute resources (serverless compute model). Only required for serverless tasks. The role that has the OWNERSHIP privilege on a task must have both the EXECUTE MANAGED TASK and the EXECUTE TASK privilege for the task to run.",
+          "cannotBeGranted": false
+        },
+        {
+          "permission": "EXECUTE TASK",
+          "globalPermissions": null,
+          "description": "Grants ability to run tasks owned by the role. For serverless tasks to run, the role that has the OWNERSHIP privilege on the task must also have the global EXECUTE MANAGED TASK privilege.",
+          "cannotBeGranted": false
+        },
+        {
+          "permission": "MONITOR EXECUTION",
+          "globalPermissions": [
+            "ADMIN"
+          ],
+          "description": "Grants ability to monitor any pipes or tasks in the account. The USAGE privilege is also required on each database and schema that stores these objects.",
+          "cannotBeGranted": false
+        },
+        {
+          "permission": "MONITOR USAGE",
+          "globalPermissions": [
+            "ADMIN"
+          ],
+          "description": "Grants ability to monitor account-level usage and historical information for databases and warehouses. Additionally grants ability to view managed accounts using SHOW MANAGED ACCOUNTS.",
+          "cannotBeGranted": false
+        }
+      ]
+    },
+    {
+      "name": "warehouse",
+      "type": "warehouse",
+      "children": null,
+      "permissions": [
+        {
+          "permission": "MODIFY",
+          "globalPermissions": [
+            "ADMIN"
+          ],
+          "description": "Enables altering any properties of a warehouse, including changing its size.",
+          "cannotBeGranted": false
+        },
+        {
+          "permission": "MONITOR",
+          "globalPermissions": [
+            "ADMIN"
+          ],
+          "description": "Enables viewing current and past queries executed on a warehouse as well as usage statistics on that warehouse.",
+          "cannotBeGranted": false
+        },
+        {
+          "permission": "OPERATE",
+          "globalPermissions": [
+            "ADMIN"
+          ],
+          "description": "Enables changing the state of a warehouse (stop, start, suspend, resume). In addition, enables viewing current and past queries executed on a warehouse and aborting any executing queries.",
+          "cannotBeGranted": false
+        },
+        {
+          "permission": "USAGE",
+          "globalPermissions": [
+            "ADMIN",
+            "WRITE",
+            "READ"
+          ],
+          "description": "Enables using a virtual warehouse and, as a result, executing queries on the warehouse. If the warehouse is configured to auto-resume when a SQL statement (e.g. query) is submitted to it, the warehouse resumes automatically and executes the statement.",
+          "cannotBeGranted": false
+        }
+      ]
+    },
+    {
+      "name": "integration",
+      "type": "integration",
+      "label": "Integration",
+      "children": null,
+      "permissions": [
+        {
+          "permission": "USAGE",
+          "globalPermissions": [
+            "ADMIN",
+            "WRITE",
+            "READ"
+          ],
+          "description": "Enables using this integration",
+          "cannotBeGranted": false
+        },
+        {
+          "permission": "USE_ANY_ROLE",
+          "globalPermissions": null,
+          "description": "Allows an External OAuth client or user to switch roles within a session when interacting with Snowflake through an integration.",
+          "cannotBeGranted": false
+        }
+      ]
+    },
+    {
+      "name": "database",
+      "type": "database",
+      "children": [
+        "schema"
+      ],
+      "permissions": [
+        {
+          "permission": "CREATE SCHEMA",
+          "globalPermissions": [
+            "ADMIN"
+          ],
+          "description": "Enables creating a new schema in a database, including cloning a schema.",
+          "cannotBeGranted": false
+        },
+        {
+          "permission": "USAGE on DATABASE",
+          "globalPermissions": [
+            "ADMIN",
+            "WRITE",
+            "READ"
+          ],
+          "description": "Enables using a database, including returning the database details in the SHOW DATABASES command output. Additional privileges are required to view or take actions on objects in a database.",
+          "cannotBeGranted": false
+        },
+        {
+          "permission": "MODIFY",
+          "globalPermissions": [
+            "ADMIN"
+          ],
+          "description": "Enables altering any settings of a database.",
+          "cannotBeGranted": false
+        },
+        {
+          "permission": "MONITOR",
+          "globalPermissions": [
+            "ADMIN"
+          ],
+          "description": "Enables performing the DESCRIBE command on the database.",
+          "cannotBeGranted": false
+        },
+        {
+          "permission": "REFERENCE_USAGE",
+          "globalPermissions": [
+            "ADMIN",
+            "WRITE",
+            "READ"
+          ],
+          "description": "Enables using an object (e.g. secure view in a share) when the object references another object in a different database.",
+          "cannotBeGranted": false
+        }
+      ]
+    },
+    {
+      "name": "application",
+      "type": "application",
+      "children": null,
+      "permissions": null
+    },
+    {
+      "name": "schema",
+      "type": "schema",
+      "children": [
+        "table",
+        "view",
+        "external-table",
+        "materialized-view",
+        "iceberg-table",
+        "function",
+        "procedure"
+      ],
+      "permissions": [
+        {
+          "permission": "MODIFY",
+          "globalPermissions": [
+            "ADMIN"
+          ],
+          "description": "Enables altering any settings of a schema.",
+          "cannotBeGranted": false
+        },
+        {
+          "permission": "MONITOR",
+          "globalPermissions": [
+            "ADMIN"
+          ],
+          "description": "Enables performing the DESCRIBE command on the schema.",
+          "cannotBeGranted": false
+        },
+        {
+          "permission": "USAGE on SCHEMA",
+          "globalPermissions": [
+            "ADMIN",
+            "WRITE",
+            "READ"
+          ],
+          "description": "Enables using a schema, including returning the schema details in the SHOW SCHEMAS command output. To execute SHOW <objects> commands for objects (tables, views, stages, file formats, sequences, pipes, or functions) in the schema, a role must have at least one privilege granted on the object.",
+          "cannotBeGranted": false
+        },
+        {
+          "permission": "CREATE TABLE",
+          "globalPermissions": [
+            "ADMIN"
+          ],
+          "description": "Enables creating a new table in a schema, including cloning a table. Note that this privilege is not required to create temporary tables, which are scoped to the current user session and are automatically deleted when the session ends.",
+          "cannotBeGranted": false
+        },
+        {
+          "permission": "CREATE EXTERNAL TABLE",
+          "globalPermissions": [
+            "ADMIN"
+          ],
+          "description": "Enables creating a new external table in a schema.",
+          "cannotBeGranted": false
+        },
+        {
+          "permission": "CREATE VIEW",
+          "globalPermissions": [
+            "ADMIN"
+          ],
+          "description": "Enables creating a new view in a schema.",
+          "cannotBeGranted": false
+        },
+        {
+          "permission": "CREATE MATERIALIZED VIEW",
+          "globalPermissions": [
+            "ADMIN"
+          ],
+          "description": "Enables creating a new materialized view in a schema.",
+          "cannotBeGranted": false
+        },
+        {
+          "permission": "CREATE MASKING POLICY",
+          "globalPermissions": [
+            "ADMIN"
+          ],
+          "description": "Enables creating a new Column-level Security masking policy in a schema.",
+          "cannotBeGranted": false
+        },
+        {
+          "permission": "CREATE ROW ACCESS POLICY",
+          "globalPermissions": [
+            "ADMIN"
+          ],
+          "description": "Enables creating a new row access policy in a schema.",
+          "cannotBeGranted": false
+        },
+        {
+          "permission": "CREATE SESSION POLICY",
+          "globalPermissions": [
+            "ADMIN"
+          ],
+          "description": "Enables creating a new session policy in a schema.",
+          "cannotBeGranted": false
+        },
+        {
+          "permission": "CREATE STAGE",
+          "globalPermissions": [
+            "ADMIN"
+          ],
+          "description": "Enables creating a new stage in a schema, including cloning a stage.",
+          "cannotBeGranted": false
+        },
+        {
+          "permission": "CREATE FILE FORMAT",
+          "globalPermissions": [
+            "ADMIN"
+          ],
+          "description": "Enables creating a new file format in a schema, including cloning a file format.",
+          "cannotBeGranted": false
+        },
+        {
+          "permission": "CREATE SEQUENCE",
+          "globalPermissions": [
+            "ADMIN"
+          ],
+          "description": "Enables creating a new sequence in a schema, including cloning a sequence.",
+          "cannotBeGranted": false
+        },
+        {
+          "permission": "CREATE FUNCTION",
+          "globalPermissions": [
+            "ADMIN"
+          ],
+          "description": "Enables creating a new UDF or external function in a schema.",
+          "cannotBeGranted": false
+        },
+        {
+          "permission": "CREATE PIPE",
+          "globalPermissions": [
+            "ADMIN"
+          ],
+          "description": "Enables creating a new pipe in a schema.",
+          "cannotBeGranted": false
+        },
+        {
+          "permission": "CREATE STREAM",
+          "globalPermissions": [
+            "ADMIN"
+          ],
+          "description": "Enables creating a new stream in a schema, including cloning a stream.",
+          "cannotBeGranted": false
+        },
+        {
+          "permission": "CREATE TAG",
+          "globalPermissions": [
+            "ADMIN"
+          ],
+          "description": "Enables creating a new tag key in a schema.",
+          "cannotBeGranted": false
+        },
+        {
+          "permission": "CREATE TASK",
+          "globalPermissions": [
+            "ADMIN"
+          ],
+          "description": "Enables creating a new task in a schema, including cloning a task.",
+          "cannotBeGranted": false
+        },
+        {
+          "permission": "CREATE PROCEDURE",
+          "globalPermissions": [
+            "ADMIN"
+          ],
+          "description": "Enables creating a new stored procedure in a schema.",
+          "cannotBeGranted": false
+        },
+        {
+          "permission": "ADD SEARCH OPTIMIZATION",
+          "globalPermissions": [
+            "ADMIN"
+          ],
+          "description": "Enables adding search optimization to a table in a schema.",
+          "cannotBeGranted": false
+        },
+        {
+          "permission": "OWNERSHIP",
+          "globalPermissions": null,
+          "description": "Grants full control over the schema. Only a single role can hold this privilege on a specific object at a time.",
+          "cannotBeGranted": true
+        }
+      ]
+    },
+    {
+      "name": "table",
+      "type": "table",
+      "children": [
+        "column"
+      ],
+      "permissions": [
+        {
+          "permission": "SELECT",
+          "globalPermissions": [
+            "ADMIN",
+            "WRITE",
+            "READ"
+          ],
+          "description": "Enables executing a SELECT statement on a table.",
+          "cannotBeGranted": false
+        },
+        {
+          "permission": "INSERT",
+          "globalPermissions": [
+            "ADMIN",
+            "WRITE"
+          ],
+          "description": "Enables executing an INSERT command on a table. Also enables using the ALTER TABLE command with a RECLUSTER clause to manually recluster a table with a clustering key.",
+          "cannotBeGranted": false
+        },
+        {
+          "permission": "UPDATE",
+          "globalPermissions": [
+            "ADMIN",
+            "WRITE"
+          ],
+          "description": "Enables executing an UPDATE command on a table.",
+          "cannotBeGranted": false
+        },
+        {
+          "permission": "TRUNCATE",
+          "globalPermissions": [
+            "ADMIN",
+            "WRITE"
+          ],
+          "description": "Enables executing a TRUNCATE TABLE command on a table.",
+          "cannotBeGranted": false
+        },
+        {
+          "permission": "DELETE",
+          "globalPermissions": [
+            "ADMIN",
+            "WRITE"
+          ],
+          "description": "Enables executing a DELETE command on a table.",
+          "cannotBeGranted": false
+        },
+        {
+          "permission": "REFERENCES",
+          "globalPermissions": [
+            "ADMIN",
+            "WRITE",
+            "READ"
+          ],
+          "description": "Enables referencing a table as the unique/primary key table for a foreign key constraint. Also enables viewing the structure of a table (but not the data) via the DESCRIBE or SHOW command or by querying the Information Schema.",
+          "cannotBeGranted": false
+        },
+        {
+          "permission": "OWNERSHIP",
+          "globalPermissions": null,
+          "description": "Grants full control over the table. Required to alter most properties of a table, with the exception of reclustering. Only a single role can hold this privilege on a specific object at a time. Note that in a managed access schema, only the schema owner (i.e. the role with the OWNERSHIP privilege on the schema) or a role with the MANAGE GRANTS privilege can grant or revoke privileges on objects in the schema, including future grants.",
+          "cannotBeGranted": true
+        },
+        {
+          "permission": "EVOLVE SCHEMA",
+          "globalPermissions": null,
+          "description": "Enables schema evolution to occur on a table when loading data.",
+          "cannotBeGranted": false
+        }
+      ]
+    },
+    {
+      "name": "function",
+      "type": "function",
+      "label": "User Defined Function",
+      "children": null,
+      "permissions": [
+        {
+          "permission": "USAGE",
+          "globalPermissions": [
+            "ADMIN",
+            "WRITE",
+            "READ"
+          ],
+          "description": "Enables using this function",
+          "cannotBeGranted": false
+        }
+      ]
+    },
+    {
+      "name": "procedure",
+      "type": "procedure",
+      "label": "Stored Procedures",
+      "children": null,
+      "permissions": [
+        {
+          "permission": "USAGE",
+          "globalPermissions": [
+            "ADMIN",
+            "WRITE",
+            "READ"
+          ],
+          "description": "Enables using this stored procedure",
+          "cannotBeGranted": false
+        }
+      ]
+    },
+    {
+      "name": "iceberg-table",
+      "type": "table",
+      "label": "Iceberg Table",
+      "children": [
+        "column"
+      ],
+      "permissions": [
+        {
+          "permission": "SELECT",
+          "globalPermissions": [
+            "ADMIN",
+            "WRITE",
+            "READ"
+          ],
+          "description": "Enables executing a SELECT statement on a table.",
+          "cannotBeGranted": false
+        },
+        {
+          "permission": "INSERT",
+          "globalPermissions": [
+            "ADMIN",
+            "WRITE"
+          ],
+          "description": "Enables executing an INSERT command on a table. Also enables using the ALTER TABLE command with a RECLUSTER clause to manually recluster a table with a clustering key.",
+          "cannotBeGranted": false
+        },
+        {
+          "permission": "UPDATE",
+          "globalPermissions": [
+            "ADMIN",
+            "WRITE"
+          ],
+          "description": "Enables executing an UPDATE command on a table.",
+          "cannotBeGranted": false
+        },
+        {
+          "permission": "TRUNCATE",
+          "globalPermissions": [
+            "ADMIN",
+            "WRITE"
+          ],
+          "description": "Enables executing a TRUNCATE TABLE command on a table.",
+          "cannotBeGranted": false
+        },
+        {
+          "permission": "DELETE",
+          "globalPermissions": [
+            "ADMIN",
+            "WRITE"
+          ],
+          "description": "Enables executing a DELETE command on a table.",
+          "cannotBeGranted": false
+        },
+        {
+          "permission": "REFERENCES",
+          "globalPermissions": [
+            "ADMIN",
+            "WRITE",
+            "READ"
+          ],
+          "description": "Enables referencing a table as the unique/primary key table for a foreign key constraint. Also enables viewing the structure of a table (but not the data) via the DESCRIBE or SHOW command or by querying the Information Schema.",
+          "cannotBeGranted": false
+        },
+        {
+          "permission": "OWNERSHIP",
+          "globalPermissions": null,
+          "description": "Grants full control over the table. Required to alter most properties of a table, with the exception of reclustering. Only a single role can hold this privilege on a specific object at a time. Note that in a managed access schema, only the schema owner (i.e. the role with the OWNERSHIP privilege on the schema) or a role with the MANAGE GRANTS privilege can grant or revoke privileges on objects in the schema, including future grants.",
+          "cannotBeGranted": true
+        },
+        {
+          "permission": "APPLYBUDGET",
+          "globalPermissions": null,
+          "description": "Enables adding or removing an Iceberg table from a budget.",
+          "cannotBeGranted": false
+        }
+      ]
+    },
+    {
+      "name": "external-table",
+      "type": "table",
+      "label": "External Table",
+      "children": null,
+      "permissions": [
+        {
+          "permission": "SELECT",
+          "globalPermissions": [
+            "ADMIN",
+            "WRITE",
+            "READ"
+          ],
+          "description": "Enables executing a SELECT statement on a table.",
+          "cannotBeGranted": false
+        },
+        {
+          "permission": "OWNERSHIP",
+          "globalPermissions": null,
+          "description": "Grants full control over the external table. Only a single role can hold this privilege on a specific object at a time.",
+          "cannotBeGranted": true
+        },
+        {
+          "permission": "REFERENCES",
+          "globalPermissions": [
+            "ADMIN",
+            "WRITE",
+            "READ"
+          ],
+          "description": "Enables referencing a table as the unique/primary key table for a foreign key constraint. Also enables viewing the structure of a table (but not the data) via the DESCRIBE or SHOW command or by querying the Information Schema.",
+          "cannotBeGranted": false
+        }
+      ]
+    },
+    {
+      "name": "view",
+      "type": "view",
+      "children": [
+        "column"
+      ],
+      "permissions": [
+        {
+          "permission": "SELECT",
+          "globalPermissions": [
+            "ADMIN",
+            "WRITE",
+            "READ"
+          ],
+          "description": "Enables executing a SELECT statement on a view.",
+          "cannotBeGranted": false
+        },
+        {
+          "permission": "REFERENCES",
+          "globalPermissions": [
+            "ADMIN",
+            "WRITE",
+            "READ"
+          ],
+          "description": "Enables referencing a table as the unique/primary key table for a foreign key constraint. Also enables viewing the structure of a table (but not the data) via the DESCRIBE or SHOW command or by querying the Information Schema.",
+          "cannotBeGranted": false
+        },
+        {
+          "permission": "OWNERSHIP",
+          "globalPermissions": null,
+          "description": "Grants full control over the view. Only a single role can hold this privilege on a specific object at a time.",
+          "cannotBeGranted": true
+        }
+      ]
+    },
+    {
+      "name": "materialized-view",
+      "type": "view",
+      "label": "Materialized View",
+      "children": [
+        "column"
+      ],
+      "permissions": [
+        {
+          "permission": "SELECT",
+          "globalPermissions": [
+            "ADMIN",
+            "WRITE",
+            "READ"
+          ],
+          "description": "Enables executing a SELECT statement on a view.",
+          "cannotBeGranted": false
+        },
+        {
+          "permission": "REFERENCES",
+          "globalPermissions": [
+            "ADMIN",
+            "WRITE",
+            "READ"
+          ],
+          "description": "Enables referencing a table as the unique/primary key table for a foreign key constraint. Also enables viewing the structure of a table (but not the data) via the DESCRIBE or SHOW command or by querying the Information Schema.",
+          "cannotBeGranted": false
+        },
+        {
+          "permission": "OWNERSHIP",
+          "globalPermissions": null,
+          "description": "Grants full control over the materialized view. Only a single role can hold this privilege on a specific object at a time.",
+          "cannotBeGranted": true
+        }
+      ]
+    },
+    {
+      "name": "column",
+      "type": "column",
+      "children": null,
+      "permissions": null
+    },
+    {
+      "name": "shared-database",
+      "type": "database",
+      "children": [
+        "shared-schema"
+      ],
+      "permissions": [
+        {
+          "permission": "IMPORTED PRIVILEGES",
+          "globalPermissions": [
+            "ADMIN",
+            "WRITE",
+            "READ"
+          ],
+          "description": "Enables roles other than the owning role to access a shared database; applies only to shared databases.",
+          "cannotBeGranted": false
+        },
+        {
+          "permission": "USAGE on DATABASE",
+          "globalPermissions": null,
+          "description": "Enables using a database, including returning the database details in the SHOW DATABASES command output. Additional privileges are required to view or take actions on objects in a database.",
+          "cannotBeGranted": true
+        }
+      ]
+    },
+    {
+      "name": "shared-schema",
+      "type": "schema",
+      "children": [
+        "shared-table",
+        "shared-view"
+      ],
+      "permissions": [
+        {
+          "permission": "USAGE on SCHEMA",
+          "globalPermissions": null,
+          "description": "Enables using a schema, including returning the schema details in the SHOW SCHEMAS command output. To execute SHOW <objects> commands for objects (tables, views, stages, file formats, sequences, pipes, or functions) in the schema, a role must have at least one privilege granted on the object.",
+          "cannotBeGranted": true
+        }
+      ]
+    },
+    {
+      "name": "shared-table",
+      "type": "table",
+      "children": [
+        "shared-column"
+      ],
+      "permissions": [
+        {
+          "permission": "SELECT",
+          "globalPermissions": null,
+          "description": "Enables executing a SELECT statement on a table.",
+          "cannotBeGranted": true
+        }
+      ]
+    },
+    {
+      "name": "shared-view",
+      "type": "view",
+      "children": [
+        "shared-column"
+      ],
+      "permissions": [
+        {
+          "permission": "SELECT",
+          "globalPermissions": null,
+          "description": "Enables executing a SELECT statement on a view.",
+          "cannotBeGranted": true
+        }
+      ]
+    },
+    {
+      "name": "shared-column",
+      "type": "column",
+      "children": null,
+      "permissions": null
+    }
+  ],
+  "accessControlTypes": [
+    {
+      "isDefault": true,
+      "type": "role",
+      "label": "Account Role",
+      "isNamedEntity": true,
+      "canBeCreated": true,
+      "canBeAssumed": true,
+      "canAssumeMultiple": true,
+      "allowedWhoAccessControlTypes": [
+        "role"
+      ]
+    },
+    {
+      "isDefault": false,
+      "type": "databaseRole",
+      "label": "Database Role",
+      "isNamedEntity": true,
+      "canBeCreated": true,
+      "canBeAssumed": false,
+      "canAssumeMultiple": false,
+      "allowedWhoAccessControlTypes": [
+        "role",
+        "databaseRole"
+      ],
+      "commonParentType": "database"
+    },
+    {
+      "isDefault": false,
+      "type": "applicationRole",
+      "label": "Application Role",
+      "isNamedEntity": true,
+      "canBeCreated": false,
+      "canBeAssumed": false,
+      "canAssumeMultiple": false,
+      "allowedWhoAccessControlTypes": [
+        "role",
+        "applicationRole"
+      ],
+      "commonParentType": "application"
+    }
+  ],
+  "supportedFeatures": [
+    "dataSharing",
+    "rowFiltering",
+    "columnMasking"
+  ],
+  "type": "snowflake",
+  "usageMetaInfo": {
+    "defaultLevel": "table",
+    "levels": [
+      {
+        "name": "table",
+        "dataObjectTypes": [
+          "table",
+          "view",
+          "external-table",
+          "materialized-view",
+          "shared-table",
+          "shared-view"
+        ]
+      }
+    ]
+  },
+  "maskingMetadata": {
+    "maskTypes": [
+      {
+        "displayName": "NULL",
+        "externalId": "NULL",
+        "description": "Returns NULL instead of the column value.",
+        "dataTypes": null
+      }
+    ],
+    "defaultMaskExternalName": "NULL",
+    "applicableTypes": [
+      "table",
+      "view",
+      "materialized-view",
+      "external-table",
+      "iceberg-table"
+    ]
+  },
+  "shareMetadata": {
+    "applicableTypes": [
+      "database",
+      "schema",
+      "table",
+      "view",
+      "external-table",
+      "materialized-view",
+      "iceberg-table",
+      "function"
+    ],
+    "commonParentType": "database",
+    "dataSourceShareIdentifier": "TSMKRUM.VB14456"
+  }
+}

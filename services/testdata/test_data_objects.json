@@ -1,0 +1,70 @@
+[
+  {
+    "externalId": "wMwnG6E76Uw9ivOd-JJvF",
+    "name": "TSMKRUM-VB14456",
+    "fullName": "TSMKRUM-VB14456",
+    "type": "datasource",
+    "description": "",
+    "parentExternalId": "",
+    "tags": [
+      {
+        "key": "data_domain",
+        "value": "HR",
+        "source": "Snowflake"
+      }
+    ]
+  },
+  {
+    "externalId": "RAITO_DBT",
+    "name": "RAITO_DBT",
+    "fullName": "RAITO_DBT",
+    "type": "database",
+    "description": "",
+    "parentExternalId": "wMwnG6E76Uw9ivOd-JJvF",
+    "tags": null
+  },
+  {
+    "externalId": "RAITO_DBT.DEFAULT",
+    "name": "DEFAULT",
+    "fullName": "RAITO_DBT.DEFAULT",
+    "type": "schema",
+    "description": "",
+    "parentExternalId": "RAITO_DBT",
+    "tags": [
+      {
+        "key": "source_system",
+        "value": "Stripe",
+        "source": "Snowflake"
+      }
+    ]
+  },
+  {
+    "externalId": "RAITO_DBT.DEFAULT.CUSTOMER",
+    "name": "CUSTOMER",
+    "fullName": "RAITO_DBT.DEFAULT.CUSTOMER",
+    "type": "table",
+    "description": "",
+    "parentExternalId": "RAITO_DBT.DEFAULT",
+    "tags": null
+  },
+  {
+    "externalId": "RAITO_DBT.DEFAULT.CUSTOMER.LASTNAME",
+    "name": "LASTNAME",
+    "fullName": "RAITO_DBT.DEFAULT.CUSTOMER.LASTNAME",
+    "type": "column",
+    "description": "",
+    "parentExternalId": "RAITO_DBT.DEFAULT.CUSTOMER",
+    "tags": null,
+    "dataType": "TEXT"
+  },
+  {
+    "externalId": "RAITO_DBT.DEFAULT.CUSTOMER.FIRSTNAME",
+    "name": "FIRSTNAME",
+    "fullName": "RAITO_DBT.DEFAULT.CUSTOMER.FIRSTNAME",
+    "type": "column",
+    "description": "",
+    "parentExternalId": "RAITO_DBT.DEFAULT.CUSTOMER",
+    "tags": null,
+    "dataType": "TEXT"
+  }
+]
