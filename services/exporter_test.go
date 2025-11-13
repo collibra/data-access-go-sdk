@@ -147,7 +147,7 @@ func (suite *ExporterServiceTestSuite) TearDownSuite() {
 	TearDown_FinishJobAndTask_DeleteDataSource(&suite.Suite, suite.sdkClient, suite.subtask.FlowId, suite.createdDataSource.Id, suite.jobType, &suite.job.Id)
 }
 
-func (suite *ExporterServiceTestSuite) TestA_ExportAccessControls_WithExportOutOfSyncOnly() {
+func (suite *ExporterServiceTestSuite) TestExportAccessControls_WithExportOutOfSyncOnly() {
 	ctx := suite.T().Context()
 	exporter := suite.sdkClient.Exporter()
 	suite.Require().NotNil(exporter, "Failed to create Exporter client")
