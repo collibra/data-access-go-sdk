@@ -79,48 +79,64 @@ func TestDataObjectServiceTestSuite(t *testing.T) {
 	suite.Run(t, new(DataObjectServiceTestSuite))
 }
 
-func (suite *DataObjectServiceTestSuite) TestA_ListDataObjects() {
+func (suite *DataObjectServiceTestSuite) TestDataObjects() {
 	ctx := suite.T().Context()
 	dataObjectClient := suite.dataObjectClient
-	expectedFullNames := []string{"RAITO_DBT", "RAITO_DBT.DEFAULT", "RAITO_DBT.DEFAULT.CUSTOMER", "RAITO_DBT.DEFAULT.CUSTOMER.LASTNAME", "RAITO_DBT.DEFAULT.CUSTOMER.FIRSTNAME"}
-	sortingOrder := schema.SortAsc
 
-	response := dataObjectClient.ListDataObjects(ctx, services.WithDataObjectListFilter(&schema.DataObjectFilterInput{
-		DataSources: []string{suite.createdDataSource.Id},
-	}), services.WithDataObjectListOrder(schema.DataObjectOrderByInput{
-		FullName: &sortingOrder,
-	}))
-	fullNamesList := make([]string, 0)
+	suite.Run("List Data Objects Without Filters", func() {
+		response := dataObjectClient.ListDataObjects(ctx)
 
-	for dataObject, err := range response {
-		suite.Require().NoError(err, "Error while iterating data objects")
-		suite.Require().NotNil(dataObject, "Data object should not be nil")
-		fullNamesList = append(fullNamesList, dataObject.FullName)
-	}
+		var availableDataObjects []string
 
-	suite.Len(expectedFullNames, len(fullNamesList), "Number of data objects does not match expected")
+		for dataObject, err := range response {
+			suite.Require().NoError(err, "Error while iterating data objects")
+			suite.Require().NotNil(dataObject, "Data object should not be nil")
+			availableDataObjects = append(availableDataObjects, dataObject.FullName)
+		}
 
-	for _, expected := range expectedFullNames {
-		suite.Contains(fullNamesList, expected, "Data object name %s not found", expected)
-	}
+		// Verify that at least 5 data objects imported in setup are present
+		suite.GreaterOrEqual(len(availableDataObjects), 5, "Listed data objects count is less than expected")
+	})
 
-	// Verify ascending order
-	suite.True(sort.StringsAreSorted(fullNamesList), "Names should be sorted in ascending order")
-}
+	suite.Run("List Data Objects With Data Source Filter and Asc Order", func() {
+		expectedFullNames := []string{"RAITO_DBT", "RAITO_DBT.DEFAULT", "RAITO_DBT.DEFAULT.CUSTOMER", "RAITO_DBT.DEFAULT.CUSTOMER.LASTNAME", "RAITO_DBT.DEFAULT.CUSTOMER.FIRSTNAME"}
+		sortingOrder := schema.SortAsc
 
-func (suite *DataObjectServiceTestSuite) TestB_GetDataObjectByName_Than_ById_And_CompareDetails() {
-	ctx := suite.T().Context()
-	dataObjectName := "RAITO_DBT.DEFAULT"
-	dataObjectClient := suite.dataObjectClient
+		response := dataObjectClient.ListDataObjects(ctx, services.WithDataObjectListFilter(&schema.DataObjectFilterInput{
+			DataSources: []string{suite.createdDataSource.Id},
+		}), services.WithDataObjectListOrder(schema.DataObjectOrderByInput{
+			FullName: &sortingOrder,
+		}))
+		fullNamesList := make([]string, 0)
 
-	dataObject, err := dataObjectClient.GetDataObjectIdByName(ctx, dataObjectName, suite.createdDataSource.Id, services.WithDataObjectByExternalIdIncludeDataSource())
-	suite.Require().NoError(err, "Failed to get data object by name")
-	suite.NotNil(dataObject, "Data object should not be nil")
+		for dataObject, err := range response {
+			suite.Require().NoError(err, "Error while iterating data objects")
+			suite.Require().NotNil(dataObject, "Data object should not be nil")
+			fullNamesList = append(fullNamesList, dataObject.FullName)
+		}
 
-	dataObjectDetails, err := dataObjectClient.GetDataObject(ctx, dataObject)
-	suite.Require().NoError(err, "Failed to get data object details")
-	suite.NotNil(dataObjectDetails, "Data object details should not be nil")
+		suite.Len(expectedFullNames, len(fullNamesList), "Number of data objects does not match expected")
 
-	suite.Equal(dataObjectName, dataObjectDetails.FullName, "Data object name should match")
-	suite.Equal(suite.createdDataSource.Id, dataObjectDetails.DataSource.Id, "Data source ID should match")
+		for _, expected := range expectedFullNames {
+			suite.Contains(fullNamesList, expected, "Data object name %s not found", expected)
+		}
+
+		// Verify ascending order
+		suite.True(sort.StringsAreSorted(fullNamesList), "Names should be sorted in ascending order")
+	})
+
+	suite.Run("Get Data Object By Name Then By Id And Compare Details", func() {
+		dataObjectName := "RAITO_DBT.DEFAULT"
+
+		dataObject, err := dataObjectClient.GetDataObjectIdByName(ctx, dataObjectName, suite.createdDataSource.Id, services.WithDataObjectByExternalIdIncludeDataSource())
+		suite.Require().NoError(err, "Failed to get data object by name")
+		suite.NotNil(dataObject, "Data object should not be nil")
+
+		dataObjectDetails, err := dataObjectClient.GetDataObject(ctx, dataObject)
+		suite.Require().NoError(err, "Failed to get data object details")
+		suite.NotNil(dataObjectDetails, "Data object details should not be nil")
+
+		suite.Equal(dataObjectName, dataObjectDetails.FullName, "Data object name should match")
+		suite.Equal(suite.createdDataSource.Id, dataObjectDetails.DataSource.Id, "Data source ID should match")
+	})
 }
