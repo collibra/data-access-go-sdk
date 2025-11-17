@@ -84,12 +84,12 @@ const (
 
 type AccessControlSyncData = schema.AccessControlSyncData
 type AccessControlTypeInput = schema.AccessControlTypeInput
-type AccessControlWhatAbacRule = schema.AccessControlWhatAbacRule
+type AccessControlWhatAbacRulesWhatAbacRule = schema.AccessControlWhatAbacRulesWhatAbacRule
 type AccessControlWhatAccessControlFilterInput = schema.AccessControlWhatAccessControlFilterInput
 type AccessControlWhatDoByNameInput = schema.AccessControlWhatDoByNameInput
 type AccessControlWhatInputAP = schema.AccessControlWhatInputAP
 type AccessControlWhatInputDO = schema.AccessControlWhatInputDO
-type AccessControlWhoAbacRule = schema.AccessControlWhoAbacRule
+type AccessControlWhoAbacRulesWhoAbacRule = schema.AccessControlWhoAbacRulesWhoAbacRule
 type AccessControlWhoFeedbackState = schema.AccessControlWhoFeedbackState
 type AccessControlWhoListFilter = schema.AccessControlWhoListFilter
 type AccessControlWhoOrderByInput = schema.AccessControlWhoOrderByInput
@@ -121,8 +121,6 @@ type AccessWhoItemItem = schema.AccessWhoItemItem
 type AccessWhoItemItemAccessControl = schema.AccessWhoItemItemAccessControl
 type AccessWhoItemItemDataShareRecipient = schema.AccessWhoItemItemDataShareRecipient
 type AccessWhoItemItemDataSource = schema.AccessWhoItemItemDataSource
-type AccessWhoItemItemGroup = schema.AccessWhoItemItemGroup
-type AccessWhoItemItemGroupIdentityStore = schema.AccessWhoItemItemGroupIdentityStore
 type AccessWhoItemItemInvalidInputError = schema.AccessWhoItemItemInvalidInputError
 type AccessWhoItemItemNotFoundError = schema.AccessWhoItemItemNotFoundError
 type AccessWhoItemItemUser = schema.AccessWhoItemItemUser
@@ -327,6 +325,23 @@ type EndOfTargetsSyncEndOfTargetsSyncEndOfTargetsSyncResult = schema.EndOfTarget
 type EndOfTargetsSyncEndOfTargetsSyncPermissionDeniedError = schema.EndOfTargetsSyncEndOfTargetsSyncPermissionDeniedError
 type EndOfTargetsSyncInput = schema.EndOfTargetsSyncInput
 type EndOfTargetsSyncResponse = schema.EndOfTargetsSyncResponse
+type EntityType = schema.EntityType
+
+const (
+	EntityTypeAccesscontrol      EntityType = schema.EntityTypeAccesscontrol
+	EntityTypeAccess             EntityType = schema.EntityTypeAccess
+	EntityTypeAccessrequest      EntityType = schema.EntityTypeAccessrequest
+	EntityTypeUser               EntityType = schema.EntityTypeUser
+	EntityTypeDataobject         EntityType = schema.EntityTypeDataobject
+	EntityTypeDatasource         EntityType = schema.EntityTypeDatasource
+	EntityTypeDatausage          EntityType = schema.EntityTypeDatausage
+	EntityTypeTag                EntityType = schema.EntityTypeTag
+	EntityTypeRole               EntityType = schema.EntityTypeRole
+	EntityTypeRoleassignment     EntityType = schema.EntityTypeRoleassignment
+	EntityTypeAccount            EntityType = schema.EntityTypeAccount
+	EntityTypeDatasharerecipient EntityType = schema.EntityTypeDatasharerecipient
+)
+
 type ExportAccessControl = schema.ExportAccessControl
 type ExportAccessControlDeleteWhatExportWhatItem = schema.ExportAccessControlDeleteWhatExportWhatItem
 type ExportAccessControlDeletedWhoExportWhoItem = schema.ExportAccessControlDeletedWhoExportWhoItem
@@ -635,7 +650,6 @@ type RoleAssignmentOn = schema.RoleAssignmentOn
 type RoleAssignmentOnAccessControl = schema.RoleAssignmentOnAccessControl
 type RoleAssignmentOnDataObject = schema.RoleAssignmentOnDataObject
 type RoleAssignmentOnDataSource = schema.RoleAssignmentOnDataSource
-type RoleAssignmentOnIdentityStore = schema.RoleAssignmentOnIdentityStore
 type RoleAssignmentOnInvalidInputError = schema.RoleAssignmentOnInvalidInputError
 type RoleAssignmentOnNotFoundError = schema.RoleAssignmentOnNotFoundError
 type RoleAssignmentOnPermissionDeniedError = schema.RoleAssignmentOnPermissionDeniedError
@@ -643,7 +657,6 @@ type RoleAssignmentOrderInput = schema.RoleAssignmentOrderInput
 type RoleAssignmentRole = schema.RoleAssignmentRole
 type RoleAssignmentTo = schema.RoleAssignmentTo
 type RoleAssignmentToAccessControl = schema.RoleAssignmentToAccessControl
-type RoleAssignmentToGroup = schema.RoleAssignmentToGroup
 type RoleAssignmentToUser = schema.RoleAssignmentToUser
 type RoleConnection = schema.RoleConnection
 type RoleConnectionEdgesRoleEdge = schema.RoleConnectionEdgesRoleEdge
@@ -846,14 +859,6 @@ type WhatAbacRuleInput = schema.WhatAbacRuleInput
 type WhatItemImport = schema.WhatItemImport
 type WhoAbacRule = schema.WhoAbacRule
 type WhoAbacRuleInput = schema.WhoAbacRuleInput
-type WhoAndWhatType = schema.WhoAndWhatType
-
-const (
-	WhoAndWhatTypeStatic  WhoAndWhatType = schema.WhoAndWhatTypeStatic
-	WhoAndWhatTypeDynamic WhoAndWhatType = schema.WhoAndWhatTypeDynamic
-	WhoAndWhatTypeUnknown WhoAndWhatType = schema.WhoAndWhatTypeUnknown
-)
-
 type WhoItemImport = schema.WhoItemImport
 type WhoItemInput = schema.WhoItemInput
 
@@ -870,6 +875,7 @@ var AllDataComparisonExpressionComparisonOperator = []DataComparisonExpressionCo
 var AllDataComparisonExpressionEntityType = []DataComparisonExpressionEntityType{DataComparisonExpressionEntityTypeDataobject, DataComparisonExpressionEntityTypeColumnreferencebyname}
 var AllDataSourceFeatures = []DataSourceFeatures{DataSourceFeaturesColumnmasking, DataSourceFeaturesRowfiltering, DataSourceFeaturesDatasharing}
 var AllDataTypeOrigin = []DataTypeOrigin{DataTypeOriginInternal, DataTypeOriginExternal, DataTypeOriginShared}
+var AllEntityType = []EntityType{EntityTypeAccesscontrol, EntityTypeAccess, EntityTypeAccessrequest, EntityTypeUser, EntityTypeDataobject, EntityTypeDatasource, EntityTypeDatausage, EntityTypeTag, EntityTypeRole, EntityTypeRoleassignment, EntityTypeAccount, EntityTypeDatasharerecipient}
 var AllJobStatus = []JobStatus{JobStatusStarted, JobStatusInprogress, JobStatusCompleted, JobStatusFailed, JobStatusTimedout}
 var AllParameterDataType = []ParameterDataType{ParameterDataTypeString, ParameterDataTypeInteger, ParameterDataTypeFloat, ParameterDataTypeBoolean, ParameterDataTypeTimestamp, ParameterDataTypeStringarray, ParameterDataTypeIntegerarray, ParameterDataTypeFloatarray, ParameterDataTypeBooleanarray, ParameterDataTypeTimestamparray}
 var AllParameterSource = []ParameterSource{ParameterSourceAgent, ParameterSourceAgentruntime, ParameterSourceConnector, ParameterSourceConnectorsecure}
@@ -879,4 +885,3 @@ var AllSubtaskStatus = []SubtaskStatus{SubtaskStatusStarted, SubtaskStatusQueued
 var AllSyncStatus = []SyncStatus{SyncStatusNotconnected, SyncStatusFailed, SyncStatusOutofdate, SyncStatusInprogress, SyncStatusSynced, SyncStatusOutofsync}
 var AllTaskStatus = []TaskStatus{TaskStatusStarted, TaskStatusDataretrieve, TaskStatusDataupload, TaskStatusQueued, TaskStatusDataprocessing, TaskStatusCompleted, TaskStatusFailed, TaskStatusSkipped, TaskStatusTimedout}
 var AllUserType = []UserType{UserTypeHuman, UserTypeMachine}
-var AllWhoAndWhatType = []WhoAndWhatType{WhoAndWhatTypeStatic, WhoAndWhatTypeDynamic, WhoAndWhatTypeUnknown}

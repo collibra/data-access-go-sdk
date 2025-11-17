@@ -439,14 +439,14 @@ func WithAccessControlAbacWhatScopeListSearch(search string) func(options *Acces
 // id is the id of the AccessControl
 // WithAccessControlAbacWhatScopeListSearch can be used to specify the search of the returned types.DataObject
 // WithAccessControlAbacWhatScopeListOrder can be used to specify the order of the returned types.DataObject
-func (a *AccessControlClient) GetAccessControlAbacWhatScope(ctx context.Context, id string, ops ...func(*AccessControlAbacWhatScopeListOptions)) iter.Seq2[*types.DataObject, error] {
+func (a *AccessControlClient) GetAccessControlAbacWhatScope(ctx context.Context, id string, abacRule string, ops ...func(*AccessControlAbacWhatScopeListOptions)) iter.Seq2[*types.DataObject, error] {
 	options := AccessControlAbacWhatScopeListOptions{}
 	for _, op := range ops {
 		op(&options)
 	}
 
 	loadPageFn := func(ctx context.Context, cursor *string) (*types.PageInfo, []types.DataObjectConnectionEdgesDataObjectEdge, error) {
-		output, err := schema.ListAccessControlAbacWhatScope(ctx, a.client, id, cursor, utils.Ptr(internal.MaxPageSize), options.search, options.order)
+		output, err := schema.ListAccessControlAbacWhatScope(ctx, a.client, id, cursor, utils.Ptr(internal.MaxPageSize), options.search, abacRule, options.order)
 		if err != nil {
 			return nil, nil, types.NewErrClient(err)
 		}

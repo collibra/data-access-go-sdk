@@ -146,10 +146,8 @@ type AccessControl struct {
 	Description       string                                    `json:"description"`
 	PolicyRule        *string                                   `json:"policyRule"`
 	External          bool                                      `json:"external"`
-	WhatType          WhoAndWhatType                            `json:"whatType"`
-	WhatAbacRule      *AccessControlWhatAbacRule                `json:"whatAbacRule"`
-	WhoType           WhoAndWhatType                            `json:"whoType"`
-	WhoAbacRule       *AccessControlWhoAbacRule                 `json:"whoAbacRule"`
+	WhatAbacRules     []AccessControlWhatAbacRulesWhatAbacRule  `json:"whatAbacRules"`
+	WhoAbacRules      []AccessControlWhoAbacRulesWhoAbacRule    `json:"whoAbacRules"`
 	NotInternalizable bool                                      `json:"notInternalizable"`
 	Complete          *bool                                     `json:"complete"`
 	Locks             []AccessControlLocksAccessControlLockData `json:"locks"`
@@ -189,17 +187,15 @@ func (v *AccessControl) GetPolicyRule() *string { return v.PolicyRule }
 // GetExternal returns AccessControl.External, and is useful for accessing the field via an interface.
 func (v *AccessControl) GetExternal() bool { return v.External }
 
-// GetWhatType returns AccessControl.WhatType, and is useful for accessing the field via an interface.
-func (v *AccessControl) GetWhatType() WhoAndWhatType { return v.WhatType }
+// GetWhatAbacRules returns AccessControl.WhatAbacRules, and is useful for accessing the field via an interface.
+func (v *AccessControl) GetWhatAbacRules() []AccessControlWhatAbacRulesWhatAbacRule {
+	return v.WhatAbacRules
+}
 
-// GetWhatAbacRule returns AccessControl.WhatAbacRule, and is useful for accessing the field via an interface.
-func (v *AccessControl) GetWhatAbacRule() *AccessControlWhatAbacRule { return v.WhatAbacRule }
-
-// GetWhoType returns AccessControl.WhoType, and is useful for accessing the field via an interface.
-func (v *AccessControl) GetWhoType() WhoAndWhatType { return v.WhoType }
-
-// GetWhoAbacRule returns AccessControl.WhoAbacRule, and is useful for accessing the field via an interface.
-func (v *AccessControl) GetWhoAbacRule() *AccessControlWhoAbacRule { return v.WhoAbacRule }
+// GetWhoAbacRules returns AccessControl.WhoAbacRules, and is useful for accessing the field via an interface.
+func (v *AccessControl) GetWhoAbacRules() []AccessControlWhoAbacRulesWhoAbacRule {
+	return v.WhoAbacRules
+}
 
 // GetNotInternalizable returns AccessControl.NotInternalizable, and is useful for accessing the field via an interface.
 func (v *AccessControl) GetNotInternalizable() bool { return v.NotInternalizable }
@@ -389,24 +385,14 @@ func (v *AccessControlConnectionEdgesAccessControlEdgeNodeAccessControl) GetExte
 	return v.AccessControl.External
 }
 
-// GetWhatType returns AccessControlConnectionEdgesAccessControlEdgeNodeAccessControl.WhatType, and is useful for accessing the field via an interface.
-func (v *AccessControlConnectionEdgesAccessControlEdgeNodeAccessControl) GetWhatType() WhoAndWhatType {
-	return v.AccessControl.WhatType
+// GetWhatAbacRules returns AccessControlConnectionEdgesAccessControlEdgeNodeAccessControl.WhatAbacRules, and is useful for accessing the field via an interface.
+func (v *AccessControlConnectionEdgesAccessControlEdgeNodeAccessControl) GetWhatAbacRules() []AccessControlWhatAbacRulesWhatAbacRule {
+	return v.AccessControl.WhatAbacRules
 }
 
-// GetWhatAbacRule returns AccessControlConnectionEdgesAccessControlEdgeNodeAccessControl.WhatAbacRule, and is useful for accessing the field via an interface.
-func (v *AccessControlConnectionEdgesAccessControlEdgeNodeAccessControl) GetWhatAbacRule() *AccessControlWhatAbacRule {
-	return v.AccessControl.WhatAbacRule
-}
-
-// GetWhoType returns AccessControlConnectionEdgesAccessControlEdgeNodeAccessControl.WhoType, and is useful for accessing the field via an interface.
-func (v *AccessControlConnectionEdgesAccessControlEdgeNodeAccessControl) GetWhoType() WhoAndWhatType {
-	return v.AccessControl.WhoType
-}
-
-// GetWhoAbacRule returns AccessControlConnectionEdgesAccessControlEdgeNodeAccessControl.WhoAbacRule, and is useful for accessing the field via an interface.
-func (v *AccessControlConnectionEdgesAccessControlEdgeNodeAccessControl) GetWhoAbacRule() *AccessControlWhoAbacRule {
-	return v.AccessControl.WhoAbacRule
+// GetWhoAbacRules returns AccessControlConnectionEdgesAccessControlEdgeNodeAccessControl.WhoAbacRules, and is useful for accessing the field via an interface.
+func (v *AccessControlConnectionEdgesAccessControlEdgeNodeAccessControl) GetWhoAbacRules() []AccessControlWhoAbacRulesWhoAbacRule {
+	return v.AccessControl.WhoAbacRules
 }
 
 // GetNotInternalizable returns AccessControlConnectionEdgesAccessControlEdgeNodeAccessControl.NotInternalizable, and is useful for accessing the field via an interface.
@@ -477,13 +463,9 @@ type __premarshalAccessControlConnectionEdgesAccessControlEdgeNodeAccessControl 
 
 	External bool `json:"external"`
 
-	WhatType WhoAndWhatType `json:"whatType"`
+	WhatAbacRules []AccessControlWhatAbacRulesWhatAbacRule `json:"whatAbacRules"`
 
-	WhatAbacRule *AccessControlWhatAbacRule `json:"whatAbacRule"`
-
-	WhoType WhoAndWhatType `json:"whoType"`
-
-	WhoAbacRule *AccessControlWhoAbacRule `json:"whoAbacRule"`
+	WhoAbacRules []AccessControlWhoAbacRulesWhoAbacRule `json:"whoAbacRules"`
 
 	NotInternalizable bool `json:"notInternalizable"`
 
@@ -516,10 +498,8 @@ func (v *AccessControlConnectionEdgesAccessControlEdgeNodeAccessControl) __prema
 	retval.Description = v.AccessControl.Description
 	retval.PolicyRule = v.AccessControl.PolicyRule
 	retval.External = v.AccessControl.External
-	retval.WhatType = v.AccessControl.WhatType
-	retval.WhatAbacRule = v.AccessControl.WhatAbacRule
-	retval.WhoType = v.AccessControl.WhoType
-	retval.WhoAbacRule = v.AccessControl.WhoAbacRule
+	retval.WhatAbacRules = v.AccessControl.WhatAbacRules
+	retval.WhoAbacRules = v.AccessControl.WhoAbacRules
 	retval.NotInternalizable = v.AccessControl.NotInternalizable
 	retval.Complete = v.AccessControl.Complete
 	retval.Locks = v.AccessControl.Locks
@@ -1146,11 +1126,9 @@ type AccessControlInput struct {
 	Description            *string                        `json:"description,omitempty"`
 	Category               *string                        `json:"category,omitempty"`
 	Source                 *string                        `json:"source,omitempty"`
-	WhoType                *WhoAndWhatType                `json:"whoType,omitempty"`
-	WhoAbacRule            *WhoAbacRuleInput              `json:"whoAbacRule,omitempty"`
+	WhoAbacRules           []*WhoAbacRuleInput            `json:"whoAbacRules,omitempty"`
 	WhoItems               []WhoItemInput                 `json:"whoItems"`
-	WhatType               *WhoAndWhatType                `json:"whatType,omitempty"`
-	WhatAbacRule           *WhatAbacRuleInput             `json:"whatAbacRule,omitempty"`
+	WhatAbacRules          []*WhatAbacRuleInput           `json:"whatAbacRules,omitempty"`
 	PolicyRule             *string                        `json:"policyRule,omitempty"`
 	FilterCriteria         *DataComparisonExpressionInput `json:"filterCriteria,omitempty"`
 	DataSources            []AccessControlDataSourceInput `json:"dataSources"`
@@ -1179,20 +1157,14 @@ func (v *AccessControlInput) GetCategory() *string { return v.Category }
 // GetSource returns AccessControlInput.Source, and is useful for accessing the field via an interface.
 func (v *AccessControlInput) GetSource() *string { return v.Source }
 
-// GetWhoType returns AccessControlInput.WhoType, and is useful for accessing the field via an interface.
-func (v *AccessControlInput) GetWhoType() *WhoAndWhatType { return v.WhoType }
-
-// GetWhoAbacRule returns AccessControlInput.WhoAbacRule, and is useful for accessing the field via an interface.
-func (v *AccessControlInput) GetWhoAbacRule() *WhoAbacRuleInput { return v.WhoAbacRule }
+// GetWhoAbacRules returns AccessControlInput.WhoAbacRules, and is useful for accessing the field via an interface.
+func (v *AccessControlInput) GetWhoAbacRules() []*WhoAbacRuleInput { return v.WhoAbacRules }
 
 // GetWhoItems returns AccessControlInput.WhoItems, and is useful for accessing the field via an interface.
 func (v *AccessControlInput) GetWhoItems() []WhoItemInput { return v.WhoItems }
 
-// GetWhatType returns AccessControlInput.WhatType, and is useful for accessing the field via an interface.
-func (v *AccessControlInput) GetWhatType() *WhoAndWhatType { return v.WhatType }
-
-// GetWhatAbacRule returns AccessControlInput.WhatAbacRule, and is useful for accessing the field via an interface.
-func (v *AccessControlInput) GetWhatAbacRule() *WhatAbacRuleInput { return v.WhatAbacRule }
+// GetWhatAbacRules returns AccessControlInput.WhatAbacRules, and is useful for accessing the field via an interface.
+func (v *AccessControlInput) GetWhatAbacRules() []*WhatAbacRuleInput { return v.WhatAbacRules }
 
 // GetPolicyRule returns AccessControlInput.PolicyRule, and is useful for accessing the field via an interface.
 func (v *AccessControlInput) GetPolicyRule() *string { return v.PolicyRule }
@@ -1592,36 +1564,40 @@ func (v *AccessControlTypeInput) GetAllowedWhoAccessControlTypes() []string {
 // GetCommonParentType returns AccessControlTypeInput.CommonParentType, and is useful for accessing the field via an interface.
 func (v *AccessControlTypeInput) GetCommonParentType() *string { return v.CommonParentType }
 
-// AccessControlWhatAbacRule includes the requested fields of the GraphQL type WhatAbacRule.
-type AccessControlWhatAbacRule struct {
+// AccessControlWhatAbacRulesWhatAbacRule includes the requested fields of the GraphQL type WhatAbacRule.
+type AccessControlWhatAbacRulesWhatAbacRule struct {
 	WhatAbacRule `json:"-"`
 }
 
-// GetPermissions returns AccessControlWhatAbacRule.Permissions, and is useful for accessing the field via an interface.
-func (v *AccessControlWhatAbacRule) GetPermissions() []string { return v.WhatAbacRule.Permissions }
+// GetPermissions returns AccessControlWhatAbacRulesWhatAbacRule.Permissions, and is useful for accessing the field via an interface.
+func (v *AccessControlWhatAbacRulesWhatAbacRule) GetPermissions() []string {
+	return v.WhatAbacRule.Permissions
+}
 
-// GetGlobalPermissions returns AccessControlWhatAbacRule.GlobalPermissions, and is useful for accessing the field via an interface.
-func (v *AccessControlWhatAbacRule) GetGlobalPermissions() []string {
+// GetGlobalPermissions returns AccessControlWhatAbacRulesWhatAbacRule.GlobalPermissions, and is useful for accessing the field via an interface.
+func (v *AccessControlWhatAbacRulesWhatAbacRule) GetGlobalPermissions() []string {
 	return v.WhatAbacRule.GlobalPermissions
 }
 
-// GetDoTypes returns AccessControlWhatAbacRule.DoTypes, and is useful for accessing the field via an interface.
-func (v *AccessControlWhatAbacRule) GetDoTypes() []string { return v.WhatAbacRule.DoTypes }
+// GetDoTypes returns AccessControlWhatAbacRulesWhatAbacRule.DoTypes, and is useful for accessing the field via an interface.
+func (v *AccessControlWhatAbacRulesWhatAbacRule) GetDoTypes() []string { return v.WhatAbacRule.DoTypes }
 
-// GetRuleJson returns AccessControlWhatAbacRule.RuleJson, and is useful for accessing the field via an interface.
-func (v *AccessControlWhatAbacRule) GetRuleJson() *string { return v.WhatAbacRule.RuleJson }
+// GetRuleJson returns AccessControlWhatAbacRulesWhatAbacRule.RuleJson, and is useful for accessing the field via an interface.
+func (v *AccessControlWhatAbacRulesWhatAbacRule) GetRuleJson() *string {
+	return v.WhatAbacRule.RuleJson
+}
 
-func (v *AccessControlWhatAbacRule) UnmarshalJSON(b []byte) error {
+func (v *AccessControlWhatAbacRulesWhatAbacRule) UnmarshalJSON(b []byte) error {
 
 	if string(b) == "null" {
 		return nil
 	}
 
 	var firstPass struct {
-		*AccessControlWhatAbacRule
+		*AccessControlWhatAbacRulesWhatAbacRule
 		graphql.NoUnmarshalJSON
 	}
-	firstPass.AccessControlWhatAbacRule = v
+	firstPass.AccessControlWhatAbacRulesWhatAbacRule = v
 
 	err := json.Unmarshal(b, &firstPass)
 	if err != nil {
@@ -1636,7 +1612,7 @@ func (v *AccessControlWhatAbacRule) UnmarshalJSON(b []byte) error {
 	return nil
 }
 
-type __premarshalAccessControlWhatAbacRule struct {
+type __premarshalAccessControlWhatAbacRulesWhatAbacRule struct {
 	Permissions []string `json:"permissions"`
 
 	GlobalPermissions []string `json:"globalPermissions"`
@@ -1646,7 +1622,7 @@ type __premarshalAccessControlWhatAbacRule struct {
 	RuleJson *string `json:"ruleJson"`
 }
 
-func (v *AccessControlWhatAbacRule) MarshalJSON() ([]byte, error) {
+func (v *AccessControlWhatAbacRulesWhatAbacRule) MarshalJSON() ([]byte, error) {
 	premarshaled, err := v.__premarshalJSON()
 	if err != nil {
 		return nil, err
@@ -1654,8 +1630,8 @@ func (v *AccessControlWhatAbacRule) MarshalJSON() ([]byte, error) {
 	return json.Marshal(premarshaled)
 }
 
-func (v *AccessControlWhatAbacRule) __premarshalJSON() (*__premarshalAccessControlWhatAbacRule, error) {
-	var retval __premarshalAccessControlWhatAbacRule
+func (v *AccessControlWhatAbacRulesWhatAbacRule) __premarshalJSON() (*__premarshalAccessControlWhatAbacRulesWhatAbacRule, error) {
+	var retval __premarshalAccessControlWhatAbacRulesWhatAbacRule
 
 	retval.Permissions = v.WhatAbacRule.Permissions
 	retval.GlobalPermissions = v.WhatAbacRule.GlobalPermissions
@@ -1736,31 +1712,33 @@ func (v *AccessControlWhatInputDO) GetDataObjectByName() []AccessControlWhatDoBy
 // GetExpiresAt returns AccessControlWhatInputDO.ExpiresAt, and is useful for accessing the field via an interface.
 func (v *AccessControlWhatInputDO) GetExpiresAt() *time.Time { return v.ExpiresAt }
 
-// AccessControlWhoAbacRule includes the requested fields of the GraphQL type WhoAbacRule.
-type AccessControlWhoAbacRule struct {
+// AccessControlWhoAbacRulesWhoAbacRule includes the requested fields of the GraphQL type WhoAbacRule.
+type AccessControlWhoAbacRulesWhoAbacRule struct {
 	WhoAbacRule `json:"-"`
 }
 
-// GetPromiseDuration returns AccessControlWhoAbacRule.PromiseDuration, and is useful for accessing the field via an interface.
-func (v *AccessControlWhoAbacRule) GetPromiseDuration() *int64 { return v.WhoAbacRule.PromiseDuration }
+// GetPromiseDuration returns AccessControlWhoAbacRulesWhoAbacRule.PromiseDuration, and is useful for accessing the field via an interface.
+func (v *AccessControlWhoAbacRulesWhoAbacRule) GetPromiseDuration() *int64 {
+	return v.WhoAbacRule.PromiseDuration
+}
 
-// GetType returns AccessControlWhoAbacRule.Type, and is useful for accessing the field via an interface.
-func (v *AccessControlWhoAbacRule) GetType() AccessWhoItemType { return v.WhoAbacRule.Type }
+// GetType returns AccessControlWhoAbacRulesWhoAbacRule.Type, and is useful for accessing the field via an interface.
+func (v *AccessControlWhoAbacRulesWhoAbacRule) GetType() AccessWhoItemType { return v.WhoAbacRule.Type }
 
-// GetRuleJson returns AccessControlWhoAbacRule.RuleJson, and is useful for accessing the field via an interface.
-func (v *AccessControlWhoAbacRule) GetRuleJson() *string { return v.WhoAbacRule.RuleJson }
+// GetRuleJson returns AccessControlWhoAbacRulesWhoAbacRule.RuleJson, and is useful for accessing the field via an interface.
+func (v *AccessControlWhoAbacRulesWhoAbacRule) GetRuleJson() *string { return v.WhoAbacRule.RuleJson }
 
-func (v *AccessControlWhoAbacRule) UnmarshalJSON(b []byte) error {
+func (v *AccessControlWhoAbacRulesWhoAbacRule) UnmarshalJSON(b []byte) error {
 
 	if string(b) == "null" {
 		return nil
 	}
 
 	var firstPass struct {
-		*AccessControlWhoAbacRule
+		*AccessControlWhoAbacRulesWhoAbacRule
 		graphql.NoUnmarshalJSON
 	}
-	firstPass.AccessControlWhoAbacRule = v
+	firstPass.AccessControlWhoAbacRulesWhoAbacRule = v
 
 	err := json.Unmarshal(b, &firstPass)
 	if err != nil {
@@ -1775,7 +1753,7 @@ func (v *AccessControlWhoAbacRule) UnmarshalJSON(b []byte) error {
 	return nil
 }
 
-type __premarshalAccessControlWhoAbacRule struct {
+type __premarshalAccessControlWhoAbacRulesWhoAbacRule struct {
 	PromiseDuration *int64 `json:"promiseDuration"`
 
 	Type AccessWhoItemType `json:"type"`
@@ -1783,7 +1761,7 @@ type __premarshalAccessControlWhoAbacRule struct {
 	RuleJson *string `json:"ruleJson"`
 }
 
-func (v *AccessControlWhoAbacRule) MarshalJSON() ([]byte, error) {
+func (v *AccessControlWhoAbacRulesWhoAbacRule) MarshalJSON() ([]byte, error) {
 	premarshaled, err := v.__premarshalJSON()
 	if err != nil {
 		return nil, err
@@ -1791,8 +1769,8 @@ func (v *AccessControlWhoAbacRule) MarshalJSON() ([]byte, error) {
 	return json.Marshal(premarshaled)
 }
 
-func (v *AccessControlWhoAbacRule) __premarshalJSON() (*__premarshalAccessControlWhoAbacRule, error) {
-	var retval __premarshalAccessControlWhoAbacRule
+func (v *AccessControlWhoAbacRulesWhoAbacRule) __premarshalJSON() (*__premarshalAccessControlWhoAbacRulesWhoAbacRule, error) {
+	var retval __premarshalAccessControlWhoAbacRulesWhoAbacRule
 
 	retval.PromiseDuration = v.WhoAbacRule.PromiseDuration
 	retval.Type = v.WhoAbacRule.Type
@@ -1819,7 +1797,10 @@ type AccessControlWhoListFilter struct {
 	WhoType             *AccessWhoItemType `json:"whoType,omitempty"`
 	TargetUser          *string            `json:"targetUser,omitempty"`
 	TargetAccessControl *string            `json:"targetAccessControl,omitempty"`
+	EntityType          *EntityType        `json:"entityType,omitempty"`
 	Search              *string            `json:"search,omitempty"`
+	// Optional ABAC rule to filter the who-list on. Only applicable when requesting users who-list without unpacking
+	AbacRule *string `json:"abacRule,omitempty"`
 }
 
 // GetWhoType returns AccessControlWhoListFilter.WhoType, and is useful for accessing the field via an interface.
@@ -1831,8 +1812,14 @@ func (v *AccessControlWhoListFilter) GetTargetUser() *string { return v.TargetUs
 // GetTargetAccessControl returns AccessControlWhoListFilter.TargetAccessControl, and is useful for accessing the field via an interface.
 func (v *AccessControlWhoListFilter) GetTargetAccessControl() *string { return v.TargetAccessControl }
 
+// GetEntityType returns AccessControlWhoListFilter.EntityType, and is useful for accessing the field via an interface.
+func (v *AccessControlWhoListFilter) GetEntityType() *EntityType { return v.EntityType }
+
 // GetSearch returns AccessControlWhoListFilter.Search, and is useful for accessing the field via an interface.
 func (v *AccessControlWhoListFilter) GetSearch() *string { return v.Search }
+
+// GetAbacRule returns AccessControlWhoListFilter.AbacRule, and is useful for accessing the field via an interface.
+func (v *AccessControlWhoListFilter) GetAbacRule() *string { return v.AbacRule }
 
 type AccessControlWhoOrderByInput struct {
 	Name *Sort `json:"name,omitempty"`
@@ -1911,24 +1898,14 @@ func (v *AccessWhatAccessControlItemAccessControl) GetExternal() bool {
 	return v.AccessControl.External
 }
 
-// GetWhatType returns AccessWhatAccessControlItemAccessControl.WhatType, and is useful for accessing the field via an interface.
-func (v *AccessWhatAccessControlItemAccessControl) GetWhatType() WhoAndWhatType {
-	return v.AccessControl.WhatType
+// GetWhatAbacRules returns AccessWhatAccessControlItemAccessControl.WhatAbacRules, and is useful for accessing the field via an interface.
+func (v *AccessWhatAccessControlItemAccessControl) GetWhatAbacRules() []AccessControlWhatAbacRulesWhatAbacRule {
+	return v.AccessControl.WhatAbacRules
 }
 
-// GetWhatAbacRule returns AccessWhatAccessControlItemAccessControl.WhatAbacRule, and is useful for accessing the field via an interface.
-func (v *AccessWhatAccessControlItemAccessControl) GetWhatAbacRule() *AccessControlWhatAbacRule {
-	return v.AccessControl.WhatAbacRule
-}
-
-// GetWhoType returns AccessWhatAccessControlItemAccessControl.WhoType, and is useful for accessing the field via an interface.
-func (v *AccessWhatAccessControlItemAccessControl) GetWhoType() WhoAndWhatType {
-	return v.AccessControl.WhoType
-}
-
-// GetWhoAbacRule returns AccessWhatAccessControlItemAccessControl.WhoAbacRule, and is useful for accessing the field via an interface.
-func (v *AccessWhatAccessControlItemAccessControl) GetWhoAbacRule() *AccessControlWhoAbacRule {
-	return v.AccessControl.WhoAbacRule
+// GetWhoAbacRules returns AccessWhatAccessControlItemAccessControl.WhoAbacRules, and is useful for accessing the field via an interface.
+func (v *AccessWhatAccessControlItemAccessControl) GetWhoAbacRules() []AccessControlWhoAbacRulesWhoAbacRule {
+	return v.AccessControl.WhoAbacRules
 }
 
 // GetNotInternalizable returns AccessWhatAccessControlItemAccessControl.NotInternalizable, and is useful for accessing the field via an interface.
@@ -1999,13 +1976,9 @@ type __premarshalAccessWhatAccessControlItemAccessControl struct {
 
 	External bool `json:"external"`
 
-	WhatType WhoAndWhatType `json:"whatType"`
+	WhatAbacRules []AccessControlWhatAbacRulesWhatAbacRule `json:"whatAbacRules"`
 
-	WhatAbacRule *AccessControlWhatAbacRule `json:"whatAbacRule"`
-
-	WhoType WhoAndWhatType `json:"whoType"`
-
-	WhoAbacRule *AccessControlWhoAbacRule `json:"whoAbacRule"`
+	WhoAbacRules []AccessControlWhoAbacRulesWhoAbacRule `json:"whoAbacRules"`
 
 	NotInternalizable bool `json:"notInternalizable"`
 
@@ -2038,10 +2011,8 @@ func (v *AccessWhatAccessControlItemAccessControl) __premarshalJSON() (*__premar
 	retval.Description = v.AccessControl.Description
 	retval.PolicyRule = v.AccessControl.PolicyRule
 	retval.External = v.AccessControl.External
-	retval.WhatType = v.AccessControl.WhatType
-	retval.WhatAbacRule = v.AccessControl.WhatAbacRule
-	retval.WhoType = v.AccessControl.WhoType
-	retval.WhoAbacRule = v.AccessControl.WhoAbacRule
+	retval.WhatAbacRules = v.AccessControl.WhatAbacRules
+	retval.WhoAbacRules = v.AccessControl.WhoAbacRules
 	retval.NotInternalizable = v.AccessControl.NotInternalizable
 	retval.Complete = v.AccessControl.Complete
 	retval.Locks = v.AccessControl.Locks
@@ -2828,6 +2799,8 @@ type AccessWhatFilterInput struct {
 	Owners           []string    `json:"owners"`
 	HasTags          []TagFilter `json:"hasTags"`
 	TargetDataObject *string     `json:"targetDataObject,omitempty"`
+	// Optional ABAC rule to filter the what-list on. Only applicable when requesting data objects what-list without unpacking
+	AbacRule *string `json:"abacRule,omitempty"`
 }
 
 // GetSearch returns AccessWhatFilterInput.Search, and is useful for accessing the field via an interface.
@@ -2844,6 +2817,9 @@ func (v *AccessWhatFilterInput) GetHasTags() []TagFilter { return v.HasTags }
 
 // GetTargetDataObject returns AccessWhatFilterInput.TargetDataObject, and is useful for accessing the field via an interface.
 func (v *AccessWhatFilterInput) GetTargetDataObject() *string { return v.TargetDataObject }
+
+// GetAbacRule returns AccessWhatFilterInput.AbacRule, and is useful for accessing the field via an interface.
+func (v *AccessWhatFilterInput) GetAbacRule() *string { return v.AbacRule }
 
 type AccessWhatOrderByInput struct {
 	Name *Sort `json:"name,omitempty"`
@@ -3125,7 +3101,6 @@ func (v *AccessWhoItemConnectionPageInfo) __premarshalJSON() (*__premarshalAcces
 // AccessWhoItemItemAccessControl
 // AccessWhoItemItemDataShareRecipient
 // AccessWhoItemItemDataSource
-// AccessWhoItemItemGroup
 // AccessWhoItemItemInvalidInputError
 // AccessWhoItemItemNotFoundError
 // AccessWhoItemItemUser
@@ -3138,7 +3113,6 @@ type AccessWhoItemItem interface {
 func (v *AccessWhoItemItemAccessControl) implementsGraphQLInterfaceAccessWhoItemItem()      {}
 func (v *AccessWhoItemItemDataShareRecipient) implementsGraphQLInterfaceAccessWhoItemItem() {}
 func (v *AccessWhoItemItemDataSource) implementsGraphQLInterfaceAccessWhoItemItem()         {}
-func (v *AccessWhoItemItemGroup) implementsGraphQLInterfaceAccessWhoItemItem()              {}
 func (v *AccessWhoItemItemInvalidInputError) implementsGraphQLInterfaceAccessWhoItemItem()  {}
 func (v *AccessWhoItemItemNotFoundError) implementsGraphQLInterfaceAccessWhoItemItem()      {}
 func (v *AccessWhoItemItemUser) implementsGraphQLInterfaceAccessWhoItemItem()               {}
@@ -3165,9 +3139,6 @@ func __unmarshalAccessWhoItemItem(b []byte, v *AccessWhoItemItem) error {
 		return json.Unmarshal(b, *v)
 	case "DataSource":
 		*v = new(AccessWhoItemItemDataSource)
-		return json.Unmarshal(b, *v)
-	case "Group":
-		*v = new(AccessWhoItemItemGroup)
 		return json.Unmarshal(b, *v)
 	case "InvalidInputError":
 		*v = new(AccessWhoItemItemInvalidInputError)
@@ -3213,14 +3184,6 @@ func __marshalAccessWhoItemItem(v *AccessWhoItemItem) ([]byte, error) {
 		result := struct {
 			TypeName string `json:"__typename"`
 			*AccessWhoItemItemDataSource
-		}{typename, v}
-		return json.Marshal(result)
-	case *AccessWhoItemItemGroup:
-		typename = "Group"
-
-		result := struct {
-			TypeName string `json:"__typename"`
-			*AccessWhoItemItemGroup
 		}{typename, v}
 		return json.Marshal(result)
 	case *AccessWhoItemItemInvalidInputError:
@@ -3290,40 +3253,6 @@ type AccessWhoItemItemDataSource struct {
 
 // GetTypename returns AccessWhoItemItemDataSource.Typename, and is useful for accessing the field via an interface.
 func (v *AccessWhoItemItemDataSource) GetTypename() *string { return v.Typename }
-
-// AccessWhoItemItemGroup includes the requested fields of the GraphQL type Group.
-type AccessWhoItemItemGroup struct {
-	Typename      *string                             `json:"__typename"`
-	Name          string                              `json:"name"`
-	Id            string                              `json:"id"`
-	IdentityStore AccessWhoItemItemGroupIdentityStore `json:"identityStore"`
-}
-
-// GetTypename returns AccessWhoItemItemGroup.Typename, and is useful for accessing the field via an interface.
-func (v *AccessWhoItemItemGroup) GetTypename() *string { return v.Typename }
-
-// GetName returns AccessWhoItemItemGroup.Name, and is useful for accessing the field via an interface.
-func (v *AccessWhoItemItemGroup) GetName() string { return v.Name }
-
-// GetId returns AccessWhoItemItemGroup.Id, and is useful for accessing the field via an interface.
-func (v *AccessWhoItemItemGroup) GetId() string { return v.Id }
-
-// GetIdentityStore returns AccessWhoItemItemGroup.IdentityStore, and is useful for accessing the field via an interface.
-func (v *AccessWhoItemItemGroup) GetIdentityStore() AccessWhoItemItemGroupIdentityStore {
-	return v.IdentityStore
-}
-
-// AccessWhoItemItemGroupIdentityStore includes the requested fields of the GraphQL type IdentityStore.
-type AccessWhoItemItemGroupIdentityStore struct {
-	Id   string `json:"id"`
-	Name string `json:"name"`
-}
-
-// GetId returns AccessWhoItemItemGroupIdentityStore.Id, and is useful for accessing the field via an interface.
-func (v *AccessWhoItemItemGroupIdentityStore) GetId() string { return v.Id }
-
-// GetName returns AccessWhoItemItemGroupIdentityStore.Name, and is useful for accessing the field via an interface.
-func (v *AccessWhoItemItemGroupIdentityStore) GetName() string { return v.Name }
 
 // AccessWhoItemItemInvalidInputError includes the requested fields of the GraphQL type InvalidInputError.
 type AccessWhoItemItemInvalidInputError struct {
@@ -3504,24 +3433,14 @@ func (v *ActivateAccessControlActivateAccessControl) GetExternal() bool {
 	return v.AccessControl.External
 }
 
-// GetWhatType returns ActivateAccessControlActivateAccessControl.WhatType, and is useful for accessing the field via an interface.
-func (v *ActivateAccessControlActivateAccessControl) GetWhatType() WhoAndWhatType {
-	return v.AccessControl.WhatType
+// GetWhatAbacRules returns ActivateAccessControlActivateAccessControl.WhatAbacRules, and is useful for accessing the field via an interface.
+func (v *ActivateAccessControlActivateAccessControl) GetWhatAbacRules() []AccessControlWhatAbacRulesWhatAbacRule {
+	return v.AccessControl.WhatAbacRules
 }
 
-// GetWhatAbacRule returns ActivateAccessControlActivateAccessControl.WhatAbacRule, and is useful for accessing the field via an interface.
-func (v *ActivateAccessControlActivateAccessControl) GetWhatAbacRule() *AccessControlWhatAbacRule {
-	return v.AccessControl.WhatAbacRule
-}
-
-// GetWhoType returns ActivateAccessControlActivateAccessControl.WhoType, and is useful for accessing the field via an interface.
-func (v *ActivateAccessControlActivateAccessControl) GetWhoType() WhoAndWhatType {
-	return v.AccessControl.WhoType
-}
-
-// GetWhoAbacRule returns ActivateAccessControlActivateAccessControl.WhoAbacRule, and is useful for accessing the field via an interface.
-func (v *ActivateAccessControlActivateAccessControl) GetWhoAbacRule() *AccessControlWhoAbacRule {
-	return v.AccessControl.WhoAbacRule
+// GetWhoAbacRules returns ActivateAccessControlActivateAccessControl.WhoAbacRules, and is useful for accessing the field via an interface.
+func (v *ActivateAccessControlActivateAccessControl) GetWhoAbacRules() []AccessControlWhoAbacRulesWhoAbacRule {
+	return v.AccessControl.WhoAbacRules
 }
 
 // GetNotInternalizable returns ActivateAccessControlActivateAccessControl.NotInternalizable, and is useful for accessing the field via an interface.
@@ -3594,13 +3513,9 @@ type __premarshalActivateAccessControlActivateAccessControl struct {
 
 	External bool `json:"external"`
 
-	WhatType WhoAndWhatType `json:"whatType"`
+	WhatAbacRules []AccessControlWhatAbacRulesWhatAbacRule `json:"whatAbacRules"`
 
-	WhatAbacRule *AccessControlWhatAbacRule `json:"whatAbacRule"`
-
-	WhoType WhoAndWhatType `json:"whoType"`
-
-	WhoAbacRule *AccessControlWhoAbacRule `json:"whoAbacRule"`
+	WhoAbacRules []AccessControlWhoAbacRulesWhoAbacRule `json:"whoAbacRules"`
 
 	NotInternalizable bool `json:"notInternalizable"`
 
@@ -3634,10 +3549,8 @@ func (v *ActivateAccessControlActivateAccessControl) __premarshalJSON() (*__prem
 	retval.Description = v.AccessControl.Description
 	retval.PolicyRule = v.AccessControl.PolicyRule
 	retval.External = v.AccessControl.External
-	retval.WhatType = v.AccessControl.WhatType
-	retval.WhatAbacRule = v.AccessControl.WhatAbacRule
-	retval.WhoType = v.AccessControl.WhoType
-	retval.WhoAbacRule = v.AccessControl.WhoAbacRule
+	retval.WhatAbacRules = v.AccessControl.WhatAbacRules
+	retval.WhoAbacRules = v.AccessControl.WhoAbacRules
 	retval.NotInternalizable = v.AccessControl.NotInternalizable
 	retval.Complete = v.AccessControl.Complete
 	retval.Locks = v.AccessControl.Locks
@@ -4766,24 +4679,14 @@ func (v *CreateAccessControlCreateAccessControl) GetPolicyRule() *string {
 // GetExternal returns CreateAccessControlCreateAccessControl.External, and is useful for accessing the field via an interface.
 func (v *CreateAccessControlCreateAccessControl) GetExternal() bool { return v.AccessControl.External }
 
-// GetWhatType returns CreateAccessControlCreateAccessControl.WhatType, and is useful for accessing the field via an interface.
-func (v *CreateAccessControlCreateAccessControl) GetWhatType() WhoAndWhatType {
-	return v.AccessControl.WhatType
+// GetWhatAbacRules returns CreateAccessControlCreateAccessControl.WhatAbacRules, and is useful for accessing the field via an interface.
+func (v *CreateAccessControlCreateAccessControl) GetWhatAbacRules() []AccessControlWhatAbacRulesWhatAbacRule {
+	return v.AccessControl.WhatAbacRules
 }
 
-// GetWhatAbacRule returns CreateAccessControlCreateAccessControl.WhatAbacRule, and is useful for accessing the field via an interface.
-func (v *CreateAccessControlCreateAccessControl) GetWhatAbacRule() *AccessControlWhatAbacRule {
-	return v.AccessControl.WhatAbacRule
-}
-
-// GetWhoType returns CreateAccessControlCreateAccessControl.WhoType, and is useful for accessing the field via an interface.
-func (v *CreateAccessControlCreateAccessControl) GetWhoType() WhoAndWhatType {
-	return v.AccessControl.WhoType
-}
-
-// GetWhoAbacRule returns CreateAccessControlCreateAccessControl.WhoAbacRule, and is useful for accessing the field via an interface.
-func (v *CreateAccessControlCreateAccessControl) GetWhoAbacRule() *AccessControlWhoAbacRule {
-	return v.AccessControl.WhoAbacRule
+// GetWhoAbacRules returns CreateAccessControlCreateAccessControl.WhoAbacRules, and is useful for accessing the field via an interface.
+func (v *CreateAccessControlCreateAccessControl) GetWhoAbacRules() []AccessControlWhoAbacRulesWhoAbacRule {
+	return v.AccessControl.WhoAbacRules
 }
 
 // GetNotInternalizable returns CreateAccessControlCreateAccessControl.NotInternalizable, and is useful for accessing the field via an interface.
@@ -4854,13 +4757,9 @@ type __premarshalCreateAccessControlCreateAccessControl struct {
 
 	External bool `json:"external"`
 
-	WhatType WhoAndWhatType `json:"whatType"`
+	WhatAbacRules []AccessControlWhatAbacRulesWhatAbacRule `json:"whatAbacRules"`
 
-	WhatAbacRule *AccessControlWhatAbacRule `json:"whatAbacRule"`
-
-	WhoType WhoAndWhatType `json:"whoType"`
-
-	WhoAbacRule *AccessControlWhoAbacRule `json:"whoAbacRule"`
+	WhoAbacRules []AccessControlWhoAbacRulesWhoAbacRule `json:"whoAbacRules"`
 
 	NotInternalizable bool `json:"notInternalizable"`
 
@@ -4894,10 +4793,8 @@ func (v *CreateAccessControlCreateAccessControl) __premarshalJSON() (*__premarsh
 	retval.Description = v.AccessControl.Description
 	retval.PolicyRule = v.AccessControl.PolicyRule
 	retval.External = v.AccessControl.External
-	retval.WhatType = v.AccessControl.WhatType
-	retval.WhatAbacRule = v.AccessControl.WhatAbacRule
-	retval.WhoType = v.AccessControl.WhoType
-	retval.WhoAbacRule = v.AccessControl.WhoAbacRule
+	retval.WhatAbacRules = v.AccessControl.WhatAbacRules
+	retval.WhoAbacRules = v.AccessControl.WhoAbacRules
 	retval.NotInternalizable = v.AccessControl.NotInternalizable
 	retval.Complete = v.AccessControl.Complete
 	retval.Locks = v.AccessControl.Locks
@@ -4981,24 +4878,14 @@ func (v *CreateAccessControlCreateAccessControlAccessControlWithOptionalAccessRe
 	return v.AccessControl.External
 }
 
-// GetWhatType returns CreateAccessControlCreateAccessControlAccessControlWithOptionalAccessRequestsAccessControl.WhatType, and is useful for accessing the field via an interface.
-func (v *CreateAccessControlCreateAccessControlAccessControlWithOptionalAccessRequestsAccessControl) GetWhatType() WhoAndWhatType {
-	return v.AccessControl.WhatType
+// GetWhatAbacRules returns CreateAccessControlCreateAccessControlAccessControlWithOptionalAccessRequestsAccessControl.WhatAbacRules, and is useful for accessing the field via an interface.
+func (v *CreateAccessControlCreateAccessControlAccessControlWithOptionalAccessRequestsAccessControl) GetWhatAbacRules() []AccessControlWhatAbacRulesWhatAbacRule {
+	return v.AccessControl.WhatAbacRules
 }
 
-// GetWhatAbacRule returns CreateAccessControlCreateAccessControlAccessControlWithOptionalAccessRequestsAccessControl.WhatAbacRule, and is useful for accessing the field via an interface.
-func (v *CreateAccessControlCreateAccessControlAccessControlWithOptionalAccessRequestsAccessControl) GetWhatAbacRule() *AccessControlWhatAbacRule {
-	return v.AccessControl.WhatAbacRule
-}
-
-// GetWhoType returns CreateAccessControlCreateAccessControlAccessControlWithOptionalAccessRequestsAccessControl.WhoType, and is useful for accessing the field via an interface.
-func (v *CreateAccessControlCreateAccessControlAccessControlWithOptionalAccessRequestsAccessControl) GetWhoType() WhoAndWhatType {
-	return v.AccessControl.WhoType
-}
-
-// GetWhoAbacRule returns CreateAccessControlCreateAccessControlAccessControlWithOptionalAccessRequestsAccessControl.WhoAbacRule, and is useful for accessing the field via an interface.
-func (v *CreateAccessControlCreateAccessControlAccessControlWithOptionalAccessRequestsAccessControl) GetWhoAbacRule() *AccessControlWhoAbacRule {
-	return v.AccessControl.WhoAbacRule
+// GetWhoAbacRules returns CreateAccessControlCreateAccessControlAccessControlWithOptionalAccessRequestsAccessControl.WhoAbacRules, and is useful for accessing the field via an interface.
+func (v *CreateAccessControlCreateAccessControlAccessControlWithOptionalAccessRequestsAccessControl) GetWhoAbacRules() []AccessControlWhoAbacRulesWhoAbacRule {
+	return v.AccessControl.WhoAbacRules
 }
 
 // GetNotInternalizable returns CreateAccessControlCreateAccessControlAccessControlWithOptionalAccessRequestsAccessControl.NotInternalizable, and is useful for accessing the field via an interface.
@@ -5069,13 +4956,9 @@ type __premarshalCreateAccessControlCreateAccessControlAccessControlWithOptional
 
 	External bool `json:"external"`
 
-	WhatType WhoAndWhatType `json:"whatType"`
+	WhatAbacRules []AccessControlWhatAbacRulesWhatAbacRule `json:"whatAbacRules"`
 
-	WhatAbacRule *AccessControlWhatAbacRule `json:"whatAbacRule"`
-
-	WhoType WhoAndWhatType `json:"whoType"`
-
-	WhoAbacRule *AccessControlWhoAbacRule `json:"whoAbacRule"`
+	WhoAbacRules []AccessControlWhoAbacRulesWhoAbacRule `json:"whoAbacRules"`
 
 	NotInternalizable bool `json:"notInternalizable"`
 
@@ -5108,10 +4991,8 @@ func (v *CreateAccessControlCreateAccessControlAccessControlWithOptionalAccessRe
 	retval.Description = v.AccessControl.Description
 	retval.PolicyRule = v.AccessControl.PolicyRule
 	retval.External = v.AccessControl.External
-	retval.WhatType = v.AccessControl.WhatType
-	retval.WhatAbacRule = v.AccessControl.WhatAbacRule
-	retval.WhoType = v.AccessControl.WhoType
-	retval.WhoAbacRule = v.AccessControl.WhoAbacRule
+	retval.WhatAbacRules = v.AccessControl.WhatAbacRules
+	retval.WhoAbacRules = v.AccessControl.WhoAbacRules
 	retval.NotInternalizable = v.AccessControl.NotInternalizable
 	retval.Complete = v.AccessControl.Complete
 	retval.Locks = v.AccessControl.Locks
@@ -9772,24 +9653,14 @@ func (v *DeactivateAccessControlDeactivateAccessControl) GetExternal() bool {
 	return v.AccessControl.External
 }
 
-// GetWhatType returns DeactivateAccessControlDeactivateAccessControl.WhatType, and is useful for accessing the field via an interface.
-func (v *DeactivateAccessControlDeactivateAccessControl) GetWhatType() WhoAndWhatType {
-	return v.AccessControl.WhatType
+// GetWhatAbacRules returns DeactivateAccessControlDeactivateAccessControl.WhatAbacRules, and is useful for accessing the field via an interface.
+func (v *DeactivateAccessControlDeactivateAccessControl) GetWhatAbacRules() []AccessControlWhatAbacRulesWhatAbacRule {
+	return v.AccessControl.WhatAbacRules
 }
 
-// GetWhatAbacRule returns DeactivateAccessControlDeactivateAccessControl.WhatAbacRule, and is useful for accessing the field via an interface.
-func (v *DeactivateAccessControlDeactivateAccessControl) GetWhatAbacRule() *AccessControlWhatAbacRule {
-	return v.AccessControl.WhatAbacRule
-}
-
-// GetWhoType returns DeactivateAccessControlDeactivateAccessControl.WhoType, and is useful for accessing the field via an interface.
-func (v *DeactivateAccessControlDeactivateAccessControl) GetWhoType() WhoAndWhatType {
-	return v.AccessControl.WhoType
-}
-
-// GetWhoAbacRule returns DeactivateAccessControlDeactivateAccessControl.WhoAbacRule, and is useful for accessing the field via an interface.
-func (v *DeactivateAccessControlDeactivateAccessControl) GetWhoAbacRule() *AccessControlWhoAbacRule {
-	return v.AccessControl.WhoAbacRule
+// GetWhoAbacRules returns DeactivateAccessControlDeactivateAccessControl.WhoAbacRules, and is useful for accessing the field via an interface.
+func (v *DeactivateAccessControlDeactivateAccessControl) GetWhoAbacRules() []AccessControlWhoAbacRulesWhoAbacRule {
+	return v.AccessControl.WhoAbacRules
 }
 
 // GetNotInternalizable returns DeactivateAccessControlDeactivateAccessControl.NotInternalizable, and is useful for accessing the field via an interface.
@@ -9862,13 +9733,9 @@ type __premarshalDeactivateAccessControlDeactivateAccessControl struct {
 
 	External bool `json:"external"`
 
-	WhatType WhoAndWhatType `json:"whatType"`
+	WhatAbacRules []AccessControlWhatAbacRulesWhatAbacRule `json:"whatAbacRules"`
 
-	WhatAbacRule *AccessControlWhatAbacRule `json:"whatAbacRule"`
-
-	WhoType WhoAndWhatType `json:"whoType"`
-
-	WhoAbacRule *AccessControlWhoAbacRule `json:"whoAbacRule"`
+	WhoAbacRules []AccessControlWhoAbacRulesWhoAbacRule `json:"whoAbacRules"`
 
 	NotInternalizable bool `json:"notInternalizable"`
 
@@ -9902,10 +9769,8 @@ func (v *DeactivateAccessControlDeactivateAccessControl) __premarshalJSON() (*__
 	retval.Description = v.AccessControl.Description
 	retval.PolicyRule = v.AccessControl.PolicyRule
 	retval.External = v.AccessControl.External
-	retval.WhatType = v.AccessControl.WhatType
-	retval.WhatAbacRule = v.AccessControl.WhatAbacRule
-	retval.WhoType = v.AccessControl.WhoType
-	retval.WhoAbacRule = v.AccessControl.WhoAbacRule
+	retval.WhatAbacRules = v.AccessControl.WhatAbacRules
+	retval.WhoAbacRules = v.AccessControl.WhoAbacRules
 	retval.NotInternalizable = v.AccessControl.NotInternalizable
 	retval.Complete = v.AccessControl.Complete
 	retval.Locks = v.AccessControl.Locks
@@ -10350,24 +10215,14 @@ func (v *DeleteAccessControlDeleteAccessControl) GetPolicyRule() *string {
 // GetExternal returns DeleteAccessControlDeleteAccessControl.External, and is useful for accessing the field via an interface.
 func (v *DeleteAccessControlDeleteAccessControl) GetExternal() bool { return v.AccessControl.External }
 
-// GetWhatType returns DeleteAccessControlDeleteAccessControl.WhatType, and is useful for accessing the field via an interface.
-func (v *DeleteAccessControlDeleteAccessControl) GetWhatType() WhoAndWhatType {
-	return v.AccessControl.WhatType
+// GetWhatAbacRules returns DeleteAccessControlDeleteAccessControl.WhatAbacRules, and is useful for accessing the field via an interface.
+func (v *DeleteAccessControlDeleteAccessControl) GetWhatAbacRules() []AccessControlWhatAbacRulesWhatAbacRule {
+	return v.AccessControl.WhatAbacRules
 }
 
-// GetWhatAbacRule returns DeleteAccessControlDeleteAccessControl.WhatAbacRule, and is useful for accessing the field via an interface.
-func (v *DeleteAccessControlDeleteAccessControl) GetWhatAbacRule() *AccessControlWhatAbacRule {
-	return v.AccessControl.WhatAbacRule
-}
-
-// GetWhoType returns DeleteAccessControlDeleteAccessControl.WhoType, and is useful for accessing the field via an interface.
-func (v *DeleteAccessControlDeleteAccessControl) GetWhoType() WhoAndWhatType {
-	return v.AccessControl.WhoType
-}
-
-// GetWhoAbacRule returns DeleteAccessControlDeleteAccessControl.WhoAbacRule, and is useful for accessing the field via an interface.
-func (v *DeleteAccessControlDeleteAccessControl) GetWhoAbacRule() *AccessControlWhoAbacRule {
-	return v.AccessControl.WhoAbacRule
+// GetWhoAbacRules returns DeleteAccessControlDeleteAccessControl.WhoAbacRules, and is useful for accessing the field via an interface.
+func (v *DeleteAccessControlDeleteAccessControl) GetWhoAbacRules() []AccessControlWhoAbacRulesWhoAbacRule {
+	return v.AccessControl.WhoAbacRules
 }
 
 // GetNotInternalizable returns DeleteAccessControlDeleteAccessControl.NotInternalizable, and is useful for accessing the field via an interface.
@@ -10438,13 +10293,9 @@ type __premarshalDeleteAccessControlDeleteAccessControl struct {
 
 	External bool `json:"external"`
 
-	WhatType WhoAndWhatType `json:"whatType"`
+	WhatAbacRules []AccessControlWhatAbacRulesWhatAbacRule `json:"whatAbacRules"`
 
-	WhatAbacRule *AccessControlWhatAbacRule `json:"whatAbacRule"`
-
-	WhoType WhoAndWhatType `json:"whoType"`
-
-	WhoAbacRule *AccessControlWhoAbacRule `json:"whoAbacRule"`
+	WhoAbacRules []AccessControlWhoAbacRulesWhoAbacRule `json:"whoAbacRules"`
 
 	NotInternalizable bool `json:"notInternalizable"`
 
@@ -10478,10 +10329,8 @@ func (v *DeleteAccessControlDeleteAccessControl) __premarshalJSON() (*__premarsh
 	retval.Description = v.AccessControl.Description
 	retval.PolicyRule = v.AccessControl.PolicyRule
 	retval.External = v.AccessControl.External
-	retval.WhatType = v.AccessControl.WhatType
-	retval.WhatAbacRule = v.AccessControl.WhatAbacRule
-	retval.WhoType = v.AccessControl.WhoType
-	retval.WhoAbacRule = v.AccessControl.WhoAbacRule
+	retval.WhatAbacRules = v.AccessControl.WhatAbacRules
+	retval.WhoAbacRules = v.AccessControl.WhoAbacRules
 	retval.NotInternalizable = v.AccessControl.NotInternalizable
 	retval.Complete = v.AccessControl.Complete
 	retval.Locks = v.AccessControl.Locks
@@ -11976,6 +11825,38 @@ func (v *EndOfTargetsSyncResponse) __premarshalJSON() (*__premarshalEndOfTargets
 	return &retval, nil
 }
 
+type EntityType string
+
+const (
+	EntityTypeAccesscontrol      EntityType = "AccessControl"
+	EntityTypeAccess             EntityType = "Access"
+	EntityTypeAccessrequest      EntityType = "AccessRequest"
+	EntityTypeUser               EntityType = "User"
+	EntityTypeDataobject         EntityType = "DataObject"
+	EntityTypeDatasource         EntityType = "DataSource"
+	EntityTypeDatausage          EntityType = "DataUsage"
+	EntityTypeTag                EntityType = "Tag"
+	EntityTypeRole               EntityType = "Role"
+	EntityTypeRoleassignment     EntityType = "RoleAssignment"
+	EntityTypeAccount            EntityType = "Account"
+	EntityTypeDatasharerecipient EntityType = "DataShareRecipient"
+)
+
+var AllEntityType = []EntityType{
+	EntityTypeAccesscontrol,
+	EntityTypeAccess,
+	EntityTypeAccessrequest,
+	EntityTypeUser,
+	EntityTypeDataobject,
+	EntityTypeDatasource,
+	EntityTypeDatausage,
+	EntityTypeTag,
+	EntityTypeRole,
+	EntityTypeRoleassignment,
+	EntityTypeAccount,
+	EntityTypeDatasharerecipient,
+}
+
 // ExportAccessControl includes the GraphQL fields of ExportAccessControl requested by the fragment ExportAccessControl.
 type ExportAccessControl struct {
 	Id                string                                        `json:"id"`
@@ -13295,20 +13176,14 @@ func (v *GetAccessControlAccessControl) GetPolicyRule() *string { return v.Acces
 // GetExternal returns GetAccessControlAccessControl.External, and is useful for accessing the field via an interface.
 func (v *GetAccessControlAccessControl) GetExternal() bool { return v.AccessControl.External }
 
-// GetWhatType returns GetAccessControlAccessControl.WhatType, and is useful for accessing the field via an interface.
-func (v *GetAccessControlAccessControl) GetWhatType() WhoAndWhatType { return v.AccessControl.WhatType }
-
-// GetWhatAbacRule returns GetAccessControlAccessControl.WhatAbacRule, and is useful for accessing the field via an interface.
-func (v *GetAccessControlAccessControl) GetWhatAbacRule() *AccessControlWhatAbacRule {
-	return v.AccessControl.WhatAbacRule
+// GetWhatAbacRules returns GetAccessControlAccessControl.WhatAbacRules, and is useful for accessing the field via an interface.
+func (v *GetAccessControlAccessControl) GetWhatAbacRules() []AccessControlWhatAbacRulesWhatAbacRule {
+	return v.AccessControl.WhatAbacRules
 }
 
-// GetWhoType returns GetAccessControlAccessControl.WhoType, and is useful for accessing the field via an interface.
-func (v *GetAccessControlAccessControl) GetWhoType() WhoAndWhatType { return v.AccessControl.WhoType }
-
-// GetWhoAbacRule returns GetAccessControlAccessControl.WhoAbacRule, and is useful for accessing the field via an interface.
-func (v *GetAccessControlAccessControl) GetWhoAbacRule() *AccessControlWhoAbacRule {
-	return v.AccessControl.WhoAbacRule
+// GetWhoAbacRules returns GetAccessControlAccessControl.WhoAbacRules, and is useful for accessing the field via an interface.
+func (v *GetAccessControlAccessControl) GetWhoAbacRules() []AccessControlWhoAbacRulesWhoAbacRule {
+	return v.AccessControl.WhoAbacRules
 }
 
 // GetNotInternalizable returns GetAccessControlAccessControl.NotInternalizable, and is useful for accessing the field via an interface.
@@ -13379,13 +13254,9 @@ type __premarshalGetAccessControlAccessControl struct {
 
 	External bool `json:"external"`
 
-	WhatType WhoAndWhatType `json:"whatType"`
+	WhatAbacRules []AccessControlWhatAbacRulesWhatAbacRule `json:"whatAbacRules"`
 
-	WhatAbacRule *AccessControlWhatAbacRule `json:"whatAbacRule"`
-
-	WhoType WhoAndWhatType `json:"whoType"`
-
-	WhoAbacRule *AccessControlWhoAbacRule `json:"whoAbacRule"`
+	WhoAbacRules []AccessControlWhoAbacRulesWhoAbacRule `json:"whoAbacRules"`
 
 	NotInternalizable bool `json:"notInternalizable"`
 
@@ -13419,10 +13290,8 @@ func (v *GetAccessControlAccessControl) __premarshalJSON() (*__premarshalGetAcce
 	retval.Description = v.AccessControl.Description
 	retval.PolicyRule = v.AccessControl.PolicyRule
 	retval.External = v.AccessControl.External
-	retval.WhatType = v.AccessControl.WhatType
-	retval.WhatAbacRule = v.AccessControl.WhatAbacRule
-	retval.WhoType = v.AccessControl.WhoType
-	retval.WhoAbacRule = v.AccessControl.WhoAbacRule
+	retval.WhatAbacRules = v.AccessControl.WhatAbacRules
+	retval.WhoAbacRules = v.AccessControl.WhoAbacRules
 	retval.NotInternalizable = v.AccessControl.NotInternalizable
 	retval.Complete = v.AccessControl.Complete
 	retval.Locks = v.AccessControl.Locks
@@ -28536,7 +28405,6 @@ func (v *RoleAssignmentFilterInput) GetExcludeDelegated() *bool { return v.Exclu
 // RoleAssignmentOnAccessControl
 // RoleAssignmentOnDataObject
 // RoleAssignmentOnDataSource
-// RoleAssignmentOnIdentityStore
 // RoleAssignmentOnInvalidInputError
 // RoleAssignmentOnNotFoundError
 // RoleAssignmentOnPermissionDeniedError
@@ -28549,7 +28417,6 @@ type RoleAssignmentOn interface {
 func (v *RoleAssignmentOnAccessControl) implementsGraphQLInterfaceRoleAssignmentOn()         {}
 func (v *RoleAssignmentOnDataObject) implementsGraphQLInterfaceRoleAssignmentOn()            {}
 func (v *RoleAssignmentOnDataSource) implementsGraphQLInterfaceRoleAssignmentOn()            {}
-func (v *RoleAssignmentOnIdentityStore) implementsGraphQLInterfaceRoleAssignmentOn()         {}
 func (v *RoleAssignmentOnInvalidInputError) implementsGraphQLInterfaceRoleAssignmentOn()     {}
 func (v *RoleAssignmentOnNotFoundError) implementsGraphQLInterfaceRoleAssignmentOn()         {}
 func (v *RoleAssignmentOnPermissionDeniedError) implementsGraphQLInterfaceRoleAssignmentOn() {}
@@ -28576,9 +28443,6 @@ func __unmarshalRoleAssignmentOn(b []byte, v *RoleAssignmentOn) error {
 		return json.Unmarshal(b, *v)
 	case "DataSource":
 		*v = new(RoleAssignmentOnDataSource)
-		return json.Unmarshal(b, *v)
-	case "IdentityStore":
-		*v = new(RoleAssignmentOnIdentityStore)
 		return json.Unmarshal(b, *v)
 	case "InvalidInputError":
 		*v = new(RoleAssignmentOnInvalidInputError)
@@ -28624,14 +28488,6 @@ func __marshalRoleAssignmentOn(v *RoleAssignmentOn) ([]byte, error) {
 		result := struct {
 			TypeName string `json:"__typename"`
 			*RoleAssignmentOnDataSource
-		}{typename, v}
-		return json.Marshal(result)
-	case *RoleAssignmentOnIdentityStore:
-		typename = "IdentityStore"
-
-		result := struct {
-			TypeName string `json:"__typename"`
-			*RoleAssignmentOnIdentityStore
 		}{typename, v}
 		return json.Marshal(result)
 	case *RoleAssignmentOnInvalidInputError:
@@ -28705,14 +28561,6 @@ func (v *RoleAssignmentOnDataSource) GetTypename() *string { return v.Typename }
 
 // GetId returns RoleAssignmentOnDataSource.Id, and is useful for accessing the field via an interface.
 func (v *RoleAssignmentOnDataSource) GetId() string { return v.Id }
-
-// RoleAssignmentOnIdentityStore includes the requested fields of the GraphQL type IdentityStore.
-type RoleAssignmentOnIdentityStore struct {
-	Typename *string `json:"__typename"`
-}
-
-// GetTypename returns RoleAssignmentOnIdentityStore.Typename, and is useful for accessing the field via an interface.
-func (v *RoleAssignmentOnIdentityStore) GetTypename() *string { return v.Typename }
 
 // RoleAssignmentOnInvalidInputError includes the requested fields of the GraphQL type InvalidInputError.
 type RoleAssignmentOnInvalidInputError struct {
@@ -28872,7 +28720,6 @@ func (v *RoleAssignmentRole) __premarshalJSON() (*__premarshalRoleAssignmentRole
 //
 // RoleAssignmentTo is implemented by the following types:
 // RoleAssignmentToAccessControl
-// RoleAssignmentToGroup
 // RoleAssignmentToUser
 type RoleAssignmentTo interface {
 	implementsGraphQLInterfaceRoleAssignmentTo()
@@ -28881,7 +28728,6 @@ type RoleAssignmentTo interface {
 }
 
 func (v *RoleAssignmentToAccessControl) implementsGraphQLInterfaceRoleAssignmentTo() {}
-func (v *RoleAssignmentToGroup) implementsGraphQLInterfaceRoleAssignmentTo()         {}
 func (v *RoleAssignmentToUser) implementsGraphQLInterfaceRoleAssignmentTo()          {}
 
 func __unmarshalRoleAssignmentTo(b []byte, v *RoleAssignmentTo) error {
@@ -28900,9 +28746,6 @@ func __unmarshalRoleAssignmentTo(b []byte, v *RoleAssignmentTo) error {
 	switch tn.TypeName {
 	case "AccessControl":
 		*v = new(RoleAssignmentToAccessControl)
-		return json.Unmarshal(b, *v)
-	case "Group":
-		*v = new(RoleAssignmentToGroup)
 		return json.Unmarshal(b, *v)
 	case "User":
 		*v = new(RoleAssignmentToUser)
@@ -28928,14 +28771,6 @@ func __marshalRoleAssignmentTo(v *RoleAssignmentTo) ([]byte, error) {
 			*RoleAssignmentToAccessControl
 		}{typename, v}
 		return json.Marshal(result)
-	case *RoleAssignmentToGroup:
-		typename = "Group"
-
-		result := struct {
-			TypeName string `json:"__typename"`
-			*RoleAssignmentToGroup
-		}{typename, v}
-		return json.Marshal(result)
 	case *RoleAssignmentToUser:
 		typename = "User"
 
@@ -28955,22 +28790,14 @@ func __marshalRoleAssignmentTo(v *RoleAssignmentTo) ([]byte, error) {
 // RoleAssignmentToAccessControl includes the requested fields of the GraphQL type AccessControl.
 type RoleAssignmentToAccessControl struct {
 	Typename *string `json:"__typename"`
+	Id       string  `json:"id"`
 }
 
 // GetTypename returns RoleAssignmentToAccessControl.Typename, and is useful for accessing the field via an interface.
 func (v *RoleAssignmentToAccessControl) GetTypename() *string { return v.Typename }
 
-// RoleAssignmentToGroup includes the requested fields of the GraphQL type Group.
-type RoleAssignmentToGroup struct {
-	Typename *string `json:"__typename"`
-	Id       string  `json:"id"`
-}
-
-// GetTypename returns RoleAssignmentToGroup.Typename, and is useful for accessing the field via an interface.
-func (v *RoleAssignmentToGroup) GetTypename() *string { return v.Typename }
-
-// GetId returns RoleAssignmentToGroup.Id, and is useful for accessing the field via an interface.
-func (v *RoleAssignmentToGroup) GetId() string { return v.Id }
+// GetId returns RoleAssignmentToAccessControl.Id, and is useful for accessing the field via an interface.
+func (v *RoleAssignmentToAccessControl) GetId() string { return v.Id }
 
 // RoleAssignmentToUser includes the requested fields of the GraphQL type User.
 type RoleAssignmentToUser struct {
@@ -34404,24 +34231,14 @@ func (v *UpdateAccessControlUpdateAccessControl) GetPolicyRule() *string {
 // GetExternal returns UpdateAccessControlUpdateAccessControl.External, and is useful for accessing the field via an interface.
 func (v *UpdateAccessControlUpdateAccessControl) GetExternal() bool { return v.AccessControl.External }
 
-// GetWhatType returns UpdateAccessControlUpdateAccessControl.WhatType, and is useful for accessing the field via an interface.
-func (v *UpdateAccessControlUpdateAccessControl) GetWhatType() WhoAndWhatType {
-	return v.AccessControl.WhatType
+// GetWhatAbacRules returns UpdateAccessControlUpdateAccessControl.WhatAbacRules, and is useful for accessing the field via an interface.
+func (v *UpdateAccessControlUpdateAccessControl) GetWhatAbacRules() []AccessControlWhatAbacRulesWhatAbacRule {
+	return v.AccessControl.WhatAbacRules
 }
 
-// GetWhatAbacRule returns UpdateAccessControlUpdateAccessControl.WhatAbacRule, and is useful for accessing the field via an interface.
-func (v *UpdateAccessControlUpdateAccessControl) GetWhatAbacRule() *AccessControlWhatAbacRule {
-	return v.AccessControl.WhatAbacRule
-}
-
-// GetWhoType returns UpdateAccessControlUpdateAccessControl.WhoType, and is useful for accessing the field via an interface.
-func (v *UpdateAccessControlUpdateAccessControl) GetWhoType() WhoAndWhatType {
-	return v.AccessControl.WhoType
-}
-
-// GetWhoAbacRule returns UpdateAccessControlUpdateAccessControl.WhoAbacRule, and is useful for accessing the field via an interface.
-func (v *UpdateAccessControlUpdateAccessControl) GetWhoAbacRule() *AccessControlWhoAbacRule {
-	return v.AccessControl.WhoAbacRule
+// GetWhoAbacRules returns UpdateAccessControlUpdateAccessControl.WhoAbacRules, and is useful for accessing the field via an interface.
+func (v *UpdateAccessControlUpdateAccessControl) GetWhoAbacRules() []AccessControlWhoAbacRulesWhoAbacRule {
+	return v.AccessControl.WhoAbacRules
 }
 
 // GetNotInternalizable returns UpdateAccessControlUpdateAccessControl.NotInternalizable, and is useful for accessing the field via an interface.
@@ -34492,13 +34309,9 @@ type __premarshalUpdateAccessControlUpdateAccessControl struct {
 
 	External bool `json:"external"`
 
-	WhatType WhoAndWhatType `json:"whatType"`
+	WhatAbacRules []AccessControlWhatAbacRulesWhatAbacRule `json:"whatAbacRules"`
 
-	WhatAbacRule *AccessControlWhatAbacRule `json:"whatAbacRule"`
-
-	WhoType WhoAndWhatType `json:"whoType"`
-
-	WhoAbacRule *AccessControlWhoAbacRule `json:"whoAbacRule"`
+	WhoAbacRules []AccessControlWhoAbacRulesWhoAbacRule `json:"whoAbacRules"`
 
 	NotInternalizable bool `json:"notInternalizable"`
 
@@ -34532,10 +34345,8 @@ func (v *UpdateAccessControlUpdateAccessControl) __premarshalJSON() (*__premarsh
 	retval.Description = v.AccessControl.Description
 	retval.PolicyRule = v.AccessControl.PolicyRule
 	retval.External = v.AccessControl.External
-	retval.WhatType = v.AccessControl.WhatType
-	retval.WhatAbacRule = v.AccessControl.WhatAbacRule
-	retval.WhoType = v.AccessControl.WhoType
-	retval.WhoAbacRule = v.AccessControl.WhoAbacRule
+	retval.WhatAbacRules = v.AccessControl.WhatAbacRules
+	retval.WhoAbacRules = v.AccessControl.WhoAbacRules
 	retval.NotInternalizable = v.AccessControl.NotInternalizable
 	retval.Complete = v.AccessControl.Complete
 	retval.Locks = v.AccessControl.Locks
@@ -34619,24 +34430,14 @@ func (v *UpdateAccessControlUpdateAccessControlAccessControlWithOptionalAccessRe
 	return v.AccessControl.External
 }
 
-// GetWhatType returns UpdateAccessControlUpdateAccessControlAccessControlWithOptionalAccessRequestsAccessControl.WhatType, and is useful for accessing the field via an interface.
-func (v *UpdateAccessControlUpdateAccessControlAccessControlWithOptionalAccessRequestsAccessControl) GetWhatType() WhoAndWhatType {
-	return v.AccessControl.WhatType
+// GetWhatAbacRules returns UpdateAccessControlUpdateAccessControlAccessControlWithOptionalAccessRequestsAccessControl.WhatAbacRules, and is useful for accessing the field via an interface.
+func (v *UpdateAccessControlUpdateAccessControlAccessControlWithOptionalAccessRequestsAccessControl) GetWhatAbacRules() []AccessControlWhatAbacRulesWhatAbacRule {
+	return v.AccessControl.WhatAbacRules
 }
 
-// GetWhatAbacRule returns UpdateAccessControlUpdateAccessControlAccessControlWithOptionalAccessRequestsAccessControl.WhatAbacRule, and is useful for accessing the field via an interface.
-func (v *UpdateAccessControlUpdateAccessControlAccessControlWithOptionalAccessRequestsAccessControl) GetWhatAbacRule() *AccessControlWhatAbacRule {
-	return v.AccessControl.WhatAbacRule
-}
-
-// GetWhoType returns UpdateAccessControlUpdateAccessControlAccessControlWithOptionalAccessRequestsAccessControl.WhoType, and is useful for accessing the field via an interface.
-func (v *UpdateAccessControlUpdateAccessControlAccessControlWithOptionalAccessRequestsAccessControl) GetWhoType() WhoAndWhatType {
-	return v.AccessControl.WhoType
-}
-
-// GetWhoAbacRule returns UpdateAccessControlUpdateAccessControlAccessControlWithOptionalAccessRequestsAccessControl.WhoAbacRule, and is useful for accessing the field via an interface.
-func (v *UpdateAccessControlUpdateAccessControlAccessControlWithOptionalAccessRequestsAccessControl) GetWhoAbacRule() *AccessControlWhoAbacRule {
-	return v.AccessControl.WhoAbacRule
+// GetWhoAbacRules returns UpdateAccessControlUpdateAccessControlAccessControlWithOptionalAccessRequestsAccessControl.WhoAbacRules, and is useful for accessing the field via an interface.
+func (v *UpdateAccessControlUpdateAccessControlAccessControlWithOptionalAccessRequestsAccessControl) GetWhoAbacRules() []AccessControlWhoAbacRulesWhoAbacRule {
+	return v.AccessControl.WhoAbacRules
 }
 
 // GetNotInternalizable returns UpdateAccessControlUpdateAccessControlAccessControlWithOptionalAccessRequestsAccessControl.NotInternalizable, and is useful for accessing the field via an interface.
@@ -34707,13 +34508,9 @@ type __premarshalUpdateAccessControlUpdateAccessControlAccessControlWithOptional
 
 	External bool `json:"external"`
 
-	WhatType WhoAndWhatType `json:"whatType"`
+	WhatAbacRules []AccessControlWhatAbacRulesWhatAbacRule `json:"whatAbacRules"`
 
-	WhatAbacRule *AccessControlWhatAbacRule `json:"whatAbacRule"`
-
-	WhoType WhoAndWhatType `json:"whoType"`
-
-	WhoAbacRule *AccessControlWhoAbacRule `json:"whoAbacRule"`
+	WhoAbacRules []AccessControlWhoAbacRulesWhoAbacRule `json:"whoAbacRules"`
 
 	NotInternalizable bool `json:"notInternalizable"`
 
@@ -34746,10 +34543,8 @@ func (v *UpdateAccessControlUpdateAccessControlAccessControlWithOptionalAccessRe
 	retval.Description = v.AccessControl.Description
 	retval.PolicyRule = v.AccessControl.PolicyRule
 	retval.External = v.AccessControl.External
-	retval.WhatType = v.AccessControl.WhatType
-	retval.WhatAbacRule = v.AccessControl.WhatAbacRule
-	retval.WhoType = v.AccessControl.WhoType
-	retval.WhoAbacRule = v.AccessControl.WhoAbacRule
+	retval.WhatAbacRules = v.AccessControl.WhatAbacRules
+	retval.WhoAbacRules = v.AccessControl.WhoAbacRules
 	retval.NotInternalizable = v.AccessControl.NotInternalizable
 	retval.Complete = v.AccessControl.Complete
 	retval.Locks = v.AccessControl.Locks
@@ -38225,12 +38020,16 @@ func (v *WhatAbacRule) GetDoTypes() []string { return v.DoTypes }
 func (v *WhatAbacRule) GetRuleJson() *string { return v.RuleJson }
 
 type WhatAbacRuleInput struct {
+	Id                *string                       `json:"id,omitempty"`
 	DoTypes           []string                      `json:"doTypes"`
 	Permissions       []string                      `json:"permissions"`
 	GlobalPermissions []string                      `json:"globalPermissions"`
 	Scope             []string                      `json:"scope"`
 	Rule              AbacComparisonExpressionInput `json:"rule"`
 }
+
+// GetId returns WhatAbacRuleInput.Id, and is useful for accessing the field via an interface.
+func (v *WhatAbacRuleInput) GetId() *string { return v.Id }
 
 // GetDoTypes returns WhatAbacRuleInput.DoTypes, and is useful for accessing the field via an interface.
 func (v *WhatAbacRuleInput) GetDoTypes() []string { return v.DoTypes }
@@ -38279,10 +38078,14 @@ func (v *WhoAbacRule) GetType() AccessWhoItemType { return v.Type }
 func (v *WhoAbacRule) GetRuleJson() *string { return v.RuleJson }
 
 type WhoAbacRuleInput struct {
+	Id              string                        `json:"id"`
 	Rule            AbacComparisonExpressionInput `json:"rule"`
 	Type            AccessWhoItemType             `json:"type"`
 	PromiseDuration *int64                        `json:"promiseDuration,omitempty"`
 }
+
+// GetId returns WhoAbacRuleInput.Id, and is useful for accessing the field via an interface.
+func (v *WhoAbacRuleInput) GetId() string { return v.Id }
 
 // GetRule returns WhoAbacRuleInput.Rule, and is useful for accessing the field via an interface.
 func (v *WhoAbacRuleInput) GetRule() AbacComparisonExpressionInput { return v.Rule }
@@ -38292,20 +38095,6 @@ func (v *WhoAbacRuleInput) GetType() AccessWhoItemType { return v.Type }
 
 // GetPromiseDuration returns WhoAbacRuleInput.PromiseDuration, and is useful for accessing the field via an interface.
 func (v *WhoAbacRuleInput) GetPromiseDuration() *int64 { return v.PromiseDuration }
-
-type WhoAndWhatType string
-
-const (
-	WhoAndWhatTypeStatic  WhoAndWhatType = "Static"
-	WhoAndWhatTypeDynamic WhoAndWhatType = "Dynamic"
-	WhoAndWhatTypeUnknown WhoAndWhatType = "Unknown"
-)
-
-var AllWhoAndWhatType = []WhoAndWhatType{
-	WhoAndWhatTypeStatic,
-	WhoAndWhatTypeDynamic,
-	WhoAndWhatTypeUnknown,
-}
 
 type WhoItemImport struct {
 	Users          []string `json:"users"`
@@ -38715,11 +38504,12 @@ func (v *__ImportHeartbeatInput) GetFlowId() uuid.UUID { return v.FlowId }
 
 // __ListAccessControlAbacWhatScopeInput is used internally by genqlient
 type __ListAccessControlAbacWhatScopeInput struct {
-	Id     string                   `json:"id"`
-	After  *string                  `json:"after,omitempty"`
-	Limit  *int                     `json:"limit,omitempty"`
-	Search *string                  `json:"search,omitempty"`
-	Order  []AccessWhatOrderByInput `json:"order"`
+	Id       string                   `json:"id"`
+	After    *string                  `json:"after,omitempty"`
+	Limit    *int                     `json:"limit,omitempty"`
+	Search   *string                  `json:"search,omitempty"`
+	AbacRule string                   `json:"abacRule"`
+	Order    []AccessWhatOrderByInput `json:"order"`
 }
 
 // GetId returns __ListAccessControlAbacWhatScopeInput.Id, and is useful for accessing the field via an interface.
@@ -38733,6 +38523,9 @@ func (v *__ListAccessControlAbacWhatScopeInput) GetLimit() *int { return v.Limit
 
 // GetSearch returns __ListAccessControlAbacWhatScopeInput.Search, and is useful for accessing the field via an interface.
 func (v *__ListAccessControlAbacWhatScopeInput) GetSearch() *string { return v.Search }
+
+// GetAbacRule returns __ListAccessControlAbacWhatScopeInput.AbacRule, and is useful for accessing the field via an interface.
+func (v *__ListAccessControlAbacWhatScopeInput) GetAbacRule() string { return v.AbacRule }
 
 // GetOrder returns __ListAccessControlAbacWhatScopeInput.Order, and is useful for accessing the field via an interface.
 func (v *__ListAccessControlAbacWhatScopeInput) GetOrder() []AccessWhatOrderByInput { return v.Order }
@@ -39194,12 +38987,10 @@ fragment AccessControl on AccessControl {
 	description
 	policyRule
 	external
-	whatType
-	whatAbacRule {
+	whatAbacRules {
 		... WhatAbacRule
 	}
-	whoType
-	whoAbacRule {
+	whoAbacRules {
 		... WhoAbacRule
 	}
 	notInternalizable
@@ -39484,12 +39275,10 @@ fragment AccessControl on AccessControl {
 	description
 	policyRule
 	external
-	whatType
-	whatAbacRule {
+	whatAbacRules {
 		... WhatAbacRule
 	}
-	whoType
-	whoAbacRule {
+	whoAbacRules {
 		... WhoAbacRule
 	}
 	notInternalizable
@@ -40030,12 +39819,10 @@ fragment AccessControl on AccessControl {
 	description
 	policyRule
 	external
-	whatType
-	whatAbacRule {
+	whatAbacRules {
 		... WhatAbacRule
 	}
-	whoType
-	whoAbacRule {
+	whoAbacRules {
 		... WhoAbacRule
 	}
 	notInternalizable
@@ -40165,12 +39952,10 @@ fragment AccessControl on AccessControl {
 	description
 	policyRule
 	external
-	whatType
-	whatAbacRule {
+	whatAbacRules {
 		... WhatAbacRule
 	}
-	whoType
-	whoAbacRule {
+	whoAbacRules {
 		... WhoAbacRule
 	}
 	notInternalizable
@@ -40611,12 +40396,10 @@ fragment AccessControl on AccessControl {
 	description
 	policyRule
 	external
-	whatType
-	whatAbacRule {
+	whatAbacRules {
 		... WhatAbacRule
 	}
-	whoType
-	whoAbacRule {
+	whoAbacRules {
 		... WhoAbacRule
 	}
 	notInternalizable
@@ -40787,12 +40570,10 @@ fragment AccessControl on AccessControl {
 	description
 	policyRule
 	external
-	whatType
-	whatAbacRule {
+	whatAbacRules {
 		... WhatAbacRule
 	}
-	whoType
-	whoAbacRule {
+	whoAbacRules {
 		... WhoAbacRule
 	}
 	notInternalizable
@@ -41033,14 +40814,6 @@ fragment AccessWhoItem on AccessWhoItem {
 		... on AccessControl {
 			id
 			name
-		}
-		... on Group {
-			name
-			id
-			identityStore {
-				id
-				name
-			}
 		}
 		... on User {
 			... User
@@ -41651,11 +41424,11 @@ func ImportHeartbeat(
 
 // The query executed by ListAccessControlAbacWhatScope.
 const ListAccessControlAbacWhatScope_Operation = `
-query ListAccessControlAbacWhatScope ($id: ID!, $after: String, $limit: Int, $search: String, $order: [AccessWhatOrderByInput!]) {
+query ListAccessControlAbacWhatScope ($id: ID!, $after: String, $limit: Int, $search: String, $abacRule: String!, $order: [AccessWhatOrderByInput!]) {
 	accessControl(id: $id) {
 		__typename
 		... on AccessControl {
-			whatAbacScope(after: $after, limit: $limit, search: $search, order: $order) {
+			whatAbacScope(after: $after, limit: $limit, search: $search, abacRule: $abacRule, order: $order) {
 				__typename
 				... DataObjectConnection
 				... PermissionDeniedError
@@ -41707,17 +41480,19 @@ func ListAccessControlAbacWhatScope(
 	after *string,
 	limit *int,
 	search *string,
+	abacRule string,
 	order []AccessWhatOrderByInput,
 ) (data_ *ListAccessControlAbacWhatScopeResponse, err_ error) {
 	req_ := &graphql.Request{
 		OpName: "ListAccessControlAbacWhatScope",
 		Query:  ListAccessControlAbacWhatScope_Operation,
 		Variables: &__ListAccessControlAbacWhatScopeInput{
-			Id:     id,
-			After:  after,
-			Limit:  limit,
-			Search: search,
-			Order:  order,
+			Id:       id,
+			After:    after,
+			Limit:    limit,
+			Search:   search,
+			AbacRule: abacRule,
+			Order:    order,
 		},
 	}
 
@@ -41787,12 +41562,10 @@ fragment AccessControl on AccessControl {
 	description
 	policyRule
 	external
-	whatType
-	whatAbacRule {
+	whatAbacRules {
 		... WhatAbacRule
 	}
-	whoType
-	whoAbacRule {
+	whoAbacRules {
 		... WhoAbacRule
 	}
 	notInternalizable
@@ -42282,7 +42055,7 @@ fragment RoleAssignment on RoleAssignment {
 		... on User {
 			id
 		}
-		... on Group {
+		... on AccessControl {
 			id
 		}
 	}
@@ -42393,7 +42166,7 @@ fragment RoleAssignment on RoleAssignment {
 		... on User {
 			id
 		}
-		... on Group {
+		... on AccessControl {
 			id
 		}
 	}
@@ -42501,7 +42274,7 @@ fragment RoleAssignment on RoleAssignment {
 		... on User {
 			id
 		}
-		... on Group {
+		... on AccessControl {
 			id
 		}
 	}
@@ -42614,7 +42387,7 @@ fragment RoleAssignment on RoleAssignment {
 		... on User {
 			id
 		}
-		... on Group {
+		... on AccessControl {
 			id
 		}
 	}
@@ -42733,7 +42506,7 @@ fragment RoleAssignment on RoleAssignment {
 		... on User {
 			id
 		}
-		... on Group {
+		... on AccessControl {
 			id
 		}
 	}
@@ -43424,12 +43197,10 @@ fragment AccessControl on AccessControl {
 	description
 	policyRule
 	external
-	whatType
-	whatAbacRule {
+	whatAbacRules {
 		... WhatAbacRule
 	}
-	whoType
-	whoAbacRule {
+	whoAbacRules {
 		... WhoAbacRule
 	}
 	notInternalizable
