@@ -7,7 +7,7 @@ tool github.com/Khan/genqlient
 // This is a temporary pseudo-version used because an official release
 // containing a necessary fix is not yet available. It will be replaced
 // with an official version once it is released.
-require github.com/Khan/genqlient v0.8.2-0.20251028054717-8ddeeee0a15a
+require github.com/Khan/genqlient v0.8.2-0.20251119064104-5b0aabc933fa
 
 require (
 	github.com/Masterminds/semver/v3 v3.4.0
