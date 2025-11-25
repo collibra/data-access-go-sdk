@@ -50,34 +50,9 @@ fragment RoleAssignmentConnectionResult on RoleAssignmentConnectionResult {
     ... PermissionDeniedError
 }
 
-fragment RoleConnection on RoleConnection {
-    pageInfo {
-        ...PageInfo
-    }
-    edges {
-        cursor
-        node {
-            ... Role
-        }
-    }
-}
-
-fragment RoleConnectionResult on RoleConnectionResult {
-    ... RoleConnection
-    ... PermissionDeniedError
-    ... InvalidInputError
-    ... NotFoundError
-}
-
 query GetRole($id: ID!) {
     role(id: $id) {
       ...Role
-    }
-}
-
-query ListRoles($after: String, $limit: Int, $filter: RoleFilterInput, $order: [RoleOrderByInput!]) {
-    roles(after: $after, limit: $limit, filter: $filter, order: $order) {
-        ...RoleConnectionResult
     }
 }
 
@@ -133,22 +108,6 @@ query ListRoleAssignmentsOnUser($userId: ID!, $after: String, $limit: Int, $filt
     }
 }
 
-mutation AssignGlobalRole($role: ID!, $to: [ID!]!) {
-    assignGlobalRole(role: $role, to: $to) {
-        ... Role
-        ... PermissionDeniedError
-        ... NotFoundError
-    }
-}
-
-mutation UnassignGlobalRole($role: ID!, $to: [ID!]!) {
-    unassignGlobalRole(role: $role, to: $to) {
-        ... Role
-        ... PermissionDeniedError
-        ... NotFoundError
-    }
-}
-
 mutation UpdateRoleAssigneesOnDataObject($doId: ID!, $roleID: ID!, $assignees: [ID!]!) {
     updateRoleAssigneesOnDataObject(dataObject: $doId, roleInput: {roleID: $roleID, assignees: $assignees}) {
        ... Role
@@ -170,14 +129,5 @@ mutation UpdateRoleAssigneesOnAccessControl($apId: ID!, $roleID: ID!, $assignees
        ... Role
        ... PermissionDeniedError
        ... NotFoundError
-    }
-}
-
-mutation SetGlobalRolesForUser($user: ID!, $roles: [ID!]!) {
-    setGlobalRolesForUser(user: $user, roles: $roles) {
-        ... on SetGlobalRolesForUser{
-            success
-        }
-        ... PermissionDeniedError
     }
 }

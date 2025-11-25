@@ -2,7 +2,6 @@ package services
 
 import (
 	"context"
-	"errors"
 	"fmt"
 	"iter"
 
@@ -33,67 +32,6 @@ func (c *RoleClient) GetRole(ctx context.Context, id string) (*types.Role, error
 	}
 
 	return &result.Role.Role, nil
-}
-
-type RoleListOptions struct {
-	order  []types.RoleOrderByInput
-	filter *types.RoleFilterInput
-}
-
-// WithRoleListOrder sets the order of the returned roles
-func WithRoleListOrder(input ...types.RoleOrderByInput) func(options *RoleListOptions) {
-	return func(options *RoleListOptions) {
-		options.order = append(options.order, input...)
-	}
-}
-
-// WithRoleListFilter sets the filter of the returned roles
-func WithRoleListFilter(input *types.RoleFilterInput) func(options *RoleListOptions) {
-	return func(options *RoleListOptions) {
-		options.filter = input
-	}
-}
-
-// ListRoles returns a list of roles
-// The order of the list can be specified with WithRoleListOrder.
-// A filter can be specified with WithRoleListFilter.
-// A channel is returned that can be used to receive the list of types.Role.
-// To close the channel ensure to cancel the context.
-func (c *RoleClient) ListRoles(ctx context.Context, ops ...func(*RoleListOptions)) iter.Seq2[*types.Role, error] { //nolint:dupl
-	options := RoleListOptions{}
-	for _, op := range ops {
-		op(&options)
-	}
-
-	loadPageFn := func(ctx context.Context, cursor *string) (*types.PageInfo, []types.RoleConnectionEdgesRoleEdge, error) { //nolint:dupl
-		output, err := schema.ListRoles(ctx, c.client, cursor, utils.Ptr(internal.MaxPageSize), options.filter, options.order)
-		if err != nil {
-			return nil, nil, types.NewErrClient(err)
-		}
-
-		switch response := (output.Roles).(type) {
-		case *schema.ListRolesRolesRoleConnection:
-			return &response.PageInfo.PageInfo, response.Edges, nil
-		case *schema.ListRolesRolesInvalidInputError:
-			return nil, nil, types.NewErrInvalidInput(response.Message)
-		case *schema.ListRolesRolesNotFoundError:
-			return nil, nil, types.NewErrNotFound("", response.Typename, response.Message)
-		case *schema.ListRolesRolesPermissionDeniedError:
-			return nil, nil, types.NewErrPermissionDenied("listRoles", response.Message)
-		default:
-			return nil, nil, fmt.Errorf("unexpected type '%T'", response)
-		}
-	}
-
-	edgeFn := func(edge *types.RoleConnectionEdgesRoleEdge) (*string, *schema.Role, error) {
-		cursor := edge.Cursor
-		if edge.Node == nil {
-			return cursor, nil, nil
-		}
-		return cursor, &edge.Node.Role, nil
-	}
-
-	return internal.PaginationExecutor(ctx, loadPageFn, edgeFn)
 }
 
 type RoleAssignmentListOptions struct {
@@ -303,48 +241,6 @@ func (c *RoleClient) ListRoleAssignmentsOnUser(ctx context.Context, userId strin
 	return internal.PaginationExecutor(ctx, loadPageFn, roleAssignmentsEdgeFn)
 }
 
-// AssignGlobalRole create a role assignment between a global role and a set of users.
-// roleId is the id of the role to assign.
-// to is a list of user ids to assign the role to.
-func (c *RoleClient) AssignGlobalRole(ctx context.Context, roelId string, to ...string) (*types.Role, error) {
-	output, err := schema.AssignGlobalRole(ctx, c.client, roelId, to)
-	if err != nil {
-		return nil, types.NewErrClient(err)
-	}
-
-	switch r := output.AssignGlobalRole.(type) {
-	case *schema.AssignGlobalRoleAssignGlobalRole:
-		return &r.Role, nil
-	case *schema.AssignGlobalRoleAssignGlobalRolePermissionDeniedError:
-		return nil, types.NewErrPermissionDenied("assignGlobalRole", r.Message)
-	case *schema.AssignGlobalRoleAssignGlobalRoleNotFoundError:
-		return nil, types.NewErrNotFound(roelId, r.Typename, r.Message)
-	default:
-		return nil, fmt.Errorf("unexpected type '%T'", r)
-	}
-}
-
-// UnassignGlobalRole removes a role assignment between a global role and a set of users.
-// roleId is the id of the role to unassign.
-// from is a list of user ids to unassign the role from.
-func (c *RoleClient) UnassignGlobalRole(ctx context.Context, roleId string, from ...string) (*types.Role, error) {
-	output, err := schema.UnassignGlobalRole(ctx, c.client, roleId, from)
-	if err != nil {
-		return nil, types.NewErrClient(err)
-	}
-
-	switch r := output.UnassignGlobalRole.(type) {
-	case *schema.UnassignGlobalRoleUnassignGlobalRole:
-		return &r.Role, nil
-	case *schema.UnassignGlobalRoleUnassignGlobalRolePermissionDeniedError:
-		return nil, types.NewErrPermissionDenied("unassignGlobalRole", r.Message)
-	case *schema.UnassignGlobalRoleUnassignGlobalRoleNotFoundError:
-		return nil, types.NewErrNotFound(roleId, r.Typename, r.Message)
-	default:
-		return nil, fmt.Errorf("unexpected type '%T'", r)
-	}
-}
-
 // UpdateRoleAssigneesOnDataObject updates a role assignment between a data object and a set of users.
 // Existing role assignments will be overwritten.
 // doId is the id of the data object to assign the role to.
@@ -411,30 +307,6 @@ func (c *RoleClient) UpdateRoleAssigneesOnAccessControl(ctx context.Context, acc
 		return nil, types.NewErrNotFound(accessControlId, response.Typename, response.Message)
 	default:
 		return nil, fmt.Errorf("unexpected type '%T'", response)
-	}
-}
-
-// SetGlobalRoleForUsers sets a global role for a set of users.
-// Existing global role assignments will be overwritten.
-// roleId is the id of the global role to assign.
-// assignees is a list of user ids to assign the global role to.
-func (c *RoleClient) SetGlobalRoleForUsers(ctx context.Context, roleId string, assignees ...string) error {
-	output, err := schema.SetGlobalRolesForUser(ctx, c.client, roleId, assignees)
-	if err != nil {
-		return types.NewErrClient(err)
-	}
-
-	switch r := output.SetGlobalRolesForUser.(type) {
-	case *schema.SetGlobalRolesForUserSetGlobalRolesForUser:
-		if r.Success {
-			return nil
-		} else {
-			return types.NewErrClient(errors.New("unknown server error"))
-		}
-	case *schema.SetGlobalRolesForUserSetGlobalRolesForUserPermissionDeniedError:
-		return types.NewErrPermissionDenied("setGlobalRolesForUser", r.Message)
-	default:
-		return fmt.Errorf("unexpected type '%T'", r)
 	}
 }
 
