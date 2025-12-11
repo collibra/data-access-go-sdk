@@ -59,6 +59,7 @@ fragment AccessControlLockDetails on AccessControlLockDetails {
 }
 
 fragment WhoAbacRule on WhoAbacRule {
+    id
     promiseDuration
     type
     ruleJson
@@ -66,6 +67,7 @@ fragment WhoAbacRule on WhoAbacRule {
 }
 
 fragment WhatAbacRule on WhatAbacRule {
+    id
     permissions
     globalPermissions
     doTypes

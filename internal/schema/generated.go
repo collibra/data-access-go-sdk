@@ -1569,6 +1569,9 @@ type AccessControlWhatAbacRulesWhatAbacRule struct {
 	WhatAbacRule `json:"-"`
 }
 
+// GetId returns AccessControlWhatAbacRulesWhatAbacRule.Id, and is useful for accessing the field via an interface.
+func (v *AccessControlWhatAbacRulesWhatAbacRule) GetId() string { return v.WhatAbacRule.Id }
+
 // GetPermissions returns AccessControlWhatAbacRulesWhatAbacRule.Permissions, and is useful for accessing the field via an interface.
 func (v *AccessControlWhatAbacRulesWhatAbacRule) GetPermissions() []string {
 	return v.WhatAbacRule.Permissions
@@ -1613,6 +1616,8 @@ func (v *AccessControlWhatAbacRulesWhatAbacRule) UnmarshalJSON(b []byte) error {
 }
 
 type __premarshalAccessControlWhatAbacRulesWhatAbacRule struct {
+	Id string `json:"id"`
+
 	Permissions []string `json:"permissions"`
 
 	GlobalPermissions []string `json:"globalPermissions"`
@@ -1633,6 +1638,7 @@ func (v *AccessControlWhatAbacRulesWhatAbacRule) MarshalJSON() ([]byte, error) {
 func (v *AccessControlWhatAbacRulesWhatAbacRule) __premarshalJSON() (*__premarshalAccessControlWhatAbacRulesWhatAbacRule, error) {
 	var retval __premarshalAccessControlWhatAbacRulesWhatAbacRule
 
+	retval.Id = v.WhatAbacRule.Id
 	retval.Permissions = v.WhatAbacRule.Permissions
 	retval.GlobalPermissions = v.WhatAbacRule.GlobalPermissions
 	retval.DoTypes = v.WhatAbacRule.DoTypes
@@ -1717,6 +1723,9 @@ type AccessControlWhoAbacRulesWhoAbacRule struct {
 	WhoAbacRule `json:"-"`
 }
 
+// GetId returns AccessControlWhoAbacRulesWhoAbacRule.Id, and is useful for accessing the field via an interface.
+func (v *AccessControlWhoAbacRulesWhoAbacRule) GetId() string { return v.WhoAbacRule.Id }
+
 // GetPromiseDuration returns AccessControlWhoAbacRulesWhoAbacRule.PromiseDuration, and is useful for accessing the field via an interface.
 func (v *AccessControlWhoAbacRulesWhoAbacRule) GetPromiseDuration() *int64 {
 	return v.WhoAbacRule.PromiseDuration
@@ -1754,6 +1763,8 @@ func (v *AccessControlWhoAbacRulesWhoAbacRule) UnmarshalJSON(b []byte) error {
 }
 
 type __premarshalAccessControlWhoAbacRulesWhoAbacRule struct {
+	Id string `json:"id"`
+
 	PromiseDuration *int64 `json:"promiseDuration"`
 
 	Type AccessWhoItemType `json:"type"`
@@ -1772,6 +1783,7 @@ func (v *AccessControlWhoAbacRulesWhoAbacRule) MarshalJSON() ([]byte, error) {
 func (v *AccessControlWhoAbacRulesWhoAbacRule) __premarshalJSON() (*__premarshalAccessControlWhoAbacRulesWhoAbacRule, error) {
 	var retval __premarshalAccessControlWhoAbacRulesWhoAbacRule
 
+	retval.Id = v.WhoAbacRule.Id
 	retval.PromiseDuration = v.WhoAbacRule.PromiseDuration
 	retval.Type = v.WhoAbacRule.Type
 	retval.RuleJson = v.WhoAbacRule.RuleJson
@@ -36005,11 +36017,15 @@ var AllUserType = []UserType{
 
 // WhatAbacRule includes the GraphQL fields of WhatAbacRule requested by the fragment WhatAbacRule.
 type WhatAbacRule struct {
+	Id                string   `json:"id"`
 	Permissions       []string `json:"permissions"`
 	GlobalPermissions []string `json:"globalPermissions"`
 	DoTypes           []string `json:"doTypes"`
 	RuleJson          *string  `json:"ruleJson"`
 }
+
+// GetId returns WhatAbacRule.Id, and is useful for accessing the field via an interface.
+func (v *WhatAbacRule) GetId() string { return v.Id }
 
 // GetPermissions returns WhatAbacRule.Permissions, and is useful for accessing the field via an interface.
 func (v *WhatAbacRule) GetPermissions() []string { return v.Permissions }
@@ -36067,10 +36083,14 @@ func (v *WhatItemImport) GetPermissions() []string { return v.Permissions }
 
 // WhoAbacRule includes the GraphQL fields of WhoAbacRule requested by the fragment WhoAbacRule.
 type WhoAbacRule struct {
+	Id              string            `json:"id"`
 	PromiseDuration *int64            `json:"promiseDuration"`
 	Type            AccessWhoItemType `json:"type"`
 	RuleJson        *string           `json:"ruleJson"`
 }
+
+// GetId returns WhoAbacRule.Id, and is useful for accessing the field via an interface.
+func (v *WhoAbacRule) GetId() string { return v.Id }
 
 // GetPromiseDuration returns WhoAbacRule.PromiseDuration, and is useful for accessing the field via an interface.
 func (v *WhoAbacRule) GetPromiseDuration() *int64 { return v.PromiseDuration }
@@ -36082,14 +36102,14 @@ func (v *WhoAbacRule) GetType() AccessWhoItemType { return v.Type }
 func (v *WhoAbacRule) GetRuleJson() *string { return v.RuleJson }
 
 type WhoAbacRuleInput struct {
-	Id              string                        `json:"id"`
+	Id              *string                       `json:"id,omitempty"`
 	Rule            AbacComparisonExpressionInput `json:"rule"`
 	Type            AccessWhoItemType             `json:"type"`
 	PromiseDuration *int64                        `json:"promiseDuration,omitempty"`
 }
 
 // GetId returns WhoAbacRuleInput.Id, and is useful for accessing the field via an interface.
-func (v *WhoAbacRuleInput) GetId() string { return v.Id }
+func (v *WhoAbacRuleInput) GetId() *string { return v.Id }
 
 // GetRule returns WhoAbacRuleInput.Rule, and is useful for accessing the field via an interface.
 func (v *WhoAbacRuleInput) GetRule() AbacComparisonExpressionInput { return v.Rule }
@@ -36966,12 +36986,14 @@ fragment GrantCategory on GrantCategory {
 	isDefault
 }
 fragment WhatAbacRule on WhatAbacRule {
+	id
 	permissions
 	globalPermissions
 	doTypes
 	ruleJson
 }
 fragment WhoAbacRule on WhoAbacRule {
+	id
 	promiseDuration
 	type
 	ruleJson
@@ -37201,12 +37223,14 @@ fragment GrantCategory on GrantCategory {
 	isDefault
 }
 fragment WhatAbacRule on WhatAbacRule {
+	id
 	permissions
 	globalPermissions
 	doTypes
 	ruleJson
 }
 fragment WhoAbacRule on WhoAbacRule {
+	id
 	promiseDuration
 	type
 	ruleJson
@@ -37748,12 +37772,14 @@ fragment GrantCategory on GrantCategory {
 	isDefault
 }
 fragment WhatAbacRule on WhatAbacRule {
+	id
 	permissions
 	globalPermissions
 	doTypes
 	ruleJson
 }
 fragment WhoAbacRule on WhoAbacRule {
+	id
 	promiseDuration
 	type
 	ruleJson
@@ -37881,12 +37907,14 @@ fragment GrantCategory on GrantCategory {
 	isDefault
 }
 fragment WhatAbacRule on WhatAbacRule {
+	id
 	permissions
 	globalPermissions
 	doTypes
 	ruleJson
 }
 fragment WhoAbacRule on WhoAbacRule {
+	id
 	promiseDuration
 	type
 	ruleJson
@@ -38325,12 +38353,14 @@ fragment GrantCategory on GrantCategory {
 	isDefault
 }
 fragment WhatAbacRule on WhatAbacRule {
+	id
 	permissions
 	globalPermissions
 	doTypes
 	ruleJson
 }
 fragment WhoAbacRule on WhoAbacRule {
+	id
 	promiseDuration
 	type
 	ruleJson
@@ -38490,12 +38520,14 @@ fragment GrantCategory on GrantCategory {
 	isDefault
 }
 fragment WhatAbacRule on WhatAbacRule {
+	id
 	permissions
 	globalPermissions
 	doTypes
 	ruleJson
 }
 fragment WhoAbacRule on WhoAbacRule {
+	id
 	promiseDuration
 	type
 	ruleJson
@@ -39482,12 +39514,14 @@ fragment GrantCategory on GrantCategory {
 	isDefault
 }
 fragment WhatAbacRule on WhatAbacRule {
+	id
 	permissions
 	globalPermissions
 	doTypes
 	ruleJson
 }
 fragment WhoAbacRule on WhoAbacRule {
+	id
 	promiseDuration
 	type
 	ruleJson
@@ -40957,12 +40991,14 @@ fragment GrantCategory on GrantCategory {
 	isDefault
 }
 fragment WhatAbacRule on WhatAbacRule {
+	id
 	permissions
 	globalPermissions
 	doTypes
 	ruleJson
 }
 fragment WhoAbacRule on WhoAbacRule {
+	id
 	promiseDuration
 	type
 	ruleJson
