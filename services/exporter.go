@@ -65,8 +65,8 @@ func (c *ExporterClient) FinishExportFlow(ctx context.Context, flowId uuid.UUID,
 }
 
 // FetchExportAccessControls streams the access controls exported in the given flow.
-func (c *ExporterClient) FetchExportAccessControls(ctx context.Context, flowId uuid.UUID, lastSequenceId int) iter.Seq2[*types.ExportAccessControl, error] {
-	return func(yield func(*types.ExportAccessControl, error) bool) {
+func (c *ExporterClient) FetchExportAccessControls(ctx context.Context, flowId uuid.UUID, lastSequenceId int) iter.Seq2[types.ExportedItem, error] {
+	return func(yield func(types.ExportedItem, error) bool) {
 		var after *int
 
 		for {
@@ -98,7 +98,7 @@ func (c *ExporterClient) FetchExportAccessControls(ctx context.Context, flowId u
 			}
 
 			for i := range controls.AccessControls {
-				if !yield(&controls.AccessControls[i].ExportAccessControl, nil) {
+				if !yield(controls.AccessControls[i], nil) {
 					return
 				}
 			}

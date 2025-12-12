@@ -6,6 +6,7 @@ import (
 
 	sdk "github.com/collibra/data-access-go-sdk"
 	"github.com/collibra/data-access-go-sdk/internal/schema"
+	"github.com/collibra/data-access-go-sdk/types"
 	"github.com/collibra/data-access-go-sdk/utils"
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/suite"
@@ -166,12 +167,15 @@ func (suite *ExporterServiceTestSuite) TestExportAccessControls_WithExportOutOfS
 		suite.Require().NoError(err, "Error while exporting access controls")
 		suite.NotNil(accessControl, "Exported access control is nil")
 
-		if accessControl.Id == suite.createdAccessControl.Id {
-			suite.Equal(suite.createdAccessControl.Name, accessControl.Name)
-			suite.Equal(suite.createdAccessControl.Action, accessControl.Action)
+		switch ac := accessControl.(type) {
+		case *types.ExportedItemExportAccessControl:
+			if ac.Id == suite.createdAccessControl.Id {
+				suite.Equal(suite.createdAccessControl.Name, ac.Name)
+				suite.Equal(suite.createdAccessControl.Action, ac.Action)
 
-			found = true
-			break
+				found = true
+				break
+			}
 		}
 	}
 
