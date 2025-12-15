@@ -399,11 +399,11 @@ func (suite *AccessControlServiceTestSuite) TestGetAccessControlABACWhatScope() 
 	name := "Test Access Control for WhatAccessControlList " + uuid.New().String()
 	action := schema.AccessControlActionGrant
 	dataSource := suite.createdDataSource.Id
-	whatType := schema.WhoAndWhatTypeDynamic
 
 	stringLiteral := "Stripe"
 	// TODO: adjust data here so the GetAccessControlAbacWhatScope response contains at least one item
 	whatAbacRule := schema.WhatAbacRuleInput{
+		Id:          utils.Ptr("rule1"),
 		DoTypes:     []string{"schema"},
 		Permissions: []string{"READ"},
 		Scope:       []string{"RAITO_DBT"},
@@ -424,17 +424,16 @@ func (suite *AccessControlServiceTestSuite) TestGetAccessControlABACWhatScope() 
 		DataSources: []schema.AccessControlDataSourceInput{
 			{DataSource: dataSource},
 		},
-		WhatType: &whatType,
 		WhoItems: []schema.WhoItemInput{
 			{User: &createdUser.Id},
 		},
-		WhatAbacRule: &whatAbacRule,
+		WhatAbacRules: []*schema.WhatAbacRuleInput{&whatAbacRule},
 	})
 	suite.Require().NoError(err, "Failed to create access control with ABAC what scope")
 	suite.Require().NotNil(accessControl, "Created access control is nil")
 
 	// get WhatAbacRuleList for the created access control and verify that the rule is listed there
-	response := accessControlClient.GetAccessControlAbacWhatScope(ctx, accessControl.Id) // Empty list here
+	response := accessControlClient.GetAccessControlAbacWhatScope(ctx, accessControl.Id, "rule1") // Empty list here
 	found := false
 
 	for item, err := range response {

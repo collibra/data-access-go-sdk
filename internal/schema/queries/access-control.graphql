@@ -14,13 +14,11 @@ fragment AccessControl on AccessControl {
     description
     policyRule
     external
-    whatType
-    whatAbacRule {
+    whatAbacRules {
         ... WhatAbacRule
     }
 
-    whoType
-    whoAbacRule {
+    whoAbacRules {
         ... WhoAbacRule
     }
 
@@ -61,6 +59,7 @@ fragment AccessControlLockDetails on AccessControlLockDetails {
 }
 
 fragment WhoAbacRule on WhoAbacRule {
+    id
     promiseDuration
     type
     ruleJson
@@ -68,6 +67,7 @@ fragment WhoAbacRule on WhoAbacRule {
 }
 
 fragment WhatAbacRule on WhatAbacRule {
+    id
     permissions
     globalPermissions
     doTypes
@@ -149,14 +149,6 @@ fragment AccessWhoItem on AccessWhoItem {
         ... on AccessControl {
             id
             name
-        }
-        ... on Group {
-            name
-            id
-            identityStore {
-                id
-                name
-            }
         }
         ... on User {
             ...User
@@ -291,10 +283,10 @@ query GetAccessControlWhoList($id: ID!, $after: String, $limit: Int, $filter: Ac
     }
 }
 
-query ListAccessControlAbacWhatScope($id: ID!, $after: String, $limit: Int, $search: String, $order: [AccessWhatOrderByInput!]) {
+query ListAccessControlAbacWhatScope($id: ID!, $after: String, $limit: Int, $search: String, $abacRule: String!, $order: [AccessWhatOrderByInput!]) {
     accessControl(id: $id) {
         ... on AccessControl {
-            whatAbacScope(after: $after, limit: $limit, search: $search, order: $order) {
+            whatAbacScope(after: $after, limit: $limit, search: $search, abacRule: $abacRule, order: $order) {
                 ... DataObjectConnection
                 ... PermissionDeniedError
             }

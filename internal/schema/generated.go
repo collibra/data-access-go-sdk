@@ -146,10 +146,8 @@ type AccessControl struct {
 	Description       string                                    `json:"description"`
 	PolicyRule        *string                                   `json:"policyRule"`
 	External          bool                                      `json:"external"`
-	WhatType          WhoAndWhatType                            `json:"whatType"`
-	WhatAbacRule      *AccessControlWhatAbacRule                `json:"whatAbacRule"`
-	WhoType           WhoAndWhatType                            `json:"whoType"`
-	WhoAbacRule       *AccessControlWhoAbacRule                 `json:"whoAbacRule"`
+	WhatAbacRules     []AccessControlWhatAbacRulesWhatAbacRule  `json:"whatAbacRules"`
+	WhoAbacRules      []AccessControlWhoAbacRulesWhoAbacRule    `json:"whoAbacRules"`
 	NotInternalizable bool                                      `json:"notInternalizable"`
 	Complete          *bool                                     `json:"complete"`
 	Locks             []AccessControlLocksAccessControlLockData `json:"locks"`
@@ -189,17 +187,15 @@ func (v *AccessControl) GetPolicyRule() *string { return v.PolicyRule }
 // GetExternal returns AccessControl.External, and is useful for accessing the field via an interface.
 func (v *AccessControl) GetExternal() bool { return v.External }
 
-// GetWhatType returns AccessControl.WhatType, and is useful for accessing the field via an interface.
-func (v *AccessControl) GetWhatType() WhoAndWhatType { return v.WhatType }
+// GetWhatAbacRules returns AccessControl.WhatAbacRules, and is useful for accessing the field via an interface.
+func (v *AccessControl) GetWhatAbacRules() []AccessControlWhatAbacRulesWhatAbacRule {
+	return v.WhatAbacRules
+}
 
-// GetWhatAbacRule returns AccessControl.WhatAbacRule, and is useful for accessing the field via an interface.
-func (v *AccessControl) GetWhatAbacRule() *AccessControlWhatAbacRule { return v.WhatAbacRule }
-
-// GetWhoType returns AccessControl.WhoType, and is useful for accessing the field via an interface.
-func (v *AccessControl) GetWhoType() WhoAndWhatType { return v.WhoType }
-
-// GetWhoAbacRule returns AccessControl.WhoAbacRule, and is useful for accessing the field via an interface.
-func (v *AccessControl) GetWhoAbacRule() *AccessControlWhoAbacRule { return v.WhoAbacRule }
+// GetWhoAbacRules returns AccessControl.WhoAbacRules, and is useful for accessing the field via an interface.
+func (v *AccessControl) GetWhoAbacRules() []AccessControlWhoAbacRulesWhoAbacRule {
+	return v.WhoAbacRules
+}
 
 // GetNotInternalizable returns AccessControl.NotInternalizable, and is useful for accessing the field via an interface.
 func (v *AccessControl) GetNotInternalizable() bool { return v.NotInternalizable }
@@ -389,24 +385,14 @@ func (v *AccessControlConnectionEdgesAccessControlEdgeNodeAccessControl) GetExte
 	return v.AccessControl.External
 }
 
-// GetWhatType returns AccessControlConnectionEdgesAccessControlEdgeNodeAccessControl.WhatType, and is useful for accessing the field via an interface.
-func (v *AccessControlConnectionEdgesAccessControlEdgeNodeAccessControl) GetWhatType() WhoAndWhatType {
-	return v.AccessControl.WhatType
+// GetWhatAbacRules returns AccessControlConnectionEdgesAccessControlEdgeNodeAccessControl.WhatAbacRules, and is useful for accessing the field via an interface.
+func (v *AccessControlConnectionEdgesAccessControlEdgeNodeAccessControl) GetWhatAbacRules() []AccessControlWhatAbacRulesWhatAbacRule {
+	return v.AccessControl.WhatAbacRules
 }
 
-// GetWhatAbacRule returns AccessControlConnectionEdgesAccessControlEdgeNodeAccessControl.WhatAbacRule, and is useful for accessing the field via an interface.
-func (v *AccessControlConnectionEdgesAccessControlEdgeNodeAccessControl) GetWhatAbacRule() *AccessControlWhatAbacRule {
-	return v.AccessControl.WhatAbacRule
-}
-
-// GetWhoType returns AccessControlConnectionEdgesAccessControlEdgeNodeAccessControl.WhoType, and is useful for accessing the field via an interface.
-func (v *AccessControlConnectionEdgesAccessControlEdgeNodeAccessControl) GetWhoType() WhoAndWhatType {
-	return v.AccessControl.WhoType
-}
-
-// GetWhoAbacRule returns AccessControlConnectionEdgesAccessControlEdgeNodeAccessControl.WhoAbacRule, and is useful for accessing the field via an interface.
-func (v *AccessControlConnectionEdgesAccessControlEdgeNodeAccessControl) GetWhoAbacRule() *AccessControlWhoAbacRule {
-	return v.AccessControl.WhoAbacRule
+// GetWhoAbacRules returns AccessControlConnectionEdgesAccessControlEdgeNodeAccessControl.WhoAbacRules, and is useful for accessing the field via an interface.
+func (v *AccessControlConnectionEdgesAccessControlEdgeNodeAccessControl) GetWhoAbacRules() []AccessControlWhoAbacRulesWhoAbacRule {
+	return v.AccessControl.WhoAbacRules
 }
 
 // GetNotInternalizable returns AccessControlConnectionEdgesAccessControlEdgeNodeAccessControl.NotInternalizable, and is useful for accessing the field via an interface.
@@ -477,13 +463,9 @@ type __premarshalAccessControlConnectionEdgesAccessControlEdgeNodeAccessControl 
 
 	External bool `json:"external"`
 
-	WhatType WhoAndWhatType `json:"whatType"`
+	WhatAbacRules []AccessControlWhatAbacRulesWhatAbacRule `json:"whatAbacRules"`
 
-	WhatAbacRule *AccessControlWhatAbacRule `json:"whatAbacRule"`
-
-	WhoType WhoAndWhatType `json:"whoType"`
-
-	WhoAbacRule *AccessControlWhoAbacRule `json:"whoAbacRule"`
+	WhoAbacRules []AccessControlWhoAbacRulesWhoAbacRule `json:"whoAbacRules"`
 
 	NotInternalizable bool `json:"notInternalizable"`
 
@@ -516,10 +498,8 @@ func (v *AccessControlConnectionEdgesAccessControlEdgeNodeAccessControl) __prema
 	retval.Description = v.AccessControl.Description
 	retval.PolicyRule = v.AccessControl.PolicyRule
 	retval.External = v.AccessControl.External
-	retval.WhatType = v.AccessControl.WhatType
-	retval.WhatAbacRule = v.AccessControl.WhatAbacRule
-	retval.WhoType = v.AccessControl.WhoType
-	retval.WhoAbacRule = v.AccessControl.WhoAbacRule
+	retval.WhatAbacRules = v.AccessControl.WhatAbacRules
+	retval.WhoAbacRules = v.AccessControl.WhoAbacRules
 	retval.NotInternalizable = v.AccessControl.NotInternalizable
 	retval.Complete = v.AccessControl.Complete
 	retval.Locks = v.AccessControl.Locks
@@ -1146,11 +1126,9 @@ type AccessControlInput struct {
 	Description            *string                        `json:"description,omitempty"`
 	Category               *string                        `json:"category,omitempty"`
 	Source                 *string                        `json:"source,omitempty"`
-	WhoType                *WhoAndWhatType                `json:"whoType,omitempty"`
-	WhoAbacRule            *WhoAbacRuleInput              `json:"whoAbacRule,omitempty"`
+	WhoAbacRules           []*WhoAbacRuleInput            `json:"whoAbacRules,omitempty"`
 	WhoItems               []WhoItemInput                 `json:"whoItems"`
-	WhatType               *WhoAndWhatType                `json:"whatType,omitempty"`
-	WhatAbacRule           *WhatAbacRuleInput             `json:"whatAbacRule,omitempty"`
+	WhatAbacRules          []*WhatAbacRuleInput           `json:"whatAbacRules,omitempty"`
 	PolicyRule             *string                        `json:"policyRule,omitempty"`
 	FilterCriteria         *DataComparisonExpressionInput `json:"filterCriteria,omitempty"`
 	DataSources            []AccessControlDataSourceInput `json:"dataSources"`
@@ -1179,20 +1157,14 @@ func (v *AccessControlInput) GetCategory() *string { return v.Category }
 // GetSource returns AccessControlInput.Source, and is useful for accessing the field via an interface.
 func (v *AccessControlInput) GetSource() *string { return v.Source }
 
-// GetWhoType returns AccessControlInput.WhoType, and is useful for accessing the field via an interface.
-func (v *AccessControlInput) GetWhoType() *WhoAndWhatType { return v.WhoType }
-
-// GetWhoAbacRule returns AccessControlInput.WhoAbacRule, and is useful for accessing the field via an interface.
-func (v *AccessControlInput) GetWhoAbacRule() *WhoAbacRuleInput { return v.WhoAbacRule }
+// GetWhoAbacRules returns AccessControlInput.WhoAbacRules, and is useful for accessing the field via an interface.
+func (v *AccessControlInput) GetWhoAbacRules() []*WhoAbacRuleInput { return v.WhoAbacRules }
 
 // GetWhoItems returns AccessControlInput.WhoItems, and is useful for accessing the field via an interface.
 func (v *AccessControlInput) GetWhoItems() []WhoItemInput { return v.WhoItems }
 
-// GetWhatType returns AccessControlInput.WhatType, and is useful for accessing the field via an interface.
-func (v *AccessControlInput) GetWhatType() *WhoAndWhatType { return v.WhatType }
-
-// GetWhatAbacRule returns AccessControlInput.WhatAbacRule, and is useful for accessing the field via an interface.
-func (v *AccessControlInput) GetWhatAbacRule() *WhatAbacRuleInput { return v.WhatAbacRule }
+// GetWhatAbacRules returns AccessControlInput.WhatAbacRules, and is useful for accessing the field via an interface.
+func (v *AccessControlInput) GetWhatAbacRules() []*WhatAbacRuleInput { return v.WhatAbacRules }
 
 // GetPolicyRule returns AccessControlInput.PolicyRule, and is useful for accessing the field via an interface.
 func (v *AccessControlInput) GetPolicyRule() *string { return v.PolicyRule }
@@ -1592,36 +1564,43 @@ func (v *AccessControlTypeInput) GetAllowedWhoAccessControlTypes() []string {
 // GetCommonParentType returns AccessControlTypeInput.CommonParentType, and is useful for accessing the field via an interface.
 func (v *AccessControlTypeInput) GetCommonParentType() *string { return v.CommonParentType }
 
-// AccessControlWhatAbacRule includes the requested fields of the GraphQL type WhatAbacRule.
-type AccessControlWhatAbacRule struct {
+// AccessControlWhatAbacRulesWhatAbacRule includes the requested fields of the GraphQL type WhatAbacRule.
+type AccessControlWhatAbacRulesWhatAbacRule struct {
 	WhatAbacRule `json:"-"`
 }
 
-// GetPermissions returns AccessControlWhatAbacRule.Permissions, and is useful for accessing the field via an interface.
-func (v *AccessControlWhatAbacRule) GetPermissions() []string { return v.WhatAbacRule.Permissions }
+// GetId returns AccessControlWhatAbacRulesWhatAbacRule.Id, and is useful for accessing the field via an interface.
+func (v *AccessControlWhatAbacRulesWhatAbacRule) GetId() string { return v.WhatAbacRule.Id }
 
-// GetGlobalPermissions returns AccessControlWhatAbacRule.GlobalPermissions, and is useful for accessing the field via an interface.
-func (v *AccessControlWhatAbacRule) GetGlobalPermissions() []string {
+// GetPermissions returns AccessControlWhatAbacRulesWhatAbacRule.Permissions, and is useful for accessing the field via an interface.
+func (v *AccessControlWhatAbacRulesWhatAbacRule) GetPermissions() []string {
+	return v.WhatAbacRule.Permissions
+}
+
+// GetGlobalPermissions returns AccessControlWhatAbacRulesWhatAbacRule.GlobalPermissions, and is useful for accessing the field via an interface.
+func (v *AccessControlWhatAbacRulesWhatAbacRule) GetGlobalPermissions() []string {
 	return v.WhatAbacRule.GlobalPermissions
 }
 
-// GetDoTypes returns AccessControlWhatAbacRule.DoTypes, and is useful for accessing the field via an interface.
-func (v *AccessControlWhatAbacRule) GetDoTypes() []string { return v.WhatAbacRule.DoTypes }
+// GetDoTypes returns AccessControlWhatAbacRulesWhatAbacRule.DoTypes, and is useful for accessing the field via an interface.
+func (v *AccessControlWhatAbacRulesWhatAbacRule) GetDoTypes() []string { return v.WhatAbacRule.DoTypes }
 
-// GetRuleJson returns AccessControlWhatAbacRule.RuleJson, and is useful for accessing the field via an interface.
-func (v *AccessControlWhatAbacRule) GetRuleJson() *string { return v.WhatAbacRule.RuleJson }
+// GetRuleJson returns AccessControlWhatAbacRulesWhatAbacRule.RuleJson, and is useful for accessing the field via an interface.
+func (v *AccessControlWhatAbacRulesWhatAbacRule) GetRuleJson() *string {
+	return v.WhatAbacRule.RuleJson
+}
 
-func (v *AccessControlWhatAbacRule) UnmarshalJSON(b []byte) error {
+func (v *AccessControlWhatAbacRulesWhatAbacRule) UnmarshalJSON(b []byte) error {
 
 	if string(b) == "null" {
 		return nil
 	}
 
 	var firstPass struct {
-		*AccessControlWhatAbacRule
+		*AccessControlWhatAbacRulesWhatAbacRule
 		graphql.NoUnmarshalJSON
 	}
-	firstPass.AccessControlWhatAbacRule = v
+	firstPass.AccessControlWhatAbacRulesWhatAbacRule = v
 
 	err := json.Unmarshal(b, &firstPass)
 	if err != nil {
@@ -1636,7 +1615,9 @@ func (v *AccessControlWhatAbacRule) UnmarshalJSON(b []byte) error {
 	return nil
 }
 
-type __premarshalAccessControlWhatAbacRule struct {
+type __premarshalAccessControlWhatAbacRulesWhatAbacRule struct {
+	Id string `json:"id"`
+
 	Permissions []string `json:"permissions"`
 
 	GlobalPermissions []string `json:"globalPermissions"`
@@ -1646,7 +1627,7 @@ type __premarshalAccessControlWhatAbacRule struct {
 	RuleJson *string `json:"ruleJson"`
 }
 
-func (v *AccessControlWhatAbacRule) MarshalJSON() ([]byte, error) {
+func (v *AccessControlWhatAbacRulesWhatAbacRule) MarshalJSON() ([]byte, error) {
 	premarshaled, err := v.__premarshalJSON()
 	if err != nil {
 		return nil, err
@@ -1654,9 +1635,10 @@ func (v *AccessControlWhatAbacRule) MarshalJSON() ([]byte, error) {
 	return json.Marshal(premarshaled)
 }
 
-func (v *AccessControlWhatAbacRule) __premarshalJSON() (*__premarshalAccessControlWhatAbacRule, error) {
-	var retval __premarshalAccessControlWhatAbacRule
+func (v *AccessControlWhatAbacRulesWhatAbacRule) __premarshalJSON() (*__premarshalAccessControlWhatAbacRulesWhatAbacRule, error) {
+	var retval __premarshalAccessControlWhatAbacRulesWhatAbacRule
 
+	retval.Id = v.WhatAbacRule.Id
 	retval.Permissions = v.WhatAbacRule.Permissions
 	retval.GlobalPermissions = v.WhatAbacRule.GlobalPermissions
 	retval.DoTypes = v.WhatAbacRule.DoTypes
@@ -1736,31 +1718,36 @@ func (v *AccessControlWhatInputDO) GetDataObjectByName() []AccessControlWhatDoBy
 // GetExpiresAt returns AccessControlWhatInputDO.ExpiresAt, and is useful for accessing the field via an interface.
 func (v *AccessControlWhatInputDO) GetExpiresAt() *time.Time { return v.ExpiresAt }
 
-// AccessControlWhoAbacRule includes the requested fields of the GraphQL type WhoAbacRule.
-type AccessControlWhoAbacRule struct {
+// AccessControlWhoAbacRulesWhoAbacRule includes the requested fields of the GraphQL type WhoAbacRule.
+type AccessControlWhoAbacRulesWhoAbacRule struct {
 	WhoAbacRule `json:"-"`
 }
 
-// GetPromiseDuration returns AccessControlWhoAbacRule.PromiseDuration, and is useful for accessing the field via an interface.
-func (v *AccessControlWhoAbacRule) GetPromiseDuration() *int64 { return v.WhoAbacRule.PromiseDuration }
+// GetId returns AccessControlWhoAbacRulesWhoAbacRule.Id, and is useful for accessing the field via an interface.
+func (v *AccessControlWhoAbacRulesWhoAbacRule) GetId() string { return v.WhoAbacRule.Id }
 
-// GetType returns AccessControlWhoAbacRule.Type, and is useful for accessing the field via an interface.
-func (v *AccessControlWhoAbacRule) GetType() AccessWhoItemType { return v.WhoAbacRule.Type }
+// GetPromiseDuration returns AccessControlWhoAbacRulesWhoAbacRule.PromiseDuration, and is useful for accessing the field via an interface.
+func (v *AccessControlWhoAbacRulesWhoAbacRule) GetPromiseDuration() *int64 {
+	return v.WhoAbacRule.PromiseDuration
+}
 
-// GetRuleJson returns AccessControlWhoAbacRule.RuleJson, and is useful for accessing the field via an interface.
-func (v *AccessControlWhoAbacRule) GetRuleJson() *string { return v.WhoAbacRule.RuleJson }
+// GetType returns AccessControlWhoAbacRulesWhoAbacRule.Type, and is useful for accessing the field via an interface.
+func (v *AccessControlWhoAbacRulesWhoAbacRule) GetType() AccessWhoItemType { return v.WhoAbacRule.Type }
 
-func (v *AccessControlWhoAbacRule) UnmarshalJSON(b []byte) error {
+// GetRuleJson returns AccessControlWhoAbacRulesWhoAbacRule.RuleJson, and is useful for accessing the field via an interface.
+func (v *AccessControlWhoAbacRulesWhoAbacRule) GetRuleJson() *string { return v.WhoAbacRule.RuleJson }
+
+func (v *AccessControlWhoAbacRulesWhoAbacRule) UnmarshalJSON(b []byte) error {
 
 	if string(b) == "null" {
 		return nil
 	}
 
 	var firstPass struct {
-		*AccessControlWhoAbacRule
+		*AccessControlWhoAbacRulesWhoAbacRule
 		graphql.NoUnmarshalJSON
 	}
-	firstPass.AccessControlWhoAbacRule = v
+	firstPass.AccessControlWhoAbacRulesWhoAbacRule = v
 
 	err := json.Unmarshal(b, &firstPass)
 	if err != nil {
@@ -1775,7 +1762,9 @@ func (v *AccessControlWhoAbacRule) UnmarshalJSON(b []byte) error {
 	return nil
 }
 
-type __premarshalAccessControlWhoAbacRule struct {
+type __premarshalAccessControlWhoAbacRulesWhoAbacRule struct {
+	Id string `json:"id"`
+
 	PromiseDuration *int64 `json:"promiseDuration"`
 
 	Type AccessWhoItemType `json:"type"`
@@ -1783,7 +1772,7 @@ type __premarshalAccessControlWhoAbacRule struct {
 	RuleJson *string `json:"ruleJson"`
 }
 
-func (v *AccessControlWhoAbacRule) MarshalJSON() ([]byte, error) {
+func (v *AccessControlWhoAbacRulesWhoAbacRule) MarshalJSON() ([]byte, error) {
 	premarshaled, err := v.__premarshalJSON()
 	if err != nil {
 		return nil, err
@@ -1791,9 +1780,10 @@ func (v *AccessControlWhoAbacRule) MarshalJSON() ([]byte, error) {
 	return json.Marshal(premarshaled)
 }
 
-func (v *AccessControlWhoAbacRule) __premarshalJSON() (*__premarshalAccessControlWhoAbacRule, error) {
-	var retval __premarshalAccessControlWhoAbacRule
+func (v *AccessControlWhoAbacRulesWhoAbacRule) __premarshalJSON() (*__premarshalAccessControlWhoAbacRulesWhoAbacRule, error) {
+	var retval __premarshalAccessControlWhoAbacRulesWhoAbacRule
 
+	retval.Id = v.WhoAbacRule.Id
 	retval.PromiseDuration = v.WhoAbacRule.PromiseDuration
 	retval.Type = v.WhoAbacRule.Type
 	retval.RuleJson = v.WhoAbacRule.RuleJson
@@ -1819,7 +1809,10 @@ type AccessControlWhoListFilter struct {
 	WhoType             *AccessWhoItemType `json:"whoType,omitempty"`
 	TargetUser          *string            `json:"targetUser,omitempty"`
 	TargetAccessControl *string            `json:"targetAccessControl,omitempty"`
+	EntityType          *EntityType        `json:"entityType,omitempty"`
 	Search              *string            `json:"search,omitempty"`
+	// Optional ABAC rule to filter the who-list on. Only applicable when requesting users who-list without unpacking
+	AbacRule *string `json:"abacRule,omitempty"`
 }
 
 // GetWhoType returns AccessControlWhoListFilter.WhoType, and is useful for accessing the field via an interface.
@@ -1831,8 +1824,14 @@ func (v *AccessControlWhoListFilter) GetTargetUser() *string { return v.TargetUs
 // GetTargetAccessControl returns AccessControlWhoListFilter.TargetAccessControl, and is useful for accessing the field via an interface.
 func (v *AccessControlWhoListFilter) GetTargetAccessControl() *string { return v.TargetAccessControl }
 
+// GetEntityType returns AccessControlWhoListFilter.EntityType, and is useful for accessing the field via an interface.
+func (v *AccessControlWhoListFilter) GetEntityType() *EntityType { return v.EntityType }
+
 // GetSearch returns AccessControlWhoListFilter.Search, and is useful for accessing the field via an interface.
 func (v *AccessControlWhoListFilter) GetSearch() *string { return v.Search }
+
+// GetAbacRule returns AccessControlWhoListFilter.AbacRule, and is useful for accessing the field via an interface.
+func (v *AccessControlWhoListFilter) GetAbacRule() *string { return v.AbacRule }
 
 type AccessControlWhoOrderByInput struct {
 	Name *Sort `json:"name,omitempty"`
@@ -1911,24 +1910,14 @@ func (v *AccessWhatAccessControlItemAccessControl) GetExternal() bool {
 	return v.AccessControl.External
 }
 
-// GetWhatType returns AccessWhatAccessControlItemAccessControl.WhatType, and is useful for accessing the field via an interface.
-func (v *AccessWhatAccessControlItemAccessControl) GetWhatType() WhoAndWhatType {
-	return v.AccessControl.WhatType
+// GetWhatAbacRules returns AccessWhatAccessControlItemAccessControl.WhatAbacRules, and is useful for accessing the field via an interface.
+func (v *AccessWhatAccessControlItemAccessControl) GetWhatAbacRules() []AccessControlWhatAbacRulesWhatAbacRule {
+	return v.AccessControl.WhatAbacRules
 }
 
-// GetWhatAbacRule returns AccessWhatAccessControlItemAccessControl.WhatAbacRule, and is useful for accessing the field via an interface.
-func (v *AccessWhatAccessControlItemAccessControl) GetWhatAbacRule() *AccessControlWhatAbacRule {
-	return v.AccessControl.WhatAbacRule
-}
-
-// GetWhoType returns AccessWhatAccessControlItemAccessControl.WhoType, and is useful for accessing the field via an interface.
-func (v *AccessWhatAccessControlItemAccessControl) GetWhoType() WhoAndWhatType {
-	return v.AccessControl.WhoType
-}
-
-// GetWhoAbacRule returns AccessWhatAccessControlItemAccessControl.WhoAbacRule, and is useful for accessing the field via an interface.
-func (v *AccessWhatAccessControlItemAccessControl) GetWhoAbacRule() *AccessControlWhoAbacRule {
-	return v.AccessControl.WhoAbacRule
+// GetWhoAbacRules returns AccessWhatAccessControlItemAccessControl.WhoAbacRules, and is useful for accessing the field via an interface.
+func (v *AccessWhatAccessControlItemAccessControl) GetWhoAbacRules() []AccessControlWhoAbacRulesWhoAbacRule {
+	return v.AccessControl.WhoAbacRules
 }
 
 // GetNotInternalizable returns AccessWhatAccessControlItemAccessControl.NotInternalizable, and is useful for accessing the field via an interface.
@@ -1999,13 +1988,9 @@ type __premarshalAccessWhatAccessControlItemAccessControl struct {
 
 	External bool `json:"external"`
 
-	WhatType WhoAndWhatType `json:"whatType"`
+	WhatAbacRules []AccessControlWhatAbacRulesWhatAbacRule `json:"whatAbacRules"`
 
-	WhatAbacRule *AccessControlWhatAbacRule `json:"whatAbacRule"`
-
-	WhoType WhoAndWhatType `json:"whoType"`
-
-	WhoAbacRule *AccessControlWhoAbacRule `json:"whoAbacRule"`
+	WhoAbacRules []AccessControlWhoAbacRulesWhoAbacRule `json:"whoAbacRules"`
 
 	NotInternalizable bool `json:"notInternalizable"`
 
@@ -2038,10 +2023,8 @@ func (v *AccessWhatAccessControlItemAccessControl) __premarshalJSON() (*__premar
 	retval.Description = v.AccessControl.Description
 	retval.PolicyRule = v.AccessControl.PolicyRule
 	retval.External = v.AccessControl.External
-	retval.WhatType = v.AccessControl.WhatType
-	retval.WhatAbacRule = v.AccessControl.WhatAbacRule
-	retval.WhoType = v.AccessControl.WhoType
-	retval.WhoAbacRule = v.AccessControl.WhoAbacRule
+	retval.WhatAbacRules = v.AccessControl.WhatAbacRules
+	retval.WhoAbacRules = v.AccessControl.WhoAbacRules
 	retval.NotInternalizable = v.AccessControl.NotInternalizable
 	retval.Complete = v.AccessControl.Complete
 	retval.Locks = v.AccessControl.Locks
@@ -2828,6 +2811,8 @@ type AccessWhatFilterInput struct {
 	Owners           []string    `json:"owners"`
 	HasTags          []TagFilter `json:"hasTags"`
 	TargetDataObject *string     `json:"targetDataObject,omitempty"`
+	// Optional ABAC rule to filter the what-list on. Only applicable when requesting data objects what-list without unpacking
+	AbacRule *string `json:"abacRule,omitempty"`
 }
 
 // GetSearch returns AccessWhatFilterInput.Search, and is useful for accessing the field via an interface.
@@ -2844,6 +2829,9 @@ func (v *AccessWhatFilterInput) GetHasTags() []TagFilter { return v.HasTags }
 
 // GetTargetDataObject returns AccessWhatFilterInput.TargetDataObject, and is useful for accessing the field via an interface.
 func (v *AccessWhatFilterInput) GetTargetDataObject() *string { return v.TargetDataObject }
+
+// GetAbacRule returns AccessWhatFilterInput.AbacRule, and is useful for accessing the field via an interface.
+func (v *AccessWhatFilterInput) GetAbacRule() *string { return v.AbacRule }
 
 type AccessWhatOrderByInput struct {
 	Name *Sort `json:"name,omitempty"`
@@ -3125,7 +3113,6 @@ func (v *AccessWhoItemConnectionPageInfo) __premarshalJSON() (*__premarshalAcces
 // AccessWhoItemItemAccessControl
 // AccessWhoItemItemDataShareRecipient
 // AccessWhoItemItemDataSource
-// AccessWhoItemItemGroup
 // AccessWhoItemItemInvalidInputError
 // AccessWhoItemItemNotFoundError
 // AccessWhoItemItemUser
@@ -3138,7 +3125,6 @@ type AccessWhoItemItem interface {
 func (v *AccessWhoItemItemAccessControl) implementsGraphQLInterfaceAccessWhoItemItem()      {}
 func (v *AccessWhoItemItemDataShareRecipient) implementsGraphQLInterfaceAccessWhoItemItem() {}
 func (v *AccessWhoItemItemDataSource) implementsGraphQLInterfaceAccessWhoItemItem()         {}
-func (v *AccessWhoItemItemGroup) implementsGraphQLInterfaceAccessWhoItemItem()              {}
 func (v *AccessWhoItemItemInvalidInputError) implementsGraphQLInterfaceAccessWhoItemItem()  {}
 func (v *AccessWhoItemItemNotFoundError) implementsGraphQLInterfaceAccessWhoItemItem()      {}
 func (v *AccessWhoItemItemUser) implementsGraphQLInterfaceAccessWhoItemItem()               {}
@@ -3165,9 +3151,6 @@ func __unmarshalAccessWhoItemItem(b []byte, v *AccessWhoItemItem) error {
 		return json.Unmarshal(b, *v)
 	case "DataSource":
 		*v = new(AccessWhoItemItemDataSource)
-		return json.Unmarshal(b, *v)
-	case "Group":
-		*v = new(AccessWhoItemItemGroup)
 		return json.Unmarshal(b, *v)
 	case "InvalidInputError":
 		*v = new(AccessWhoItemItemInvalidInputError)
@@ -3213,14 +3196,6 @@ func __marshalAccessWhoItemItem(v *AccessWhoItemItem) ([]byte, error) {
 		result := struct {
 			TypeName string `json:"__typename"`
 			*AccessWhoItemItemDataSource
-		}{typename, v}
-		return json.Marshal(result)
-	case *AccessWhoItemItemGroup:
-		typename = "Group"
-
-		result := struct {
-			TypeName string `json:"__typename"`
-			*AccessWhoItemItemGroup
 		}{typename, v}
 		return json.Marshal(result)
 	case *AccessWhoItemItemInvalidInputError:
@@ -3290,40 +3265,6 @@ type AccessWhoItemItemDataSource struct {
 
 // GetTypename returns AccessWhoItemItemDataSource.Typename, and is useful for accessing the field via an interface.
 func (v *AccessWhoItemItemDataSource) GetTypename() *string { return v.Typename }
-
-// AccessWhoItemItemGroup includes the requested fields of the GraphQL type Group.
-type AccessWhoItemItemGroup struct {
-	Typename      *string                             `json:"__typename"`
-	Name          string                              `json:"name"`
-	Id            string                              `json:"id"`
-	IdentityStore AccessWhoItemItemGroupIdentityStore `json:"identityStore"`
-}
-
-// GetTypename returns AccessWhoItemItemGroup.Typename, and is useful for accessing the field via an interface.
-func (v *AccessWhoItemItemGroup) GetTypename() *string { return v.Typename }
-
-// GetName returns AccessWhoItemItemGroup.Name, and is useful for accessing the field via an interface.
-func (v *AccessWhoItemItemGroup) GetName() string { return v.Name }
-
-// GetId returns AccessWhoItemItemGroup.Id, and is useful for accessing the field via an interface.
-func (v *AccessWhoItemItemGroup) GetId() string { return v.Id }
-
-// GetIdentityStore returns AccessWhoItemItemGroup.IdentityStore, and is useful for accessing the field via an interface.
-func (v *AccessWhoItemItemGroup) GetIdentityStore() AccessWhoItemItemGroupIdentityStore {
-	return v.IdentityStore
-}
-
-// AccessWhoItemItemGroupIdentityStore includes the requested fields of the GraphQL type IdentityStore.
-type AccessWhoItemItemGroupIdentityStore struct {
-	Id   string `json:"id"`
-	Name string `json:"name"`
-}
-
-// GetId returns AccessWhoItemItemGroupIdentityStore.Id, and is useful for accessing the field via an interface.
-func (v *AccessWhoItemItemGroupIdentityStore) GetId() string { return v.Id }
-
-// GetName returns AccessWhoItemItemGroupIdentityStore.Name, and is useful for accessing the field via an interface.
-func (v *AccessWhoItemItemGroupIdentityStore) GetName() string { return v.Name }
 
 // AccessWhoItemItemInvalidInputError includes the requested fields of the GraphQL type InvalidInputError.
 type AccessWhoItemItemInvalidInputError struct {
@@ -3504,24 +3445,14 @@ func (v *ActivateAccessControlActivateAccessControl) GetExternal() bool {
 	return v.AccessControl.External
 }
 
-// GetWhatType returns ActivateAccessControlActivateAccessControl.WhatType, and is useful for accessing the field via an interface.
-func (v *ActivateAccessControlActivateAccessControl) GetWhatType() WhoAndWhatType {
-	return v.AccessControl.WhatType
+// GetWhatAbacRules returns ActivateAccessControlActivateAccessControl.WhatAbacRules, and is useful for accessing the field via an interface.
+func (v *ActivateAccessControlActivateAccessControl) GetWhatAbacRules() []AccessControlWhatAbacRulesWhatAbacRule {
+	return v.AccessControl.WhatAbacRules
 }
 
-// GetWhatAbacRule returns ActivateAccessControlActivateAccessControl.WhatAbacRule, and is useful for accessing the field via an interface.
-func (v *ActivateAccessControlActivateAccessControl) GetWhatAbacRule() *AccessControlWhatAbacRule {
-	return v.AccessControl.WhatAbacRule
-}
-
-// GetWhoType returns ActivateAccessControlActivateAccessControl.WhoType, and is useful for accessing the field via an interface.
-func (v *ActivateAccessControlActivateAccessControl) GetWhoType() WhoAndWhatType {
-	return v.AccessControl.WhoType
-}
-
-// GetWhoAbacRule returns ActivateAccessControlActivateAccessControl.WhoAbacRule, and is useful for accessing the field via an interface.
-func (v *ActivateAccessControlActivateAccessControl) GetWhoAbacRule() *AccessControlWhoAbacRule {
-	return v.AccessControl.WhoAbacRule
+// GetWhoAbacRules returns ActivateAccessControlActivateAccessControl.WhoAbacRules, and is useful for accessing the field via an interface.
+func (v *ActivateAccessControlActivateAccessControl) GetWhoAbacRules() []AccessControlWhoAbacRulesWhoAbacRule {
+	return v.AccessControl.WhoAbacRules
 }
 
 // GetNotInternalizable returns ActivateAccessControlActivateAccessControl.NotInternalizable, and is useful for accessing the field via an interface.
@@ -3594,13 +3525,9 @@ type __premarshalActivateAccessControlActivateAccessControl struct {
 
 	External bool `json:"external"`
 
-	WhatType WhoAndWhatType `json:"whatType"`
+	WhatAbacRules []AccessControlWhatAbacRulesWhatAbacRule `json:"whatAbacRules"`
 
-	WhatAbacRule *AccessControlWhatAbacRule `json:"whatAbacRule"`
-
-	WhoType WhoAndWhatType `json:"whoType"`
-
-	WhoAbacRule *AccessControlWhoAbacRule `json:"whoAbacRule"`
+	WhoAbacRules []AccessControlWhoAbacRulesWhoAbacRule `json:"whoAbacRules"`
 
 	NotInternalizable bool `json:"notInternalizable"`
 
@@ -3634,10 +3561,8 @@ func (v *ActivateAccessControlActivateAccessControl) __premarshalJSON() (*__prem
 	retval.Description = v.AccessControl.Description
 	retval.PolicyRule = v.AccessControl.PolicyRule
 	retval.External = v.AccessControl.External
-	retval.WhatType = v.AccessControl.WhatType
-	retval.WhatAbacRule = v.AccessControl.WhatAbacRule
-	retval.WhoType = v.AccessControl.WhoType
-	retval.WhoAbacRule = v.AccessControl.WhoAbacRule
+	retval.WhatAbacRules = v.AccessControl.WhatAbacRules
+	retval.WhoAbacRules = v.AccessControl.WhoAbacRules
 	retval.NotInternalizable = v.AccessControl.NotInternalizable
 	retval.Complete = v.AccessControl.Complete
 	retval.Locks = v.AccessControl.Locks
@@ -4270,395 +4195,6 @@ type AddTaskEventResponse struct {
 // GetAddTaskEvent returns AddTaskEventResponse.AddTaskEvent, and is useful for accessing the field via an interface.
 func (v *AddTaskEventResponse) GetAddTaskEvent() AddTaskEventAddTaskEventTask { return v.AddTaskEvent }
 
-// AssignGlobalRoleAssignGlobalRole includes the requested fields of the GraphQL type Role.
-type AssignGlobalRoleAssignGlobalRole struct {
-	Typename *string `json:"__typename"`
-	Role     `json:"-"`
-}
-
-// GetTypename returns AssignGlobalRoleAssignGlobalRole.Typename, and is useful for accessing the field via an interface.
-func (v *AssignGlobalRoleAssignGlobalRole) GetTypename() *string { return v.Typename }
-
-// GetId returns AssignGlobalRoleAssignGlobalRole.Id, and is useful for accessing the field via an interface.
-func (v *AssignGlobalRoleAssignGlobalRole) GetId() string { return v.Role.Id }
-
-// GetDescription returns AssignGlobalRoleAssignGlobalRole.Description, and is useful for accessing the field via an interface.
-func (v *AssignGlobalRoleAssignGlobalRole) GetDescription() string { return v.Role.Description }
-
-// GetName returns AssignGlobalRoleAssignGlobalRole.Name, and is useful for accessing the field via an interface.
-func (v *AssignGlobalRoleAssignGlobalRole) GetName() string { return v.Role.Name }
-
-func (v *AssignGlobalRoleAssignGlobalRole) UnmarshalJSON(b []byte) error {
-
-	if string(b) == "null" {
-		return nil
-	}
-
-	var firstPass struct {
-		*AssignGlobalRoleAssignGlobalRole
-		graphql.NoUnmarshalJSON
-	}
-	firstPass.AssignGlobalRoleAssignGlobalRole = v
-
-	err := json.Unmarshal(b, &firstPass)
-	if err != nil {
-		return err
-	}
-
-	err = json.Unmarshal(
-		b, &v.Role)
-	if err != nil {
-		return err
-	}
-	return nil
-}
-
-type __premarshalAssignGlobalRoleAssignGlobalRole struct {
-	Typename *string `json:"__typename"`
-
-	Id string `json:"id"`
-
-	Description string `json:"description"`
-
-	Name string `json:"name"`
-}
-
-func (v *AssignGlobalRoleAssignGlobalRole) MarshalJSON() ([]byte, error) {
-	premarshaled, err := v.__premarshalJSON()
-	if err != nil {
-		return nil, err
-	}
-	return json.Marshal(premarshaled)
-}
-
-func (v *AssignGlobalRoleAssignGlobalRole) __premarshalJSON() (*__premarshalAssignGlobalRoleAssignGlobalRole, error) {
-	var retval __premarshalAssignGlobalRoleAssignGlobalRole
-
-	retval.Typename = v.Typename
-	retval.Id = v.Role.Id
-	retval.Description = v.Role.Description
-	retval.Name = v.Role.Name
-	return &retval, nil
-}
-
-// AssignGlobalRoleAssignGlobalRoleInvalidInputError includes the requested fields of the GraphQL type InvalidInputError.
-type AssignGlobalRoleAssignGlobalRoleInvalidInputError struct {
-	Typename *string `json:"__typename"`
-}
-
-// GetTypename returns AssignGlobalRoleAssignGlobalRoleInvalidInputError.Typename, and is useful for accessing the field via an interface.
-func (v *AssignGlobalRoleAssignGlobalRoleInvalidInputError) GetTypename() *string { return v.Typename }
-
-// AssignGlobalRoleAssignGlobalRoleNotFoundError includes the requested fields of the GraphQL type NotFoundError.
-type AssignGlobalRoleAssignGlobalRoleNotFoundError struct {
-	Typename      *string `json:"__typename"`
-	NotFoundError `json:"-"`
-}
-
-// GetTypename returns AssignGlobalRoleAssignGlobalRoleNotFoundError.Typename, and is useful for accessing the field via an interface.
-func (v *AssignGlobalRoleAssignGlobalRoleNotFoundError) GetTypename() *string { return v.Typename }
-
-// GetMessage returns AssignGlobalRoleAssignGlobalRoleNotFoundError.Message, and is useful for accessing the field via an interface.
-func (v *AssignGlobalRoleAssignGlobalRoleNotFoundError) GetMessage() string {
-	return v.NotFoundError.Message
-}
-
-func (v *AssignGlobalRoleAssignGlobalRoleNotFoundError) UnmarshalJSON(b []byte) error {
-
-	if string(b) == "null" {
-		return nil
-	}
-
-	var firstPass struct {
-		*AssignGlobalRoleAssignGlobalRoleNotFoundError
-		graphql.NoUnmarshalJSON
-	}
-	firstPass.AssignGlobalRoleAssignGlobalRoleNotFoundError = v
-
-	err := json.Unmarshal(b, &firstPass)
-	if err != nil {
-		return err
-	}
-
-	err = json.Unmarshal(
-		b, &v.NotFoundError)
-	if err != nil {
-		return err
-	}
-	return nil
-}
-
-type __premarshalAssignGlobalRoleAssignGlobalRoleNotFoundError struct {
-	Typename *string `json:"__typename"`
-
-	Message string `json:"message"`
-}
-
-func (v *AssignGlobalRoleAssignGlobalRoleNotFoundError) MarshalJSON() ([]byte, error) {
-	premarshaled, err := v.__premarshalJSON()
-	if err != nil {
-		return nil, err
-	}
-	return json.Marshal(premarshaled)
-}
-
-func (v *AssignGlobalRoleAssignGlobalRoleNotFoundError) __premarshalJSON() (*__premarshalAssignGlobalRoleAssignGlobalRoleNotFoundError, error) {
-	var retval __premarshalAssignGlobalRoleAssignGlobalRoleNotFoundError
-
-	retval.Typename = v.Typename
-	retval.Message = v.NotFoundError.Message
-	return &retval, nil
-}
-
-// AssignGlobalRoleAssignGlobalRolePermissionDeniedError includes the requested fields of the GraphQL type PermissionDeniedError.
-type AssignGlobalRoleAssignGlobalRolePermissionDeniedError struct {
-	Typename              *string `json:"__typename"`
-	PermissionDeniedError `json:"-"`
-}
-
-// GetTypename returns AssignGlobalRoleAssignGlobalRolePermissionDeniedError.Typename, and is useful for accessing the field via an interface.
-func (v *AssignGlobalRoleAssignGlobalRolePermissionDeniedError) GetTypename() *string {
-	return v.Typename
-}
-
-// GetMessage returns AssignGlobalRoleAssignGlobalRolePermissionDeniedError.Message, and is useful for accessing the field via an interface.
-func (v *AssignGlobalRoleAssignGlobalRolePermissionDeniedError) GetMessage() string {
-	return v.PermissionDeniedError.Message
-}
-
-func (v *AssignGlobalRoleAssignGlobalRolePermissionDeniedError) UnmarshalJSON(b []byte) error {
-
-	if string(b) == "null" {
-		return nil
-	}
-
-	var firstPass struct {
-		*AssignGlobalRoleAssignGlobalRolePermissionDeniedError
-		graphql.NoUnmarshalJSON
-	}
-	firstPass.AssignGlobalRoleAssignGlobalRolePermissionDeniedError = v
-
-	err := json.Unmarshal(b, &firstPass)
-	if err != nil {
-		return err
-	}
-
-	err = json.Unmarshal(
-		b, &v.PermissionDeniedError)
-	if err != nil {
-		return err
-	}
-	return nil
-}
-
-type __premarshalAssignGlobalRoleAssignGlobalRolePermissionDeniedError struct {
-	Typename *string `json:"__typename"`
-
-	Message string `json:"message"`
-}
-
-func (v *AssignGlobalRoleAssignGlobalRolePermissionDeniedError) MarshalJSON() ([]byte, error) {
-	premarshaled, err := v.__premarshalJSON()
-	if err != nil {
-		return nil, err
-	}
-	return json.Marshal(premarshaled)
-}
-
-func (v *AssignGlobalRoleAssignGlobalRolePermissionDeniedError) __premarshalJSON() (*__premarshalAssignGlobalRoleAssignGlobalRolePermissionDeniedError, error) {
-	var retval __premarshalAssignGlobalRoleAssignGlobalRolePermissionDeniedError
-
-	retval.Typename = v.Typename
-	retval.Message = v.PermissionDeniedError.Message
-	return &retval, nil
-}
-
-// AssignGlobalRoleAssignGlobalRoleRoleResult includes the requested fields of the GraphQL interface RoleResult.
-//
-// AssignGlobalRoleAssignGlobalRoleRoleResult is implemented by the following types:
-// AssignGlobalRoleAssignGlobalRoleInvalidInputError
-// AssignGlobalRoleAssignGlobalRoleNotFoundError
-// AssignGlobalRoleAssignGlobalRolePermissionDeniedError
-// AssignGlobalRoleAssignGlobalRole
-type AssignGlobalRoleAssignGlobalRoleRoleResult interface {
-	implementsGraphQLInterfaceAssignGlobalRoleAssignGlobalRoleRoleResult()
-	// GetTypename returns the receiver's concrete GraphQL type-name (see interface doc for possible values).
-	GetTypename() *string
-}
-
-func (v *AssignGlobalRoleAssignGlobalRoleInvalidInputError) implementsGraphQLInterfaceAssignGlobalRoleAssignGlobalRoleRoleResult() {
-}
-func (v *AssignGlobalRoleAssignGlobalRoleNotFoundError) implementsGraphQLInterfaceAssignGlobalRoleAssignGlobalRoleRoleResult() {
-}
-func (v *AssignGlobalRoleAssignGlobalRolePermissionDeniedError) implementsGraphQLInterfaceAssignGlobalRoleAssignGlobalRoleRoleResult() {
-}
-func (v *AssignGlobalRoleAssignGlobalRole) implementsGraphQLInterfaceAssignGlobalRoleAssignGlobalRoleRoleResult() {
-}
-
-func __unmarshalAssignGlobalRoleAssignGlobalRoleRoleResult(b []byte, v *AssignGlobalRoleAssignGlobalRoleRoleResult) error {
-	if string(b) == "null" {
-		return nil
-	}
-
-	var tn struct {
-		TypeName string `json:"__typename"`
-	}
-	err := json.Unmarshal(b, &tn)
-	if err != nil {
-		return err
-	}
-
-	switch tn.TypeName {
-	case "InvalidInputError":
-		*v = new(AssignGlobalRoleAssignGlobalRoleInvalidInputError)
-		return json.Unmarshal(b, *v)
-	case "NotFoundError":
-		*v = new(AssignGlobalRoleAssignGlobalRoleNotFoundError)
-		return json.Unmarshal(b, *v)
-	case "PermissionDeniedError":
-		*v = new(AssignGlobalRoleAssignGlobalRolePermissionDeniedError)
-		return json.Unmarshal(b, *v)
-	case "Role":
-		*v = new(AssignGlobalRoleAssignGlobalRole)
-		return json.Unmarshal(b, *v)
-	case "":
-		return fmt.Errorf(
-			"response was missing RoleResult.__typename")
-	default:
-		return fmt.Errorf(
-			`unexpected concrete type for AssignGlobalRoleAssignGlobalRoleRoleResult: "%v"`, tn.TypeName)
-	}
-}
-
-func __marshalAssignGlobalRoleAssignGlobalRoleRoleResult(v *AssignGlobalRoleAssignGlobalRoleRoleResult) ([]byte, error) {
-
-	var typename string
-	switch v := (*v).(type) {
-	case *AssignGlobalRoleAssignGlobalRoleInvalidInputError:
-		typename = "InvalidInputError"
-
-		result := struct {
-			TypeName string `json:"__typename"`
-			*AssignGlobalRoleAssignGlobalRoleInvalidInputError
-		}{typename, v}
-		return json.Marshal(result)
-	case *AssignGlobalRoleAssignGlobalRoleNotFoundError:
-		typename = "NotFoundError"
-
-		premarshaled, err := v.__premarshalJSON()
-		if err != nil {
-			return nil, err
-		}
-		result := struct {
-			TypeName string `json:"__typename"`
-			*__premarshalAssignGlobalRoleAssignGlobalRoleNotFoundError
-		}{typename, premarshaled}
-		return json.Marshal(result)
-	case *AssignGlobalRoleAssignGlobalRolePermissionDeniedError:
-		typename = "PermissionDeniedError"
-
-		premarshaled, err := v.__premarshalJSON()
-		if err != nil {
-			return nil, err
-		}
-		result := struct {
-			TypeName string `json:"__typename"`
-			*__premarshalAssignGlobalRoleAssignGlobalRolePermissionDeniedError
-		}{typename, premarshaled}
-		return json.Marshal(result)
-	case *AssignGlobalRoleAssignGlobalRole:
-		typename = "Role"
-
-		premarshaled, err := v.__premarshalJSON()
-		if err != nil {
-			return nil, err
-		}
-		result := struct {
-			TypeName string `json:"__typename"`
-			*__premarshalAssignGlobalRoleAssignGlobalRole
-		}{typename, premarshaled}
-		return json.Marshal(result)
-	case nil:
-		return []byte("null"), nil
-	default:
-		return nil, fmt.Errorf(
-			`unexpected concrete type for AssignGlobalRoleAssignGlobalRoleRoleResult: "%T"`, v)
-	}
-}
-
-// AssignGlobalRoleResponse is returned by AssignGlobalRole on success.
-type AssignGlobalRoleResponse struct {
-	AssignGlobalRole AssignGlobalRoleAssignGlobalRoleRoleResult `json:"-"`
-}
-
-// GetAssignGlobalRole returns AssignGlobalRoleResponse.AssignGlobalRole, and is useful for accessing the field via an interface.
-func (v *AssignGlobalRoleResponse) GetAssignGlobalRole() AssignGlobalRoleAssignGlobalRoleRoleResult {
-	return v.AssignGlobalRole
-}
-
-func (v *AssignGlobalRoleResponse) UnmarshalJSON(b []byte) error {
-
-	if string(b) == "null" {
-		return nil
-	}
-
-	var firstPass struct {
-		*AssignGlobalRoleResponse
-		AssignGlobalRole json.RawMessage `json:"assignGlobalRole"`
-		graphql.NoUnmarshalJSON
-	}
-	firstPass.AssignGlobalRoleResponse = v
-
-	err := json.Unmarshal(b, &firstPass)
-	if err != nil {
-		return err
-	}
-
-	{
-		dst := &v.AssignGlobalRole
-		src := firstPass.AssignGlobalRole
-		if len(src) != 0 && string(src) != "null" {
-			err = __unmarshalAssignGlobalRoleAssignGlobalRoleRoleResult(
-				src, dst)
-			if err != nil {
-				return fmt.Errorf(
-					"unable to unmarshal AssignGlobalRoleResponse.AssignGlobalRole: %w", err)
-			}
-		}
-	}
-	return nil
-}
-
-type __premarshalAssignGlobalRoleResponse struct {
-	AssignGlobalRole json.RawMessage `json:"assignGlobalRole"`
-}
-
-func (v *AssignGlobalRoleResponse) MarshalJSON() ([]byte, error) {
-	premarshaled, err := v.__premarshalJSON()
-	if err != nil {
-		return nil, err
-	}
-	return json.Marshal(premarshaled)
-}
-
-func (v *AssignGlobalRoleResponse) __premarshalJSON() (*__premarshalAssignGlobalRoleResponse, error) {
-	var retval __premarshalAssignGlobalRoleResponse
-
-	{
-
-		dst := &retval.AssignGlobalRole
-		src := v.AssignGlobalRole
-		var err error
-		*dst, err = __marshalAssignGlobalRoleAssignGlobalRoleRoleResult(
-			&src)
-		if err != nil {
-			return nil, fmt.Errorf(
-				"unable to marshal AssignGlobalRoleResponse.AssignGlobalRole: %w", err)
-		}
-	}
-	return &retval, nil
-}
-
 type BinaryExpressionAggregatorOperator string
 
 const (
@@ -4766,24 +4302,14 @@ func (v *CreateAccessControlCreateAccessControl) GetPolicyRule() *string {
 // GetExternal returns CreateAccessControlCreateAccessControl.External, and is useful for accessing the field via an interface.
 func (v *CreateAccessControlCreateAccessControl) GetExternal() bool { return v.AccessControl.External }
 
-// GetWhatType returns CreateAccessControlCreateAccessControl.WhatType, and is useful for accessing the field via an interface.
-func (v *CreateAccessControlCreateAccessControl) GetWhatType() WhoAndWhatType {
-	return v.AccessControl.WhatType
+// GetWhatAbacRules returns CreateAccessControlCreateAccessControl.WhatAbacRules, and is useful for accessing the field via an interface.
+func (v *CreateAccessControlCreateAccessControl) GetWhatAbacRules() []AccessControlWhatAbacRulesWhatAbacRule {
+	return v.AccessControl.WhatAbacRules
 }
 
-// GetWhatAbacRule returns CreateAccessControlCreateAccessControl.WhatAbacRule, and is useful for accessing the field via an interface.
-func (v *CreateAccessControlCreateAccessControl) GetWhatAbacRule() *AccessControlWhatAbacRule {
-	return v.AccessControl.WhatAbacRule
-}
-
-// GetWhoType returns CreateAccessControlCreateAccessControl.WhoType, and is useful for accessing the field via an interface.
-func (v *CreateAccessControlCreateAccessControl) GetWhoType() WhoAndWhatType {
-	return v.AccessControl.WhoType
-}
-
-// GetWhoAbacRule returns CreateAccessControlCreateAccessControl.WhoAbacRule, and is useful for accessing the field via an interface.
-func (v *CreateAccessControlCreateAccessControl) GetWhoAbacRule() *AccessControlWhoAbacRule {
-	return v.AccessControl.WhoAbacRule
+// GetWhoAbacRules returns CreateAccessControlCreateAccessControl.WhoAbacRules, and is useful for accessing the field via an interface.
+func (v *CreateAccessControlCreateAccessControl) GetWhoAbacRules() []AccessControlWhoAbacRulesWhoAbacRule {
+	return v.AccessControl.WhoAbacRules
 }
 
 // GetNotInternalizable returns CreateAccessControlCreateAccessControl.NotInternalizable, and is useful for accessing the field via an interface.
@@ -4854,13 +4380,9 @@ type __premarshalCreateAccessControlCreateAccessControl struct {
 
 	External bool `json:"external"`
 
-	WhatType WhoAndWhatType `json:"whatType"`
+	WhatAbacRules []AccessControlWhatAbacRulesWhatAbacRule `json:"whatAbacRules"`
 
-	WhatAbacRule *AccessControlWhatAbacRule `json:"whatAbacRule"`
-
-	WhoType WhoAndWhatType `json:"whoType"`
-
-	WhoAbacRule *AccessControlWhoAbacRule `json:"whoAbacRule"`
+	WhoAbacRules []AccessControlWhoAbacRulesWhoAbacRule `json:"whoAbacRules"`
 
 	NotInternalizable bool `json:"notInternalizable"`
 
@@ -4894,10 +4416,8 @@ func (v *CreateAccessControlCreateAccessControl) __premarshalJSON() (*__premarsh
 	retval.Description = v.AccessControl.Description
 	retval.PolicyRule = v.AccessControl.PolicyRule
 	retval.External = v.AccessControl.External
-	retval.WhatType = v.AccessControl.WhatType
-	retval.WhatAbacRule = v.AccessControl.WhatAbacRule
-	retval.WhoType = v.AccessControl.WhoType
-	retval.WhoAbacRule = v.AccessControl.WhoAbacRule
+	retval.WhatAbacRules = v.AccessControl.WhatAbacRules
+	retval.WhoAbacRules = v.AccessControl.WhoAbacRules
 	retval.NotInternalizable = v.AccessControl.NotInternalizable
 	retval.Complete = v.AccessControl.Complete
 	retval.Locks = v.AccessControl.Locks
@@ -4981,24 +4501,14 @@ func (v *CreateAccessControlCreateAccessControlAccessControlWithOptionalAccessRe
 	return v.AccessControl.External
 }
 
-// GetWhatType returns CreateAccessControlCreateAccessControlAccessControlWithOptionalAccessRequestsAccessControl.WhatType, and is useful for accessing the field via an interface.
-func (v *CreateAccessControlCreateAccessControlAccessControlWithOptionalAccessRequestsAccessControl) GetWhatType() WhoAndWhatType {
-	return v.AccessControl.WhatType
+// GetWhatAbacRules returns CreateAccessControlCreateAccessControlAccessControlWithOptionalAccessRequestsAccessControl.WhatAbacRules, and is useful for accessing the field via an interface.
+func (v *CreateAccessControlCreateAccessControlAccessControlWithOptionalAccessRequestsAccessControl) GetWhatAbacRules() []AccessControlWhatAbacRulesWhatAbacRule {
+	return v.AccessControl.WhatAbacRules
 }
 
-// GetWhatAbacRule returns CreateAccessControlCreateAccessControlAccessControlWithOptionalAccessRequestsAccessControl.WhatAbacRule, and is useful for accessing the field via an interface.
-func (v *CreateAccessControlCreateAccessControlAccessControlWithOptionalAccessRequestsAccessControl) GetWhatAbacRule() *AccessControlWhatAbacRule {
-	return v.AccessControl.WhatAbacRule
-}
-
-// GetWhoType returns CreateAccessControlCreateAccessControlAccessControlWithOptionalAccessRequestsAccessControl.WhoType, and is useful for accessing the field via an interface.
-func (v *CreateAccessControlCreateAccessControlAccessControlWithOptionalAccessRequestsAccessControl) GetWhoType() WhoAndWhatType {
-	return v.AccessControl.WhoType
-}
-
-// GetWhoAbacRule returns CreateAccessControlCreateAccessControlAccessControlWithOptionalAccessRequestsAccessControl.WhoAbacRule, and is useful for accessing the field via an interface.
-func (v *CreateAccessControlCreateAccessControlAccessControlWithOptionalAccessRequestsAccessControl) GetWhoAbacRule() *AccessControlWhoAbacRule {
-	return v.AccessControl.WhoAbacRule
+// GetWhoAbacRules returns CreateAccessControlCreateAccessControlAccessControlWithOptionalAccessRequestsAccessControl.WhoAbacRules, and is useful for accessing the field via an interface.
+func (v *CreateAccessControlCreateAccessControlAccessControlWithOptionalAccessRequestsAccessControl) GetWhoAbacRules() []AccessControlWhoAbacRulesWhoAbacRule {
+	return v.AccessControl.WhoAbacRules
 }
 
 // GetNotInternalizable returns CreateAccessControlCreateAccessControlAccessControlWithOptionalAccessRequestsAccessControl.NotInternalizable, and is useful for accessing the field via an interface.
@@ -5069,13 +4579,9 @@ type __premarshalCreateAccessControlCreateAccessControlAccessControlWithOptional
 
 	External bool `json:"external"`
 
-	WhatType WhoAndWhatType `json:"whatType"`
+	WhatAbacRules []AccessControlWhatAbacRulesWhatAbacRule `json:"whatAbacRules"`
 
-	WhatAbacRule *AccessControlWhatAbacRule `json:"whatAbacRule"`
-
-	WhoType WhoAndWhatType `json:"whoType"`
-
-	WhoAbacRule *AccessControlWhoAbacRule `json:"whoAbacRule"`
+	WhoAbacRules []AccessControlWhoAbacRulesWhoAbacRule `json:"whoAbacRules"`
 
 	NotInternalizable bool `json:"notInternalizable"`
 
@@ -5108,10 +4614,8 @@ func (v *CreateAccessControlCreateAccessControlAccessControlWithOptionalAccessRe
 	retval.Description = v.AccessControl.Description
 	retval.PolicyRule = v.AccessControl.PolicyRule
 	retval.External = v.AccessControl.External
-	retval.WhatType = v.AccessControl.WhatType
-	retval.WhatAbacRule = v.AccessControl.WhatAbacRule
-	retval.WhoType = v.AccessControl.WhoType
-	retval.WhoAbacRule = v.AccessControl.WhoAbacRule
+	retval.WhatAbacRules = v.AccessControl.WhatAbacRules
+	retval.WhoAbacRules = v.AccessControl.WhoAbacRules
 	retval.NotInternalizable = v.AccessControl.NotInternalizable
 	retval.Complete = v.AccessControl.Complete
 	retval.Locks = v.AccessControl.Locks
@@ -9772,24 +9276,14 @@ func (v *DeactivateAccessControlDeactivateAccessControl) GetExternal() bool {
 	return v.AccessControl.External
 }
 
-// GetWhatType returns DeactivateAccessControlDeactivateAccessControl.WhatType, and is useful for accessing the field via an interface.
-func (v *DeactivateAccessControlDeactivateAccessControl) GetWhatType() WhoAndWhatType {
-	return v.AccessControl.WhatType
+// GetWhatAbacRules returns DeactivateAccessControlDeactivateAccessControl.WhatAbacRules, and is useful for accessing the field via an interface.
+func (v *DeactivateAccessControlDeactivateAccessControl) GetWhatAbacRules() []AccessControlWhatAbacRulesWhatAbacRule {
+	return v.AccessControl.WhatAbacRules
 }
 
-// GetWhatAbacRule returns DeactivateAccessControlDeactivateAccessControl.WhatAbacRule, and is useful for accessing the field via an interface.
-func (v *DeactivateAccessControlDeactivateAccessControl) GetWhatAbacRule() *AccessControlWhatAbacRule {
-	return v.AccessControl.WhatAbacRule
-}
-
-// GetWhoType returns DeactivateAccessControlDeactivateAccessControl.WhoType, and is useful for accessing the field via an interface.
-func (v *DeactivateAccessControlDeactivateAccessControl) GetWhoType() WhoAndWhatType {
-	return v.AccessControl.WhoType
-}
-
-// GetWhoAbacRule returns DeactivateAccessControlDeactivateAccessControl.WhoAbacRule, and is useful for accessing the field via an interface.
-func (v *DeactivateAccessControlDeactivateAccessControl) GetWhoAbacRule() *AccessControlWhoAbacRule {
-	return v.AccessControl.WhoAbacRule
+// GetWhoAbacRules returns DeactivateAccessControlDeactivateAccessControl.WhoAbacRules, and is useful for accessing the field via an interface.
+func (v *DeactivateAccessControlDeactivateAccessControl) GetWhoAbacRules() []AccessControlWhoAbacRulesWhoAbacRule {
+	return v.AccessControl.WhoAbacRules
 }
 
 // GetNotInternalizable returns DeactivateAccessControlDeactivateAccessControl.NotInternalizable, and is useful for accessing the field via an interface.
@@ -9862,13 +9356,9 @@ type __premarshalDeactivateAccessControlDeactivateAccessControl struct {
 
 	External bool `json:"external"`
 
-	WhatType WhoAndWhatType `json:"whatType"`
+	WhatAbacRules []AccessControlWhatAbacRulesWhatAbacRule `json:"whatAbacRules"`
 
-	WhatAbacRule *AccessControlWhatAbacRule `json:"whatAbacRule"`
-
-	WhoType WhoAndWhatType `json:"whoType"`
-
-	WhoAbacRule *AccessControlWhoAbacRule `json:"whoAbacRule"`
+	WhoAbacRules []AccessControlWhoAbacRulesWhoAbacRule `json:"whoAbacRules"`
 
 	NotInternalizable bool `json:"notInternalizable"`
 
@@ -9902,10 +9392,8 @@ func (v *DeactivateAccessControlDeactivateAccessControl) __premarshalJSON() (*__
 	retval.Description = v.AccessControl.Description
 	retval.PolicyRule = v.AccessControl.PolicyRule
 	retval.External = v.AccessControl.External
-	retval.WhatType = v.AccessControl.WhatType
-	retval.WhatAbacRule = v.AccessControl.WhatAbacRule
-	retval.WhoType = v.AccessControl.WhoType
-	retval.WhoAbacRule = v.AccessControl.WhoAbacRule
+	retval.WhatAbacRules = v.AccessControl.WhatAbacRules
+	retval.WhoAbacRules = v.AccessControl.WhoAbacRules
 	retval.NotInternalizable = v.AccessControl.NotInternalizable
 	retval.Complete = v.AccessControl.Complete
 	retval.Locks = v.AccessControl.Locks
@@ -10350,24 +9838,14 @@ func (v *DeleteAccessControlDeleteAccessControl) GetPolicyRule() *string {
 // GetExternal returns DeleteAccessControlDeleteAccessControl.External, and is useful for accessing the field via an interface.
 func (v *DeleteAccessControlDeleteAccessControl) GetExternal() bool { return v.AccessControl.External }
 
-// GetWhatType returns DeleteAccessControlDeleteAccessControl.WhatType, and is useful for accessing the field via an interface.
-func (v *DeleteAccessControlDeleteAccessControl) GetWhatType() WhoAndWhatType {
-	return v.AccessControl.WhatType
+// GetWhatAbacRules returns DeleteAccessControlDeleteAccessControl.WhatAbacRules, and is useful for accessing the field via an interface.
+func (v *DeleteAccessControlDeleteAccessControl) GetWhatAbacRules() []AccessControlWhatAbacRulesWhatAbacRule {
+	return v.AccessControl.WhatAbacRules
 }
 
-// GetWhatAbacRule returns DeleteAccessControlDeleteAccessControl.WhatAbacRule, and is useful for accessing the field via an interface.
-func (v *DeleteAccessControlDeleteAccessControl) GetWhatAbacRule() *AccessControlWhatAbacRule {
-	return v.AccessControl.WhatAbacRule
-}
-
-// GetWhoType returns DeleteAccessControlDeleteAccessControl.WhoType, and is useful for accessing the field via an interface.
-func (v *DeleteAccessControlDeleteAccessControl) GetWhoType() WhoAndWhatType {
-	return v.AccessControl.WhoType
-}
-
-// GetWhoAbacRule returns DeleteAccessControlDeleteAccessControl.WhoAbacRule, and is useful for accessing the field via an interface.
-func (v *DeleteAccessControlDeleteAccessControl) GetWhoAbacRule() *AccessControlWhoAbacRule {
-	return v.AccessControl.WhoAbacRule
+// GetWhoAbacRules returns DeleteAccessControlDeleteAccessControl.WhoAbacRules, and is useful for accessing the field via an interface.
+func (v *DeleteAccessControlDeleteAccessControl) GetWhoAbacRules() []AccessControlWhoAbacRulesWhoAbacRule {
+	return v.AccessControl.WhoAbacRules
 }
 
 // GetNotInternalizable returns DeleteAccessControlDeleteAccessControl.NotInternalizable, and is useful for accessing the field via an interface.
@@ -10438,13 +9916,9 @@ type __premarshalDeleteAccessControlDeleteAccessControl struct {
 
 	External bool `json:"external"`
 
-	WhatType WhoAndWhatType `json:"whatType"`
+	WhatAbacRules []AccessControlWhatAbacRulesWhatAbacRule `json:"whatAbacRules"`
 
-	WhatAbacRule *AccessControlWhatAbacRule `json:"whatAbacRule"`
-
-	WhoType WhoAndWhatType `json:"whoType"`
-
-	WhoAbacRule *AccessControlWhoAbacRule `json:"whoAbacRule"`
+	WhoAbacRules []AccessControlWhoAbacRulesWhoAbacRule `json:"whoAbacRules"`
 
 	NotInternalizable bool `json:"notInternalizable"`
 
@@ -10478,10 +9952,8 @@ func (v *DeleteAccessControlDeleteAccessControl) __premarshalJSON() (*__premarsh
 	retval.Description = v.AccessControl.Description
 	retval.PolicyRule = v.AccessControl.PolicyRule
 	retval.External = v.AccessControl.External
-	retval.WhatType = v.AccessControl.WhatType
-	retval.WhatAbacRule = v.AccessControl.WhatAbacRule
-	retval.WhoType = v.AccessControl.WhoType
-	retval.WhoAbacRule = v.AccessControl.WhoAbacRule
+	retval.WhatAbacRules = v.AccessControl.WhatAbacRules
+	retval.WhoAbacRules = v.AccessControl.WhoAbacRules
 	retval.NotInternalizable = v.AccessControl.NotInternalizable
 	retval.Complete = v.AccessControl.Complete
 	retval.Locks = v.AccessControl.Locks
@@ -11976,6 +11448,38 @@ func (v *EndOfTargetsSyncResponse) __premarshalJSON() (*__premarshalEndOfTargets
 	return &retval, nil
 }
 
+type EntityType string
+
+const (
+	EntityTypeAccesscontrol      EntityType = "AccessControl"
+	EntityTypeAccess             EntityType = "Access"
+	EntityTypeAccessrequest      EntityType = "AccessRequest"
+	EntityTypeUser               EntityType = "User"
+	EntityTypeDataobject         EntityType = "DataObject"
+	EntityTypeDatasource         EntityType = "DataSource"
+	EntityTypeDatausage          EntityType = "DataUsage"
+	EntityTypeTag                EntityType = "Tag"
+	EntityTypeRole               EntityType = "Role"
+	EntityTypeRoleassignment     EntityType = "RoleAssignment"
+	EntityTypeAccount            EntityType = "Account"
+	EntityTypeDatasharerecipient EntityType = "DataShareRecipient"
+)
+
+var AllEntityType = []EntityType{
+	EntityTypeAccesscontrol,
+	EntityTypeAccess,
+	EntityTypeAccessrequest,
+	EntityTypeUser,
+	EntityTypeDataobject,
+	EntityTypeDatasource,
+	EntityTypeDatausage,
+	EntityTypeTag,
+	EntityTypeRole,
+	EntityTypeRoleassignment,
+	EntityTypeAccount,
+	EntityTypeDatasharerecipient,
+}
+
 // ExportAccessControl includes the GraphQL fields of ExportAccessControl requested by the fragment ExportAccessControl.
 type ExportAccessControl struct {
 	Id                string                                        `json:"id"`
@@ -13295,20 +12799,14 @@ func (v *GetAccessControlAccessControl) GetPolicyRule() *string { return v.Acces
 // GetExternal returns GetAccessControlAccessControl.External, and is useful for accessing the field via an interface.
 func (v *GetAccessControlAccessControl) GetExternal() bool { return v.AccessControl.External }
 
-// GetWhatType returns GetAccessControlAccessControl.WhatType, and is useful for accessing the field via an interface.
-func (v *GetAccessControlAccessControl) GetWhatType() WhoAndWhatType { return v.AccessControl.WhatType }
-
-// GetWhatAbacRule returns GetAccessControlAccessControl.WhatAbacRule, and is useful for accessing the field via an interface.
-func (v *GetAccessControlAccessControl) GetWhatAbacRule() *AccessControlWhatAbacRule {
-	return v.AccessControl.WhatAbacRule
+// GetWhatAbacRules returns GetAccessControlAccessControl.WhatAbacRules, and is useful for accessing the field via an interface.
+func (v *GetAccessControlAccessControl) GetWhatAbacRules() []AccessControlWhatAbacRulesWhatAbacRule {
+	return v.AccessControl.WhatAbacRules
 }
 
-// GetWhoType returns GetAccessControlAccessControl.WhoType, and is useful for accessing the field via an interface.
-func (v *GetAccessControlAccessControl) GetWhoType() WhoAndWhatType { return v.AccessControl.WhoType }
-
-// GetWhoAbacRule returns GetAccessControlAccessControl.WhoAbacRule, and is useful for accessing the field via an interface.
-func (v *GetAccessControlAccessControl) GetWhoAbacRule() *AccessControlWhoAbacRule {
-	return v.AccessControl.WhoAbacRule
+// GetWhoAbacRules returns GetAccessControlAccessControl.WhoAbacRules, and is useful for accessing the field via an interface.
+func (v *GetAccessControlAccessControl) GetWhoAbacRules() []AccessControlWhoAbacRulesWhoAbacRule {
+	return v.AccessControl.WhoAbacRules
 }
 
 // GetNotInternalizable returns GetAccessControlAccessControl.NotInternalizable, and is useful for accessing the field via an interface.
@@ -13379,13 +12877,9 @@ type __premarshalGetAccessControlAccessControl struct {
 
 	External bool `json:"external"`
 
-	WhatType WhoAndWhatType `json:"whatType"`
+	WhatAbacRules []AccessControlWhatAbacRulesWhatAbacRule `json:"whatAbacRules"`
 
-	WhatAbacRule *AccessControlWhatAbacRule `json:"whatAbacRule"`
-
-	WhoType WhoAndWhatType `json:"whoType"`
-
-	WhoAbacRule *AccessControlWhoAbacRule `json:"whoAbacRule"`
+	WhoAbacRules []AccessControlWhoAbacRulesWhoAbacRule `json:"whoAbacRules"`
 
 	NotInternalizable bool `json:"notInternalizable"`
 
@@ -13419,10 +12913,8 @@ func (v *GetAccessControlAccessControl) __premarshalJSON() (*__premarshalGetAcce
 	retval.Description = v.AccessControl.Description
 	retval.PolicyRule = v.AccessControl.PolicyRule
 	retval.External = v.AccessControl.External
-	retval.WhatType = v.AccessControl.WhatType
-	retval.WhatAbacRule = v.AccessControl.WhatAbacRule
-	retval.WhoType = v.AccessControl.WhoType
-	retval.WhoAbacRule = v.AccessControl.WhoAbacRule
+	retval.WhatAbacRules = v.AccessControl.WhatAbacRules
+	retval.WhoAbacRules = v.AccessControl.WhoAbacRules
 	retval.NotInternalizable = v.AccessControl.NotInternalizable
 	retval.Complete = v.AccessControl.Complete
 	retval.Locks = v.AccessControl.Locks
@@ -26079,447 +25571,6 @@ func __marshalListRoleAssignmentsRoleAssignmentsRoleAssignmentConnectionResult(v
 	}
 }
 
-// ListRolesResponse is returned by ListRoles on success.
-type ListRolesResponse struct {
-	Roles ListRolesRolesRoleConnectionResult `json:"-"`
-}
-
-// GetRoles returns ListRolesResponse.Roles, and is useful for accessing the field via an interface.
-func (v *ListRolesResponse) GetRoles() ListRolesRolesRoleConnectionResult { return v.Roles }
-
-func (v *ListRolesResponse) UnmarshalJSON(b []byte) error {
-
-	if string(b) == "null" {
-		return nil
-	}
-
-	var firstPass struct {
-		*ListRolesResponse
-		Roles json.RawMessage `json:"roles"`
-		graphql.NoUnmarshalJSON
-	}
-	firstPass.ListRolesResponse = v
-
-	err := json.Unmarshal(b, &firstPass)
-	if err != nil {
-		return err
-	}
-
-	{
-		dst := &v.Roles
-		src := firstPass.Roles
-		if len(src) != 0 && string(src) != "null" {
-			err = __unmarshalListRolesRolesRoleConnectionResult(
-				src, dst)
-			if err != nil {
-				return fmt.Errorf(
-					"unable to unmarshal ListRolesResponse.Roles: %w", err)
-			}
-		}
-	}
-	return nil
-}
-
-type __premarshalListRolesResponse struct {
-	Roles json.RawMessage `json:"roles"`
-}
-
-func (v *ListRolesResponse) MarshalJSON() ([]byte, error) {
-	premarshaled, err := v.__premarshalJSON()
-	if err != nil {
-		return nil, err
-	}
-	return json.Marshal(premarshaled)
-}
-
-func (v *ListRolesResponse) __premarshalJSON() (*__premarshalListRolesResponse, error) {
-	var retval __premarshalListRolesResponse
-
-	{
-
-		dst := &retval.Roles
-		src := v.Roles
-		var err error
-		*dst, err = __marshalListRolesRolesRoleConnectionResult(
-			&src)
-		if err != nil {
-			return nil, fmt.Errorf(
-				"unable to marshal ListRolesResponse.Roles: %w", err)
-		}
-	}
-	return &retval, nil
-}
-
-// ListRolesRolesInvalidInputError includes the requested fields of the GraphQL type InvalidInputError.
-type ListRolesRolesInvalidInputError struct {
-	Typename                              *string `json:"__typename"`
-	RoleConnectionResultInvalidInputError `json:"-"`
-}
-
-// GetTypename returns ListRolesRolesInvalidInputError.Typename, and is useful for accessing the field via an interface.
-func (v *ListRolesRolesInvalidInputError) GetTypename() *string { return v.Typename }
-
-// GetMessage returns ListRolesRolesInvalidInputError.Message, and is useful for accessing the field via an interface.
-func (v *ListRolesRolesInvalidInputError) GetMessage() string {
-	return v.RoleConnectionResultInvalidInputError.InvalidInputError.Message
-}
-
-func (v *ListRolesRolesInvalidInputError) UnmarshalJSON(b []byte) error {
-
-	if string(b) == "null" {
-		return nil
-	}
-
-	var firstPass struct {
-		*ListRolesRolesInvalidInputError
-		graphql.NoUnmarshalJSON
-	}
-	firstPass.ListRolesRolesInvalidInputError = v
-
-	err := json.Unmarshal(b, &firstPass)
-	if err != nil {
-		return err
-	}
-
-	err = json.Unmarshal(
-		b, &v.RoleConnectionResultInvalidInputError)
-	if err != nil {
-		return err
-	}
-	return nil
-}
-
-type __premarshalListRolesRolesInvalidInputError struct {
-	Typename *string `json:"__typename"`
-
-	Message string `json:"message"`
-}
-
-func (v *ListRolesRolesInvalidInputError) MarshalJSON() ([]byte, error) {
-	premarshaled, err := v.__premarshalJSON()
-	if err != nil {
-		return nil, err
-	}
-	return json.Marshal(premarshaled)
-}
-
-func (v *ListRolesRolesInvalidInputError) __premarshalJSON() (*__premarshalListRolesRolesInvalidInputError, error) {
-	var retval __premarshalListRolesRolesInvalidInputError
-
-	retval.Typename = v.Typename
-	retval.Message = v.RoleConnectionResultInvalidInputError.InvalidInputError.Message
-	return &retval, nil
-}
-
-// ListRolesRolesNotFoundError includes the requested fields of the GraphQL type NotFoundError.
-type ListRolesRolesNotFoundError struct {
-	Typename                          *string `json:"__typename"`
-	RoleConnectionResultNotFoundError `json:"-"`
-}
-
-// GetTypename returns ListRolesRolesNotFoundError.Typename, and is useful for accessing the field via an interface.
-func (v *ListRolesRolesNotFoundError) GetTypename() *string { return v.Typename }
-
-// GetMessage returns ListRolesRolesNotFoundError.Message, and is useful for accessing the field via an interface.
-func (v *ListRolesRolesNotFoundError) GetMessage() string {
-	return v.RoleConnectionResultNotFoundError.NotFoundError.Message
-}
-
-func (v *ListRolesRolesNotFoundError) UnmarshalJSON(b []byte) error {
-
-	if string(b) == "null" {
-		return nil
-	}
-
-	var firstPass struct {
-		*ListRolesRolesNotFoundError
-		graphql.NoUnmarshalJSON
-	}
-	firstPass.ListRolesRolesNotFoundError = v
-
-	err := json.Unmarshal(b, &firstPass)
-	if err != nil {
-		return err
-	}
-
-	err = json.Unmarshal(
-		b, &v.RoleConnectionResultNotFoundError)
-	if err != nil {
-		return err
-	}
-	return nil
-}
-
-type __premarshalListRolesRolesNotFoundError struct {
-	Typename *string `json:"__typename"`
-
-	Message string `json:"message"`
-}
-
-func (v *ListRolesRolesNotFoundError) MarshalJSON() ([]byte, error) {
-	premarshaled, err := v.__premarshalJSON()
-	if err != nil {
-		return nil, err
-	}
-	return json.Marshal(premarshaled)
-}
-
-func (v *ListRolesRolesNotFoundError) __premarshalJSON() (*__premarshalListRolesRolesNotFoundError, error) {
-	var retval __premarshalListRolesRolesNotFoundError
-
-	retval.Typename = v.Typename
-	retval.Message = v.RoleConnectionResultNotFoundError.NotFoundError.Message
-	return &retval, nil
-}
-
-// ListRolesRolesPermissionDeniedError includes the requested fields of the GraphQL type PermissionDeniedError.
-type ListRolesRolesPermissionDeniedError struct {
-	Typename                                  *string `json:"__typename"`
-	RoleConnectionResultPermissionDeniedError `json:"-"`
-}
-
-// GetTypename returns ListRolesRolesPermissionDeniedError.Typename, and is useful for accessing the field via an interface.
-func (v *ListRolesRolesPermissionDeniedError) GetTypename() *string { return v.Typename }
-
-// GetMessage returns ListRolesRolesPermissionDeniedError.Message, and is useful for accessing the field via an interface.
-func (v *ListRolesRolesPermissionDeniedError) GetMessage() string {
-	return v.RoleConnectionResultPermissionDeniedError.PermissionDeniedError.Message
-}
-
-func (v *ListRolesRolesPermissionDeniedError) UnmarshalJSON(b []byte) error {
-
-	if string(b) == "null" {
-		return nil
-	}
-
-	var firstPass struct {
-		*ListRolesRolesPermissionDeniedError
-		graphql.NoUnmarshalJSON
-	}
-	firstPass.ListRolesRolesPermissionDeniedError = v
-
-	err := json.Unmarshal(b, &firstPass)
-	if err != nil {
-		return err
-	}
-
-	err = json.Unmarshal(
-		b, &v.RoleConnectionResultPermissionDeniedError)
-	if err != nil {
-		return err
-	}
-	return nil
-}
-
-type __premarshalListRolesRolesPermissionDeniedError struct {
-	Typename *string `json:"__typename"`
-
-	Message string `json:"message"`
-}
-
-func (v *ListRolesRolesPermissionDeniedError) MarshalJSON() ([]byte, error) {
-	premarshaled, err := v.__premarshalJSON()
-	if err != nil {
-		return nil, err
-	}
-	return json.Marshal(premarshaled)
-}
-
-func (v *ListRolesRolesPermissionDeniedError) __premarshalJSON() (*__premarshalListRolesRolesPermissionDeniedError, error) {
-	var retval __premarshalListRolesRolesPermissionDeniedError
-
-	retval.Typename = v.Typename
-	retval.Message = v.RoleConnectionResultPermissionDeniedError.PermissionDeniedError.Message
-	return &retval, nil
-}
-
-// ListRolesRolesRoleConnection includes the requested fields of the GraphQL type RoleConnection.
-type ListRolesRolesRoleConnection struct {
-	Typename                           *string `json:"__typename"`
-	RoleConnectionResultRoleConnection `json:"-"`
-}
-
-// GetTypename returns ListRolesRolesRoleConnection.Typename, and is useful for accessing the field via an interface.
-func (v *ListRolesRolesRoleConnection) GetTypename() *string { return v.Typename }
-
-// GetPageInfo returns ListRolesRolesRoleConnection.PageInfo, and is useful for accessing the field via an interface.
-func (v *ListRolesRolesRoleConnection) GetPageInfo() RoleConnectionPageInfo {
-	return v.RoleConnectionResultRoleConnection.RoleConnection.PageInfo
-}
-
-// GetEdges returns ListRolesRolesRoleConnection.Edges, and is useful for accessing the field via an interface.
-func (v *ListRolesRolesRoleConnection) GetEdges() []RoleConnectionEdgesRoleEdge {
-	return v.RoleConnectionResultRoleConnection.RoleConnection.Edges
-}
-
-func (v *ListRolesRolesRoleConnection) UnmarshalJSON(b []byte) error {
-
-	if string(b) == "null" {
-		return nil
-	}
-
-	var firstPass struct {
-		*ListRolesRolesRoleConnection
-		graphql.NoUnmarshalJSON
-	}
-	firstPass.ListRolesRolesRoleConnection = v
-
-	err := json.Unmarshal(b, &firstPass)
-	if err != nil {
-		return err
-	}
-
-	err = json.Unmarshal(
-		b, &v.RoleConnectionResultRoleConnection)
-	if err != nil {
-		return err
-	}
-	return nil
-}
-
-type __premarshalListRolesRolesRoleConnection struct {
-	Typename *string `json:"__typename"`
-
-	PageInfo RoleConnectionPageInfo `json:"pageInfo"`
-
-	Edges []RoleConnectionEdgesRoleEdge `json:"edges"`
-}
-
-func (v *ListRolesRolesRoleConnection) MarshalJSON() ([]byte, error) {
-	premarshaled, err := v.__premarshalJSON()
-	if err != nil {
-		return nil, err
-	}
-	return json.Marshal(premarshaled)
-}
-
-func (v *ListRolesRolesRoleConnection) __premarshalJSON() (*__premarshalListRolesRolesRoleConnection, error) {
-	var retval __premarshalListRolesRolesRoleConnection
-
-	retval.Typename = v.Typename
-	retval.PageInfo = v.RoleConnectionResultRoleConnection.RoleConnection.PageInfo
-	retval.Edges = v.RoleConnectionResultRoleConnection.RoleConnection.Edges
-	return &retval, nil
-}
-
-// ListRolesRolesRoleConnectionResult includes the requested fields of the GraphQL interface RoleConnectionResult.
-//
-// ListRolesRolesRoleConnectionResult is implemented by the following types:
-// ListRolesRolesInvalidInputError
-// ListRolesRolesNotFoundError
-// ListRolesRolesPermissionDeniedError
-// ListRolesRolesRoleConnection
-type ListRolesRolesRoleConnectionResult interface {
-	implementsGraphQLInterfaceListRolesRolesRoleConnectionResult()
-	// GetTypename returns the receiver's concrete GraphQL type-name (see interface doc for possible values).
-	GetTypename() *string
-	RoleConnectionResult
-}
-
-func (v *ListRolesRolesInvalidInputError) implementsGraphQLInterfaceListRolesRolesRoleConnectionResult() {
-}
-func (v *ListRolesRolesNotFoundError) implementsGraphQLInterfaceListRolesRolesRoleConnectionResult() {
-}
-func (v *ListRolesRolesPermissionDeniedError) implementsGraphQLInterfaceListRolesRolesRoleConnectionResult() {
-}
-func (v *ListRolesRolesRoleConnection) implementsGraphQLInterfaceListRolesRolesRoleConnectionResult() {
-}
-
-func __unmarshalListRolesRolesRoleConnectionResult(b []byte, v *ListRolesRolesRoleConnectionResult) error {
-	if string(b) == "null" {
-		return nil
-	}
-
-	var tn struct {
-		TypeName string `json:"__typename"`
-	}
-	err := json.Unmarshal(b, &tn)
-	if err != nil {
-		return err
-	}
-
-	switch tn.TypeName {
-	case "InvalidInputError":
-		*v = new(ListRolesRolesInvalidInputError)
-		return json.Unmarshal(b, *v)
-	case "NotFoundError":
-		*v = new(ListRolesRolesNotFoundError)
-		return json.Unmarshal(b, *v)
-	case "PermissionDeniedError":
-		*v = new(ListRolesRolesPermissionDeniedError)
-		return json.Unmarshal(b, *v)
-	case "RoleConnection":
-		*v = new(ListRolesRolesRoleConnection)
-		return json.Unmarshal(b, *v)
-	case "":
-		return fmt.Errorf(
-			"response was missing RoleConnectionResult.__typename")
-	default:
-		return fmt.Errorf(
-			`unexpected concrete type for ListRolesRolesRoleConnectionResult: "%v"`, tn.TypeName)
-	}
-}
-
-func __marshalListRolesRolesRoleConnectionResult(v *ListRolesRolesRoleConnectionResult) ([]byte, error) {
-
-	var typename string
-	switch v := (*v).(type) {
-	case *ListRolesRolesInvalidInputError:
-		typename = "InvalidInputError"
-
-		premarshaled, err := v.__premarshalJSON()
-		if err != nil {
-			return nil, err
-		}
-		result := struct {
-			TypeName string `json:"__typename"`
-			*__premarshalListRolesRolesInvalidInputError
-		}{typename, premarshaled}
-		return json.Marshal(result)
-	case *ListRolesRolesNotFoundError:
-		typename = "NotFoundError"
-
-		premarshaled, err := v.__premarshalJSON()
-		if err != nil {
-			return nil, err
-		}
-		result := struct {
-			TypeName string `json:"__typename"`
-			*__premarshalListRolesRolesNotFoundError
-		}{typename, premarshaled}
-		return json.Marshal(result)
-	case *ListRolesRolesPermissionDeniedError:
-		typename = "PermissionDeniedError"
-
-		premarshaled, err := v.__premarshalJSON()
-		if err != nil {
-			return nil, err
-		}
-		result := struct {
-			TypeName string `json:"__typename"`
-			*__premarshalListRolesRolesPermissionDeniedError
-		}{typename, premarshaled}
-		return json.Marshal(result)
-	case *ListRolesRolesRoleConnection:
-		typename = "RoleConnection"
-
-		premarshaled, err := v.__premarshalJSON()
-		if err != nil {
-			return nil, err
-		}
-		result := struct {
-			TypeName string `json:"__typename"`
-			*__premarshalListRolesRolesRoleConnection
-		}{typename, premarshaled}
-		return json.Marshal(result)
-	case nil:
-		return []byte("null"), nil
-	default:
-		return nil, fmt.Errorf(
-			`unexpected concrete type for ListRolesRolesRoleConnectionResult: "%T"`, v)
-	}
-}
-
 // ListTasksOfJobJob includes the requested fields of the GraphQL type Job.
 type ListTasksOfJobJob struct {
 	Tasks ListTasksOfJobJobTasksTaskConnectionResult `json:"-"`
@@ -28501,7 +27552,6 @@ type RoleAssignmentFilterInput struct {
 	User               *string `json:"user,omitempty"`
 	Inherited          *bool   `json:"inherited,omitempty"`
 	InheritedOnly      *bool   `json:"inheritedOnly,omitempty"`
-	OnlyGlobal         *bool   `json:"onlyGlobal,omitempty"`
 	ExcludeDelegations *bool   `json:"excludeDelegations,omitempty"`
 	ExcludeDelegated   *bool   `json:"excludeDelegated,omitempty"`
 }
@@ -28521,9 +27571,6 @@ func (v *RoleAssignmentFilterInput) GetInherited() *bool { return v.Inherited }
 // GetInheritedOnly returns RoleAssignmentFilterInput.InheritedOnly, and is useful for accessing the field via an interface.
 func (v *RoleAssignmentFilterInput) GetInheritedOnly() *bool { return v.InheritedOnly }
 
-// GetOnlyGlobal returns RoleAssignmentFilterInput.OnlyGlobal, and is useful for accessing the field via an interface.
-func (v *RoleAssignmentFilterInput) GetOnlyGlobal() *bool { return v.OnlyGlobal }
-
 // GetExcludeDelegations returns RoleAssignmentFilterInput.ExcludeDelegations, and is useful for accessing the field via an interface.
 func (v *RoleAssignmentFilterInput) GetExcludeDelegations() *bool { return v.ExcludeDelegations }
 
@@ -28536,7 +27583,6 @@ func (v *RoleAssignmentFilterInput) GetExcludeDelegated() *bool { return v.Exclu
 // RoleAssignmentOnAccessControl
 // RoleAssignmentOnDataObject
 // RoleAssignmentOnDataSource
-// RoleAssignmentOnIdentityStore
 // RoleAssignmentOnInvalidInputError
 // RoleAssignmentOnNotFoundError
 // RoleAssignmentOnPermissionDeniedError
@@ -28549,7 +27595,6 @@ type RoleAssignmentOn interface {
 func (v *RoleAssignmentOnAccessControl) implementsGraphQLInterfaceRoleAssignmentOn()         {}
 func (v *RoleAssignmentOnDataObject) implementsGraphQLInterfaceRoleAssignmentOn()            {}
 func (v *RoleAssignmentOnDataSource) implementsGraphQLInterfaceRoleAssignmentOn()            {}
-func (v *RoleAssignmentOnIdentityStore) implementsGraphQLInterfaceRoleAssignmentOn()         {}
 func (v *RoleAssignmentOnInvalidInputError) implementsGraphQLInterfaceRoleAssignmentOn()     {}
 func (v *RoleAssignmentOnNotFoundError) implementsGraphQLInterfaceRoleAssignmentOn()         {}
 func (v *RoleAssignmentOnPermissionDeniedError) implementsGraphQLInterfaceRoleAssignmentOn() {}
@@ -28576,9 +27621,6 @@ func __unmarshalRoleAssignmentOn(b []byte, v *RoleAssignmentOn) error {
 		return json.Unmarshal(b, *v)
 	case "DataSource":
 		*v = new(RoleAssignmentOnDataSource)
-		return json.Unmarshal(b, *v)
-	case "IdentityStore":
-		*v = new(RoleAssignmentOnIdentityStore)
 		return json.Unmarshal(b, *v)
 	case "InvalidInputError":
 		*v = new(RoleAssignmentOnInvalidInputError)
@@ -28624,14 +27666,6 @@ func __marshalRoleAssignmentOn(v *RoleAssignmentOn) ([]byte, error) {
 		result := struct {
 			TypeName string `json:"__typename"`
 			*RoleAssignmentOnDataSource
-		}{typename, v}
-		return json.Marshal(result)
-	case *RoleAssignmentOnIdentityStore:
-		typename = "IdentityStore"
-
-		result := struct {
-			TypeName string `json:"__typename"`
-			*RoleAssignmentOnIdentityStore
 		}{typename, v}
 		return json.Marshal(result)
 	case *RoleAssignmentOnInvalidInputError:
@@ -28705,14 +27739,6 @@ func (v *RoleAssignmentOnDataSource) GetTypename() *string { return v.Typename }
 
 // GetId returns RoleAssignmentOnDataSource.Id, and is useful for accessing the field via an interface.
 func (v *RoleAssignmentOnDataSource) GetId() string { return v.Id }
-
-// RoleAssignmentOnIdentityStore includes the requested fields of the GraphQL type IdentityStore.
-type RoleAssignmentOnIdentityStore struct {
-	Typename *string `json:"__typename"`
-}
-
-// GetTypename returns RoleAssignmentOnIdentityStore.Typename, and is useful for accessing the field via an interface.
-func (v *RoleAssignmentOnIdentityStore) GetTypename() *string { return v.Typename }
 
 // RoleAssignmentOnInvalidInputError includes the requested fields of the GraphQL type InvalidInputError.
 type RoleAssignmentOnInvalidInputError struct {
@@ -28872,7 +27898,6 @@ func (v *RoleAssignmentRole) __premarshalJSON() (*__premarshalRoleAssignmentRole
 //
 // RoleAssignmentTo is implemented by the following types:
 // RoleAssignmentToAccessControl
-// RoleAssignmentToGroup
 // RoleAssignmentToUser
 type RoleAssignmentTo interface {
 	implementsGraphQLInterfaceRoleAssignmentTo()
@@ -28881,7 +27906,6 @@ type RoleAssignmentTo interface {
 }
 
 func (v *RoleAssignmentToAccessControl) implementsGraphQLInterfaceRoleAssignmentTo() {}
-func (v *RoleAssignmentToGroup) implementsGraphQLInterfaceRoleAssignmentTo()         {}
 func (v *RoleAssignmentToUser) implementsGraphQLInterfaceRoleAssignmentTo()          {}
 
 func __unmarshalRoleAssignmentTo(b []byte, v *RoleAssignmentTo) error {
@@ -28900,9 +27924,6 @@ func __unmarshalRoleAssignmentTo(b []byte, v *RoleAssignmentTo) error {
 	switch tn.TypeName {
 	case "AccessControl":
 		*v = new(RoleAssignmentToAccessControl)
-		return json.Unmarshal(b, *v)
-	case "Group":
-		*v = new(RoleAssignmentToGroup)
 		return json.Unmarshal(b, *v)
 	case "User":
 		*v = new(RoleAssignmentToUser)
@@ -28928,14 +27949,6 @@ func __marshalRoleAssignmentTo(v *RoleAssignmentTo) ([]byte, error) {
 			*RoleAssignmentToAccessControl
 		}{typename, v}
 		return json.Marshal(result)
-	case *RoleAssignmentToGroup:
-		typename = "Group"
-
-		result := struct {
-			TypeName string `json:"__typename"`
-			*RoleAssignmentToGroup
-		}{typename, v}
-		return json.Marshal(result)
 	case *RoleAssignmentToUser:
 		typename = "User"
 
@@ -28955,22 +27968,14 @@ func __marshalRoleAssignmentTo(v *RoleAssignmentTo) ([]byte, error) {
 // RoleAssignmentToAccessControl includes the requested fields of the GraphQL type AccessControl.
 type RoleAssignmentToAccessControl struct {
 	Typename *string `json:"__typename"`
+	Id       string  `json:"id"`
 }
 
 // GetTypename returns RoleAssignmentToAccessControl.Typename, and is useful for accessing the field via an interface.
 func (v *RoleAssignmentToAccessControl) GetTypename() *string { return v.Typename }
 
-// RoleAssignmentToGroup includes the requested fields of the GraphQL type Group.
-type RoleAssignmentToGroup struct {
-	Typename *string `json:"__typename"`
-	Id       string  `json:"id"`
-}
-
-// GetTypename returns RoleAssignmentToGroup.Typename, and is useful for accessing the field via an interface.
-func (v *RoleAssignmentToGroup) GetTypename() *string { return v.Typename }
-
-// GetId returns RoleAssignmentToGroup.Id, and is useful for accessing the field via an interface.
-func (v *RoleAssignmentToGroup) GetId() string { return v.Id }
+// GetId returns RoleAssignmentToAccessControl.Id, and is useful for accessing the field via an interface.
+func (v *RoleAssignmentToAccessControl) GetId() string { return v.Id }
 
 // RoleAssignmentToUser includes the requested fields of the GraphQL type User.
 type RoleAssignmentToUser struct {
@@ -28983,504 +27988,6 @@ func (v *RoleAssignmentToUser) GetTypename() *string { return v.Typename }
 
 // GetId returns RoleAssignmentToUser.Id, and is useful for accessing the field via an interface.
 func (v *RoleAssignmentToUser) GetId() string { return v.Id }
-
-// RoleConnection includes the GraphQL fields of RoleConnection requested by the fragment RoleConnection.
-type RoleConnection struct {
-	PageInfo RoleConnectionPageInfo        `json:"pageInfo"`
-	Edges    []RoleConnectionEdgesRoleEdge `json:"edges"`
-}
-
-// GetPageInfo returns RoleConnection.PageInfo, and is useful for accessing the field via an interface.
-func (v *RoleConnection) GetPageInfo() RoleConnectionPageInfo { return v.PageInfo }
-
-// GetEdges returns RoleConnection.Edges, and is useful for accessing the field via an interface.
-func (v *RoleConnection) GetEdges() []RoleConnectionEdgesRoleEdge { return v.Edges }
-
-// RoleConnectionEdgesRoleEdge includes the requested fields of the GraphQL type RoleEdge.
-type RoleConnectionEdgesRoleEdge struct {
-	Cursor *string                              `json:"cursor"`
-	Node   *RoleConnectionEdgesRoleEdgeNodeRole `json:"node"`
-}
-
-// GetCursor returns RoleConnectionEdgesRoleEdge.Cursor, and is useful for accessing the field via an interface.
-func (v *RoleConnectionEdgesRoleEdge) GetCursor() *string { return v.Cursor }
-
-// GetNode returns RoleConnectionEdgesRoleEdge.Node, and is useful for accessing the field via an interface.
-func (v *RoleConnectionEdgesRoleEdge) GetNode() *RoleConnectionEdgesRoleEdgeNodeRole { return v.Node }
-
-// RoleConnectionEdgesRoleEdgeNodeRole includes the requested fields of the GraphQL type Role.
-type RoleConnectionEdgesRoleEdgeNodeRole struct {
-	Role `json:"-"`
-}
-
-// GetId returns RoleConnectionEdgesRoleEdgeNodeRole.Id, and is useful for accessing the field via an interface.
-func (v *RoleConnectionEdgesRoleEdgeNodeRole) GetId() string { return v.Role.Id }
-
-// GetDescription returns RoleConnectionEdgesRoleEdgeNodeRole.Description, and is useful for accessing the field via an interface.
-func (v *RoleConnectionEdgesRoleEdgeNodeRole) GetDescription() string { return v.Role.Description }
-
-// GetName returns RoleConnectionEdgesRoleEdgeNodeRole.Name, and is useful for accessing the field via an interface.
-func (v *RoleConnectionEdgesRoleEdgeNodeRole) GetName() string { return v.Role.Name }
-
-func (v *RoleConnectionEdgesRoleEdgeNodeRole) UnmarshalJSON(b []byte) error {
-
-	if string(b) == "null" {
-		return nil
-	}
-
-	var firstPass struct {
-		*RoleConnectionEdgesRoleEdgeNodeRole
-		graphql.NoUnmarshalJSON
-	}
-	firstPass.RoleConnectionEdgesRoleEdgeNodeRole = v
-
-	err := json.Unmarshal(b, &firstPass)
-	if err != nil {
-		return err
-	}
-
-	err = json.Unmarshal(
-		b, &v.Role)
-	if err != nil {
-		return err
-	}
-	return nil
-}
-
-type __premarshalRoleConnectionEdgesRoleEdgeNodeRole struct {
-	Id string `json:"id"`
-
-	Description string `json:"description"`
-
-	Name string `json:"name"`
-}
-
-func (v *RoleConnectionEdgesRoleEdgeNodeRole) MarshalJSON() ([]byte, error) {
-	premarshaled, err := v.__premarshalJSON()
-	if err != nil {
-		return nil, err
-	}
-	return json.Marshal(premarshaled)
-}
-
-func (v *RoleConnectionEdgesRoleEdgeNodeRole) __premarshalJSON() (*__premarshalRoleConnectionEdgesRoleEdgeNodeRole, error) {
-	var retval __premarshalRoleConnectionEdgesRoleEdgeNodeRole
-
-	retval.Id = v.Role.Id
-	retval.Description = v.Role.Description
-	retval.Name = v.Role.Name
-	return &retval, nil
-}
-
-// RoleConnectionPageInfo includes the requested fields of the GraphQL type PageInfo.
-type RoleConnectionPageInfo struct {
-	PageInfo `json:"-"`
-}
-
-// GetHasNextPage returns RoleConnectionPageInfo.HasNextPage, and is useful for accessing the field via an interface.
-func (v *RoleConnectionPageInfo) GetHasNextPage() *bool { return v.PageInfo.HasNextPage }
-
-// GetStartCursor returns RoleConnectionPageInfo.StartCursor, and is useful for accessing the field via an interface.
-func (v *RoleConnectionPageInfo) GetStartCursor() *string { return v.PageInfo.StartCursor }
-
-func (v *RoleConnectionPageInfo) UnmarshalJSON(b []byte) error {
-
-	if string(b) == "null" {
-		return nil
-	}
-
-	var firstPass struct {
-		*RoleConnectionPageInfo
-		graphql.NoUnmarshalJSON
-	}
-	firstPass.RoleConnectionPageInfo = v
-
-	err := json.Unmarshal(b, &firstPass)
-	if err != nil {
-		return err
-	}
-
-	err = json.Unmarshal(
-		b, &v.PageInfo)
-	if err != nil {
-		return err
-	}
-	return nil
-}
-
-type __premarshalRoleConnectionPageInfo struct {
-	HasNextPage *bool `json:"hasNextPage"`
-
-	StartCursor *string `json:"startCursor"`
-}
-
-func (v *RoleConnectionPageInfo) MarshalJSON() ([]byte, error) {
-	premarshaled, err := v.__premarshalJSON()
-	if err != nil {
-		return nil, err
-	}
-	return json.Marshal(premarshaled)
-}
-
-func (v *RoleConnectionPageInfo) __premarshalJSON() (*__premarshalRoleConnectionPageInfo, error) {
-	var retval __premarshalRoleConnectionPageInfo
-
-	retval.HasNextPage = v.PageInfo.HasNextPage
-	retval.StartCursor = v.PageInfo.StartCursor
-	return &retval, nil
-}
-
-// RoleConnectionResult includes the GraphQL fields of RoleConnectionResult requested by the fragment RoleConnectionResult.
-//
-// RoleConnectionResult is implemented by the following types:
-// RoleConnectionResultInvalidInputError
-// RoleConnectionResultNotFoundError
-// RoleConnectionResultPermissionDeniedError
-// RoleConnectionResultRoleConnection
-type RoleConnectionResult interface {
-	implementsGraphQLInterfaceRoleConnectionResult()
-}
-
-func (v *RoleConnectionResultInvalidInputError) implementsGraphQLInterfaceRoleConnectionResult() {}
-func (v *RoleConnectionResultNotFoundError) implementsGraphQLInterfaceRoleConnectionResult()     {}
-func (v *RoleConnectionResultPermissionDeniedError) implementsGraphQLInterfaceRoleConnectionResult() {
-}
-func (v *RoleConnectionResultRoleConnection) implementsGraphQLInterfaceRoleConnectionResult() {}
-
-func __unmarshalRoleConnectionResult(b []byte, v *RoleConnectionResult) error {
-	if string(b) == "null" {
-		return nil
-	}
-
-	var tn struct {
-		TypeName string `json:"__typename"`
-	}
-	err := json.Unmarshal(b, &tn)
-	if err != nil {
-		return err
-	}
-
-	switch tn.TypeName {
-	case "InvalidInputError":
-		*v = new(RoleConnectionResultInvalidInputError)
-		return json.Unmarshal(b, *v)
-	case "NotFoundError":
-		*v = new(RoleConnectionResultNotFoundError)
-		return json.Unmarshal(b, *v)
-	case "PermissionDeniedError":
-		*v = new(RoleConnectionResultPermissionDeniedError)
-		return json.Unmarshal(b, *v)
-	case "RoleConnection":
-		*v = new(RoleConnectionResultRoleConnection)
-		return json.Unmarshal(b, *v)
-	case "":
-		return fmt.Errorf(
-			"response was missing RoleConnectionResult.__typename")
-	default:
-		return fmt.Errorf(
-			`unexpected concrete type for RoleConnectionResult: "%v"`, tn.TypeName)
-	}
-}
-
-func __marshalRoleConnectionResult(v *RoleConnectionResult) ([]byte, error) {
-
-	var typename string
-	switch v := (*v).(type) {
-	case *RoleConnectionResultInvalidInputError:
-		typename = "InvalidInputError"
-
-		premarshaled, err := v.__premarshalJSON()
-		if err != nil {
-			return nil, err
-		}
-		result := struct {
-			TypeName string `json:"__typename"`
-			*__premarshalRoleConnectionResultInvalidInputError
-		}{typename, premarshaled}
-		return json.Marshal(result)
-	case *RoleConnectionResultNotFoundError:
-		typename = "NotFoundError"
-
-		premarshaled, err := v.__premarshalJSON()
-		if err != nil {
-			return nil, err
-		}
-		result := struct {
-			TypeName string `json:"__typename"`
-			*__premarshalRoleConnectionResultNotFoundError
-		}{typename, premarshaled}
-		return json.Marshal(result)
-	case *RoleConnectionResultPermissionDeniedError:
-		typename = "PermissionDeniedError"
-
-		premarshaled, err := v.__premarshalJSON()
-		if err != nil {
-			return nil, err
-		}
-		result := struct {
-			TypeName string `json:"__typename"`
-			*__premarshalRoleConnectionResultPermissionDeniedError
-		}{typename, premarshaled}
-		return json.Marshal(result)
-	case *RoleConnectionResultRoleConnection:
-		typename = "RoleConnection"
-
-		premarshaled, err := v.__premarshalJSON()
-		if err != nil {
-			return nil, err
-		}
-		result := struct {
-			TypeName string `json:"__typename"`
-			*__premarshalRoleConnectionResultRoleConnection
-		}{typename, premarshaled}
-		return json.Marshal(result)
-	case nil:
-		return []byte("null"), nil
-	default:
-		return nil, fmt.Errorf(
-			`unexpected concrete type for RoleConnectionResult: "%T"`, v)
-	}
-}
-
-// RoleConnectionResult includes the GraphQL fields of InvalidInputError requested by the fragment RoleConnectionResult.
-type RoleConnectionResultInvalidInputError struct {
-	InvalidInputError `json:"-"`
-}
-
-// GetMessage returns RoleConnectionResultInvalidInputError.Message, and is useful for accessing the field via an interface.
-func (v *RoleConnectionResultInvalidInputError) GetMessage() string {
-	return v.InvalidInputError.Message
-}
-
-func (v *RoleConnectionResultInvalidInputError) UnmarshalJSON(b []byte) error {
-
-	if string(b) == "null" {
-		return nil
-	}
-
-	var firstPass struct {
-		*RoleConnectionResultInvalidInputError
-		graphql.NoUnmarshalJSON
-	}
-	firstPass.RoleConnectionResultInvalidInputError = v
-
-	err := json.Unmarshal(b, &firstPass)
-	if err != nil {
-		return err
-	}
-
-	err = json.Unmarshal(
-		b, &v.InvalidInputError)
-	if err != nil {
-		return err
-	}
-	return nil
-}
-
-type __premarshalRoleConnectionResultInvalidInputError struct {
-	Message string `json:"message"`
-}
-
-func (v *RoleConnectionResultInvalidInputError) MarshalJSON() ([]byte, error) {
-	premarshaled, err := v.__premarshalJSON()
-	if err != nil {
-		return nil, err
-	}
-	return json.Marshal(premarshaled)
-}
-
-func (v *RoleConnectionResultInvalidInputError) __premarshalJSON() (*__premarshalRoleConnectionResultInvalidInputError, error) {
-	var retval __premarshalRoleConnectionResultInvalidInputError
-
-	retval.Message = v.InvalidInputError.Message
-	return &retval, nil
-}
-
-// RoleConnectionResult includes the GraphQL fields of NotFoundError requested by the fragment RoleConnectionResult.
-type RoleConnectionResultNotFoundError struct {
-	NotFoundError `json:"-"`
-}
-
-// GetMessage returns RoleConnectionResultNotFoundError.Message, and is useful for accessing the field via an interface.
-func (v *RoleConnectionResultNotFoundError) GetMessage() string { return v.NotFoundError.Message }
-
-func (v *RoleConnectionResultNotFoundError) UnmarshalJSON(b []byte) error {
-
-	if string(b) == "null" {
-		return nil
-	}
-
-	var firstPass struct {
-		*RoleConnectionResultNotFoundError
-		graphql.NoUnmarshalJSON
-	}
-	firstPass.RoleConnectionResultNotFoundError = v
-
-	err := json.Unmarshal(b, &firstPass)
-	if err != nil {
-		return err
-	}
-
-	err = json.Unmarshal(
-		b, &v.NotFoundError)
-	if err != nil {
-		return err
-	}
-	return nil
-}
-
-type __premarshalRoleConnectionResultNotFoundError struct {
-	Message string `json:"message"`
-}
-
-func (v *RoleConnectionResultNotFoundError) MarshalJSON() ([]byte, error) {
-	premarshaled, err := v.__premarshalJSON()
-	if err != nil {
-		return nil, err
-	}
-	return json.Marshal(premarshaled)
-}
-
-func (v *RoleConnectionResultNotFoundError) __premarshalJSON() (*__premarshalRoleConnectionResultNotFoundError, error) {
-	var retval __premarshalRoleConnectionResultNotFoundError
-
-	retval.Message = v.NotFoundError.Message
-	return &retval, nil
-}
-
-// RoleConnectionResult includes the GraphQL fields of PermissionDeniedError requested by the fragment RoleConnectionResult.
-type RoleConnectionResultPermissionDeniedError struct {
-	PermissionDeniedError `json:"-"`
-}
-
-// GetMessage returns RoleConnectionResultPermissionDeniedError.Message, and is useful for accessing the field via an interface.
-func (v *RoleConnectionResultPermissionDeniedError) GetMessage() string {
-	return v.PermissionDeniedError.Message
-}
-
-func (v *RoleConnectionResultPermissionDeniedError) UnmarshalJSON(b []byte) error {
-
-	if string(b) == "null" {
-		return nil
-	}
-
-	var firstPass struct {
-		*RoleConnectionResultPermissionDeniedError
-		graphql.NoUnmarshalJSON
-	}
-	firstPass.RoleConnectionResultPermissionDeniedError = v
-
-	err := json.Unmarshal(b, &firstPass)
-	if err != nil {
-		return err
-	}
-
-	err = json.Unmarshal(
-		b, &v.PermissionDeniedError)
-	if err != nil {
-		return err
-	}
-	return nil
-}
-
-type __premarshalRoleConnectionResultPermissionDeniedError struct {
-	Message string `json:"message"`
-}
-
-func (v *RoleConnectionResultPermissionDeniedError) MarshalJSON() ([]byte, error) {
-	premarshaled, err := v.__premarshalJSON()
-	if err != nil {
-		return nil, err
-	}
-	return json.Marshal(premarshaled)
-}
-
-func (v *RoleConnectionResultPermissionDeniedError) __premarshalJSON() (*__premarshalRoleConnectionResultPermissionDeniedError, error) {
-	var retval __premarshalRoleConnectionResultPermissionDeniedError
-
-	retval.Message = v.PermissionDeniedError.Message
-	return &retval, nil
-}
-
-// RoleConnectionResult includes the GraphQL fields of RoleConnection requested by the fragment RoleConnectionResult.
-type RoleConnectionResultRoleConnection struct {
-	RoleConnection `json:"-"`
-}
-
-// GetPageInfo returns RoleConnectionResultRoleConnection.PageInfo, and is useful for accessing the field via an interface.
-func (v *RoleConnectionResultRoleConnection) GetPageInfo() RoleConnectionPageInfo {
-	return v.RoleConnection.PageInfo
-}
-
-// GetEdges returns RoleConnectionResultRoleConnection.Edges, and is useful for accessing the field via an interface.
-func (v *RoleConnectionResultRoleConnection) GetEdges() []RoleConnectionEdgesRoleEdge {
-	return v.RoleConnection.Edges
-}
-
-func (v *RoleConnectionResultRoleConnection) UnmarshalJSON(b []byte) error {
-
-	if string(b) == "null" {
-		return nil
-	}
-
-	var firstPass struct {
-		*RoleConnectionResultRoleConnection
-		graphql.NoUnmarshalJSON
-	}
-	firstPass.RoleConnectionResultRoleConnection = v
-
-	err := json.Unmarshal(b, &firstPass)
-	if err != nil {
-		return err
-	}
-
-	err = json.Unmarshal(
-		b, &v.RoleConnection)
-	if err != nil {
-		return err
-	}
-	return nil
-}
-
-type __premarshalRoleConnectionResultRoleConnection struct {
-	PageInfo RoleConnectionPageInfo `json:"pageInfo"`
-
-	Edges []RoleConnectionEdgesRoleEdge `json:"edges"`
-}
-
-func (v *RoleConnectionResultRoleConnection) MarshalJSON() ([]byte, error) {
-	premarshaled, err := v.__premarshalJSON()
-	if err != nil {
-		return nil, err
-	}
-	return json.Marshal(premarshaled)
-}
-
-func (v *RoleConnectionResultRoleConnection) __premarshalJSON() (*__premarshalRoleConnectionResultRoleConnection, error) {
-	var retval __premarshalRoleConnectionResultRoleConnection
-
-	retval.PageInfo = v.RoleConnection.PageInfo
-	retval.Edges = v.RoleConnection.Edges
-	return &retval, nil
-}
-
-type RoleFilterInput struct {
-	Search   *string `json:"search,omitempty"`
-	IsGlobal *bool   `json:"isGlobal,omitempty"`
-}
-
-// GetSearch returns RoleFilterInput.Search, and is useful for accessing the field via an interface.
-func (v *RoleFilterInput) GetSearch() *string { return v.Search }
-
-// GetIsGlobal returns RoleFilterInput.IsGlobal, and is useful for accessing the field via an interface.
-func (v *RoleFilterInput) GetIsGlobal() *bool { return v.IsGlobal }
-
-type RoleOrderByInput struct {
-	Name *Sort `json:"name,omitempty"`
-}
-
-// GetName returns RoleOrderByInput.Name, and is useful for accessing the field via an interface.
-func (v *RoleOrderByInput) GetName() *Sort { return v.Name }
 
 type RootParameterDefinitionInput struct {
 	Global               []ParameterDefinitionInput `json:"global"`
@@ -30009,279 +28516,6 @@ func (v *SetDataSourceMetadataSetDataSourceMetaDataPermissionDeniedError) __prem
 	retval.Typename = v.Typename
 	retval.Message = v.PermissionDeniedError.Message
 	return &retval, nil
-}
-
-// SetGlobalRolesForUserResponse is returned by SetGlobalRolesForUser on success.
-type SetGlobalRolesForUserResponse struct {
-	SetGlobalRolesForUser SetGlobalRolesForUserSetGlobalRolesForUserSetGlobalRolesForUserResult `json:"-"`
-}
-
-// GetSetGlobalRolesForUser returns SetGlobalRolesForUserResponse.SetGlobalRolesForUser, and is useful for accessing the field via an interface.
-func (v *SetGlobalRolesForUserResponse) GetSetGlobalRolesForUser() SetGlobalRolesForUserSetGlobalRolesForUserSetGlobalRolesForUserResult {
-	return v.SetGlobalRolesForUser
-}
-
-func (v *SetGlobalRolesForUserResponse) UnmarshalJSON(b []byte) error {
-
-	if string(b) == "null" {
-		return nil
-	}
-
-	var firstPass struct {
-		*SetGlobalRolesForUserResponse
-		SetGlobalRolesForUser json.RawMessage `json:"setGlobalRolesForUser"`
-		graphql.NoUnmarshalJSON
-	}
-	firstPass.SetGlobalRolesForUserResponse = v
-
-	err := json.Unmarshal(b, &firstPass)
-	if err != nil {
-		return err
-	}
-
-	{
-		dst := &v.SetGlobalRolesForUser
-		src := firstPass.SetGlobalRolesForUser
-		if len(src) != 0 && string(src) != "null" {
-			err = __unmarshalSetGlobalRolesForUserSetGlobalRolesForUserSetGlobalRolesForUserResult(
-				src, dst)
-			if err != nil {
-				return fmt.Errorf(
-					"unable to unmarshal SetGlobalRolesForUserResponse.SetGlobalRolesForUser: %w", err)
-			}
-		}
-	}
-	return nil
-}
-
-type __premarshalSetGlobalRolesForUserResponse struct {
-	SetGlobalRolesForUser json.RawMessage `json:"setGlobalRolesForUser"`
-}
-
-func (v *SetGlobalRolesForUserResponse) MarshalJSON() ([]byte, error) {
-	premarshaled, err := v.__premarshalJSON()
-	if err != nil {
-		return nil, err
-	}
-	return json.Marshal(premarshaled)
-}
-
-func (v *SetGlobalRolesForUserResponse) __premarshalJSON() (*__premarshalSetGlobalRolesForUserResponse, error) {
-	var retval __premarshalSetGlobalRolesForUserResponse
-
-	{
-
-		dst := &retval.SetGlobalRolesForUser
-		src := v.SetGlobalRolesForUser
-		var err error
-		*dst, err = __marshalSetGlobalRolesForUserSetGlobalRolesForUserSetGlobalRolesForUserResult(
-			&src)
-		if err != nil {
-			return nil, fmt.Errorf(
-				"unable to marshal SetGlobalRolesForUserResponse.SetGlobalRolesForUser: %w", err)
-		}
-	}
-	return &retval, nil
-}
-
-// SetGlobalRolesForUserSetGlobalRolesForUser includes the requested fields of the GraphQL type SetGlobalRolesForUser.
-type SetGlobalRolesForUserSetGlobalRolesForUser struct {
-	Typename *string `json:"__typename"`
-	Success  bool    `json:"success"`
-}
-
-// GetTypename returns SetGlobalRolesForUserSetGlobalRolesForUser.Typename, and is useful for accessing the field via an interface.
-func (v *SetGlobalRolesForUserSetGlobalRolesForUser) GetTypename() *string { return v.Typename }
-
-// GetSuccess returns SetGlobalRolesForUserSetGlobalRolesForUser.Success, and is useful for accessing the field via an interface.
-func (v *SetGlobalRolesForUserSetGlobalRolesForUser) GetSuccess() bool { return v.Success }
-
-// SetGlobalRolesForUserSetGlobalRolesForUserInvalidInputError includes the requested fields of the GraphQL type InvalidInputError.
-type SetGlobalRolesForUserSetGlobalRolesForUserInvalidInputError struct {
-	Typename *string `json:"__typename"`
-}
-
-// GetTypename returns SetGlobalRolesForUserSetGlobalRolesForUserInvalidInputError.Typename, and is useful for accessing the field via an interface.
-func (v *SetGlobalRolesForUserSetGlobalRolesForUserInvalidInputError) GetTypename() *string {
-	return v.Typename
-}
-
-// SetGlobalRolesForUserSetGlobalRolesForUserNotFoundError includes the requested fields of the GraphQL type NotFoundError.
-type SetGlobalRolesForUserSetGlobalRolesForUserNotFoundError struct {
-	Typename *string `json:"__typename"`
-}
-
-// GetTypename returns SetGlobalRolesForUserSetGlobalRolesForUserNotFoundError.Typename, and is useful for accessing the field via an interface.
-func (v *SetGlobalRolesForUserSetGlobalRolesForUserNotFoundError) GetTypename() *string {
-	return v.Typename
-}
-
-// SetGlobalRolesForUserSetGlobalRolesForUserPermissionDeniedError includes the requested fields of the GraphQL type PermissionDeniedError.
-type SetGlobalRolesForUserSetGlobalRolesForUserPermissionDeniedError struct {
-	Typename              *string `json:"__typename"`
-	PermissionDeniedError `json:"-"`
-}
-
-// GetTypename returns SetGlobalRolesForUserSetGlobalRolesForUserPermissionDeniedError.Typename, and is useful for accessing the field via an interface.
-func (v *SetGlobalRolesForUserSetGlobalRolesForUserPermissionDeniedError) GetTypename() *string {
-	return v.Typename
-}
-
-// GetMessage returns SetGlobalRolesForUserSetGlobalRolesForUserPermissionDeniedError.Message, and is useful for accessing the field via an interface.
-func (v *SetGlobalRolesForUserSetGlobalRolesForUserPermissionDeniedError) GetMessage() string {
-	return v.PermissionDeniedError.Message
-}
-
-func (v *SetGlobalRolesForUserSetGlobalRolesForUserPermissionDeniedError) UnmarshalJSON(b []byte) error {
-
-	if string(b) == "null" {
-		return nil
-	}
-
-	var firstPass struct {
-		*SetGlobalRolesForUserSetGlobalRolesForUserPermissionDeniedError
-		graphql.NoUnmarshalJSON
-	}
-	firstPass.SetGlobalRolesForUserSetGlobalRolesForUserPermissionDeniedError = v
-
-	err := json.Unmarshal(b, &firstPass)
-	if err != nil {
-		return err
-	}
-
-	err = json.Unmarshal(
-		b, &v.PermissionDeniedError)
-	if err != nil {
-		return err
-	}
-	return nil
-}
-
-type __premarshalSetGlobalRolesForUserSetGlobalRolesForUserPermissionDeniedError struct {
-	Typename *string `json:"__typename"`
-
-	Message string `json:"message"`
-}
-
-func (v *SetGlobalRolesForUserSetGlobalRolesForUserPermissionDeniedError) MarshalJSON() ([]byte, error) {
-	premarshaled, err := v.__premarshalJSON()
-	if err != nil {
-		return nil, err
-	}
-	return json.Marshal(premarshaled)
-}
-
-func (v *SetGlobalRolesForUserSetGlobalRolesForUserPermissionDeniedError) __premarshalJSON() (*__premarshalSetGlobalRolesForUserSetGlobalRolesForUserPermissionDeniedError, error) {
-	var retval __premarshalSetGlobalRolesForUserSetGlobalRolesForUserPermissionDeniedError
-
-	retval.Typename = v.Typename
-	retval.Message = v.PermissionDeniedError.Message
-	return &retval, nil
-}
-
-// SetGlobalRolesForUserSetGlobalRolesForUserSetGlobalRolesForUserResult includes the requested fields of the GraphQL interface SetGlobalRolesForUserResult.
-//
-// SetGlobalRolesForUserSetGlobalRolesForUserSetGlobalRolesForUserResult is implemented by the following types:
-// SetGlobalRolesForUserSetGlobalRolesForUserInvalidInputError
-// SetGlobalRolesForUserSetGlobalRolesForUserNotFoundError
-// SetGlobalRolesForUserSetGlobalRolesForUserPermissionDeniedError
-// SetGlobalRolesForUserSetGlobalRolesForUser
-type SetGlobalRolesForUserSetGlobalRolesForUserSetGlobalRolesForUserResult interface {
-	implementsGraphQLInterfaceSetGlobalRolesForUserSetGlobalRolesForUserSetGlobalRolesForUserResult()
-	// GetTypename returns the receiver's concrete GraphQL type-name (see interface doc for possible values).
-	GetTypename() *string
-}
-
-func (v *SetGlobalRolesForUserSetGlobalRolesForUserInvalidInputError) implementsGraphQLInterfaceSetGlobalRolesForUserSetGlobalRolesForUserSetGlobalRolesForUserResult() {
-}
-func (v *SetGlobalRolesForUserSetGlobalRolesForUserNotFoundError) implementsGraphQLInterfaceSetGlobalRolesForUserSetGlobalRolesForUserSetGlobalRolesForUserResult() {
-}
-func (v *SetGlobalRolesForUserSetGlobalRolesForUserPermissionDeniedError) implementsGraphQLInterfaceSetGlobalRolesForUserSetGlobalRolesForUserSetGlobalRolesForUserResult() {
-}
-func (v *SetGlobalRolesForUserSetGlobalRolesForUser) implementsGraphQLInterfaceSetGlobalRolesForUserSetGlobalRolesForUserSetGlobalRolesForUserResult() {
-}
-
-func __unmarshalSetGlobalRolesForUserSetGlobalRolesForUserSetGlobalRolesForUserResult(b []byte, v *SetGlobalRolesForUserSetGlobalRolesForUserSetGlobalRolesForUserResult) error {
-	if string(b) == "null" {
-		return nil
-	}
-
-	var tn struct {
-		TypeName string `json:"__typename"`
-	}
-	err := json.Unmarshal(b, &tn)
-	if err != nil {
-		return err
-	}
-
-	switch tn.TypeName {
-	case "InvalidInputError":
-		*v = new(SetGlobalRolesForUserSetGlobalRolesForUserInvalidInputError)
-		return json.Unmarshal(b, *v)
-	case "NotFoundError":
-		*v = new(SetGlobalRolesForUserSetGlobalRolesForUserNotFoundError)
-		return json.Unmarshal(b, *v)
-	case "PermissionDeniedError":
-		*v = new(SetGlobalRolesForUserSetGlobalRolesForUserPermissionDeniedError)
-		return json.Unmarshal(b, *v)
-	case "SetGlobalRolesForUser":
-		*v = new(SetGlobalRolesForUserSetGlobalRolesForUser)
-		return json.Unmarshal(b, *v)
-	case "":
-		return fmt.Errorf(
-			"response was missing SetGlobalRolesForUserResult.__typename")
-	default:
-		return fmt.Errorf(
-			`unexpected concrete type for SetGlobalRolesForUserSetGlobalRolesForUserSetGlobalRolesForUserResult: "%v"`, tn.TypeName)
-	}
-}
-
-func __marshalSetGlobalRolesForUserSetGlobalRolesForUserSetGlobalRolesForUserResult(v *SetGlobalRolesForUserSetGlobalRolesForUserSetGlobalRolesForUserResult) ([]byte, error) {
-
-	var typename string
-	switch v := (*v).(type) {
-	case *SetGlobalRolesForUserSetGlobalRolesForUserInvalidInputError:
-		typename = "InvalidInputError"
-
-		result := struct {
-			TypeName string `json:"__typename"`
-			*SetGlobalRolesForUserSetGlobalRolesForUserInvalidInputError
-		}{typename, v}
-		return json.Marshal(result)
-	case *SetGlobalRolesForUserSetGlobalRolesForUserNotFoundError:
-		typename = "NotFoundError"
-
-		result := struct {
-			TypeName string `json:"__typename"`
-			*SetGlobalRolesForUserSetGlobalRolesForUserNotFoundError
-		}{typename, v}
-		return json.Marshal(result)
-	case *SetGlobalRolesForUserSetGlobalRolesForUserPermissionDeniedError:
-		typename = "PermissionDeniedError"
-
-		premarshaled, err := v.__premarshalJSON()
-		if err != nil {
-			return nil, err
-		}
-		result := struct {
-			TypeName string `json:"__typename"`
-			*__premarshalSetGlobalRolesForUserSetGlobalRolesForUserPermissionDeniedError
-		}{typename, premarshaled}
-		return json.Marshal(result)
-	case *SetGlobalRolesForUserSetGlobalRolesForUser:
-		typename = "SetGlobalRolesForUser"
-
-		result := struct {
-			TypeName string `json:"__typename"`
-			*SetGlobalRolesForUserSetGlobalRolesForUser
-		}{typename, v}
-		return json.Marshal(result)
-	case nil:
-		return []byte("null"), nil
-	default:
-		return nil, fmt.Errorf(
-			`unexpected concrete type for SetGlobalRolesForUserSetGlobalRolesForUserSetGlobalRolesForUserResult: "%T"`, v)
-	}
 }
 
 type ShareMetadataInput struct {
@@ -33882,397 +32116,6 @@ func __marshalTriggerExportFlowStartExportFlowStartExportFlowResult(v *TriggerEx
 	}
 }
 
-// UnassignGlobalRoleResponse is returned by UnassignGlobalRole on success.
-type UnassignGlobalRoleResponse struct {
-	UnassignGlobalRole UnassignGlobalRoleUnassignGlobalRoleRoleResult `json:"-"`
-}
-
-// GetUnassignGlobalRole returns UnassignGlobalRoleResponse.UnassignGlobalRole, and is useful for accessing the field via an interface.
-func (v *UnassignGlobalRoleResponse) GetUnassignGlobalRole() UnassignGlobalRoleUnassignGlobalRoleRoleResult {
-	return v.UnassignGlobalRole
-}
-
-func (v *UnassignGlobalRoleResponse) UnmarshalJSON(b []byte) error {
-
-	if string(b) == "null" {
-		return nil
-	}
-
-	var firstPass struct {
-		*UnassignGlobalRoleResponse
-		UnassignGlobalRole json.RawMessage `json:"unassignGlobalRole"`
-		graphql.NoUnmarshalJSON
-	}
-	firstPass.UnassignGlobalRoleResponse = v
-
-	err := json.Unmarshal(b, &firstPass)
-	if err != nil {
-		return err
-	}
-
-	{
-		dst := &v.UnassignGlobalRole
-		src := firstPass.UnassignGlobalRole
-		if len(src) != 0 && string(src) != "null" {
-			err = __unmarshalUnassignGlobalRoleUnassignGlobalRoleRoleResult(
-				src, dst)
-			if err != nil {
-				return fmt.Errorf(
-					"unable to unmarshal UnassignGlobalRoleResponse.UnassignGlobalRole: %w", err)
-			}
-		}
-	}
-	return nil
-}
-
-type __premarshalUnassignGlobalRoleResponse struct {
-	UnassignGlobalRole json.RawMessage `json:"unassignGlobalRole"`
-}
-
-func (v *UnassignGlobalRoleResponse) MarshalJSON() ([]byte, error) {
-	premarshaled, err := v.__premarshalJSON()
-	if err != nil {
-		return nil, err
-	}
-	return json.Marshal(premarshaled)
-}
-
-func (v *UnassignGlobalRoleResponse) __premarshalJSON() (*__premarshalUnassignGlobalRoleResponse, error) {
-	var retval __premarshalUnassignGlobalRoleResponse
-
-	{
-
-		dst := &retval.UnassignGlobalRole
-		src := v.UnassignGlobalRole
-		var err error
-		*dst, err = __marshalUnassignGlobalRoleUnassignGlobalRoleRoleResult(
-			&src)
-		if err != nil {
-			return nil, fmt.Errorf(
-				"unable to marshal UnassignGlobalRoleResponse.UnassignGlobalRole: %w", err)
-		}
-	}
-	return &retval, nil
-}
-
-// UnassignGlobalRoleUnassignGlobalRole includes the requested fields of the GraphQL type Role.
-type UnassignGlobalRoleUnassignGlobalRole struct {
-	Typename *string `json:"__typename"`
-	Role     `json:"-"`
-}
-
-// GetTypename returns UnassignGlobalRoleUnassignGlobalRole.Typename, and is useful for accessing the field via an interface.
-func (v *UnassignGlobalRoleUnassignGlobalRole) GetTypename() *string { return v.Typename }
-
-// GetId returns UnassignGlobalRoleUnassignGlobalRole.Id, and is useful for accessing the field via an interface.
-func (v *UnassignGlobalRoleUnassignGlobalRole) GetId() string { return v.Role.Id }
-
-// GetDescription returns UnassignGlobalRoleUnassignGlobalRole.Description, and is useful for accessing the field via an interface.
-func (v *UnassignGlobalRoleUnassignGlobalRole) GetDescription() string { return v.Role.Description }
-
-// GetName returns UnassignGlobalRoleUnassignGlobalRole.Name, and is useful for accessing the field via an interface.
-func (v *UnassignGlobalRoleUnassignGlobalRole) GetName() string { return v.Role.Name }
-
-func (v *UnassignGlobalRoleUnassignGlobalRole) UnmarshalJSON(b []byte) error {
-
-	if string(b) == "null" {
-		return nil
-	}
-
-	var firstPass struct {
-		*UnassignGlobalRoleUnassignGlobalRole
-		graphql.NoUnmarshalJSON
-	}
-	firstPass.UnassignGlobalRoleUnassignGlobalRole = v
-
-	err := json.Unmarshal(b, &firstPass)
-	if err != nil {
-		return err
-	}
-
-	err = json.Unmarshal(
-		b, &v.Role)
-	if err != nil {
-		return err
-	}
-	return nil
-}
-
-type __premarshalUnassignGlobalRoleUnassignGlobalRole struct {
-	Typename *string `json:"__typename"`
-
-	Id string `json:"id"`
-
-	Description string `json:"description"`
-
-	Name string `json:"name"`
-}
-
-func (v *UnassignGlobalRoleUnassignGlobalRole) MarshalJSON() ([]byte, error) {
-	premarshaled, err := v.__premarshalJSON()
-	if err != nil {
-		return nil, err
-	}
-	return json.Marshal(premarshaled)
-}
-
-func (v *UnassignGlobalRoleUnassignGlobalRole) __premarshalJSON() (*__premarshalUnassignGlobalRoleUnassignGlobalRole, error) {
-	var retval __premarshalUnassignGlobalRoleUnassignGlobalRole
-
-	retval.Typename = v.Typename
-	retval.Id = v.Role.Id
-	retval.Description = v.Role.Description
-	retval.Name = v.Role.Name
-	return &retval, nil
-}
-
-// UnassignGlobalRoleUnassignGlobalRoleInvalidInputError includes the requested fields of the GraphQL type InvalidInputError.
-type UnassignGlobalRoleUnassignGlobalRoleInvalidInputError struct {
-	Typename *string `json:"__typename"`
-}
-
-// GetTypename returns UnassignGlobalRoleUnassignGlobalRoleInvalidInputError.Typename, and is useful for accessing the field via an interface.
-func (v *UnassignGlobalRoleUnassignGlobalRoleInvalidInputError) GetTypename() *string {
-	return v.Typename
-}
-
-// UnassignGlobalRoleUnassignGlobalRoleNotFoundError includes the requested fields of the GraphQL type NotFoundError.
-type UnassignGlobalRoleUnassignGlobalRoleNotFoundError struct {
-	Typename      *string `json:"__typename"`
-	NotFoundError `json:"-"`
-}
-
-// GetTypename returns UnassignGlobalRoleUnassignGlobalRoleNotFoundError.Typename, and is useful for accessing the field via an interface.
-func (v *UnassignGlobalRoleUnassignGlobalRoleNotFoundError) GetTypename() *string { return v.Typename }
-
-// GetMessage returns UnassignGlobalRoleUnassignGlobalRoleNotFoundError.Message, and is useful for accessing the field via an interface.
-func (v *UnassignGlobalRoleUnassignGlobalRoleNotFoundError) GetMessage() string {
-	return v.NotFoundError.Message
-}
-
-func (v *UnassignGlobalRoleUnassignGlobalRoleNotFoundError) UnmarshalJSON(b []byte) error {
-
-	if string(b) == "null" {
-		return nil
-	}
-
-	var firstPass struct {
-		*UnassignGlobalRoleUnassignGlobalRoleNotFoundError
-		graphql.NoUnmarshalJSON
-	}
-	firstPass.UnassignGlobalRoleUnassignGlobalRoleNotFoundError = v
-
-	err := json.Unmarshal(b, &firstPass)
-	if err != nil {
-		return err
-	}
-
-	err = json.Unmarshal(
-		b, &v.NotFoundError)
-	if err != nil {
-		return err
-	}
-	return nil
-}
-
-type __premarshalUnassignGlobalRoleUnassignGlobalRoleNotFoundError struct {
-	Typename *string `json:"__typename"`
-
-	Message string `json:"message"`
-}
-
-func (v *UnassignGlobalRoleUnassignGlobalRoleNotFoundError) MarshalJSON() ([]byte, error) {
-	premarshaled, err := v.__premarshalJSON()
-	if err != nil {
-		return nil, err
-	}
-	return json.Marshal(premarshaled)
-}
-
-func (v *UnassignGlobalRoleUnassignGlobalRoleNotFoundError) __premarshalJSON() (*__premarshalUnassignGlobalRoleUnassignGlobalRoleNotFoundError, error) {
-	var retval __premarshalUnassignGlobalRoleUnassignGlobalRoleNotFoundError
-
-	retval.Typename = v.Typename
-	retval.Message = v.NotFoundError.Message
-	return &retval, nil
-}
-
-// UnassignGlobalRoleUnassignGlobalRolePermissionDeniedError includes the requested fields of the GraphQL type PermissionDeniedError.
-type UnassignGlobalRoleUnassignGlobalRolePermissionDeniedError struct {
-	Typename              *string `json:"__typename"`
-	PermissionDeniedError `json:"-"`
-}
-
-// GetTypename returns UnassignGlobalRoleUnassignGlobalRolePermissionDeniedError.Typename, and is useful for accessing the field via an interface.
-func (v *UnassignGlobalRoleUnassignGlobalRolePermissionDeniedError) GetTypename() *string {
-	return v.Typename
-}
-
-// GetMessage returns UnassignGlobalRoleUnassignGlobalRolePermissionDeniedError.Message, and is useful for accessing the field via an interface.
-func (v *UnassignGlobalRoleUnassignGlobalRolePermissionDeniedError) GetMessage() string {
-	return v.PermissionDeniedError.Message
-}
-
-func (v *UnassignGlobalRoleUnassignGlobalRolePermissionDeniedError) UnmarshalJSON(b []byte) error {
-
-	if string(b) == "null" {
-		return nil
-	}
-
-	var firstPass struct {
-		*UnassignGlobalRoleUnassignGlobalRolePermissionDeniedError
-		graphql.NoUnmarshalJSON
-	}
-	firstPass.UnassignGlobalRoleUnassignGlobalRolePermissionDeniedError = v
-
-	err := json.Unmarshal(b, &firstPass)
-	if err != nil {
-		return err
-	}
-
-	err = json.Unmarshal(
-		b, &v.PermissionDeniedError)
-	if err != nil {
-		return err
-	}
-	return nil
-}
-
-type __premarshalUnassignGlobalRoleUnassignGlobalRolePermissionDeniedError struct {
-	Typename *string `json:"__typename"`
-
-	Message string `json:"message"`
-}
-
-func (v *UnassignGlobalRoleUnassignGlobalRolePermissionDeniedError) MarshalJSON() ([]byte, error) {
-	premarshaled, err := v.__premarshalJSON()
-	if err != nil {
-		return nil, err
-	}
-	return json.Marshal(premarshaled)
-}
-
-func (v *UnassignGlobalRoleUnassignGlobalRolePermissionDeniedError) __premarshalJSON() (*__premarshalUnassignGlobalRoleUnassignGlobalRolePermissionDeniedError, error) {
-	var retval __premarshalUnassignGlobalRoleUnassignGlobalRolePermissionDeniedError
-
-	retval.Typename = v.Typename
-	retval.Message = v.PermissionDeniedError.Message
-	return &retval, nil
-}
-
-// UnassignGlobalRoleUnassignGlobalRoleRoleResult includes the requested fields of the GraphQL interface RoleResult.
-//
-// UnassignGlobalRoleUnassignGlobalRoleRoleResult is implemented by the following types:
-// UnassignGlobalRoleUnassignGlobalRoleInvalidInputError
-// UnassignGlobalRoleUnassignGlobalRoleNotFoundError
-// UnassignGlobalRoleUnassignGlobalRolePermissionDeniedError
-// UnassignGlobalRoleUnassignGlobalRole
-type UnassignGlobalRoleUnassignGlobalRoleRoleResult interface {
-	implementsGraphQLInterfaceUnassignGlobalRoleUnassignGlobalRoleRoleResult()
-	// GetTypename returns the receiver's concrete GraphQL type-name (see interface doc for possible values).
-	GetTypename() *string
-}
-
-func (v *UnassignGlobalRoleUnassignGlobalRoleInvalidInputError) implementsGraphQLInterfaceUnassignGlobalRoleUnassignGlobalRoleRoleResult() {
-}
-func (v *UnassignGlobalRoleUnassignGlobalRoleNotFoundError) implementsGraphQLInterfaceUnassignGlobalRoleUnassignGlobalRoleRoleResult() {
-}
-func (v *UnassignGlobalRoleUnassignGlobalRolePermissionDeniedError) implementsGraphQLInterfaceUnassignGlobalRoleUnassignGlobalRoleRoleResult() {
-}
-func (v *UnassignGlobalRoleUnassignGlobalRole) implementsGraphQLInterfaceUnassignGlobalRoleUnassignGlobalRoleRoleResult() {
-}
-
-func __unmarshalUnassignGlobalRoleUnassignGlobalRoleRoleResult(b []byte, v *UnassignGlobalRoleUnassignGlobalRoleRoleResult) error {
-	if string(b) == "null" {
-		return nil
-	}
-
-	var tn struct {
-		TypeName string `json:"__typename"`
-	}
-	err := json.Unmarshal(b, &tn)
-	if err != nil {
-		return err
-	}
-
-	switch tn.TypeName {
-	case "InvalidInputError":
-		*v = new(UnassignGlobalRoleUnassignGlobalRoleInvalidInputError)
-		return json.Unmarshal(b, *v)
-	case "NotFoundError":
-		*v = new(UnassignGlobalRoleUnassignGlobalRoleNotFoundError)
-		return json.Unmarshal(b, *v)
-	case "PermissionDeniedError":
-		*v = new(UnassignGlobalRoleUnassignGlobalRolePermissionDeniedError)
-		return json.Unmarshal(b, *v)
-	case "Role":
-		*v = new(UnassignGlobalRoleUnassignGlobalRole)
-		return json.Unmarshal(b, *v)
-	case "":
-		return fmt.Errorf(
-			"response was missing RoleResult.__typename")
-	default:
-		return fmt.Errorf(
-			`unexpected concrete type for UnassignGlobalRoleUnassignGlobalRoleRoleResult: "%v"`, tn.TypeName)
-	}
-}
-
-func __marshalUnassignGlobalRoleUnassignGlobalRoleRoleResult(v *UnassignGlobalRoleUnassignGlobalRoleRoleResult) ([]byte, error) {
-
-	var typename string
-	switch v := (*v).(type) {
-	case *UnassignGlobalRoleUnassignGlobalRoleInvalidInputError:
-		typename = "InvalidInputError"
-
-		result := struct {
-			TypeName string `json:"__typename"`
-			*UnassignGlobalRoleUnassignGlobalRoleInvalidInputError
-		}{typename, v}
-		return json.Marshal(result)
-	case *UnassignGlobalRoleUnassignGlobalRoleNotFoundError:
-		typename = "NotFoundError"
-
-		premarshaled, err := v.__premarshalJSON()
-		if err != nil {
-			return nil, err
-		}
-		result := struct {
-			TypeName string `json:"__typename"`
-			*__premarshalUnassignGlobalRoleUnassignGlobalRoleNotFoundError
-		}{typename, premarshaled}
-		return json.Marshal(result)
-	case *UnassignGlobalRoleUnassignGlobalRolePermissionDeniedError:
-		typename = "PermissionDeniedError"
-
-		premarshaled, err := v.__premarshalJSON()
-		if err != nil {
-			return nil, err
-		}
-		result := struct {
-			TypeName string `json:"__typename"`
-			*__premarshalUnassignGlobalRoleUnassignGlobalRolePermissionDeniedError
-		}{typename, premarshaled}
-		return json.Marshal(result)
-	case *UnassignGlobalRoleUnassignGlobalRole:
-		typename = "Role"
-
-		premarshaled, err := v.__premarshalJSON()
-		if err != nil {
-			return nil, err
-		}
-		result := struct {
-			TypeName string `json:"__typename"`
-			*__premarshalUnassignGlobalRoleUnassignGlobalRole
-		}{typename, premarshaled}
-		return json.Marshal(result)
-	case nil:
-		return []byte("null"), nil
-	default:
-		return nil, fmt.Errorf(
-			`unexpected concrete type for UnassignGlobalRoleUnassignGlobalRoleRoleResult: "%T"`, v)
-	}
-}
-
 // UpdateAccessControlResponse is returned by UpdateAccessControl on success.
 type UpdateAccessControlResponse struct {
 	UpdateAccessControl UpdateAccessControlUpdateAccessControlAccessControlWithOptionalAccessRequestsResult `json:"-"`
@@ -34404,24 +32247,14 @@ func (v *UpdateAccessControlUpdateAccessControl) GetPolicyRule() *string {
 // GetExternal returns UpdateAccessControlUpdateAccessControl.External, and is useful for accessing the field via an interface.
 func (v *UpdateAccessControlUpdateAccessControl) GetExternal() bool { return v.AccessControl.External }
 
-// GetWhatType returns UpdateAccessControlUpdateAccessControl.WhatType, and is useful for accessing the field via an interface.
-func (v *UpdateAccessControlUpdateAccessControl) GetWhatType() WhoAndWhatType {
-	return v.AccessControl.WhatType
+// GetWhatAbacRules returns UpdateAccessControlUpdateAccessControl.WhatAbacRules, and is useful for accessing the field via an interface.
+func (v *UpdateAccessControlUpdateAccessControl) GetWhatAbacRules() []AccessControlWhatAbacRulesWhatAbacRule {
+	return v.AccessControl.WhatAbacRules
 }
 
-// GetWhatAbacRule returns UpdateAccessControlUpdateAccessControl.WhatAbacRule, and is useful for accessing the field via an interface.
-func (v *UpdateAccessControlUpdateAccessControl) GetWhatAbacRule() *AccessControlWhatAbacRule {
-	return v.AccessControl.WhatAbacRule
-}
-
-// GetWhoType returns UpdateAccessControlUpdateAccessControl.WhoType, and is useful for accessing the field via an interface.
-func (v *UpdateAccessControlUpdateAccessControl) GetWhoType() WhoAndWhatType {
-	return v.AccessControl.WhoType
-}
-
-// GetWhoAbacRule returns UpdateAccessControlUpdateAccessControl.WhoAbacRule, and is useful for accessing the field via an interface.
-func (v *UpdateAccessControlUpdateAccessControl) GetWhoAbacRule() *AccessControlWhoAbacRule {
-	return v.AccessControl.WhoAbacRule
+// GetWhoAbacRules returns UpdateAccessControlUpdateAccessControl.WhoAbacRules, and is useful for accessing the field via an interface.
+func (v *UpdateAccessControlUpdateAccessControl) GetWhoAbacRules() []AccessControlWhoAbacRulesWhoAbacRule {
+	return v.AccessControl.WhoAbacRules
 }
 
 // GetNotInternalizable returns UpdateAccessControlUpdateAccessControl.NotInternalizable, and is useful for accessing the field via an interface.
@@ -34492,13 +32325,9 @@ type __premarshalUpdateAccessControlUpdateAccessControl struct {
 
 	External bool `json:"external"`
 
-	WhatType WhoAndWhatType `json:"whatType"`
+	WhatAbacRules []AccessControlWhatAbacRulesWhatAbacRule `json:"whatAbacRules"`
 
-	WhatAbacRule *AccessControlWhatAbacRule `json:"whatAbacRule"`
-
-	WhoType WhoAndWhatType `json:"whoType"`
-
-	WhoAbacRule *AccessControlWhoAbacRule `json:"whoAbacRule"`
+	WhoAbacRules []AccessControlWhoAbacRulesWhoAbacRule `json:"whoAbacRules"`
 
 	NotInternalizable bool `json:"notInternalizable"`
 
@@ -34532,10 +32361,8 @@ func (v *UpdateAccessControlUpdateAccessControl) __premarshalJSON() (*__premarsh
 	retval.Description = v.AccessControl.Description
 	retval.PolicyRule = v.AccessControl.PolicyRule
 	retval.External = v.AccessControl.External
-	retval.WhatType = v.AccessControl.WhatType
-	retval.WhatAbacRule = v.AccessControl.WhatAbacRule
-	retval.WhoType = v.AccessControl.WhoType
-	retval.WhoAbacRule = v.AccessControl.WhoAbacRule
+	retval.WhatAbacRules = v.AccessControl.WhatAbacRules
+	retval.WhoAbacRules = v.AccessControl.WhoAbacRules
 	retval.NotInternalizable = v.AccessControl.NotInternalizable
 	retval.Complete = v.AccessControl.Complete
 	retval.Locks = v.AccessControl.Locks
@@ -34619,24 +32446,14 @@ func (v *UpdateAccessControlUpdateAccessControlAccessControlWithOptionalAccessRe
 	return v.AccessControl.External
 }
 
-// GetWhatType returns UpdateAccessControlUpdateAccessControlAccessControlWithOptionalAccessRequestsAccessControl.WhatType, and is useful for accessing the field via an interface.
-func (v *UpdateAccessControlUpdateAccessControlAccessControlWithOptionalAccessRequestsAccessControl) GetWhatType() WhoAndWhatType {
-	return v.AccessControl.WhatType
+// GetWhatAbacRules returns UpdateAccessControlUpdateAccessControlAccessControlWithOptionalAccessRequestsAccessControl.WhatAbacRules, and is useful for accessing the field via an interface.
+func (v *UpdateAccessControlUpdateAccessControlAccessControlWithOptionalAccessRequestsAccessControl) GetWhatAbacRules() []AccessControlWhatAbacRulesWhatAbacRule {
+	return v.AccessControl.WhatAbacRules
 }
 
-// GetWhatAbacRule returns UpdateAccessControlUpdateAccessControlAccessControlWithOptionalAccessRequestsAccessControl.WhatAbacRule, and is useful for accessing the field via an interface.
-func (v *UpdateAccessControlUpdateAccessControlAccessControlWithOptionalAccessRequestsAccessControl) GetWhatAbacRule() *AccessControlWhatAbacRule {
-	return v.AccessControl.WhatAbacRule
-}
-
-// GetWhoType returns UpdateAccessControlUpdateAccessControlAccessControlWithOptionalAccessRequestsAccessControl.WhoType, and is useful for accessing the field via an interface.
-func (v *UpdateAccessControlUpdateAccessControlAccessControlWithOptionalAccessRequestsAccessControl) GetWhoType() WhoAndWhatType {
-	return v.AccessControl.WhoType
-}
-
-// GetWhoAbacRule returns UpdateAccessControlUpdateAccessControlAccessControlWithOptionalAccessRequestsAccessControl.WhoAbacRule, and is useful for accessing the field via an interface.
-func (v *UpdateAccessControlUpdateAccessControlAccessControlWithOptionalAccessRequestsAccessControl) GetWhoAbacRule() *AccessControlWhoAbacRule {
-	return v.AccessControl.WhoAbacRule
+// GetWhoAbacRules returns UpdateAccessControlUpdateAccessControlAccessControlWithOptionalAccessRequestsAccessControl.WhoAbacRules, and is useful for accessing the field via an interface.
+func (v *UpdateAccessControlUpdateAccessControlAccessControlWithOptionalAccessRequestsAccessControl) GetWhoAbacRules() []AccessControlWhoAbacRulesWhoAbacRule {
+	return v.AccessControl.WhoAbacRules
 }
 
 // GetNotInternalizable returns UpdateAccessControlUpdateAccessControlAccessControlWithOptionalAccessRequestsAccessControl.NotInternalizable, and is useful for accessing the field via an interface.
@@ -34707,13 +32524,9 @@ type __premarshalUpdateAccessControlUpdateAccessControlAccessControlWithOptional
 
 	External bool `json:"external"`
 
-	WhatType WhoAndWhatType `json:"whatType"`
+	WhatAbacRules []AccessControlWhatAbacRulesWhatAbacRule `json:"whatAbacRules"`
 
-	WhatAbacRule *AccessControlWhatAbacRule `json:"whatAbacRule"`
-
-	WhoType WhoAndWhatType `json:"whoType"`
-
-	WhoAbacRule *AccessControlWhoAbacRule `json:"whoAbacRule"`
+	WhoAbacRules []AccessControlWhoAbacRulesWhoAbacRule `json:"whoAbacRules"`
 
 	NotInternalizable bool `json:"notInternalizable"`
 
@@ -34746,10 +32559,8 @@ func (v *UpdateAccessControlUpdateAccessControlAccessControlWithOptionalAccessRe
 	retval.Description = v.AccessControl.Description
 	retval.PolicyRule = v.AccessControl.PolicyRule
 	retval.External = v.AccessControl.External
-	retval.WhatType = v.AccessControl.WhatType
-	retval.WhatAbacRule = v.AccessControl.WhatAbacRule
-	retval.WhoType = v.AccessControl.WhoType
-	retval.WhoAbacRule = v.AccessControl.WhoAbacRule
+	retval.WhatAbacRules = v.AccessControl.WhatAbacRules
+	retval.WhoAbacRules = v.AccessControl.WhoAbacRules
 	retval.NotInternalizable = v.AccessControl.NotInternalizable
 	retval.Complete = v.AccessControl.Complete
 	retval.Locks = v.AccessControl.Locks
@@ -38206,11 +36017,15 @@ var AllUserType = []UserType{
 
 // WhatAbacRule includes the GraphQL fields of WhatAbacRule requested by the fragment WhatAbacRule.
 type WhatAbacRule struct {
+	Id                string   `json:"id"`
 	Permissions       []string `json:"permissions"`
 	GlobalPermissions []string `json:"globalPermissions"`
 	DoTypes           []string `json:"doTypes"`
 	RuleJson          *string  `json:"ruleJson"`
 }
+
+// GetId returns WhatAbacRule.Id, and is useful for accessing the field via an interface.
+func (v *WhatAbacRule) GetId() string { return v.Id }
 
 // GetPermissions returns WhatAbacRule.Permissions, and is useful for accessing the field via an interface.
 func (v *WhatAbacRule) GetPermissions() []string { return v.Permissions }
@@ -38225,12 +36040,16 @@ func (v *WhatAbacRule) GetDoTypes() []string { return v.DoTypes }
 func (v *WhatAbacRule) GetRuleJson() *string { return v.RuleJson }
 
 type WhatAbacRuleInput struct {
+	Id                *string                       `json:"id,omitempty"`
 	DoTypes           []string                      `json:"doTypes"`
 	Permissions       []string                      `json:"permissions"`
 	GlobalPermissions []string                      `json:"globalPermissions"`
 	Scope             []string                      `json:"scope"`
 	Rule              AbacComparisonExpressionInput `json:"rule"`
 }
+
+// GetId returns WhatAbacRuleInput.Id, and is useful for accessing the field via an interface.
+func (v *WhatAbacRuleInput) GetId() *string { return v.Id }
 
 // GetDoTypes returns WhatAbacRuleInput.DoTypes, and is useful for accessing the field via an interface.
 func (v *WhatAbacRuleInput) GetDoTypes() []string { return v.DoTypes }
@@ -38264,10 +36083,14 @@ func (v *WhatItemImport) GetPermissions() []string { return v.Permissions }
 
 // WhoAbacRule includes the GraphQL fields of WhoAbacRule requested by the fragment WhoAbacRule.
 type WhoAbacRule struct {
+	Id              string            `json:"id"`
 	PromiseDuration *int64            `json:"promiseDuration"`
 	Type            AccessWhoItemType `json:"type"`
 	RuleJson        *string           `json:"ruleJson"`
 }
+
+// GetId returns WhoAbacRule.Id, and is useful for accessing the field via an interface.
+func (v *WhoAbacRule) GetId() string { return v.Id }
 
 // GetPromiseDuration returns WhoAbacRule.PromiseDuration, and is useful for accessing the field via an interface.
 func (v *WhoAbacRule) GetPromiseDuration() *int64 { return v.PromiseDuration }
@@ -38279,10 +36102,14 @@ func (v *WhoAbacRule) GetType() AccessWhoItemType { return v.Type }
 func (v *WhoAbacRule) GetRuleJson() *string { return v.RuleJson }
 
 type WhoAbacRuleInput struct {
+	Id              *string                       `json:"id,omitempty"`
 	Rule            AbacComparisonExpressionInput `json:"rule"`
 	Type            AccessWhoItemType             `json:"type"`
 	PromiseDuration *int64                        `json:"promiseDuration,omitempty"`
 }
+
+// GetId returns WhoAbacRuleInput.Id, and is useful for accessing the field via an interface.
+func (v *WhoAbacRuleInput) GetId() *string { return v.Id }
 
 // GetRule returns WhoAbacRuleInput.Rule, and is useful for accessing the field via an interface.
 func (v *WhoAbacRuleInput) GetRule() AbacComparisonExpressionInput { return v.Rule }
@@ -38292,20 +36119,6 @@ func (v *WhoAbacRuleInput) GetType() AccessWhoItemType { return v.Type }
 
 // GetPromiseDuration returns WhoAbacRuleInput.PromiseDuration, and is useful for accessing the field via an interface.
 func (v *WhoAbacRuleInput) GetPromiseDuration() *int64 { return v.PromiseDuration }
-
-type WhoAndWhatType string
-
-const (
-	WhoAndWhatTypeStatic  WhoAndWhatType = "Static"
-	WhoAndWhatTypeDynamic WhoAndWhatType = "Dynamic"
-	WhoAndWhatTypeUnknown WhoAndWhatType = "Unknown"
-)
-
-var AllWhoAndWhatType = []WhoAndWhatType{
-	WhoAndWhatTypeStatic,
-	WhoAndWhatTypeDynamic,
-	WhoAndWhatTypeUnknown,
-}
 
 type WhoItemImport struct {
 	Users          []string `json:"users"`
@@ -38376,18 +36189,6 @@ type __AddTaskEventInput struct {
 
 // GetInput returns __AddTaskEventInput.Input, and is useful for accessing the field via an interface.
 func (v *__AddTaskEventInput) GetInput() TaskEventInput { return v.Input }
-
-// __AssignGlobalRoleInput is used internally by genqlient
-type __AssignGlobalRoleInput struct {
-	Role string   `json:"role"`
-	To   []string `json:"to"`
-}
-
-// GetRole returns __AssignGlobalRoleInput.Role, and is useful for accessing the field via an interface.
-func (v *__AssignGlobalRoleInput) GetRole() string { return v.Role }
-
-// GetTo returns __AssignGlobalRoleInput.To, and is useful for accessing the field via an interface.
-func (v *__AssignGlobalRoleInput) GetTo() []string { return v.To }
 
 // __CreateAccessControlInput is used internally by genqlient
 type __CreateAccessControlInput struct {
@@ -38715,11 +36516,12 @@ func (v *__ImportHeartbeatInput) GetFlowId() uuid.UUID { return v.FlowId }
 
 // __ListAccessControlAbacWhatScopeInput is used internally by genqlient
 type __ListAccessControlAbacWhatScopeInput struct {
-	Id     string                   `json:"id"`
-	After  *string                  `json:"after,omitempty"`
-	Limit  *int                     `json:"limit,omitempty"`
-	Search *string                  `json:"search,omitempty"`
-	Order  []AccessWhatOrderByInput `json:"order"`
+	Id       string                   `json:"id"`
+	After    *string                  `json:"after,omitempty"`
+	Limit    *int                     `json:"limit,omitempty"`
+	Search   *string                  `json:"search,omitempty"`
+	AbacRule string                   `json:"abacRule"`
+	Order    []AccessWhatOrderByInput `json:"order"`
 }
 
 // GetId returns __ListAccessControlAbacWhatScopeInput.Id, and is useful for accessing the field via an interface.
@@ -38733,6 +36535,9 @@ func (v *__ListAccessControlAbacWhatScopeInput) GetLimit() *int { return v.Limit
 
 // GetSearch returns __ListAccessControlAbacWhatScopeInput.Search, and is useful for accessing the field via an interface.
 func (v *__ListAccessControlAbacWhatScopeInput) GetSearch() *string { return v.Search }
+
+// GetAbacRule returns __ListAccessControlAbacWhatScopeInput.AbacRule, and is useful for accessing the field via an interface.
+func (v *__ListAccessControlAbacWhatScopeInput) GetAbacRule() string { return v.AbacRule }
 
 // GetOrder returns __ListAccessControlAbacWhatScopeInput.Order, and is useful for accessing the field via an interface.
 func (v *__ListAccessControlAbacWhatScopeInput) GetOrder() []AccessWhatOrderByInput { return v.Order }
@@ -38941,26 +36746,6 @@ func (v *__ListRoleAssignmentsOnUserInput) GetFilter() *RoleAssignmentFilterInpu
 // GetOrder returns __ListRoleAssignmentsOnUserInput.Order, and is useful for accessing the field via an interface.
 func (v *__ListRoleAssignmentsOnUserInput) GetOrder() []RoleAssignmentOrderInput { return v.Order }
 
-// __ListRolesInput is used internally by genqlient
-type __ListRolesInput struct {
-	After  *string            `json:"after,omitempty"`
-	Limit  *int               `json:"limit,omitempty"`
-	Filter *RoleFilterInput   `json:"filter,omitempty"`
-	Order  []RoleOrderByInput `json:"order"`
-}
-
-// GetAfter returns __ListRolesInput.After, and is useful for accessing the field via an interface.
-func (v *__ListRolesInput) GetAfter() *string { return v.After }
-
-// GetLimit returns __ListRolesInput.Limit, and is useful for accessing the field via an interface.
-func (v *__ListRolesInput) GetLimit() *int { return v.Limit }
-
-// GetFilter returns __ListRolesInput.Filter, and is useful for accessing the field via an interface.
-func (v *__ListRolesInput) GetFilter() *RoleFilterInput { return v.Filter }
-
-// GetOrder returns __ListRolesInput.Order, and is useful for accessing the field via an interface.
-func (v *__ListRolesInput) GetOrder() []RoleOrderByInput { return v.Order }
-
 // __ListTasksOfJobInput is used internally by genqlient
 type __ListTasksOfJobInput struct {
 	JobId string  `json:"jobId"`
@@ -38997,18 +36782,6 @@ func (v *__SetDataSourceMetadataInput) GetDsID() string { return v.DsID }
 // GetInput returns __SetDataSourceMetadataInput.Input, and is useful for accessing the field via an interface.
 func (v *__SetDataSourceMetadataInput) GetInput() DataSourceMetaDataInput { return v.Input }
 
-// __SetGlobalRolesForUserInput is used internally by genqlient
-type __SetGlobalRolesForUserInput struct {
-	User  string   `json:"user"`
-	Roles []string `json:"roles"`
-}
-
-// GetUser returns __SetGlobalRolesForUserInput.User, and is useful for accessing the field via an interface.
-func (v *__SetGlobalRolesForUserInput) GetUser() string { return v.User }
-
-// GetRoles returns __SetGlobalRolesForUserInput.Roles, and is useful for accessing the field via an interface.
-func (v *__SetGlobalRolesForUserInput) GetRoles() []string { return v.Roles }
-
 // __StartImportFlowInput is used internally by genqlient
 type __StartImportFlowInput struct {
 	Input StartImportFlowInput `json:"input"`
@@ -39036,18 +36809,6 @@ func (v *__TriggerExportFlowInput) GetFlowId() uuid.UUID { return v.FlowId }
 
 // GetOptions returns __TriggerExportFlowInput.Options, and is useful for accessing the field via an interface.
 func (v *__TriggerExportFlowInput) GetOptions() ExportFlowOptions { return v.Options }
-
-// __UnassignGlobalRoleInput is used internally by genqlient
-type __UnassignGlobalRoleInput struct {
-	Role string   `json:"role"`
-	To   []string `json:"to"`
-}
-
-// GetRole returns __UnassignGlobalRoleInput.Role, and is useful for accessing the field via an interface.
-func (v *__UnassignGlobalRoleInput) GetRole() string { return v.Role }
-
-// GetTo returns __UnassignGlobalRoleInput.To, and is useful for accessing the field via an interface.
-func (v *__UnassignGlobalRoleInput) GetTo() []string { return v.To }
 
 // __UpdateAccessControlInput is used internally by genqlient
 type __UpdateAccessControlInput struct {
@@ -39194,12 +36955,10 @@ fragment AccessControl on AccessControl {
 	description
 	policyRule
 	external
-	whatType
-	whatAbacRule {
+	whatAbacRules {
 		... WhatAbacRule
 	}
-	whoType
-	whoAbacRule {
+	whoAbacRules {
 		... WhoAbacRule
 	}
 	notInternalizable
@@ -39227,12 +36986,14 @@ fragment GrantCategory on GrantCategory {
 	isDefault
 }
 fragment WhatAbacRule on WhatAbacRule {
+	id
 	permissions
 	globalPermissions
 	doTypes
 	ruleJson
 }
 fragment WhoAbacRule on WhoAbacRule {
+	id
 	promiseDuration
 	type
 	ruleJson
@@ -39405,56 +37166,6 @@ func AddTaskEvent(
 	return data_, err_
 }
 
-// The mutation executed by AssignGlobalRole.
-const AssignGlobalRole_Operation = `
-mutation AssignGlobalRole ($role: ID!, $to: [ID!]!) {
-	assignGlobalRole(role: $role, to: $to) {
-		__typename
-		... Role
-		... PermissionDeniedError
-		... NotFoundError
-	}
-}
-fragment Role on Role {
-	id
-	description
-	name
-}
-fragment PermissionDeniedError on PermissionDeniedError {
-	message
-}
-fragment NotFoundError on NotFoundError {
-	message
-}
-`
-
-func AssignGlobalRole(
-	ctx_ context.Context,
-	client_ graphql.Client,
-	role string,
-	to []string,
-) (data_ *AssignGlobalRoleResponse, err_ error) {
-	req_ := &graphql.Request{
-		OpName: "AssignGlobalRole",
-		Query:  AssignGlobalRole_Operation,
-		Variables: &__AssignGlobalRoleInput{
-			Role: role,
-			To:   to,
-		},
-	}
-
-	data_ = &AssignGlobalRoleResponse{}
-	resp_ := &graphql.Response{Data: data_}
-
-	err_ = client_.MakeRequest(
-		ctx_,
-		req_,
-		resp_,
-	)
-
-	return data_, err_
-}
-
 // The mutation executed by CreateAccessControl.
 const CreateAccessControl_Operation = `
 mutation CreateAccessControl ($ap: AccessControlInput!) {
@@ -39484,12 +37195,10 @@ fragment AccessControl on AccessControl {
 	description
 	policyRule
 	external
-	whatType
-	whatAbacRule {
+	whatAbacRules {
 		... WhatAbacRule
 	}
-	whoType
-	whoAbacRule {
+	whoAbacRules {
 		... WhoAbacRule
 	}
 	notInternalizable
@@ -39514,12 +37223,14 @@ fragment GrantCategory on GrantCategory {
 	isDefault
 }
 fragment WhatAbacRule on WhatAbacRule {
+	id
 	permissions
 	globalPermissions
 	doTypes
 	ruleJson
 }
 fragment WhoAbacRule on WhoAbacRule {
+	id
 	promiseDuration
 	type
 	ruleJson
@@ -40030,12 +37741,10 @@ fragment AccessControl on AccessControl {
 	description
 	policyRule
 	external
-	whatType
-	whatAbacRule {
+	whatAbacRules {
 		... WhatAbacRule
 	}
-	whoType
-	whoAbacRule {
+	whoAbacRules {
 		... WhoAbacRule
 	}
 	notInternalizable
@@ -40063,12 +37772,14 @@ fragment GrantCategory on GrantCategory {
 	isDefault
 }
 fragment WhatAbacRule on WhatAbacRule {
+	id
 	permissions
 	globalPermissions
 	doTypes
 	ruleJson
 }
 fragment WhoAbacRule on WhoAbacRule {
+	id
 	promiseDuration
 	type
 	ruleJson
@@ -40165,12 +37876,10 @@ fragment AccessControl on AccessControl {
 	description
 	policyRule
 	external
-	whatType
-	whatAbacRule {
+	whatAbacRules {
 		... WhatAbacRule
 	}
-	whoType
-	whoAbacRule {
+	whoAbacRules {
 		... WhoAbacRule
 	}
 	notInternalizable
@@ -40198,12 +37907,14 @@ fragment GrantCategory on GrantCategory {
 	isDefault
 }
 fragment WhatAbacRule on WhatAbacRule {
+	id
 	permissions
 	globalPermissions
 	doTypes
 	ruleJson
 }
 fragment WhoAbacRule on WhoAbacRule {
+	id
 	promiseDuration
 	type
 	ruleJson
@@ -40611,12 +38322,10 @@ fragment AccessControl on AccessControl {
 	description
 	policyRule
 	external
-	whatType
-	whatAbacRule {
+	whatAbacRules {
 		... WhatAbacRule
 	}
-	whoType
-	whoAbacRule {
+	whoAbacRules {
 		... WhoAbacRule
 	}
 	notInternalizable
@@ -40644,12 +38353,14 @@ fragment GrantCategory on GrantCategory {
 	isDefault
 }
 fragment WhatAbacRule on WhatAbacRule {
+	id
 	permissions
 	globalPermissions
 	doTypes
 	ruleJson
 }
 fragment WhoAbacRule on WhoAbacRule {
+	id
 	promiseDuration
 	type
 	ruleJson
@@ -40787,12 +38498,10 @@ fragment AccessControl on AccessControl {
 	description
 	policyRule
 	external
-	whatType
-	whatAbacRule {
+	whatAbacRules {
 		... WhatAbacRule
 	}
-	whoType
-	whoAbacRule {
+	whoAbacRules {
 		... WhoAbacRule
 	}
 	notInternalizable
@@ -40811,12 +38520,14 @@ fragment GrantCategory on GrantCategory {
 	isDefault
 }
 fragment WhatAbacRule on WhatAbacRule {
+	id
 	permissions
 	globalPermissions
 	doTypes
 	ruleJson
 }
 fragment WhoAbacRule on WhoAbacRule {
+	id
 	promiseDuration
 	type
 	ruleJson
@@ -41033,14 +38744,6 @@ fragment AccessWhoItem on AccessWhoItem {
 		... on AccessControl {
 			id
 			name
-		}
-		... on Group {
-			name
-			id
-			identityStore {
-				id
-				name
-			}
 		}
 		... on User {
 			... User
@@ -41651,11 +39354,11 @@ func ImportHeartbeat(
 
 // The query executed by ListAccessControlAbacWhatScope.
 const ListAccessControlAbacWhatScope_Operation = `
-query ListAccessControlAbacWhatScope ($id: ID!, $after: String, $limit: Int, $search: String, $order: [AccessWhatOrderByInput!]) {
+query ListAccessControlAbacWhatScope ($id: ID!, $after: String, $limit: Int, $search: String, $abacRule: String!, $order: [AccessWhatOrderByInput!]) {
 	accessControl(id: $id) {
 		__typename
 		... on AccessControl {
-			whatAbacScope(after: $after, limit: $limit, search: $search, order: $order) {
+			whatAbacScope(after: $after, limit: $limit, search: $search, abacRule: $abacRule, order: $order) {
 				__typename
 				... DataObjectConnection
 				... PermissionDeniedError
@@ -41707,17 +39410,19 @@ func ListAccessControlAbacWhatScope(
 	after *string,
 	limit *int,
 	search *string,
+	abacRule string,
 	order []AccessWhatOrderByInput,
 ) (data_ *ListAccessControlAbacWhatScopeResponse, err_ error) {
 	req_ := &graphql.Request{
 		OpName: "ListAccessControlAbacWhatScope",
 		Query:  ListAccessControlAbacWhatScope_Operation,
 		Variables: &__ListAccessControlAbacWhatScopeInput{
-			Id:     id,
-			After:  after,
-			Limit:  limit,
-			Search: search,
-			Order:  order,
+			Id:       id,
+			After:    after,
+			Limit:    limit,
+			Search:   search,
+			AbacRule: abacRule,
+			Order:    order,
 		},
 	}
 
@@ -41787,12 +39492,10 @@ fragment AccessControl on AccessControl {
 	description
 	policyRule
 	external
-	whatType
-	whatAbacRule {
+	whatAbacRules {
 		... WhatAbacRule
 	}
-	whoType
-	whoAbacRule {
+	whoAbacRules {
 		... WhoAbacRule
 	}
 	notInternalizable
@@ -41811,12 +39514,14 @@ fragment GrantCategory on GrantCategory {
 	isDefault
 }
 fragment WhatAbacRule on WhatAbacRule {
+	id
 	permissions
 	globalPermissions
 	doTypes
 	ruleJson
 }
 fragment WhoAbacRule on WhoAbacRule {
+	id
 	promiseDuration
 	type
 	ruleJson
@@ -42282,7 +39987,7 @@ fragment RoleAssignment on RoleAssignment {
 		... on User {
 			id
 		}
-		... on Group {
+		... on AccessControl {
 			id
 		}
 	}
@@ -42393,7 +40098,7 @@ fragment RoleAssignment on RoleAssignment {
 		... on User {
 			id
 		}
-		... on Group {
+		... on AccessControl {
 			id
 		}
 	}
@@ -42501,7 +40206,7 @@ fragment RoleAssignment on RoleAssignment {
 		... on User {
 			id
 		}
-		... on Group {
+		... on AccessControl {
 			id
 		}
 	}
@@ -42614,7 +40319,7 @@ fragment RoleAssignment on RoleAssignment {
 		... on User {
 			id
 		}
-		... on Group {
+		... on AccessControl {
 			id
 		}
 	}
@@ -42733,7 +40438,7 @@ fragment RoleAssignment on RoleAssignment {
 		... on User {
 			id
 		}
-		... on Group {
+		... on AccessControl {
 			id
 		}
 	}
@@ -42767,82 +40472,6 @@ func ListRoleAssignmentsOnUser(
 	}
 
 	data_ = &ListRoleAssignmentsOnUserResponse{}
-	resp_ := &graphql.Response{Data: data_}
-
-	err_ = client_.MakeRequest(
-		ctx_,
-		req_,
-		resp_,
-	)
-
-	return data_, err_
-}
-
-// The query executed by ListRoles.
-const ListRoles_Operation = `
-query ListRoles ($after: String, $limit: Int, $filter: RoleFilterInput, $order: [RoleOrderByInput!]) {
-	roles(after: $after, limit: $limit, filter: $filter, order: $order) {
-		__typename
-		... RoleConnectionResult
-	}
-}
-fragment RoleConnectionResult on RoleConnectionResult {
-	... RoleConnection
-	... PermissionDeniedError
-	... InvalidInputError
-	... NotFoundError
-}
-fragment RoleConnection on RoleConnection {
-	pageInfo {
-		... PageInfo
-	}
-	edges {
-		cursor
-		node {
-			... Role
-		}
-	}
-}
-fragment PermissionDeniedError on PermissionDeniedError {
-	message
-}
-fragment InvalidInputError on InvalidInputError {
-	message
-}
-fragment NotFoundError on NotFoundError {
-	message
-}
-fragment PageInfo on PageInfo {
-	hasNextPage
-	startCursor
-}
-fragment Role on Role {
-	id
-	description
-	name
-}
-`
-
-func ListRoles(
-	ctx_ context.Context,
-	client_ graphql.Client,
-	after *string,
-	limit *int,
-	filter *RoleFilterInput,
-	order []RoleOrderByInput,
-) (data_ *ListRolesResponse, err_ error) {
-	req_ := &graphql.Request{
-		OpName: "ListRoles",
-		Query:  ListRoles_Operation,
-		Variables: &__ListRolesInput{
-			After:  after,
-			Limit:  limit,
-			Filter: filter,
-			Order:  order,
-		},
-	}
-
-	data_ = &ListRolesResponse{}
 	resp_ := &graphql.Response{Data: data_}
 
 	err_ = client_.MakeRequest(
@@ -43099,49 +40728,6 @@ func SetDataSourceMetadata(
 	return data_, err_
 }
 
-// The mutation executed by SetGlobalRolesForUser.
-const SetGlobalRolesForUser_Operation = `
-mutation SetGlobalRolesForUser ($user: ID!, $roles: [ID!]!) {
-	setGlobalRolesForUser(user: $user, roles: $roles) {
-		__typename
-		... on SetGlobalRolesForUser {
-			success
-		}
-		... PermissionDeniedError
-	}
-}
-fragment PermissionDeniedError on PermissionDeniedError {
-	message
-}
-`
-
-func SetGlobalRolesForUser(
-	ctx_ context.Context,
-	client_ graphql.Client,
-	user string,
-	roles []string,
-) (data_ *SetGlobalRolesForUserResponse, err_ error) {
-	req_ := &graphql.Request{
-		OpName: "SetGlobalRolesForUser",
-		Query:  SetGlobalRolesForUser_Operation,
-		Variables: &__SetGlobalRolesForUserInput{
-			User:  user,
-			Roles: roles,
-		},
-	}
-
-	data_ = &SetGlobalRolesForUserResponse{}
-	resp_ := &graphql.Response{Data: data_}
-
-	err_ = client_.MakeRequest(
-		ctx_,
-		req_,
-		resp_,
-	)
-
-	return data_, err_
-}
-
 // The mutation executed by StartImportFlow.
 const StartImportFlow_Operation = `
 mutation StartImportFlow ($input: StartImportFlowInput!) {
@@ -43344,56 +40930,6 @@ func TriggerExportFlow(
 	return data_, err_
 }
 
-// The mutation executed by UnassignGlobalRole.
-const UnassignGlobalRole_Operation = `
-mutation UnassignGlobalRole ($role: ID!, $to: [ID!]!) {
-	unassignGlobalRole(role: $role, to: $to) {
-		__typename
-		... Role
-		... PermissionDeniedError
-		... NotFoundError
-	}
-}
-fragment Role on Role {
-	id
-	description
-	name
-}
-fragment PermissionDeniedError on PermissionDeniedError {
-	message
-}
-fragment NotFoundError on NotFoundError {
-	message
-}
-`
-
-func UnassignGlobalRole(
-	ctx_ context.Context,
-	client_ graphql.Client,
-	role string,
-	to []string,
-) (data_ *UnassignGlobalRoleResponse, err_ error) {
-	req_ := &graphql.Request{
-		OpName: "UnassignGlobalRole",
-		Query:  UnassignGlobalRole_Operation,
-		Variables: &__UnassignGlobalRoleInput{
-			Role: role,
-			To:   to,
-		},
-	}
-
-	data_ = &UnassignGlobalRoleResponse{}
-	resp_ := &graphql.Response{Data: data_}
-
-	err_ = client_.MakeRequest(
-		ctx_,
-		req_,
-		resp_,
-	)
-
-	return data_, err_
-}
-
 // The mutation executed by UpdateAccessControl.
 const UpdateAccessControl_Operation = `
 mutation UpdateAccessControl ($id: ID!, $ap: AccessControlInput!, $overrideLocks: Boolean) {
@@ -43424,12 +40960,10 @@ fragment AccessControl on AccessControl {
 	description
 	policyRule
 	external
-	whatType
-	whatAbacRule {
+	whatAbacRules {
 		... WhatAbacRule
 	}
-	whoType
-	whoAbacRule {
+	whoAbacRules {
 		... WhoAbacRule
 	}
 	notInternalizable
@@ -43457,12 +40991,14 @@ fragment GrantCategory on GrantCategory {
 	isDefault
 }
 fragment WhatAbacRule on WhatAbacRule {
+	id
 	permissions
 	globalPermissions
 	doTypes
 	ruleJson
 }
 fragment WhoAbacRule on WhoAbacRule {
+	id
 	promiseDuration
 	type
 	ruleJson
