@@ -65,14 +65,21 @@ func (c *ExporterClient) FinishExportFlow(ctx context.Context, flowId uuid.UUID,
 }
 
 type FetchExportAccessControlsParams struct {
-	LastSequenceId int
+	StartSequenceId int
+	LastSequenceId  *int
 }
 
 type FetchExportAccessControlsOption func(params *FetchExportAccessControlsParams)
 
 func WithFetchExportAccessControlsLastSequenceId(lastSequenceId int) FetchExportAccessControlsOption {
 	return func(params *FetchExportAccessControlsParams) {
-		params.LastSequenceId = lastSequenceId
+		params.LastSequenceId = &lastSequenceId
+	}
+}
+
+func WithFetchExportAccessControlsStartSequenceId(startSequenceId int) FetchExportAccessControlsOption {
+	return func(params *FetchExportAccessControlsParams) {
+		params.StartSequenceId = startSequenceId
 	}
 }
 
@@ -85,7 +92,7 @@ func (c *ExporterClient) FetchExportAccessControls(ctx context.Context, flowId u
 			op(&options)
 		}
 
-		after := options.LastSequenceId
+		after := options.StartSequenceId
 
 		for {
 			result, err := schema.FetchExportAccessControls(ctx, c.client, flowId, &after)
@@ -139,7 +146,7 @@ func (c *ExporterClient) FetchExportAccessControls(ctx context.Context, flowId u
 				}
 			}
 
-			if len(controls.AccessControls) == 0 {
+			if (options.LastSequenceId != nil && *options.LastSequenceId == controls.LastSequenceId) || len(controls.AccessControls) == 0 {
 				return
 			}
 		}
