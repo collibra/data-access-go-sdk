@@ -11904,126 +11904,210 @@ func (v *ExportAccessControlWhoExportWhoItem) __premarshalJSON() (*__premarshalE
 
 // ExportAccessControls includes the GraphQL fields of ExportAccessControls requested by the fragment ExportAccessControls.
 type ExportAccessControls struct {
-	LastSequenceId int                                                     `json:"lastSequenceId"`
-	AccessControls []ExportAccessControlsAccessControlsExportAccessControl `json:"accessControls"`
+	LastSequenceId int                                              `json:"lastSequenceId"`
+	AccessControls []ExportAccessControlsAccessControlsExportedItem `json:"-"`
 }
 
 // GetLastSequenceId returns ExportAccessControls.LastSequenceId, and is useful for accessing the field via an interface.
 func (v *ExportAccessControls) GetLastSequenceId() int { return v.LastSequenceId }
 
 // GetAccessControls returns ExportAccessControls.AccessControls, and is useful for accessing the field via an interface.
-func (v *ExportAccessControls) GetAccessControls() []ExportAccessControlsAccessControlsExportAccessControl {
+func (v *ExportAccessControls) GetAccessControls() []ExportAccessControlsAccessControlsExportedItem {
 	return v.AccessControls
+}
+
+func (v *ExportAccessControls) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*ExportAccessControls
+		AccessControls []json.RawMessage `json:"accessControls"`
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.ExportAccessControls = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	{
+		dst := &v.AccessControls
+		src := firstPass.AccessControls
+		*dst = make(
+			[]ExportAccessControlsAccessControlsExportedItem,
+			len(src))
+		for i, src := range src {
+			dst := &(*dst)[i]
+			if len(src) != 0 && string(src) != "null" {
+				err = __unmarshalExportAccessControlsAccessControlsExportedItem(
+					src, dst)
+				if err != nil {
+					return fmt.Errorf(
+						"unable to unmarshal ExportAccessControls.AccessControls: %w", err)
+				}
+			}
+		}
+	}
+	return nil
+}
+
+type __premarshalExportAccessControls struct {
+	LastSequenceId int `json:"lastSequenceId"`
+
+	AccessControls []json.RawMessage `json:"accessControls"`
+}
+
+func (v *ExportAccessControls) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *ExportAccessControls) __premarshalJSON() (*__premarshalExportAccessControls, error) {
+	var retval __premarshalExportAccessControls
+
+	retval.LastSequenceId = v.LastSequenceId
+	{
+
+		dst := &retval.AccessControls
+		src := v.AccessControls
+		*dst = make(
+			[]json.RawMessage,
+			len(src))
+		for i, src := range src {
+			dst := &(*dst)[i]
+			var err error
+			*dst, err = __marshalExportAccessControlsAccessControlsExportedItem(
+				&src)
+			if err != nil {
+				return nil, fmt.Errorf(
+					"unable to marshal ExportAccessControls.AccessControls: %w", err)
+			}
+		}
+	}
+	return &retval, nil
 }
 
 // ExportAccessControlsAccessControlsExportAccessControl includes the requested fields of the GraphQL type ExportAccessControl.
 type ExportAccessControlsAccessControlsExportAccessControl struct {
-	ExportAccessControl `json:"-"`
+	Typename                        *string `json:"__typename"`
+	ExportedItemExportAccessControl `json:"-"`
+}
+
+// GetTypename returns ExportAccessControlsAccessControlsExportAccessControl.Typename, and is useful for accessing the field via an interface.
+func (v *ExportAccessControlsAccessControlsExportAccessControl) GetTypename() *string {
+	return v.Typename
 }
 
 // GetId returns ExportAccessControlsAccessControlsExportAccessControl.Id, and is useful for accessing the field via an interface.
 func (v *ExportAccessControlsAccessControlsExportAccessControl) GetId() string {
-	return v.ExportAccessControl.Id
+	return v.ExportedItemExportAccessControl.ExportAccessControl.Id
 }
 
 // GetName returns ExportAccessControlsAccessControlsExportAccessControl.Name, and is useful for accessing the field via an interface.
 func (v *ExportAccessControlsAccessControlsExportAccessControl) GetName() string {
-	return v.ExportAccessControl.Name
+	return v.ExportedItemExportAccessControl.ExportAccessControl.Name
 }
 
 // GetDescription returns ExportAccessControlsAccessControlsExportAccessControl.Description, and is useful for accessing the field via an interface.
 func (v *ExportAccessControlsAccessControlsExportAccessControl) GetDescription() string {
-	return v.ExportAccessControl.Description
+	return v.ExportedItemExportAccessControl.ExportAccessControl.Description
 }
 
 // GetNamingHint returns ExportAccessControlsAccessControlsExportAccessControl.NamingHint, and is useful for accessing the field via an interface.
 func (v *ExportAccessControlsAccessControlsExportAccessControl) GetNamingHint() string {
-	return v.ExportAccessControl.NamingHint
+	return v.ExportedItemExportAccessControl.ExportAccessControl.NamingHint
 }
 
 // GetExternalId returns ExportAccessControlsAccessControlsExportAccessControl.ExternalId, and is useful for accessing the field via an interface.
 func (v *ExportAccessControlsAccessControlsExportAccessControl) GetExternalId() *string {
-	return v.ExportAccessControl.ExternalId
+	return v.ExportedItemExportAccessControl.ExportAccessControl.ExternalId
 }
 
 // GetWho returns ExportAccessControlsAccessControlsExportAccessControl.Who, and is useful for accessing the field via an interface.
 func (v *ExportAccessControlsAccessControlsExportAccessControl) GetWho() ExportAccessControlWhoExportWhoItem {
-	return v.ExportAccessControl.Who
+	return v.ExportedItemExportAccessControl.ExportAccessControl.Who
 }
 
 // GetDeletedWho returns ExportAccessControlsAccessControlsExportAccessControl.DeletedWho, and is useful for accessing the field via an interface.
 func (v *ExportAccessControlsAccessControlsExportAccessControl) GetDeletedWho() *ExportAccessControlDeletedWhoExportWhoItem {
-	return v.ExportAccessControl.DeletedWho
+	return v.ExportedItemExportAccessControl.ExportAccessControl.DeletedWho
 }
 
 // GetAction returns ExportAccessControlsAccessControlsExportAccessControl.Action, and is useful for accessing the field via an interface.
 func (v *ExportAccessControlsAccessControlsExportAccessControl) GetAction() AccessControlAction {
-	return v.ExportAccessControl.Action
+	return v.ExportedItemExportAccessControl.ExportAccessControl.Action
 }
 
 // GetDelete returns ExportAccessControlsAccessControlsExportAccessControl.Delete, and is useful for accessing the field via an interface.
 func (v *ExportAccessControlsAccessControlsExportAccessControl) GetDelete() bool {
-	return v.ExportAccessControl.Delete
+	return v.ExportedItemExportAccessControl.ExportAccessControl.Delete
 }
 
 // GetWhoLocked returns ExportAccessControlsAccessControlsExportAccessControl.WhoLocked, and is useful for accessing the field via an interface.
 func (v *ExportAccessControlsAccessControlsExportAccessControl) GetWhoLocked() bool {
-	return v.ExportAccessControl.WhoLocked
+	return v.ExportedItemExportAccessControl.ExportAccessControl.WhoLocked
 }
 
 // GetWhatLocked returns ExportAccessControlsAccessControlsExportAccessControl.WhatLocked, and is useful for accessing the field via an interface.
 func (v *ExportAccessControlsAccessControlsExportAccessControl) GetWhatLocked() bool {
-	return v.ExportAccessControl.WhatLocked
+	return v.ExportedItemExportAccessControl.ExportAccessControl.WhatLocked
 }
 
 // GetInheritanceLocked returns ExportAccessControlsAccessControlsExportAccessControl.InheritanceLocked, and is useful for accessing the field via an interface.
 func (v *ExportAccessControlsAccessControlsExportAccessControl) GetInheritanceLocked() bool {
-	return v.ExportAccessControl.InheritanceLocked
+	return v.ExportedItemExportAccessControl.ExportAccessControl.InheritanceLocked
 }
 
 // GetDeleteLocked returns ExportAccessControlsAccessControlsExportAccessControl.DeleteLocked, and is useful for accessing the field via an interface.
 func (v *ExportAccessControlsAccessControlsExportAccessControl) GetDeleteLocked() bool {
-	return v.ExportAccessControl.DeleteLocked
+	return v.ExportedItemExportAccessControl.ExportAccessControl.DeleteLocked
 }
 
 // GetActualName returns ExportAccessControlsAccessControlsExportAccessControl.ActualName, and is useful for accessing the field via an interface.
 func (v *ExportAccessControlsAccessControlsExportAccessControl) GetActualName() *string {
-	return v.ExportAccessControl.ActualName
+	return v.ExportedItemExportAccessControl.ExportAccessControl.ActualName
 }
 
 // GetWhat returns ExportAccessControlsAccessControlsExportAccessControl.What, and is useful for accessing the field via an interface.
 func (v *ExportAccessControlsAccessControlsExportAccessControl) GetWhat() []ExportAccessControlWhatExportWhatItem {
-	return v.ExportAccessControl.What
+	return v.ExportedItemExportAccessControl.ExportAccessControl.What
 }
 
 // GetDeleteWhat returns ExportAccessControlsAccessControlsExportAccessControl.DeleteWhat, and is useful for accessing the field via an interface.
 func (v *ExportAccessControlsAccessControlsExportAccessControl) GetDeleteWhat() []ExportAccessControlDeleteWhatExportWhatItem {
-	return v.ExportAccessControl.DeleteWhat
+	return v.ExportedItemExportAccessControl.ExportAccessControl.DeleteWhat
 }
 
 // GetType returns ExportAccessControlsAccessControlsExportAccessControl.Type, and is useful for accessing the field via an interface.
 func (v *ExportAccessControlsAccessControlsExportAccessControl) GetType() *string {
-	return v.ExportAccessControl.Type
+	return v.ExportedItemExportAccessControl.ExportAccessControl.Type
 }
 
 // GetFilterCriteria returns ExportAccessControlsAccessControlsExportAccessControl.FilterCriteria, and is useful for accessing the field via an interface.
 func (v *ExportAccessControlsAccessControlsExportAccessControl) GetFilterCriteria() *string {
-	return v.ExportAccessControl.FilterCriteria
+	return v.ExportedItemExportAccessControl.ExportAccessControl.FilterCriteria
 }
 
 // GetPolicyRule returns ExportAccessControlsAccessControlsExportAccessControl.PolicyRule, and is useful for accessing the field via an interface.
 func (v *ExportAccessControlsAccessControlsExportAccessControl) GetPolicyRule() *string {
-	return v.ExportAccessControl.PolicyRule
+	return v.ExportedItemExportAccessControl.ExportAccessControl.PolicyRule
 }
 
 // GetCommonDataObject returns ExportAccessControlsAccessControlsExportAccessControl.CommonDataObject, and is useful for accessing the field via an interface.
 func (v *ExportAccessControlsAccessControlsExportAccessControl) GetCommonDataObject() *string {
-	return v.ExportAccessControl.CommonDataObject
+	return v.ExportedItemExportAccessControl.ExportAccessControl.CommonDataObject
 }
 
 // GetOwners returns ExportAccessControlsAccessControlsExportAccessControl.Owners, and is useful for accessing the field via an interface.
 func (v *ExportAccessControlsAccessControlsExportAccessControl) GetOwners() []ExportAccessControlOwnersExportOwner {
-	return v.ExportAccessControl.Owners
+	return v.ExportedItemExportAccessControl.ExportAccessControl.Owners
 }
 
 func (v *ExportAccessControlsAccessControlsExportAccessControl) UnmarshalJSON(b []byte) error {
@@ -12044,7 +12128,7 @@ func (v *ExportAccessControlsAccessControlsExportAccessControl) UnmarshalJSON(b 
 	}
 
 	err = json.Unmarshal(
-		b, &v.ExportAccessControl)
+		b, &v.ExportedItemExportAccessControl)
 	if err != nil {
 		return err
 	}
@@ -12052,6 +12136,8 @@ func (v *ExportAccessControlsAccessControlsExportAccessControl) UnmarshalJSON(b 
 }
 
 type __premarshalExportAccessControlsAccessControlsExportAccessControl struct {
+	Typename *string `json:"__typename"`
+
 	Id string `json:"id"`
 
 	Name string `json:"name"`
@@ -12106,27 +12192,487 @@ func (v *ExportAccessControlsAccessControlsExportAccessControl) MarshalJSON() ([
 func (v *ExportAccessControlsAccessControlsExportAccessControl) __premarshalJSON() (*__premarshalExportAccessControlsAccessControlsExportAccessControl, error) {
 	var retval __premarshalExportAccessControlsAccessControlsExportAccessControl
 
-	retval.Id = v.ExportAccessControl.Id
-	retval.Name = v.ExportAccessControl.Name
-	retval.Description = v.ExportAccessControl.Description
-	retval.NamingHint = v.ExportAccessControl.NamingHint
-	retval.ExternalId = v.ExportAccessControl.ExternalId
-	retval.Who = v.ExportAccessControl.Who
-	retval.DeletedWho = v.ExportAccessControl.DeletedWho
-	retval.Action = v.ExportAccessControl.Action
-	retval.Delete = v.ExportAccessControl.Delete
-	retval.WhoLocked = v.ExportAccessControl.WhoLocked
-	retval.WhatLocked = v.ExportAccessControl.WhatLocked
-	retval.InheritanceLocked = v.ExportAccessControl.InheritanceLocked
-	retval.DeleteLocked = v.ExportAccessControl.DeleteLocked
-	retval.ActualName = v.ExportAccessControl.ActualName
-	retval.What = v.ExportAccessControl.What
-	retval.DeleteWhat = v.ExportAccessControl.DeleteWhat
-	retval.Type = v.ExportAccessControl.Type
-	retval.FilterCriteria = v.ExportAccessControl.FilterCriteria
-	retval.PolicyRule = v.ExportAccessControl.PolicyRule
-	retval.CommonDataObject = v.ExportAccessControl.CommonDataObject
-	retval.Owners = v.ExportAccessControl.Owners
+	retval.Typename = v.Typename
+	retval.Id = v.ExportedItemExportAccessControl.ExportAccessControl.Id
+	retval.Name = v.ExportedItemExportAccessControl.ExportAccessControl.Name
+	retval.Description = v.ExportedItemExportAccessControl.ExportAccessControl.Description
+	retval.NamingHint = v.ExportedItemExportAccessControl.ExportAccessControl.NamingHint
+	retval.ExternalId = v.ExportedItemExportAccessControl.ExportAccessControl.ExternalId
+	retval.Who = v.ExportedItemExportAccessControl.ExportAccessControl.Who
+	retval.DeletedWho = v.ExportedItemExportAccessControl.ExportAccessControl.DeletedWho
+	retval.Action = v.ExportedItemExportAccessControl.ExportAccessControl.Action
+	retval.Delete = v.ExportedItemExportAccessControl.ExportAccessControl.Delete
+	retval.WhoLocked = v.ExportedItemExportAccessControl.ExportAccessControl.WhoLocked
+	retval.WhatLocked = v.ExportedItemExportAccessControl.ExportAccessControl.WhatLocked
+	retval.InheritanceLocked = v.ExportedItemExportAccessControl.ExportAccessControl.InheritanceLocked
+	retval.DeleteLocked = v.ExportedItemExportAccessControl.ExportAccessControl.DeleteLocked
+	retval.ActualName = v.ExportedItemExportAccessControl.ExportAccessControl.ActualName
+	retval.What = v.ExportedItemExportAccessControl.ExportAccessControl.What
+	retval.DeleteWhat = v.ExportedItemExportAccessControl.ExportAccessControl.DeleteWhat
+	retval.Type = v.ExportedItemExportAccessControl.ExportAccessControl.Type
+	retval.FilterCriteria = v.ExportedItemExportAccessControl.ExportAccessControl.FilterCriteria
+	retval.PolicyRule = v.ExportedItemExportAccessControl.ExportAccessControl.PolicyRule
+	retval.CommonDataObject = v.ExportedItemExportAccessControl.ExportAccessControl.CommonDataObject
+	retval.Owners = v.ExportedItemExportAccessControl.ExportAccessControl.Owners
+	return &retval, nil
+}
+
+// ExportAccessControlsAccessControlsExportColumnMask includes the requested fields of the GraphQL type ExportColumnMask.
+type ExportAccessControlsAccessControlsExportColumnMask struct {
+	Typename                     *string `json:"__typename"`
+	ExportedItemExportColumnMask `json:"-"`
+}
+
+// GetTypename returns ExportAccessControlsAccessControlsExportColumnMask.Typename, and is useful for accessing the field via an interface.
+func (v *ExportAccessControlsAccessControlsExportColumnMask) GetTypename() *string { return v.Typename }
+
+// GetColumnMaskReferences returns ExportAccessControlsAccessControlsExportColumnMask.ColumnMaskReferences, and is useful for accessing the field via an interface.
+func (v *ExportAccessControlsAccessControlsExportColumnMask) GetColumnMaskReferences() []ExportColumnMaskColumnMaskReferencesExportColumnMaskReference {
+	return v.ExportedItemExportColumnMask.ExportColumnMask.ColumnMaskReferences
+}
+
+// GetMaskDetails returns ExportAccessControlsAccessControlsExportColumnMask.MaskDetails, and is useful for accessing the field via an interface.
+func (v *ExportAccessControlsAccessControlsExportColumnMask) GetMaskDetails() ExportColumnMaskMaskDetailsExportMaskDetails {
+	return v.ExportedItemExportColumnMask.ExportColumnMask.MaskDetails
+}
+
+// GetDelete returns ExportAccessControlsAccessControlsExportColumnMask.Delete, and is useful for accessing the field via an interface.
+func (v *ExportAccessControlsAccessControlsExportColumnMask) GetDelete() bool {
+	return v.ExportedItemExportColumnMask.ExportColumnMask.Delete
+}
+
+// GetWho returns ExportAccessControlsAccessControlsExportColumnMask.Who, and is useful for accessing the field via an interface.
+func (v *ExportAccessControlsAccessControlsExportColumnMask) GetWho() ExportColumnMaskWhoExportWhoItem {
+	return v.ExportedItemExportColumnMask.ExportColumnMask.Who
+}
+
+// GetDeletedWho returns ExportAccessControlsAccessControlsExportColumnMask.DeletedWho, and is useful for accessing the field via an interface.
+func (v *ExportAccessControlsAccessControlsExportColumnMask) GetDeletedWho() *ExportColumnMaskDeletedWhoExportWhoItem {
+	return v.ExportedItemExportColumnMask.ExportColumnMask.DeletedWho
+}
+
+func (v *ExportAccessControlsAccessControlsExportColumnMask) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*ExportAccessControlsAccessControlsExportColumnMask
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.ExportAccessControlsAccessControlsExportColumnMask = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.ExportedItemExportColumnMask)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalExportAccessControlsAccessControlsExportColumnMask struct {
+	Typename *string `json:"__typename"`
+
+	ColumnMaskReferences []ExportColumnMaskColumnMaskReferencesExportColumnMaskReference `json:"columnMaskReferences"`
+
+	MaskDetails ExportColumnMaskMaskDetailsExportMaskDetails `json:"maskDetails"`
+
+	Delete bool `json:"delete"`
+
+	Who ExportColumnMaskWhoExportWhoItem `json:"who"`
+
+	DeletedWho *ExportColumnMaskDeletedWhoExportWhoItem `json:"deletedWho"`
+}
+
+func (v *ExportAccessControlsAccessControlsExportColumnMask) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *ExportAccessControlsAccessControlsExportColumnMask) __premarshalJSON() (*__premarshalExportAccessControlsAccessControlsExportColumnMask, error) {
+	var retval __premarshalExportAccessControlsAccessControlsExportColumnMask
+
+	retval.Typename = v.Typename
+	retval.ColumnMaskReferences = v.ExportedItemExportColumnMask.ExportColumnMask.ColumnMaskReferences
+	retval.MaskDetails = v.ExportedItemExportColumnMask.ExportColumnMask.MaskDetails
+	retval.Delete = v.ExportedItemExportColumnMask.ExportColumnMask.Delete
+	retval.Who = v.ExportedItemExportColumnMask.ExportColumnMask.Who
+	retval.DeletedWho = v.ExportedItemExportColumnMask.ExportColumnMask.DeletedWho
+	return &retval, nil
+}
+
+// ExportAccessControlsAccessControlsExportedItem includes the requested fields of the GraphQL interface ExportedItem.
+//
+// ExportAccessControlsAccessControlsExportedItem is implemented by the following types:
+// ExportAccessControlsAccessControlsExportAccessControl
+// ExportAccessControlsAccessControlsExportColumnMask
+type ExportAccessControlsAccessControlsExportedItem interface {
+	implementsGraphQLInterfaceExportAccessControlsAccessControlsExportedItem()
+	// GetTypename returns the receiver's concrete GraphQL type-name (see interface doc for possible values).
+	GetTypename() *string
+	ExportedItem
+}
+
+func (v *ExportAccessControlsAccessControlsExportAccessControl) implementsGraphQLInterfaceExportAccessControlsAccessControlsExportedItem() {
+}
+func (v *ExportAccessControlsAccessControlsExportColumnMask) implementsGraphQLInterfaceExportAccessControlsAccessControlsExportedItem() {
+}
+
+func __unmarshalExportAccessControlsAccessControlsExportedItem(b []byte, v *ExportAccessControlsAccessControlsExportedItem) error {
+	if string(b) == "null" {
+		return nil
+	}
+
+	var tn struct {
+		TypeName string `json:"__typename"`
+	}
+	err := json.Unmarshal(b, &tn)
+	if err != nil {
+		return err
+	}
+
+	switch tn.TypeName {
+	case "ExportAccessControl":
+		*v = new(ExportAccessControlsAccessControlsExportAccessControl)
+		return json.Unmarshal(b, *v)
+	case "ExportColumnMask":
+		*v = new(ExportAccessControlsAccessControlsExportColumnMask)
+		return json.Unmarshal(b, *v)
+	case "":
+		return fmt.Errorf(
+			"response was missing ExportedItem.__typename")
+	default:
+		return fmt.Errorf(
+			`unexpected concrete type for ExportAccessControlsAccessControlsExportedItem: "%v"`, tn.TypeName)
+	}
+}
+
+func __marshalExportAccessControlsAccessControlsExportedItem(v *ExportAccessControlsAccessControlsExportedItem) ([]byte, error) {
+
+	var typename string
+	switch v := (*v).(type) {
+	case *ExportAccessControlsAccessControlsExportAccessControl:
+		typename = "ExportAccessControl"
+
+		premarshaled, err := v.__premarshalJSON()
+		if err != nil {
+			return nil, err
+		}
+		result := struct {
+			TypeName string `json:"__typename"`
+			*__premarshalExportAccessControlsAccessControlsExportAccessControl
+		}{typename, premarshaled}
+		return json.Marshal(result)
+	case *ExportAccessControlsAccessControlsExportColumnMask:
+		typename = "ExportColumnMask"
+
+		premarshaled, err := v.__premarshalJSON()
+		if err != nil {
+			return nil, err
+		}
+		result := struct {
+			TypeName string `json:"__typename"`
+			*__premarshalExportAccessControlsAccessControlsExportColumnMask
+		}{typename, premarshaled}
+		return json.Marshal(result)
+	case nil:
+		return []byte("null"), nil
+	default:
+		return nil, fmt.Errorf(
+			`unexpected concrete type for ExportAccessControlsAccessControlsExportedItem: "%T"`, v)
+	}
+}
+
+// ExportColumnMask includes the GraphQL fields of ExportColumnMask requested by the fragment ExportColumnMask.
+type ExportColumnMask struct {
+	ColumnMaskReferences []ExportColumnMaskColumnMaskReferencesExportColumnMaskReference `json:"columnMaskReferences"`
+	MaskDetails          ExportColumnMaskMaskDetailsExportMaskDetails                    `json:"maskDetails"`
+	Delete               bool                                                            `json:"delete"`
+	Who                  ExportColumnMaskWhoExportWhoItem                                `json:"who"`
+	DeletedWho           *ExportColumnMaskDeletedWhoExportWhoItem                        `json:"deletedWho"`
+}
+
+// GetColumnMaskReferences returns ExportColumnMask.ColumnMaskReferences, and is useful for accessing the field via an interface.
+func (v *ExportColumnMask) GetColumnMaskReferences() []ExportColumnMaskColumnMaskReferencesExportColumnMaskReference {
+	return v.ColumnMaskReferences
+}
+
+// GetMaskDetails returns ExportColumnMask.MaskDetails, and is useful for accessing the field via an interface.
+func (v *ExportColumnMask) GetMaskDetails() ExportColumnMaskMaskDetailsExportMaskDetails {
+	return v.MaskDetails
+}
+
+// GetDelete returns ExportColumnMask.Delete, and is useful for accessing the field via an interface.
+func (v *ExportColumnMask) GetDelete() bool { return v.Delete }
+
+// GetWho returns ExportColumnMask.Who, and is useful for accessing the field via an interface.
+func (v *ExportColumnMask) GetWho() ExportColumnMaskWhoExportWhoItem { return v.Who }
+
+// GetDeletedWho returns ExportColumnMask.DeletedWho, and is useful for accessing the field via an interface.
+func (v *ExportColumnMask) GetDeletedWho() *ExportColumnMaskDeletedWhoExportWhoItem {
+	return v.DeletedWho
+}
+
+// ExportColumnMaskColumnMaskReferencesExportColumnMaskReference includes the requested fields of the GraphQL type ExportColumnMaskReference.
+type ExportColumnMaskColumnMaskReferencesExportColumnMaskReference struct {
+	Column     ExportColumnMaskColumnMaskReferencesExportColumnMaskReferenceColumnExportDataObjectReference `json:"column"`
+	ExternalId *string                                                                                      `json:"externalId"`
+	Id         string                                                                                       `json:"id"`
+}
+
+// GetColumn returns ExportColumnMaskColumnMaskReferencesExportColumnMaskReference.Column, and is useful for accessing the field via an interface.
+func (v *ExportColumnMaskColumnMaskReferencesExportColumnMaskReference) GetColumn() ExportColumnMaskColumnMaskReferencesExportColumnMaskReferenceColumnExportDataObjectReference {
+	return v.Column
+}
+
+// GetExternalId returns ExportColumnMaskColumnMaskReferencesExportColumnMaskReference.ExternalId, and is useful for accessing the field via an interface.
+func (v *ExportColumnMaskColumnMaskReferencesExportColumnMaskReference) GetExternalId() *string {
+	return v.ExternalId
+}
+
+// GetId returns ExportColumnMaskColumnMaskReferencesExportColumnMaskReference.Id, and is useful for accessing the field via an interface.
+func (v *ExportColumnMaskColumnMaskReferencesExportColumnMaskReference) GetId() string { return v.Id }
+
+// ExportColumnMaskColumnMaskReferencesExportColumnMaskReferenceColumnExportDataObjectReference includes the requested fields of the GraphQL type ExportDataObjectReference.
+type ExportColumnMaskColumnMaskReferencesExportColumnMaskReferenceColumnExportDataObjectReference struct {
+	ExportDataObjectReference `json:"-"`
+}
+
+// GetId returns ExportColumnMaskColumnMaskReferencesExportColumnMaskReferenceColumnExportDataObjectReference.Id, and is useful for accessing the field via an interface.
+func (v *ExportColumnMaskColumnMaskReferencesExportColumnMaskReferenceColumnExportDataObjectReference) GetId() string {
+	return v.ExportDataObjectReference.Id
+}
+
+// GetFullName returns ExportColumnMaskColumnMaskReferencesExportColumnMaskReferenceColumnExportDataObjectReference.FullName, and is useful for accessing the field via an interface.
+func (v *ExportColumnMaskColumnMaskReferencesExportColumnMaskReferenceColumnExportDataObjectReference) GetFullName() string {
+	return v.ExportDataObjectReference.FullName
+}
+
+// GetType returns ExportColumnMaskColumnMaskReferencesExportColumnMaskReferenceColumnExportDataObjectReference.Type, and is useful for accessing the field via an interface.
+func (v *ExportColumnMaskColumnMaskReferencesExportColumnMaskReferenceColumnExportDataObjectReference) GetType() string {
+	return v.ExportDataObjectReference.Type
+}
+
+func (v *ExportColumnMaskColumnMaskReferencesExportColumnMaskReferenceColumnExportDataObjectReference) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*ExportColumnMaskColumnMaskReferencesExportColumnMaskReferenceColumnExportDataObjectReference
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.ExportColumnMaskColumnMaskReferencesExportColumnMaskReferenceColumnExportDataObjectReference = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.ExportDataObjectReference)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalExportColumnMaskColumnMaskReferencesExportColumnMaskReferenceColumnExportDataObjectReference struct {
+	Id string `json:"id"`
+
+	FullName string `json:"fullName"`
+
+	Type string `json:"type"`
+}
+
+func (v *ExportColumnMaskColumnMaskReferencesExportColumnMaskReferenceColumnExportDataObjectReference) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *ExportColumnMaskColumnMaskReferencesExportColumnMaskReferenceColumnExportDataObjectReference) __premarshalJSON() (*__premarshalExportColumnMaskColumnMaskReferencesExportColumnMaskReferenceColumnExportDataObjectReference, error) {
+	var retval __premarshalExportColumnMaskColumnMaskReferencesExportColumnMaskReferenceColumnExportDataObjectReference
+
+	retval.Id = v.ExportDataObjectReference.Id
+	retval.FullName = v.ExportDataObjectReference.FullName
+	retval.Type = v.ExportDataObjectReference.Type
+	return &retval, nil
+}
+
+// ExportColumnMaskDeletedWhoExportWhoItem includes the requested fields of the GraphQL type ExportWhoItem.
+type ExportColumnMaskDeletedWhoExportWhoItem struct {
+	ExportWhoItem `json:"-"`
+}
+
+// GetUsers returns ExportColumnMaskDeletedWhoExportWhoItem.Users, and is useful for accessing the field via an interface.
+func (v *ExportColumnMaskDeletedWhoExportWhoItem) GetUsers() []string { return v.ExportWhoItem.Users }
+
+// GetInheritFrom returns ExportColumnMaskDeletedWhoExportWhoItem.InheritFrom, and is useful for accessing the field via an interface.
+func (v *ExportColumnMaskDeletedWhoExportWhoItem) GetInheritFrom() []string {
+	return v.ExportWhoItem.InheritFrom
+}
+
+// GetRecipients returns ExportColumnMaskDeletedWhoExportWhoItem.Recipients, and is useful for accessing the field via an interface.
+func (v *ExportColumnMaskDeletedWhoExportWhoItem) GetRecipients() []string {
+	return v.ExportWhoItem.Recipients
+}
+
+func (v *ExportColumnMaskDeletedWhoExportWhoItem) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*ExportColumnMaskDeletedWhoExportWhoItem
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.ExportColumnMaskDeletedWhoExportWhoItem = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.ExportWhoItem)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalExportColumnMaskDeletedWhoExportWhoItem struct {
+	Users []string `json:"users"`
+
+	InheritFrom []string `json:"inheritFrom"`
+
+	Recipients []string `json:"recipients"`
+}
+
+func (v *ExportColumnMaskDeletedWhoExportWhoItem) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *ExportColumnMaskDeletedWhoExportWhoItem) __premarshalJSON() (*__premarshalExportColumnMaskDeletedWhoExportWhoItem, error) {
+	var retval __premarshalExportColumnMaskDeletedWhoExportWhoItem
+
+	retval.Users = v.ExportWhoItem.Users
+	retval.InheritFrom = v.ExportWhoItem.InheritFrom
+	retval.Recipients = v.ExportWhoItem.Recipients
+	return &retval, nil
+}
+
+// ExportColumnMaskMaskDetailsExportMaskDetails includes the requested fields of the GraphQL type ExportMaskDetails.
+type ExportColumnMaskMaskDetailsExportMaskDetails struct {
+	Id          string `json:"id"`
+	Deleted     bool   `json:"deleted"`
+	Description string `json:"description"`
+	Name        string `json:"name"`
+	NamingHint  string `json:"namingHint"`
+	Type        string `json:"type"`
+}
+
+// GetId returns ExportColumnMaskMaskDetailsExportMaskDetails.Id, and is useful for accessing the field via an interface.
+func (v *ExportColumnMaskMaskDetailsExportMaskDetails) GetId() string { return v.Id }
+
+// GetDeleted returns ExportColumnMaskMaskDetailsExportMaskDetails.Deleted, and is useful for accessing the field via an interface.
+func (v *ExportColumnMaskMaskDetailsExportMaskDetails) GetDeleted() bool { return v.Deleted }
+
+// GetDescription returns ExportColumnMaskMaskDetailsExportMaskDetails.Description, and is useful for accessing the field via an interface.
+func (v *ExportColumnMaskMaskDetailsExportMaskDetails) GetDescription() string { return v.Description }
+
+// GetName returns ExportColumnMaskMaskDetailsExportMaskDetails.Name, and is useful for accessing the field via an interface.
+func (v *ExportColumnMaskMaskDetailsExportMaskDetails) GetName() string { return v.Name }
+
+// GetNamingHint returns ExportColumnMaskMaskDetailsExportMaskDetails.NamingHint, and is useful for accessing the field via an interface.
+func (v *ExportColumnMaskMaskDetailsExportMaskDetails) GetNamingHint() string { return v.NamingHint }
+
+// GetType returns ExportColumnMaskMaskDetailsExportMaskDetails.Type, and is useful for accessing the field via an interface.
+func (v *ExportColumnMaskMaskDetailsExportMaskDetails) GetType() string { return v.Type }
+
+// ExportColumnMaskWhoExportWhoItem includes the requested fields of the GraphQL type ExportWhoItem.
+type ExportColumnMaskWhoExportWhoItem struct {
+	ExportWhoItem `json:"-"`
+}
+
+// GetUsers returns ExportColumnMaskWhoExportWhoItem.Users, and is useful for accessing the field via an interface.
+func (v *ExportColumnMaskWhoExportWhoItem) GetUsers() []string { return v.ExportWhoItem.Users }
+
+// GetInheritFrom returns ExportColumnMaskWhoExportWhoItem.InheritFrom, and is useful for accessing the field via an interface.
+func (v *ExportColumnMaskWhoExportWhoItem) GetInheritFrom() []string {
+	return v.ExportWhoItem.InheritFrom
+}
+
+// GetRecipients returns ExportColumnMaskWhoExportWhoItem.Recipients, and is useful for accessing the field via an interface.
+func (v *ExportColumnMaskWhoExportWhoItem) GetRecipients() []string {
+	return v.ExportWhoItem.Recipients
+}
+
+func (v *ExportColumnMaskWhoExportWhoItem) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*ExportColumnMaskWhoExportWhoItem
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.ExportColumnMaskWhoExportWhoItem = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.ExportWhoItem)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalExportColumnMaskWhoExportWhoItem struct {
+	Users []string `json:"users"`
+
+	InheritFrom []string `json:"inheritFrom"`
+
+	Recipients []string `json:"recipients"`
+}
+
+func (v *ExportColumnMaskWhoExportWhoItem) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *ExportColumnMaskWhoExportWhoItem) __premarshalJSON() (*__premarshalExportColumnMaskWhoExportWhoItem, error) {
+	var retval __premarshalExportColumnMaskWhoExportWhoItem
+
+	retval.Users = v.ExportWhoItem.Users
+	retval.InheritFrom = v.ExportWhoItem.InheritFrom
+	retval.Recipients = v.ExportWhoItem.Recipients
 	return &retval, nil
 }
 
@@ -12269,6 +12815,371 @@ func (v *ExportWhoItem) GetInheritFrom() []string { return v.InheritFrom }
 // GetRecipients returns ExportWhoItem.Recipients, and is useful for accessing the field via an interface.
 func (v *ExportWhoItem) GetRecipients() []string { return v.Recipients }
 
+// ExportedItem includes the GraphQL fields of ExportedItem requested by the fragment ExportedItem.
+//
+// ExportedItem is implemented by the following types:
+// ExportedItemExportAccessControl
+// ExportedItemExportColumnMask
+type ExportedItem interface {
+	implementsGraphQLInterfaceExportedItem()
+}
+
+func (v *ExportedItemExportAccessControl) implementsGraphQLInterfaceExportedItem() {}
+func (v *ExportedItemExportColumnMask) implementsGraphQLInterfaceExportedItem()    {}
+
+func __unmarshalExportedItem(b []byte, v *ExportedItem) error {
+	if string(b) == "null" {
+		return nil
+	}
+
+	var tn struct {
+		TypeName string `json:"__typename"`
+	}
+	err := json.Unmarshal(b, &tn)
+	if err != nil {
+		return err
+	}
+
+	switch tn.TypeName {
+	case "ExportAccessControl":
+		*v = new(ExportedItemExportAccessControl)
+		return json.Unmarshal(b, *v)
+	case "ExportColumnMask":
+		*v = new(ExportedItemExportColumnMask)
+		return json.Unmarshal(b, *v)
+	case "":
+		return fmt.Errorf(
+			"response was missing ExportedItem.__typename")
+	default:
+		return fmt.Errorf(
+			`unexpected concrete type for ExportedItem: "%v"`, tn.TypeName)
+	}
+}
+
+func __marshalExportedItem(v *ExportedItem) ([]byte, error) {
+
+	var typename string
+	switch v := (*v).(type) {
+	case *ExportedItemExportAccessControl:
+		typename = "ExportAccessControl"
+
+		premarshaled, err := v.__premarshalJSON()
+		if err != nil {
+			return nil, err
+		}
+		result := struct {
+			TypeName string `json:"__typename"`
+			*__premarshalExportedItemExportAccessControl
+		}{typename, premarshaled}
+		return json.Marshal(result)
+	case *ExportedItemExportColumnMask:
+		typename = "ExportColumnMask"
+
+		premarshaled, err := v.__premarshalJSON()
+		if err != nil {
+			return nil, err
+		}
+		result := struct {
+			TypeName string `json:"__typename"`
+			*__premarshalExportedItemExportColumnMask
+		}{typename, premarshaled}
+		return json.Marshal(result)
+	case nil:
+		return []byte("null"), nil
+	default:
+		return nil, fmt.Errorf(
+			`unexpected concrete type for ExportedItem: "%T"`, v)
+	}
+}
+
+// ExportedItem includes the GraphQL fields of ExportAccessControl requested by the fragment ExportedItem.
+type ExportedItemExportAccessControl struct {
+	ExportAccessControl `json:"-"`
+}
+
+// GetId returns ExportedItemExportAccessControl.Id, and is useful for accessing the field via an interface.
+func (v *ExportedItemExportAccessControl) GetId() string { return v.ExportAccessControl.Id }
+
+// GetName returns ExportedItemExportAccessControl.Name, and is useful for accessing the field via an interface.
+func (v *ExportedItemExportAccessControl) GetName() string { return v.ExportAccessControl.Name }
+
+// GetDescription returns ExportedItemExportAccessControl.Description, and is useful for accessing the field via an interface.
+func (v *ExportedItemExportAccessControl) GetDescription() string {
+	return v.ExportAccessControl.Description
+}
+
+// GetNamingHint returns ExportedItemExportAccessControl.NamingHint, and is useful for accessing the field via an interface.
+func (v *ExportedItemExportAccessControl) GetNamingHint() string {
+	return v.ExportAccessControl.NamingHint
+}
+
+// GetExternalId returns ExportedItemExportAccessControl.ExternalId, and is useful for accessing the field via an interface.
+func (v *ExportedItemExportAccessControl) GetExternalId() *string {
+	return v.ExportAccessControl.ExternalId
+}
+
+// GetWho returns ExportedItemExportAccessControl.Who, and is useful for accessing the field via an interface.
+func (v *ExportedItemExportAccessControl) GetWho() ExportAccessControlWhoExportWhoItem {
+	return v.ExportAccessControl.Who
+}
+
+// GetDeletedWho returns ExportedItemExportAccessControl.DeletedWho, and is useful for accessing the field via an interface.
+func (v *ExportedItemExportAccessControl) GetDeletedWho() *ExportAccessControlDeletedWhoExportWhoItem {
+	return v.ExportAccessControl.DeletedWho
+}
+
+// GetAction returns ExportedItemExportAccessControl.Action, and is useful for accessing the field via an interface.
+func (v *ExportedItemExportAccessControl) GetAction() AccessControlAction {
+	return v.ExportAccessControl.Action
+}
+
+// GetDelete returns ExportedItemExportAccessControl.Delete, and is useful for accessing the field via an interface.
+func (v *ExportedItemExportAccessControl) GetDelete() bool { return v.ExportAccessControl.Delete }
+
+// GetWhoLocked returns ExportedItemExportAccessControl.WhoLocked, and is useful for accessing the field via an interface.
+func (v *ExportedItemExportAccessControl) GetWhoLocked() bool { return v.ExportAccessControl.WhoLocked }
+
+// GetWhatLocked returns ExportedItemExportAccessControl.WhatLocked, and is useful for accessing the field via an interface.
+func (v *ExportedItemExportAccessControl) GetWhatLocked() bool {
+	return v.ExportAccessControl.WhatLocked
+}
+
+// GetInheritanceLocked returns ExportedItemExportAccessControl.InheritanceLocked, and is useful for accessing the field via an interface.
+func (v *ExportedItemExportAccessControl) GetInheritanceLocked() bool {
+	return v.ExportAccessControl.InheritanceLocked
+}
+
+// GetDeleteLocked returns ExportedItemExportAccessControl.DeleteLocked, and is useful for accessing the field via an interface.
+func (v *ExportedItemExportAccessControl) GetDeleteLocked() bool {
+	return v.ExportAccessControl.DeleteLocked
+}
+
+// GetActualName returns ExportedItemExportAccessControl.ActualName, and is useful for accessing the field via an interface.
+func (v *ExportedItemExportAccessControl) GetActualName() *string {
+	return v.ExportAccessControl.ActualName
+}
+
+// GetWhat returns ExportedItemExportAccessControl.What, and is useful for accessing the field via an interface.
+func (v *ExportedItemExportAccessControl) GetWhat() []ExportAccessControlWhatExportWhatItem {
+	return v.ExportAccessControl.What
+}
+
+// GetDeleteWhat returns ExportedItemExportAccessControl.DeleteWhat, and is useful for accessing the field via an interface.
+func (v *ExportedItemExportAccessControl) GetDeleteWhat() []ExportAccessControlDeleteWhatExportWhatItem {
+	return v.ExportAccessControl.DeleteWhat
+}
+
+// GetType returns ExportedItemExportAccessControl.Type, and is useful for accessing the field via an interface.
+func (v *ExportedItemExportAccessControl) GetType() *string { return v.ExportAccessControl.Type }
+
+// GetFilterCriteria returns ExportedItemExportAccessControl.FilterCriteria, and is useful for accessing the field via an interface.
+func (v *ExportedItemExportAccessControl) GetFilterCriteria() *string {
+	return v.ExportAccessControl.FilterCriteria
+}
+
+// GetPolicyRule returns ExportedItemExportAccessControl.PolicyRule, and is useful for accessing the field via an interface.
+func (v *ExportedItemExportAccessControl) GetPolicyRule() *string {
+	return v.ExportAccessControl.PolicyRule
+}
+
+// GetCommonDataObject returns ExportedItemExportAccessControl.CommonDataObject, and is useful for accessing the field via an interface.
+func (v *ExportedItemExportAccessControl) GetCommonDataObject() *string {
+	return v.ExportAccessControl.CommonDataObject
+}
+
+// GetOwners returns ExportedItemExportAccessControl.Owners, and is useful for accessing the field via an interface.
+func (v *ExportedItemExportAccessControl) GetOwners() []ExportAccessControlOwnersExportOwner {
+	return v.ExportAccessControl.Owners
+}
+
+func (v *ExportedItemExportAccessControl) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*ExportedItemExportAccessControl
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.ExportedItemExportAccessControl = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.ExportAccessControl)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalExportedItemExportAccessControl struct {
+	Id string `json:"id"`
+
+	Name string `json:"name"`
+
+	Description string `json:"description"`
+
+	NamingHint string `json:"namingHint"`
+
+	ExternalId *string `json:"externalId"`
+
+	Who ExportAccessControlWhoExportWhoItem `json:"who"`
+
+	DeletedWho *ExportAccessControlDeletedWhoExportWhoItem `json:"deletedWho"`
+
+	Action AccessControlAction `json:"action"`
+
+	Delete bool `json:"delete"`
+
+	WhoLocked bool `json:"whoLocked"`
+
+	WhatLocked bool `json:"whatLocked"`
+
+	InheritanceLocked bool `json:"inheritanceLocked"`
+
+	DeleteLocked bool `json:"deleteLocked"`
+
+	ActualName *string `json:"actualName"`
+
+	What []ExportAccessControlWhatExportWhatItem `json:"what"`
+
+	DeleteWhat []ExportAccessControlDeleteWhatExportWhatItem `json:"deleteWhat"`
+
+	Type *string `json:"type"`
+
+	FilterCriteria *string `json:"filterCriteria"`
+
+	PolicyRule *string `json:"policyRule"`
+
+	CommonDataObject *string `json:"commonDataObject"`
+
+	Owners []ExportAccessControlOwnersExportOwner `json:"owners"`
+}
+
+func (v *ExportedItemExportAccessControl) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *ExportedItemExportAccessControl) __premarshalJSON() (*__premarshalExportedItemExportAccessControl, error) {
+	var retval __premarshalExportedItemExportAccessControl
+
+	retval.Id = v.ExportAccessControl.Id
+	retval.Name = v.ExportAccessControl.Name
+	retval.Description = v.ExportAccessControl.Description
+	retval.NamingHint = v.ExportAccessControl.NamingHint
+	retval.ExternalId = v.ExportAccessControl.ExternalId
+	retval.Who = v.ExportAccessControl.Who
+	retval.DeletedWho = v.ExportAccessControl.DeletedWho
+	retval.Action = v.ExportAccessControl.Action
+	retval.Delete = v.ExportAccessControl.Delete
+	retval.WhoLocked = v.ExportAccessControl.WhoLocked
+	retval.WhatLocked = v.ExportAccessControl.WhatLocked
+	retval.InheritanceLocked = v.ExportAccessControl.InheritanceLocked
+	retval.DeleteLocked = v.ExportAccessControl.DeleteLocked
+	retval.ActualName = v.ExportAccessControl.ActualName
+	retval.What = v.ExportAccessControl.What
+	retval.DeleteWhat = v.ExportAccessControl.DeleteWhat
+	retval.Type = v.ExportAccessControl.Type
+	retval.FilterCriteria = v.ExportAccessControl.FilterCriteria
+	retval.PolicyRule = v.ExportAccessControl.PolicyRule
+	retval.CommonDataObject = v.ExportAccessControl.CommonDataObject
+	retval.Owners = v.ExportAccessControl.Owners
+	return &retval, nil
+}
+
+// ExportedItem includes the GraphQL fields of ExportColumnMask requested by the fragment ExportedItem.
+type ExportedItemExportColumnMask struct {
+	ExportColumnMask `json:"-"`
+}
+
+// GetColumnMaskReferences returns ExportedItemExportColumnMask.ColumnMaskReferences, and is useful for accessing the field via an interface.
+func (v *ExportedItemExportColumnMask) GetColumnMaskReferences() []ExportColumnMaskColumnMaskReferencesExportColumnMaskReference {
+	return v.ExportColumnMask.ColumnMaskReferences
+}
+
+// GetMaskDetails returns ExportedItemExportColumnMask.MaskDetails, and is useful for accessing the field via an interface.
+func (v *ExportedItemExportColumnMask) GetMaskDetails() ExportColumnMaskMaskDetailsExportMaskDetails {
+	return v.ExportColumnMask.MaskDetails
+}
+
+// GetDelete returns ExportedItemExportColumnMask.Delete, and is useful for accessing the field via an interface.
+func (v *ExportedItemExportColumnMask) GetDelete() bool { return v.ExportColumnMask.Delete }
+
+// GetWho returns ExportedItemExportColumnMask.Who, and is useful for accessing the field via an interface.
+func (v *ExportedItemExportColumnMask) GetWho() ExportColumnMaskWhoExportWhoItem {
+	return v.ExportColumnMask.Who
+}
+
+// GetDeletedWho returns ExportedItemExportColumnMask.DeletedWho, and is useful for accessing the field via an interface.
+func (v *ExportedItemExportColumnMask) GetDeletedWho() *ExportColumnMaskDeletedWhoExportWhoItem {
+	return v.ExportColumnMask.DeletedWho
+}
+
+func (v *ExportedItemExportColumnMask) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*ExportedItemExportColumnMask
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.ExportedItemExportColumnMask = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.ExportColumnMask)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalExportedItemExportColumnMask struct {
+	ColumnMaskReferences []ExportColumnMaskColumnMaskReferencesExportColumnMaskReference `json:"columnMaskReferences"`
+
+	MaskDetails ExportColumnMaskMaskDetailsExportMaskDetails `json:"maskDetails"`
+
+	Delete bool `json:"delete"`
+
+	Who ExportColumnMaskWhoExportWhoItem `json:"who"`
+
+	DeletedWho *ExportColumnMaskDeletedWhoExportWhoItem `json:"deletedWho"`
+}
+
+func (v *ExportedItemExportColumnMask) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *ExportedItemExportColumnMask) __premarshalJSON() (*__premarshalExportedItemExportColumnMask, error) {
+	var retval __premarshalExportedItemExportColumnMask
+
+	retval.ColumnMaskReferences = v.ExportColumnMask.ColumnMaskReferences
+	retval.MaskDetails = v.ExportColumnMask.MaskDetails
+	retval.Delete = v.ExportColumnMask.Delete
+	retval.Who = v.ExportColumnMask.Who
+	retval.DeletedWho = v.ExportColumnMask.DeletedWho
+	return &retval, nil
+}
+
 // FetchExportAccessControlsFetchExportAccessControls includes the requested fields of the GraphQL type ExportAccessControls.
 type FetchExportAccessControlsFetchExportAccessControls struct {
 	Typename             *string `json:"__typename"`
@@ -12284,7 +13195,7 @@ func (v *FetchExportAccessControlsFetchExportAccessControls) GetLastSequenceId()
 }
 
 // GetAccessControls returns FetchExportAccessControlsFetchExportAccessControls.AccessControls, and is useful for accessing the field via an interface.
-func (v *FetchExportAccessControlsFetchExportAccessControls) GetAccessControls() []ExportAccessControlsAccessControlsExportAccessControl {
+func (v *FetchExportAccessControlsFetchExportAccessControls) GetAccessControls() []ExportAccessControlsAccessControlsExportedItem {
 	return v.ExportAccessControls.AccessControls
 }
 
@@ -12318,7 +13229,7 @@ type __premarshalFetchExportAccessControlsFetchExportAccessControls struct {
 
 	LastSequenceId int `json:"lastSequenceId"`
 
-	AccessControls []ExportAccessControlsAccessControlsExportAccessControl `json:"accessControls"`
+	AccessControls []json.RawMessage `json:"accessControls"`
 }
 
 func (v *FetchExportAccessControlsFetchExportAccessControls) MarshalJSON() ([]byte, error) {
@@ -12334,7 +13245,24 @@ func (v *FetchExportAccessControlsFetchExportAccessControls) __premarshalJSON() 
 
 	retval.Typename = v.Typename
 	retval.LastSequenceId = v.ExportAccessControls.LastSequenceId
-	retval.AccessControls = v.ExportAccessControls.AccessControls
+	{
+
+		dst := &retval.AccessControls
+		src := v.ExportAccessControls.AccessControls
+		*dst = make(
+			[]json.RawMessage,
+			len(src))
+		for i, src := range src {
+			dst := &(*dst)[i]
+			var err error
+			*dst, err = __marshalExportAccessControlsAccessControlsExportedItem(
+				&src)
+			if err != nil {
+				return nil, fmt.Errorf(
+					"unable to marshal FetchExportAccessControlsFetchExportAccessControls.ExportAccessControls.AccessControls: %w", err)
+			}
+		}
+	}
 	return &retval, nil
 }
 
@@ -26045,6 +26973,7 @@ type MaskTypeInput struct {
 	ExternalId  string   `json:"externalId"`
 	Description string   `json:"description"`
 	DataTypes   []string `json:"dataTypes"`
+	Precedence  *int     `json:"precedence,omitempty"`
 }
 
 // GetDisplayName returns MaskTypeInput.DisplayName, and is useful for accessing the field via an interface.
@@ -26058,6 +26987,9 @@ func (v *MaskTypeInput) GetDescription() string { return v.Description }
 
 // GetDataTypes returns MaskTypeInput.DataTypes, and is useful for accessing the field via an interface.
 func (v *MaskTypeInput) GetDataTypes() []string { return v.DataTypes }
+
+// GetPrecedence returns MaskTypeInput.Precedence, and is useful for accessing the field via an interface.
+func (v *MaskTypeInput) GetPrecedence() *int { return v.Precedence }
 
 // MaskingMetadata includes the GraphQL fields of MaskingMetadata requested by the fragment MaskingMetadata.
 type MaskingMetadata struct {
@@ -36102,14 +37034,14 @@ func (v *WhoAbacRule) GetType() AccessWhoItemType { return v.Type }
 func (v *WhoAbacRule) GetRuleJson() *string { return v.RuleJson }
 
 type WhoAbacRuleInput struct {
-	Id              *string                       `json:"id,omitempty"`
+	Id              string                        `json:"id"`
 	Rule            AbacComparisonExpressionInput `json:"rule"`
 	Type            AccessWhoItemType             `json:"type"`
 	PromiseDuration *int64                        `json:"promiseDuration,omitempty"`
 }
 
 // GetId returns WhoAbacRuleInput.Id, and is useful for accessing the field via an interface.
-func (v *WhoAbacRuleInput) GetId() *string { return v.Id }
+func (v *WhoAbacRuleInput) GetId() string { return v.Id }
 
 // GetRule returns WhoAbacRuleInput.Rule, and is useful for accessing the field via an interface.
 func (v *WhoAbacRuleInput) GetRule() AbacComparisonExpressionInput { return v.Rule }
@@ -38134,7 +39066,8 @@ query FetchExportAccessControls ($flowId: UUID!, $after: Int) {
 fragment ExportAccessControls on ExportAccessControls {
 	lastSequenceId
 	accessControls {
-		... ExportAccessControl
+		__typename
+		... ExportedItem
 	}
 }
 fragment PermissionDeniedError on PermissionDeniedError {
@@ -38145,6 +39078,10 @@ fragment NotFoundError on NotFoundError {
 }
 fragment InvalidInputError on InvalidInputError {
 	message
+}
+fragment ExportedItem on ExportedItem {
+	... ExportAccessControl
+	... ExportColumnMask
 }
 fragment ExportAccessControl on ExportAccessControl {
 	id
@@ -38177,6 +39114,30 @@ fragment ExportAccessControl on ExportAccessControl {
 	commonDataObject
 	owners {
 		... ExportOwner
+	}
+}
+fragment ExportColumnMask on ExportColumnMask {
+	columnMaskReferences {
+		column {
+			... ExportDataObjectReference
+		}
+		externalId
+		id
+	}
+	maskDetails {
+		id
+		deleted
+		description
+		name
+		namingHint
+		type
+	}
+	delete
+	who {
+		... ExportWhoItem
+	}
+	deletedWho {
+		... ExportWhoItem
 	}
 }
 fragment ExportWhoItem on ExportWhoItem {
