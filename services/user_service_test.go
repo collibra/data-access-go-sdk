@@ -158,4 +158,61 @@ func (suite *UserServiceTestSuite) TestUsers() {
 
 		suite.Require().Equal(newName, userData.Name)
 	})
+
+	suite.Run("Error should be reported for duplicate email on user creation", func() {
+		t := suite.T()
+		ctx := t.Context()
+		userClient := suite.UserClient
+
+		if createdUser.Id == "" {
+			suite.T().Skip("Created user ID is empty, cannot proceed with test")
+		}
+
+		uuidString := uuid.NewString()
+		userName := "SDK Automated Test User " + uuidString
+		userEmail := *createdUser.Email
+		userType := schema.UserTypeHuman
+
+		user, err := userClient.CreateUser(ctx, schema.UserInput{
+			Name:  &userName,
+			Email: &userEmail,
+			Type:  &userType,
+		})
+		suite.Require().Nil(user)
+		suite.Require().NotNil(err)
+		// suite.Require().ErrorContains(err, "to paste meaningfull message");
+	})
+}
+
+func (suite *UserServiceTestSuite) TestGetNonExistentUser() {
+	t := suite.T()
+	ctx := t.Context()
+	userClient := suite.UserClient
+	userData, err := userClient.GetUser(ctx, "nonexistent_user")
+	suite.Require().Nil(userData)
+	suite.Require().NotNil(err)
+	suite.Require().ErrorContains(err, "Requested user not found")
+}
+
+func (suite *UserServiceTestSuite) TestGetNonExistentUserByEmail() {
+	t := suite.T()
+	ctx := t.Context()
+	userClient := suite.UserClient
+	user, err := userClient.GetUserByEmail(ctx, "Idonotexists@ghjghjg.com")
+	suite.Require().Nil(user)
+	suite.Require().NotNil(err)
+	suite.Require().ErrorContains(err, "Requested user not found")
+}
+
+func (suite *UserServiceTestSuite) TestUpdateNonExistentUser() {
+	t := suite.T()
+	ctx := t.Context()
+	userClient := suite.UserClient
+	newName := "Updated User Name"
+	updatedUser, err := userClient.UpdateUser(ctx, "doesnot matter", schema.UserInput{
+		Name: &newName,
+	})
+	suite.Require().Nil(updatedUser)
+	suite.Require().NotNil(err)
+	suite.Require().ErrorContains(err, "unexpected result type")
 }
