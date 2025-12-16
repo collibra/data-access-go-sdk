@@ -179,7 +179,7 @@ func (suite *ExporterServiceTestSuite) TestExportAccessControls_WithExportOutOfS
 		}
 	}
 
-	suite.Require().True(found, "Failed to find exported access control")
+	suite.True(found, "Failed to find exported access control")
 
 	_, err = exporter.FinishExportFlow(ctx, *suite.subtask.FlowId, time.Now())
 	suite.Require().NoError(err, "Failed to finish export flow")

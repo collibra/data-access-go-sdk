@@ -117,7 +117,24 @@ func (c *ExporterClient) FetchExportAccessControls(ctx context.Context, flowId u
 			}
 
 			for i := range controls.AccessControls {
-				if !yield(controls.AccessControls[i], nil) {
+				var toReturn types.ExportedItem
+
+				switch ac := controls.AccessControls[i].(type) {
+				case *types.ExportAccessControlsAccessControlsExportAccessControl:
+					toReturn = &types.ExportedItemExportAccessControl{
+						ExportAccessControl: ac.ExportAccessControl,
+					}
+				case *types.ExportAccessControlsAccessControlsExportColumnMask:
+					toReturn = &types.ExportedItemExportColumnMask{
+						ExportColumnMask: ac.ExportColumnMask,
+					}
+				default:
+					yield(nil, fmt.Errorf("unknown exported access control type: %T", ac))
+
+					return
+				}
+
+				if !yield(toReturn, nil) {
 					return
 				}
 			}
