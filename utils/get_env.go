@@ -16,7 +16,7 @@ func getEnv(suite *suite.Suite, key string) string {
 	value := os.Getenv(key)
 
 	if value == "" {
-		suite.FailNowf("Environment variable %s must be set for e2e tests", key)
+		suite.FailNowf("Missing environment variable", "Environment variable %s must be set for e2e tests", key)
 	}
 
 	return value

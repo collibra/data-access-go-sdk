@@ -160,7 +160,7 @@ func (suite *ExporterServiceTestSuite) TestExportAccessControls_WithExportOutOfS
 	})
 	suite.Require().NoError(err, "Failed to start export flow")
 
-	response := exporter.FetchExportAccessControls(ctx, *suite.subtask.FlowId, 0)
+	response := exporter.FetchExportAccessControls(ctx, *suite.subtask.FlowId)
 	found := false
 
 	for accessControl, err := range response {
