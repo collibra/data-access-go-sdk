@@ -176,10 +176,10 @@ func (suite *ExporterServiceTestSuite) verifyExportAccessControls(opts ...func(o
             suite.Equal(suite.createdAccessControl.Name, accessControl.Name)
             suite.Equal(suite.createdAccessControl.Action, accessControl.Action)
 
-            found = true
-            break
-        }
-    }
+			found = true
+			break
+		}
+	}
 
     suite.Require().True(found, "Failed to find exported access control")
 

@@ -63,10 +63,40 @@ fragment ExportAccessControl on ExportAccessControl {
     }
 }
 
+fragment ExportColumnMask on ExportColumnMask {
+    columnMaskReferences {
+        column {
+            ... ExportDataObjectReference
+        }
+        externalId
+        id
+    }
+    maskDetails {
+        id
+        deleted
+        description
+        name
+        namingHint
+        type
+    }
+    delete
+    who {
+        ... ExportWhoItem
+    }
+    deletedWho {
+        ... ExportWhoItem
+    }
+}
+
+fragment ExportedItem on ExportedItem {
+    ... ExportAccessControl
+    ... ExportColumnMask
+}
+
 fragment ExportAccessControls on ExportAccessControls {
     lastSequenceId
     accessControls {
-        ... ExportAccessControl
+        ...ExportedItem
     }
 }
 

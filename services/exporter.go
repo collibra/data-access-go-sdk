@@ -71,13 +71,38 @@ func (c *ExporterClient) FinishExportFlow(ctx context.Context, flowId uuid.UUID,
 	return result.FinishExportFlow, nil
 }
 
+type FetchExportAccessControlsParams struct {
+	StartSequenceId int
+	LastSequenceId  *int
+}
+
+type FetchExportAccessControlsOption func(params *FetchExportAccessControlsParams)
+
+func WithFetchExportAccessControlsLastSequenceId(lastSequenceId int) FetchExportAccessControlsOption {
+	return func(params *FetchExportAccessControlsParams) {
+		params.LastSequenceId = &lastSequenceId
+	}
+}
+
+func WithFetchExportAccessControlsStartSequenceId(startSequenceId int) FetchExportAccessControlsOption {
+	return func(params *FetchExportAccessControlsParams) {
+		params.StartSequenceId = startSequenceId
+	}
+}
+
 // FetchExportAccessControls streams the access controls exported in the given flow.
-func (c *ExporterClient) FetchExportAccessControls(ctx context.Context, flowId uuid.UUID, lastSequenceId int) iter.Seq2[*types.ExportAccessControl, error] {
-	return func(yield func(*types.ExportAccessControl, error) bool) {
-		var after *int
+func (c *ExporterClient) FetchExportAccessControls(ctx context.Context, flowId uuid.UUID, ops ...FetchExportAccessControlsOption) iter.Seq2[types.ExportedItem, error] {
+	return func(yield func(types.ExportedItem, error) bool) {
+		options := FetchExportAccessControlsParams{}
+
+		for _, op := range ops {
+			op(&options)
+		}
+
+		after := options.StartSequenceId
 
 		for {
-			result, err := schema.FetchExportAccessControls(ctx, c.client, flowId, after)
+			result, err := schema.FetchExportAccessControls(ctx, c.client, flowId, &after)
 			if err != nil {
 				yield(nil, types.NewErrClient(err))
 				break
@@ -89,6 +114,7 @@ func (c *ExporterClient) FetchExportAccessControls(ctx context.Context, flowId u
 			switch response := result.FetchExportAccessControls.(type) {
 			case *schema.FetchExportAccessControlsFetchExportAccessControls:
 				controls = &response.ExportAccessControls
+				after = controls.LastSequenceId
 			case *schema.FetchExportAccessControlsFetchExportAccessControlsPermissionDeniedError:
 				fetchErr = types.NewErrPermissionDenied("fetchExportAccessControls", response.Message)
 			case *schema.FetchExportAccessControlsFetchExportAccessControlsNotFoundError:
@@ -105,12 +131,29 @@ func (c *ExporterClient) FetchExportAccessControls(ctx context.Context, flowId u
 			}
 
 			for i := range controls.AccessControls {
-				if !yield(&controls.AccessControls[i].ExportAccessControl, nil) {
+				var toReturn types.ExportedItem
+
+				switch ac := controls.AccessControls[i].(type) {
+				case *types.ExportAccessControlsAccessControlsExportAccessControl:
+					toReturn = &types.ExportedItemExportAccessControl{
+						ExportAccessControl: ac.ExportAccessControl,
+					}
+				case *types.ExportAccessControlsAccessControlsExportColumnMask:
+					toReturn = &types.ExportedItemExportColumnMask{
+						ExportColumnMask: ac.ExportColumnMask,
+					}
+				default:
+					yield(nil, fmt.Errorf("unknown exported access control type: %T", ac))
+
+					return
+				}
+
+				if !yield(toReturn, nil) {
 					return
 				}
 			}
 
-			if controls.LastSequenceId == lastSequenceId {
+			if (options.LastSequenceId != nil && *options.LastSequenceId == controls.LastSequenceId) || len(controls.AccessControls) == 0 {
 				return
 			}
 		}
