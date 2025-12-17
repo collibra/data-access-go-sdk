@@ -101,15 +101,32 @@ func (suite *DataSourceServiceTestSuite) TestDataSources() {
 
 		dataSourceName := "Test Data Source " + uuid.New().String()
 		dataSourceDescription := "SDK Tests DataSource Description"
+		canRequestAccess := true
+		canRequestAccessToTypes := []string{"table", "schema"}
+		sampleCronExpression := "0 0 * * *"
+		catalogSystemId := uuid.New()
 		input := &schema.DataSourceInput{
 			Name:        &dataSourceName,
 			Description: &dataSourceDescription,
 			Parent:      &parentDataSource.Id,
+			CanRequestAccess: &canRequestAccess,
+			CanRequestAccessToTypes: canRequestAccessToTypes,
+			SyncSchedule: &schema.DataSourceSyncScheduleInput{
+				Global: &sampleCronExpression,
+				DataObjectSync: &sampleCronExpression,
+				IdentitySync: &sampleCronExpression,
+				AccessToTargetSync: &sampleCronExpression,
+				AccessFromTargetSync: &sampleCronExpression,
+				UsageSync: &sampleCronExpression,
+			},
+			CatalogSystemId: &catalogSystemId,
 		}
 
 		createdDataSource = createDataSource(&suite.Suite, dataSourceClient, input)
 		suite.Equal(dataSourceName, createdDataSource.Name)
 		suite.Equal(dataSourceDescription, createdDataSource.Description)
+		suite.Require().NotNil(createdDataSource.Parent.Id)
+		suite.Equal(parentDataSource.Id, createdDataSource.Parent.Id, "Parent for created Data Source does not match the original input")
 	})
 
 	suite.Run("List Data Sources With Data Source List Filter", func() {
@@ -122,7 +139,6 @@ func (suite *DataSourceServiceTestSuite) TestDataSources() {
 			Parent: &parentDataSource.Id,
 		}))
 		found := false
-
 		for ds, err := range response {
 			suite.Require().NoError(err, "Error while listing data sources")
 			suite.NotNil(ds, "Data source is nil")
@@ -192,15 +208,37 @@ func (suite *DataSourceServiceTestSuite) TestDataSources() {
 			suite.T().Log("Skipping TestD_UpdateDataSource as no data sources were created")
 			suite.T().SkipNow()
 		}
+		newParent := createDataSource(&suite.Suite, dataSourceClient, nil)
 
-		newName := "Updated" + createdDataSource.Name
+		dataSourceName := "Test Data Source " + uuid.New().String()
+		dataSourceDescription := "SDK Tests DataSource Description"
+		canRequestAccess := false
+		canRequestAccessToTypes := []string{"schema"}
+		sampleCronExpression := "0 0 * * *"
+		catalogSystemId := uuid.New()
+		input := &schema.DataSourceInput{
+			Name:        &dataSourceName,
+			Description: &dataSourceDescription,
+			Parent: &newParent.Id,
+			CanRequestAccess: &canRequestAccess,
+			CanRequestAccessToTypes: canRequestAccessToTypes,
+			SyncSchedule: &schema.DataSourceSyncScheduleInput{
+				Global: &sampleCronExpression,
+				DataObjectSync: &sampleCronExpression,
+				IdentitySync: &sampleCronExpression,
+				AccessToTargetSync: &sampleCronExpression,
+				AccessFromTargetSync: &sampleCronExpression,
+				UsageSync: &sampleCronExpression,
+			},
+			CatalogSystemId: &catalogSystemId,
+		}
 
-		updatedDataSource, err := suite.dataSourceClient.UpdateDataSource(ctx, createdDataSource.Id, schema.DataSourceInput{
-			Name: &newName,
-		})
+		updatedDataSource, err := suite.dataSourceClient.UpdateDataSource(ctx, createdDataSource.Id, *input)
 		suite.Require().NoError(err, "Failed to update data source")
 		suite.Require().NotNil(updatedDataSource, "Updated data source is nil")
-		suite.Equal(newName, updatedDataSource.Name, "Data source name was not updated")
+		suite.Equal(*input.Name, updatedDataSource.Name, "Data source name was not updated")
+		suite.Equal(dataSourceDescription, updatedDataSource.Description, "Description was not updated")
+		suite.Equal(newParent.Id, updatedDataSource.Parent.Id, "Parent was not updated")
 		createdDataSource = updatedDataSource
 	})
 
