@@ -31,7 +31,7 @@ func createDataSource(suite *suite.Suite, dataSourceClient *services.DataSourceC
 
 	if input == nil {
 		dataSourceName := "Test Data Source " + uuid.New().String()
-		dataSourceDescription := "SDK Tests DataSource Description"
+		dataSourceDescription := dataSourceName + " Description"
 		input = &schema.DataSourceInput{
 			Name:        &dataSourceName,
 			Description: &dataSourceDescription,
@@ -100,24 +100,24 @@ func (suite *DataSourceServiceTestSuite) TestDataSources() {
 		parentDataSource = createDataSource(&suite.Suite, dataSourceClient, nil)
 
 		dataSourceName := "Test Data Source " + uuid.New().String()
-		dataSourceDescription := "SDK Tests DataSource Description"
+		dataSourceDescription := dataSourceName + " Description"
 		canRequestAccess := true
 		canRequestAccessToTypes := []string{"table", "schema"}
 		sampleCronExpression := "0 0 * * *"
 		catalogSystemId := uuid.New()
 		input := &schema.DataSourceInput{
-			Name:        &dataSourceName,
-			Description: &dataSourceDescription,
-			Parent:      &parentDataSource.Id,
-			CanRequestAccess: &canRequestAccess,
+			Name:                    &dataSourceName,
+			Description:             &dataSourceDescription,
+			Parent:                  &parentDataSource.Id,
+			CanRequestAccess:        &canRequestAccess,
 			CanRequestAccessToTypes: canRequestAccessToTypes,
 			SyncSchedule: &schema.DataSourceSyncScheduleInput{
-				Global: &sampleCronExpression,
-				DataObjectSync: &sampleCronExpression,
-				IdentitySync: &sampleCronExpression,
-				AccessToTargetSync: &sampleCronExpression,
+				Global:               &sampleCronExpression,
+				DataObjectSync:       &sampleCronExpression,
+				IdentitySync:         &sampleCronExpression,
+				AccessToTargetSync:   &sampleCronExpression,
 				AccessFromTargetSync: &sampleCronExpression,
-				UsageSync: &sampleCronExpression,
+				UsageSync:            &sampleCronExpression,
 			},
 			CatalogSystemId: &catalogSystemId,
 		}
@@ -139,6 +139,7 @@ func (suite *DataSourceServiceTestSuite) TestDataSources() {
 			Parent: &parentDataSource.Id,
 		}))
 		found := false
+
 		for ds, err := range response {
 			suite.Require().NoError(err, "Error while listing data sources")
 			suite.NotNil(ds, "Data source is nil")
@@ -211,7 +212,7 @@ func (suite *DataSourceServiceTestSuite) TestDataSources() {
 		// newParent := createDataSource(&suite.Suite, dataSourceClient, nil) // TODO: Uncomment once https://engineering-collibra.atlassian.net/browse/DEV-154727 is fixed
 
 		dataSourceName := "Test Data Source " + uuid.New().String()
-		dataSourceDescription := "SDK Tests DataSource Description"
+		dataSourceDescription := dataSourceName + " Description"
 		canRequestAccess := false
 		canRequestAccessToTypes := []string{"schema"}
 		sampleCronExpression := "0 0 * * *"
@@ -220,15 +221,15 @@ func (suite *DataSourceServiceTestSuite) TestDataSources() {
 			Name:        &dataSourceName,
 			Description: &dataSourceDescription,
 			// Parent: &newParent.Id, // TODO: Uncomment once https://engineering-collibra.atlassian.net/browse/DEV-154727 is fixed
-			CanRequestAccess: &canRequestAccess,
+			CanRequestAccess:        &canRequestAccess,
 			CanRequestAccessToTypes: canRequestAccessToTypes,
 			SyncSchedule: &schema.DataSourceSyncScheduleInput{
-				Global: &sampleCronExpression,
-				DataObjectSync: &sampleCronExpression,
-				IdentitySync: &sampleCronExpression,
-				AccessToTargetSync: &sampleCronExpression,
+				Global:               &sampleCronExpression,
+				DataObjectSync:       &sampleCronExpression,
+				IdentitySync:         &sampleCronExpression,
+				AccessToTargetSync:   &sampleCronExpression,
 				AccessFromTargetSync: &sampleCronExpression,
-				UsageSync: &sampleCronExpression,
+				UsageSync:            &sampleCronExpression,
 			},
 			CatalogSystemId: &catalogSystemId,
 		}

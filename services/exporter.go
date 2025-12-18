@@ -34,7 +34,7 @@ func WithExportOutOfSyncOnly() func(options *ExportOptions) {
 }
 
 // StartExportFlow starts a new export flow.
-func (c *ExporterClient) StartExportFlow(ctx context.Context, flowId uuid.UUID, ops ... func(*ExportOptions)) (*types.StartExportFlow, error) {
+func (c *ExporterClient) StartExportFlow(ctx context.Context, flowId uuid.UUID, ops ...func(*ExportOptions)) (*types.StartExportFlow, error) {
 	options := ExportOptions{}
 	for _, op := range ops {
 		op(&options)

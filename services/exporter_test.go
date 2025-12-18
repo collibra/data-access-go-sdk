@@ -6,8 +6,8 @@ import (
 
 	sdk "github.com/collibra/data-access-go-sdk"
 	"github.com/collibra/data-access-go-sdk/internal/schema"
-	"github.com/collibra/data-access-go-sdk/types"
 	"github.com/collibra/data-access-go-sdk/services"
+	"github.com/collibra/data-access-go-sdk/types"
 	"github.com/collibra/data-access-go-sdk/utils"
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/suite"
@@ -166,7 +166,7 @@ func (suite *ExporterServiceTestSuite) verifyExportAccessControls(opts ...func(o
 	_, err := exporter.StartExportFlow(ctx, *suite.subtask.FlowId, opts...)
 	suite.Require().NoError(err, "Failed to start export flow")
 
-	response := exporter.FetchExportAccessControls(ctx, *suite.subtask.FlowId, )
+	response := exporter.FetchExportAccessControls(ctx, *suite.subtask.FlowId)
 	found := false
 
 	for accessControl, err := range response {

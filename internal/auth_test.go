@@ -22,8 +22,14 @@ func (suite *AuthTestSuite) TestBasicAuthRoundTripper_RoundTrip() {
 
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		capturedUsername, capturedPassword, authPresent = r.BasicAuth()
+
 		w.WriteHeader(http.StatusOK)
-		w.Write([]byte("OK"))
+
+		_, err := w.Write([]byte("OK"))
+		if err != nil {
+			// Handle the error (log it, return it, etc.)
+			suite.T().Logf("failed to write header: %v", err)
+		}
 	}))
 	defer server.Close()
 
@@ -39,6 +45,7 @@ func (suite *AuthTestSuite) TestBasicAuthRoundTripper_RoundTrip() {
 
 	resp, err := client.Get(server.URL)
 	suite.Require().NoError(err)
+
 	suite.Require().NotNil(resp)
 	defer resp.Body.Close()
 
@@ -53,6 +60,7 @@ func (suite *AuthTestSuite) TestBasicAuthRoundTripper_PreservesHeaders() {
 
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		capturedHeaders = r.Header.Clone()
+
 		w.WriteHeader(http.StatusOK)
 	}))
 	defer server.Close()
@@ -67,12 +75,13 @@ func (suite *AuthTestSuite) TestBasicAuthRoundTripper_PreservesHeaders() {
 		Transport: authRoundTripper,
 	}
 
-	req, err := http.NewRequest("POST", server.URL, nil)
+	req, err := http.NewRequest(http.MethodPost, server.URL, http.NoBody)
 	suite.Require().NoError(err)
 	req.Header.Set("Content-Type", "application/json")
 
 	resp, err := client.Do(req)
 	suite.Require().NoError(err)
+
 	defer resp.Body.Close()
 
 	suite.Equal("application/json", capturedHeaders.Get("Content-Type"))

@@ -179,8 +179,8 @@ func (suite *UserServiceTestSuite) TestUsers() {
 			Type:  &userType,
 		})
 		suite.Require().Nil(user)
-		suite.Require().NotNil(err)
-		// suite.Require().ErrorContains(err, "to paste meaningfull message");
+		suite.Require().Error(err)
+		// TODO: Add a message check once a general one is improved
 	})
 }
 
@@ -190,7 +190,7 @@ func (suite *UserServiceTestSuite) TestGetNonExistentUser() {
 	userClient := suite.UserClient
 	userData, err := userClient.GetUser(ctx, "nonexistent_user")
 	suite.Require().Nil(userData)
-	suite.Require().NotNil(err)
+	suite.Require().Error(err)
 	suite.Require().ErrorContains(err, "Requested user not found")
 }
 
@@ -200,7 +200,7 @@ func (suite *UserServiceTestSuite) TestGetNonExistentUserByEmail() {
 	userClient := suite.UserClient
 	user, err := userClient.GetUserByEmail(ctx, "Idonotexists@ghjghjg.com")
 	suite.Require().Nil(user)
-	suite.Require().NotNil(err)
+	suite.Require().Error(err)
 	suite.Require().ErrorContains(err, "Requested user not found")
 }
 
@@ -213,6 +213,6 @@ func (suite *UserServiceTestSuite) TestUpdateNonExistentUser() {
 		Name: &newName,
 	})
 	suite.Require().Nil(updatedUser)
-	suite.Require().NotNil(err)
+	suite.Require().Error(err)
 	suite.Require().ErrorContains(err, "unexpected result type")
 }
