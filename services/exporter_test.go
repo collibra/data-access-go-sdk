@@ -6,6 +6,7 @@ import (
 
 	sdk "github.com/collibra/data-access-go-sdk"
 	"github.com/collibra/data-access-go-sdk/internal/schema"
+	"github.com/collibra/data-access-go-sdk/services"
 	"github.com/collibra/data-access-go-sdk/types"
 	"github.com/collibra/data-access-go-sdk/utils"
 	"github.com/google/uuid"
@@ -148,16 +149,21 @@ func (suite *ExporterServiceTestSuite) TearDownSuite() {
 	TearDown_FinishJobAndTask_DeleteDataSource(&suite.Suite, suite.sdkClient, suite.subtask.FlowId, suite.createdDataSource.Id, suite.jobType, &suite.job.Id)
 }
 
+func (suite *ExporterServiceTestSuite) TestExportAccessControls() {
+	suite.verifyExportAccessControls()
+}
+
 func (suite *ExporterServiceTestSuite) TestExportAccessControls_WithExportOutOfSyncOnly() {
+	suite.verifyExportAccessControls(services.WithExportOutOfSyncOnly())
+}
+
+// helper function to reduce code duplication in the above tests
+func (suite *ExporterServiceTestSuite) verifyExportAccessControls(opts ...func(options *services.ExportOptions)) {
 	ctx := suite.T().Context()
 	exporter := suite.sdkClient.Exporter()
 	suite.Require().NotNil(exporter, "Failed to create Exporter client")
 
-	OnlyOutOfSync := true
-
-	_, err := exporter.StartExportFlow(ctx, *suite.subtask.FlowId, schema.ExportFlowOptions{
-		OnlyOutOfSync: &OnlyOutOfSync,
-	})
+	_, err := exporter.StartExportFlow(ctx, *suite.subtask.FlowId, opts...)
 	suite.Require().NoError(err, "Failed to start export flow")
 
 	response := exporter.FetchExportAccessControls(ctx, *suite.subtask.FlowId)
@@ -179,7 +185,7 @@ func (suite *ExporterServiceTestSuite) TestExportAccessControls_WithExportOutOfS
 		}
 	}
 
-	suite.True(found, "Failed to find exported access control")
+	suite.Require().True(found, "Failed to find exported access control")
 
 	_, err = exporter.FinishExportFlow(ctx, *suite.subtask.FlowId, time.Now())
 	suite.Require().NoError(err, "Failed to finish export flow")
