@@ -95,6 +95,7 @@ func (suite *DataSourceServiceTestSuite) TestDataSources() {
 	dataSourceClient := suite.dataSourceClient
 	var createdDataSource *schema.DataSource
 	var parentDataSource *schema.DataSource
+	var newParentDataSource *schema.DataSource
 
 	suite.Run("Create a Data Source With Parent", func() {
 		parentDataSource = createDataSource(&suite.Suite, dataSourceClient, nil)
@@ -209,7 +210,8 @@ func (suite *DataSourceServiceTestSuite) TestDataSources() {
 			suite.T().Log("Skipping TestD_UpdateDataSource as no data sources were created")
 			suite.T().SkipNow()
 		}
-		// newParent := createDataSource(&suite.Suite, dataSourceClient, nil) // TODO: Uncomment once https://engineering-collibra.atlassian.net/browse/DEV-154727 is fixed
+
+		newParentDataSource = createDataSource(&suite.Suite, dataSourceClient, nil)
 
 		dataSourceName := "Test Data Source " + uuid.New().String()
 		dataSourceDescription := dataSourceName + " Description"
@@ -218,9 +220,9 @@ func (suite *DataSourceServiceTestSuite) TestDataSources() {
 		sampleCronExpression := "0 0 * * *"
 		catalogSystemId := uuid.New()
 		input := &schema.DataSourceInput{
-			Name:        &dataSourceName,
-			Description: &dataSourceDescription,
-			// Parent: &newParent.Id, // TODO: Uncomment once https://engineering-collibra.atlassian.net/browse/DEV-154727 is fixed
+			Name:                    &dataSourceName,
+			Description:             &dataSourceDescription,
+			Parent:                  &newParentDataSource.Id,
 			CanRequestAccess:        &canRequestAccess,
 			CanRequestAccessToTypes: canRequestAccessToTypes,
 			SyncSchedule: &schema.DataSourceSyncScheduleInput{
@@ -239,7 +241,7 @@ func (suite *DataSourceServiceTestSuite) TestDataSources() {
 		suite.Require().NotNil(updatedDataSource, "Updated data source is nil")
 		suite.Equal(*input.Name, updatedDataSource.Name, "Data source name was not updated")
 		suite.Equal(dataSourceDescription, updatedDataSource.Description, "Description was not updated")
-		// suite.Equal(newParent.Id, updatedDataSource.Parent.Id, "Parent was not updated") // TODO: Uncomment once https://engineering-collibra.atlassian.net/browse/DEV-154727 is fixed
+		suite.Equal(newParentDataSource.Id, updatedDataSource.Parent.Id, "Parent was not updated")
 		createdDataSource = updatedDataSource
 	})
 
@@ -279,7 +281,7 @@ func (suite *DataSourceServiceTestSuite) TestDataSources() {
 		suite.Equal(*suite.metadata.MaskingMetadata.DefaultMaskExternalName, *retrievedMaskingMetaData.DefaultMaskExternalName, "Default mask external name should match")
 	})
 
-	suite.Run("Delete Data Source", func() {
+	suite.Run("Delete Data Source with Parent", func() {
 		if createdDataSource == nil {
 			suite.T().Log("Skipping TestH_DeleteDataSource as no data sources were created")
 			suite.T().SkipNow()
@@ -293,7 +295,7 @@ func (suite *DataSourceServiceTestSuite) TestDataSources() {
 		suite.Require().Error(err, "Expected error when getting deleted data source")
 	})
 
-	suite.Run("Delete Parent Data Source", func() {
+	suite.Run("Delete Parent Data Source after deletion of a child", func() {
 		if parentDataSource == nil {
 			suite.T().Log("Skipping TestI_DeleteParentDataSource as no parent data source was created")
 			suite.T().SkipNow()
@@ -301,6 +303,9 @@ func (suite *DataSourceServiceTestSuite) TestDataSources() {
 
 		err := dataSourceClient.DeleteDataSource(ctx, parentDataSource.Id)
 		suite.Require().NoError(err, "Failed to delete parent data source")
+
+		_, err = dataSourceClient.GetDataSource(ctx, parentDataSource.Id)
+		suite.Require().Error(err, "Expected error when getting deleted data source")
 	})
 }
 
