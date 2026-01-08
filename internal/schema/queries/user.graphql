@@ -5,17 +5,11 @@ fragment User on User {
     type
 }
 
-fragment InvalidEmailError on InvalidEmailError {
-    errEmail: email
-    message
-}
-
 query GetUser($id: ID!) {
     user(id: $id) {
         ...User
         ...NotFoundError
         ...PermissionDeniedError
-        ...InvalidEmailError
         ...InvalidInputError
     }
 }
