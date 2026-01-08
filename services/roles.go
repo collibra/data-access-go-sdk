@@ -229,8 +229,6 @@ func (c *RoleClient) ListRoleAssignmentsOnUser(ctx context.Context, userId strin
 			return nil, nil, types.NewErrPermissionDenied("listRoleAssignmentsOnUser", r.Message)
 		case *schema.ListRoleAssignmentsOnUserUserNotFoundError:
 			return nil, nil, types.NewErrNotFound(userId, r.Typename, r.Message)
-		case *schema.ListRoleAssignmentsOnUserUserInvalidEmailError:
-			return nil, nil, types.NewErrInvalidEmail(userId, r.Message)
 		case *schema.ListRoleAssignmentsOnUserUserInvalidInputError:
 			return nil, nil, types.NewErrInvalidInput(r.Message)
 		default:

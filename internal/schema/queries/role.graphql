@@ -102,7 +102,6 @@ query ListRoleAssignmentsOnUser($userId: ID!, $after: String, $limit: Int, $filt
             }
         }
         ...InvalidInputError
-        ...InvalidEmailError
         ...PermissionDeniedError
         ...NotFoundError
     }
