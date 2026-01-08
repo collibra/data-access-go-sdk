@@ -45,8 +45,6 @@ func (c *UserClient) GetUser(ctx context.Context, id string) (*types.User, error
 		return nil, types.NewErrNotFound(id, r.Typename, r.Message)
 	case *schema.GetUserUserPermissionDeniedError:
 		return nil, types.NewErrPermissionDenied("getUser", r.Message)
-	case *schema.GetUserUserInvalidEmailError:
-		return nil, types.NewErrInvalidEmail(r.ErrEmail, r.Message)
 	case *schema.GetUserUserInvalidInputError:
 		return nil, types.NewErrInvalidInput(r.Message)
 	default:
@@ -69,8 +67,6 @@ func (c *UserClient) GetUserByEmail(ctx context.Context, email string) (*types.U
 	switch user := (*result.UserByEmail).(type) {
 	case *schema.GetUserByEmailUserByEmailUser:
 		return &user.User, nil
-	case *schema.GetUserByEmailUserByEmailInvalidEmailError:
-		return nil, types.NewErrInvalidEmail(user.ErrEmail, user.Message)
 	case *schema.GetUserByEmailUserByEmailNotFoundError:
 		return nil, types.NewErrNotFound(email, user.Typename, user.Message)
 	case *schema.GetUserByEmailUserByEmailPermissionDeniedError:
@@ -91,8 +87,6 @@ func (c *UserClient) CreateUser(ctx context.Context, userInput types.UserInput) 
 	switch user := result.CreateUser.(type) {
 	case *schema.CreateUserCreateUser:
 		return &user.User, nil
-	case *schema.CreateUserCreateUserInvalidEmailError:
-		return nil, types.NewErrInvalidEmail(user.ErrEmail, user.Message)
 	case *schema.CreateUserCreateUserPermissionDeniedError:
 		return nil, types.NewErrPermissionDenied("createUser", user.Message)
 	case *schema.CreateUserCreateUserNotFoundError:
@@ -113,8 +107,6 @@ func (c *UserClient) UpdateUser(ctx context.Context, id string, userInput types.
 	switch user := result.UpdateUser.(type) {
 	case *schema.UpdateUserUpdateUser:
 		return &user.User, nil
-	case *schema.UpdateUserUpdateUserInvalidEmailError:
-		return nil, types.NewErrInvalidEmail(user.ErrEmail, user.Message)
 	case *schema.UpdateUserUpdateUserNotFoundError:
 		return nil, types.NewErrNotFound(id, user.Typename, user.Message)
 	case *schema.UpdateUserUpdateUserPermissionDeniedError:

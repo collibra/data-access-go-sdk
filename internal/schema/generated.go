@@ -13,9 +13,12 @@ import (
 	"github.com/google/uuid"
 )
 
+// Input object to create an aggregator expression (e.g. `X OR Y OR Z`).
 type AbacComparisonExpressionAggregatorInput struct {
+	// The operator to use.
 	Operator BinaryExpressionAggregatorOperator `json:"operator"`
-	Operands []AbacComparisonExpressionInput    `json:"operands"`
+	// The operands which will be combined with the operator.
+	Operands []AbacComparisonExpressionInput `json:"operands"`
 }
 
 // GetOperator returns AbacComparisonExpressionAggregatorInput.Operator, and is useful for accessing the field via an interface.
@@ -28,10 +31,14 @@ func (v *AbacComparisonExpressionAggregatorInput) GetOperands() []AbacComparison
 	return v.Operands
 }
 
+// Input object to create a comparison expression (i.e. `field < value`).
 type AbacComparisonExpressionComparisonInput struct {
-	Operator     AbacComparisonExpressionComparisonOperator `json:"operator"`
-	LeftOperand  string                                     `json:"leftOperand"`
-	RightOperand AbacComparisonExpressionOperandInput       `json:"rightOperand"`
+	// The operator for the expression.
+	Operator AbacComparisonExpressionComparisonOperator `json:"operator"`
+	// The field to compare the value against.
+	LeftOperand string `json:"leftOperand"`
+	// The value operand.
+	RightOperand AbacComparisonExpressionOperandInput `json:"rightOperand"`
 }
 
 // GetOperator returns AbacComparisonExpressionComparisonInput.Operator, and is useful for accessing the field via an interface.
@@ -47,16 +54,24 @@ func (v *AbacComparisonExpressionComparisonInput) GetRightOperand() AbacComparis
 	return v.RightOperand
 }
 
+// The different comparison operators.
 type AbacComparisonExpressionComparisonOperator string
 
 const (
-	AbacComparisonExpressionComparisonOperatorPropertyequals     AbacComparisonExpressionComparisonOperator = "PropertyEquals"
-	AbacComparisonExpressionComparisonOperatorPropertyin         AbacComparisonExpressionComparisonOperator = "PropertyIn"
-	AbacComparisonExpressionComparisonOperatorHastag             AbacComparisonExpressionComparisonOperator = "HasTag"
-	AbacComparisonExpressionComparisonOperatorContainstag        AbacComparisonExpressionComparisonOperator = "ContainsTag"
+	// To compare the operands with the equals (=) operator.
+	AbacComparisonExpressionComparisonOperatorPropertyequals AbacComparisonExpressionComparisonOperator = "PropertyEquals"
+	// To check if the given value is in a list of values.
+	AbacComparisonExpressionComparisonOperatorPropertyin AbacComparisonExpressionComparisonOperator = "PropertyIn"
+	// To check if the object, or any of its ancestors, has a certain tag.
+	AbacComparisonExpressionComparisonOperatorHastag AbacComparisonExpressionComparisonOperator = "HasTag"
+	// To check if the object, or any of its descendants, has a certain tag.
+	AbacComparisonExpressionComparisonOperatorContainstag AbacComparisonExpressionComparisonOperator = "ContainsTag"
+	// To check if the value start with a certain string.
 	AbacComparisonExpressionComparisonOperatorPropertystartswith AbacComparisonExpressionComparisonOperator = "PropertyStartsWith"
-	AbacComparisonExpressionComparisonOperatorPropertyendswith   AbacComparisonExpressionComparisonOperator = "PropertyEndsWith"
-	AbacComparisonExpressionComparisonOperatorPropertycontains   AbacComparisonExpressionComparisonOperator = "PropertyContains"
+	// To check if the value ends with a certain string.
+	AbacComparisonExpressionComparisonOperatorPropertyendswith AbacComparisonExpressionComparisonOperator = "PropertyEndsWith"
+	// To check if the value contains a certain string.
+	AbacComparisonExpressionComparisonOperatorPropertycontains AbacComparisonExpressionComparisonOperator = "PropertyContains"
 )
 
 var AllAbacComparisonExpressionComparisonOperator = []AbacComparisonExpressionComparisonOperator{
@@ -69,10 +84,15 @@ var AllAbacComparisonExpressionComparisonOperator = []AbacComparisonExpressionCo
 	AbacComparisonExpressionComparisonOperatorPropertycontains,
 }
 
+// Input object to create an ABAC expression. Exactly one of the fields should be specified, depending on the type.
 type AbacComparisonExpressionInput struct {
-	Literal         *bool                                         `json:"literal,omitempty"`
-	Comparison      *AbacComparisonExpressionComparisonInput      `json:"comparison,omitempty"`
-	Aggregator      *AbacComparisonExpressionAggregatorInput      `json:"aggregator,omitempty"`
+	// In case you want to simply have a boolean literal to determine the outcome.
+	Literal *bool `json:"literal,omitempty"`
+	// To specify a single comparison (e.g. `field < value`).
+	Comparison *AbacComparisonExpressionComparisonInput `json:"comparison,omitempty"`
+	// To specify an aggregator expression (e.g. `X OR Y OR Z`).
+	Aggregator *AbacComparisonExpressionAggregatorInput `json:"aggregator,omitempty"`
+	// To specify a unary expression (e.g. `NOT X`).
 	UnaryExpression *AbacComparisonExpressionUnaryExpressionInput `json:"unaryExpression,omitempty"`
 }
 
@@ -94,9 +114,13 @@ func (v *AbacComparisonExpressionInput) GetUnaryExpression() *AbacComparisonExpr
 	return v.UnaryExpression
 }
 
+// Input object to represent a literal value. Exactly one of the fields should be specified.
 type AbacComparisonExpressionLiteral struct {
-	Bool       *bool    `json:"bool,omitempty"`
-	String     *string  `json:"string,omitempty"`
+	// A boolean value.
+	Bool *bool `json:"bool,omitempty"`
+	// A string value.
+	String *string `json:"string,omitempty"`
+	// A string list value.
 	StringList []string `json:"stringList"`
 }
 
@@ -109,7 +133,9 @@ func (v *AbacComparisonExpressionLiteral) GetString() *string { return v.String 
 // GetStringList returns AbacComparisonExpressionLiteral.StringList, and is useful for accessing the field via an interface.
 func (v *AbacComparisonExpressionLiteral) GetStringList() []string { return v.StringList }
 
+// Input object to represent an operand.
 type AbacComparisonExpressionOperandInput struct {
+	// The literal value of the operand.
 	Literal *AbacComparisonExpressionLiteral `json:"literal,omitempty"`
 }
 
@@ -118,9 +144,12 @@ func (v *AbacComparisonExpressionOperandInput) GetLiteral() *AbacComparisonExpre
 	return v.Literal
 }
 
+// Input object to create a unary expression (e.g. `NOT X`).
 type AbacComparisonExpressionUnaryExpressionInput struct {
+	// The operator to use.
 	Operator BinaryExpressionUnaryExpressionOperator `json:"operator"`
-	Operand  AbacComparisonExpressionInput           `json:"operand"`
+	// The operand to use with the operator.
+	Operand AbacComparisonExpressionInput `json:"operand"`
 }
 
 // GetOperator returns AbacComparisonExpressionUnaryExpressionInput.Operator, and is useful for accessing the field via an interface.
@@ -134,24 +163,44 @@ func (v *AbacComparisonExpressionUnaryExpressionInput) GetOperand() AbacComparis
 }
 
 // AccessControl includes the GraphQL fields of AccessControl requested by the fragment AccessControl.
+// The GraphQL type's documentation follows.
+//
+// Represents an access control object in the system. An access control is the abstract model representing grants, masks, filters and groups (determined by the `action` field).
 type AccessControl struct {
-	Id                string                                    `json:"id"`
-	CreatedAt         time.Time                                 `json:"createdAt"`
-	ModifiedAt        time.Time                                 `json:"modifiedAt"`
-	Name              string                                    `json:"name"`
-	NamingHint        *string                                   `json:"namingHint"`
-	State             AccessControlState                        `json:"state"`
-	Action            AccessControlAction                       `json:"action"`
-	Category          *AccessControlCategoryGrantCategory       `json:"category"`
-	Description       string                                    `json:"description"`
-	PolicyRule        *string                                   `json:"policyRule"`
-	External          bool                                      `json:"external"`
-	WhatAbacRules     []AccessControlWhatAbacRulesWhatAbacRule  `json:"whatAbacRules"`
-	WhoAbacRules      []AccessControlWhoAbacRulesWhoAbacRule    `json:"whoAbacRules"`
-	NotInternalizable bool                                      `json:"notInternalizable"`
-	Complete          *bool                                     `json:"complete"`
-	Locks             []AccessControlLocksAccessControlLockData `json:"locks"`
-	SyncData          []AccessControlSyncData                   `json:"syncData"`
+	// Unique identifier of the access control.
+	Id string `json:"id"`
+	// Timestamp when the access control was created.
+	CreatedAt time.Time `json:"createdAt"`
+	// Timestamp when the access control was last modified.
+	ModifiedAt time.Time `json:"modifiedAt"`
+	// Name of the access control.
+	Name string `json:"name"`
+	// Naming hint for the access control, used for generating the actual names in target systems.
+	NamingHint *string `json:"namingHint"`
+	// State of the access control.
+	State AccessControlState `json:"state"`
+	// Action of the access control to determine if it is a grant, mask, filter or group.
+	Action AccessControlAction `json:"action"`
+	// In case the access control is a grant (action), this contains the grant category (determining the behavior of the grant).
+	Category *AccessControlCategoryGrantCategory `json:"category"`
+	// Detailed description of the access control.
+	Description string `json:"description"`
+	// The policy rule as a string. This is used only for certain cases, like imported row-level filters and column masks or for row-level filters that are implemented like this.
+	PolicyRule *string `json:"policyRule"`
+	// Indicates whether the access control is managed externally (in the Data Source) or internally (in the Collibra Data Access application).
+	External bool `json:"external"`
+	// The list of ABAC rules for calculating the WHAT items dynamically.
+	WhatAbacRules []AccessControlWhatAbacRulesWhatAbacRule `json:"whatAbacRules"`
+	// The list of ABAC rules for calculating the WHO items dynamically.
+	WhoAbacRules []AccessControlWhoAbacRulesWhoAbacRule `json:"whoAbacRules"`
+	// For externally managed access controls, indicates whether the access control cannot be internalized.
+	NotInternalizable bool `json:"notInternalizable"`
+	// Indicates if this external access control is complete, meaning that all linked entities are knows in Collibra Data Access. If an imported access control is incomplete, information will be lost when internalizing the access control, because only the known entities will be kept.
+	Complete *bool `json:"complete"`
+	// The list of locks that are configured on this access control. Locks can be used to prevent editing certain parts of the access control, typically because they are managed outside of Collibra Data Access and so should be imported from instead of exported to the data source).
+	Locks []AccessControlLocksAccessControlLockData `json:"locks"`
+	// Retrieves synchronization information for each linked data source.
+	SyncData []AccessControlSyncData `json:"syncData"`
 }
 
 // GetId returns AccessControl.Id, and is useful for accessing the field via an interface.
@@ -209,14 +258,19 @@ func (v *AccessControl) GetLocks() []AccessControlLocksAccessControlLockData { r
 // GetSyncData returns AccessControl.SyncData, and is useful for accessing the field via an interface.
 func (v *AccessControl) GetSyncData() []AccessControlSyncData { return v.SyncData }
 
+// The possible actions for an access control. This determines what the access control will do.
 type AccessControlAction string
 
 const (
-	AccessControlActionGrant  AccessControlAction = "Grant"
-	AccessControlActionMask   AccessControlAction = "Mask"
+	// For granting users access to data.
+	AccessControlActionGrant AccessControlAction = "Grant"
+	// For masking data in columns.
+	AccessControlActionMask AccessControlAction = "Mask"
+	// For filtering rows in a table or view.
 	AccessControlActionFilter AccessControlAction = "Filter"
 	AccessControlActionShare  AccessControlAction = "Share"
-	AccessControlActionGroup  AccessControlAction = "Group"
+	// For grouping users or other groups. The access control doesn't have WHAT items in this case.
+	AccessControlActionGroup AccessControlAction = "Group"
 )
 
 var AllAccessControlAction = []AccessControlAction{
@@ -228,6 +282,9 @@ var AllAccessControlAction = []AccessControlAction{
 }
 
 // AccessControlCategoryGrantCategory includes the requested fields of the GraphQL type GrantCategory.
+// The GraphQL type's documentation follows.
+//
+// Represent a grant category. Grant categories are used to categorize access controls with `action=Grant` to allow structuring them better.
 type AccessControlCategoryGrantCategory struct {
 	GrantCategory `json:"-"`
 }
@@ -298,9 +355,14 @@ func (v *AccessControlCategoryGrantCategory) __premarshalJSON() (*__premarshalAc
 }
 
 // AccessControlConnection includes the GraphQL fields of AccessControlConnection requested by the fragment AccessControlConnection.
+// The GraphQL type's documentation follows.
+//
+// The connection type for paginated lists of [AccessControl]({{Types.AccessControl}}).
 type AccessControlConnection struct {
-	PageInfo AccessControlConnectionPageInfo                 `json:"pageInfo"`
-	Edges    []AccessControlConnectionEdgesAccessControlEdge `json:"edges"`
+	// Pagination information for the retrieved items.
+	PageInfo AccessControlConnectionPageInfo `json:"pageInfo"`
+	// The list of edges containing the actual queried items.
+	Edges []AccessControlConnectionEdgesAccessControlEdge `json:"edges"`
 }
 
 // GetPageInfo returns AccessControlConnection.PageInfo, and is useful for accessing the field via an interface.
@@ -312,9 +374,14 @@ func (v *AccessControlConnection) GetEdges() []AccessControlConnectionEdgesAcces
 }
 
 // AccessControlConnectionEdgesAccessControlEdge includes the requested fields of the GraphQL type AccessControlEdge.
+// The GraphQL type's documentation follows.
+//
+// The edge type for [AccessControlConnection]({{Types.AccessControlConnection}})
 type AccessControlConnectionEdgesAccessControlEdge struct {
-	Cursor *string                                                         `json:"cursor"`
-	Node   *AccessControlConnectionEdgesAccessControlEdgeNodeAccessControl `json:"node"`
+	// The cursor of this item for pagination.
+	Cursor *string `json:"cursor"`
+	// The actual access control object.
+	Node *AccessControlConnectionEdgesAccessControlEdgeNodeAccessControl `json:"node"`
 }
 
 // GetCursor returns AccessControlConnectionEdgesAccessControlEdge.Cursor, and is useful for accessing the field via an interface.
@@ -326,6 +393,9 @@ func (v *AccessControlConnectionEdgesAccessControlEdge) GetNode() *AccessControl
 }
 
 // AccessControlConnectionEdgesAccessControlEdgeNodeAccessControl includes the requested fields of the GraphQL type AccessControl.
+// The GraphQL type's documentation follows.
+//
+// Represents an access control object in the system. An access control is the abstract model representing grants, masks, filters and groups (determined by the `action` field).
 type AccessControlConnectionEdgesAccessControlEdgeNodeAccessControl struct {
 	AccessControl `json:"-"`
 }
@@ -904,9 +974,12 @@ func (v *AccessControlConnectionResultPermissionDeniedError) __premarshalJSON() 
 	return &retval, nil
 }
 
+// Input object update the data sources linked to the access control.
 type AccessControlDataSourceInput struct {
-	DataSource string  `json:"dataSource"`
-	Type       *string `json:"type,omitempty"`
+	// The ID of the data source
+	DataSource string `json:"dataSource"`
+	// The technical type of how this access control is represented in the underlying system. For masks this represents the masking method to use.
+	Type *string `json:"type,omitempty"`
 }
 
 // GetDataSource returns AccessControlDataSourceInput.DataSource, and is useful for accessing the field via an interface.
@@ -953,23 +1026,38 @@ type AccessControlFeedbackState struct {
 // GetWho returns AccessControlFeedbackState.Who, and is useful for accessing the field via an interface.
 func (v *AccessControlFeedbackState) GetWho() *AccessControlWhoFeedbackState { return v.Who }
 
+// Defines the filter options for listing access controls. When using multiple filter options, all these options need to apply to return the item.
 type AccessControlFilterInput struct {
-	Actions            []AccessControlAction `json:"actions"`
-	States             []AccessControlState  `json:"states"`
-	Categories         []string              `json:"categories"`
-	External           *bool                 `json:"external,omitempty"`
-	Search             *string               `json:"search,omitempty"`
-	DataSource         *string               `json:"dataSource,omitempty"`
-	CanEditWho         *bool                 `json:"canEditWho,omitempty"`
-	CanEditInheritance *bool                 `json:"canEditInheritance,omitempty"`
-	CanEditWhat        *bool                 `json:"canEditWhat,omitempty"`
-	CanLinkFrom        *CanLinkFilter        `json:"canLinkFrom,omitempty"`
-	CanLinkTo          *CanLinkFilter        `json:"canLinkTo,omitempty"`
-	Exclude            []string              `json:"exclude"`
-	Source             *string               `json:"source,omitempty"`
-	Owners             []string              `json:"owners"`
-	HasTags            []TagFilter           `json:"hasTags"`
-	DataObjectInWhat   *string               `json:"dataObjectInWhat,omitempty"`
+	// The actions the access controls should have.
+	Actions []AccessControlAction `json:"actions"`
+	// The states the access controls should be in.
+	States []AccessControlState `json:"states"`
+	// The grant categories the access control should be in.
+	Categories []string `json:"categories"`
+	// To filter on only internal or external access controls.
+	External *bool `json:"external,omitempty"`
+	// The search string to use (will do a case-insensitive 'contains').
+	Search *string `json:"search,omitempty"`
+	// To filter access controls which are linked to a specific data source.
+	DataSource *string `json:"dataSource,omitempty"`
+	// Only return access controls where the WHO is editable.
+	CanEditWho *bool `json:"canEditWho,omitempty"`
+	// Only return access controls where the inheritance (= linking to other access controls) is editable.
+	CanEditInheritance *bool `json:"canEditInheritance,omitempty"`
+	// Only return access controls where the WHAT is editable.
+	CanEditWhat *bool          `json:"canEditWhat,omitempty"`
+	CanLinkFrom *CanLinkFilter `json:"canLinkFrom,omitempty"`
+	CanLinkTo   *CanLinkFilter `json:"canLinkTo,omitempty"`
+	// Exclude this explicit list of access controls.
+	Exclude []string `json:"exclude"`
+	// The source of the access control
+	Source *string `json:"source,omitempty"`
+	// The access control must have any of the given owners (by user ID).
+	Owners []string `json:"owners"`
+	// Filter by which tags the access control needs to have.
+	HasTags []TagFilter `json:"hasTags"`
+	// Only return the access controls that have the given data object in its WHAT list.
+	DataObjectInWhat *string `json:"dataObjectInWhat,omitempty"`
 }
 
 // GetActions returns AccessControlFilterInput.Actions, and is useful for accessing the field via an interface.
@@ -1119,24 +1207,41 @@ func (v *AccessControlImport) GetTags() []TagImport { return v.Tags }
 // GetCommonWhatDataObject returns AccessControlImport.CommonWhatDataObject, and is useful for accessing the field via an interface.
 func (v *AccessControlImport) GetCommonWhatDataObject() *string { return v.CommonWhatDataObject }
 
+// Input object for creating and updating access controls.
 type AccessControlInput struct {
-	Name                   *string                        `json:"name,omitempty"`
-	NamingHint             *string                        `json:"namingHint,omitempty"`
-	Action                 *AccessControlAction           `json:"action,omitempty"`
-	Description            *string                        `json:"description,omitempty"`
-	Category               *string                        `json:"category,omitempty"`
-	Source                 *string                        `json:"source,omitempty"`
-	WhoAbacRules           []*WhoAbacRuleInput            `json:"whoAbacRules,omitempty"`
-	WhoItems               []WhoItemInput                 `json:"whoItems"`
-	WhatAbacRules          []*WhatAbacRuleInput           `json:"whatAbacRules,omitempty"`
-	PolicyRule             *string                        `json:"policyRule,omitempty"`
-	FilterCriteria         *DataComparisonExpressionInput `json:"filterCriteria,omitempty"`
+	// Name of the access control.
+	Name *string `json:"name,omitempty"`
+	// Naming hint for the access control, used for generating the actual names in target systems.
+	NamingHint *string `json:"namingHint,omitempty"`
+	// Action of the access control to determine if it is a grant, mask, filter or group.
+	Action *AccessControlAction `json:"action,omitempty"`
+	// Detailed description of the access control.
+	Description *string `json:"description,omitempty"`
+	// In case the access control is a grant (action), this contains the grant category (determining the behavior of the grant).
+	Category *string `json:"category,omitempty"`
+	// Source defines the source of the access control, if managed by third party tool.
+	Source *string `json:"source,omitempty"`
+	// The list of ABAC rules for calculating the WHO items dynamically.
+	WhoAbacRules []*WhoAbacRuleInput `json:"whoAbacRules,omitempty"`
+	// The list of static WHO items for this access control.
+	WhoItems []WhoItemInput `json:"whoItems"`
+	// The list of ABAC rules for calculating the WHAT items dynamically.
+	WhatAbacRules []*WhatAbacRuleInput `json:"whatAbacRules,omitempty"`
+	// The list of static WHAT data object items for this access control.
+	WhatDataObjects []AccessControlWhatInputDO `json:"whatDataObjects"`
+	// The list of static WHAT access controls for this access control.
+	WhatAccessControls []AccessControlWhatInputAP `json:"whatAccessControls"`
+	// The policy rule as a string. This is used only for certain cases, like imported row-level filters and column masks or for row-level filters that are implemented like this.
+	PolicyRule *string `json:"policyRule,omitempty"`
+	// For access controls with `action=Filter`, this contains the boolean expression determining the filter criteria.
+	FilterCriteria *DataComparisonExpressionInput `json:"filterCriteria,omitempty"`
+	// The data sources that this access control will get deployed to.
 	DataSources            []AccessControlDataSourceInput `json:"dataSources"`
 	CommonWhatDataObjectId *string                        `json:"commonWhatDataObjectId,omitempty"`
-	WhatDataObjects        []AccessControlWhatInputDO     `json:"whatDataObjects"`
-	WhatAccessControls     []AccessControlWhatInputAP     `json:"whatAccessControls"`
-	Locks                  []AccessControlLockDataInput   `json:"locks"`
-	External               *bool                          `json:"external,omitempty"`
+	// The locks that should apply to this access control.
+	Locks []AccessControlLockDataInput `json:"locks"`
+	// Indicates whether the access control is managed externally (in the Data Source) or internally (in the Collibra Data Access application).
+	External *bool `json:"external,omitempty"`
 }
 
 // GetName returns AccessControlInput.Name, and is useful for accessing the field via an interface.
@@ -1166,6 +1271,16 @@ func (v *AccessControlInput) GetWhoItems() []WhoItemInput { return v.WhoItems }
 // GetWhatAbacRules returns AccessControlInput.WhatAbacRules, and is useful for accessing the field via an interface.
 func (v *AccessControlInput) GetWhatAbacRules() []*WhatAbacRuleInput { return v.WhatAbacRules }
 
+// GetWhatDataObjects returns AccessControlInput.WhatDataObjects, and is useful for accessing the field via an interface.
+func (v *AccessControlInput) GetWhatDataObjects() []AccessControlWhatInputDO {
+	return v.WhatDataObjects
+}
+
+// GetWhatAccessControls returns AccessControlInput.WhatAccessControls, and is useful for accessing the field via an interface.
+func (v *AccessControlInput) GetWhatAccessControls() []AccessControlWhatInputAP {
+	return v.WhatAccessControls
+}
+
 // GetPolicyRule returns AccessControlInput.PolicyRule, and is useful for accessing the field via an interface.
 func (v *AccessControlInput) GetPolicyRule() *string { return v.PolicyRule }
 
@@ -1180,31 +1295,28 @@ func (v *AccessControlInput) GetDataSources() []AccessControlDataSourceInput { r
 // GetCommonWhatDataObjectId returns AccessControlInput.CommonWhatDataObjectId, and is useful for accessing the field via an interface.
 func (v *AccessControlInput) GetCommonWhatDataObjectId() *string { return v.CommonWhatDataObjectId }
 
-// GetWhatDataObjects returns AccessControlInput.WhatDataObjects, and is useful for accessing the field via an interface.
-func (v *AccessControlInput) GetWhatDataObjects() []AccessControlWhatInputDO {
-	return v.WhatDataObjects
-}
-
-// GetWhatAccessControls returns AccessControlInput.WhatAccessControls, and is useful for accessing the field via an interface.
-func (v *AccessControlInput) GetWhatAccessControls() []AccessControlWhatInputAP {
-	return v.WhatAccessControls
-}
-
 // GetLocks returns AccessControlInput.Locks, and is useful for accessing the field via an interface.
 func (v *AccessControlInput) GetLocks() []AccessControlLockDataInput { return v.Locks }
 
 // GetExternal returns AccessControlInput.External, and is useful for accessing the field via an interface.
 func (v *AccessControlInput) GetExternal() *bool { return v.External }
 
+// The parts that can possibly be locked on an access control.
 type AccessControlLock string
 
 const (
-	AccessControlLockWholock         AccessControlLock = "WhoLock"
+	// The users in the WHO list of the access control cannot be edited.
+	AccessControlLockWholock AccessControlLock = "WhoLock"
+	// The access controls in the WHO list of the access control cannot be edited.
 	AccessControlLockInheritancelock AccessControlLock = "InheritanceLock"
-	AccessControlLockWhatlock        AccessControlLock = "WhatLock"
-	AccessControlLockNamelock        AccessControlLock = "NameLock"
-	AccessControlLockDeletelock      AccessControlLock = "DeleteLock"
-	AccessControlLockOwnerlock       AccessControlLock = "OwnerLock"
+	// The WHAT list of the access control cannot be edited.
+	AccessControlLockWhatlock AccessControlLock = "WhatLock"
+	// The name of the access control cannot be edited.
+	AccessControlLockNamelock AccessControlLock = "NameLock"
+	// The access control cannot be deleted. This also has the impact that, when the access control is edited, after the synchronization, the access control will be made external again.
+	AccessControlLockDeletelock AccessControlLock = "DeleteLock"
+	// The owners of the access control cannot be edited.
+	AccessControlLockOwnerlock AccessControlLock = "OwnerLock"
 )
 
 var AllAccessControlLock = []AccessControlLock{
@@ -1217,8 +1329,13 @@ var AllAccessControlLock = []AccessControlLock{
 }
 
 // AccessControlLockData includes the GraphQL fields of AccessControlLockData requested by the fragment AccessControlLockData.
+// The GraphQL type's documentation follows.
+//
+// Represents a lock on an access control field.
 type AccessControlLockData struct {
-	LockKey AccessControlLock                                    `json:"lockKey"`
+	// The part that is locked.
+	LockKey AccessControlLock `json:"lockKey"`
+	// Details about the locking.
 	Details AccessControlLockDataDetailsAccessControlLockDetails `json:"details"`
 }
 
@@ -1231,6 +1348,9 @@ func (v *AccessControlLockData) GetDetails() AccessControlLockDataDetailsAccessC
 }
 
 // AccessControlLockDataDetailsAccessControlLockDetails includes the requested fields of the GraphQL type AccessControlLockDetails.
+// The GraphQL type's documentation follows.
+//
+// Represents the details about locks on parts of an access control.
 type AccessControlLockDataDetailsAccessControlLockDetails struct {
 	AccessControlLockDetails `json:"-"`
 }
@@ -1284,8 +1404,11 @@ func (v *AccessControlLockDataDetailsAccessControlLockDetails) __premarshalJSON(
 	return &retval, nil
 }
 
+// Input for defining the lock settings
 type AccessControlLockDataInput struct {
-	LockKey AccessControlLock              `json:"lockKey"`
+	// The part of the access control to lock.
+	LockKey AccessControlLock `json:"lockKey"`
+	// The lock details.
 	Details *AccessControlLockDetailsInput `json:"details,omitempty"`
 }
 
@@ -1296,15 +1419,22 @@ func (v *AccessControlLockDataInput) GetLockKey() AccessControlLock { return v.L
 func (v *AccessControlLockDataInput) GetDetails() *AccessControlLockDetailsInput { return v.Details }
 
 // AccessControlLockDetails includes the GraphQL fields of AccessControlLockDetails requested by the fragment AccessControlLockDetails.
+// The GraphQL type's documentation follows.
+//
+// Represents the details about locks on parts of an access control.
 type AccessControlLockDetails struct {
+	// The reason explaining why this is locked.
 	Reason *string `json:"reason"`
 }
 
 // GetReason returns AccessControlLockDetails.Reason, and is useful for accessing the field via an interface.
 func (v *AccessControlLockDetails) GetReason() *string { return v.Reason }
 
+// Input for defining the lock details.
 type AccessControlLockDetailsInput struct {
-	Reason   *string                `json:"reason,omitempty"`
+	// The reason for locking this part of the access control.
+	Reason *string `json:"reason,omitempty"`
+	// The lock type.
 	LockType *AccessControlLockType `json:"lockType,omitempty"`
 }
 
@@ -1314,11 +1444,14 @@ func (v *AccessControlLockDetailsInput) GetReason() *string { return v.Reason }
 // GetLockType returns AccessControlLockDetailsInput.LockType, and is useful for accessing the field via an interface.
 func (v *AccessControlLockDetailsInput) GetLockType() *AccessControlLockType { return v.LockType }
 
+// The types of lock.
 type AccessControlLockType string
 
 const (
+	// The data can only be updated through the import.
 	AccessControlLockTypeImportexport AccessControlLockType = "ImportExport"
-	AccessControlLockTypeUseronly     AccessControlLockType = "UserOnly"
+	// The data can still be updated through the API, but not in the UI.
+	AccessControlLockTypeUseronly AccessControlLockType = "UserOnly"
 )
 
 var AllAccessControlLockType = []AccessControlLockType{
@@ -1327,6 +1460,9 @@ var AllAccessControlLockType = []AccessControlLockType{
 }
 
 // AccessControlLocksAccessControlLockData includes the requested fields of the GraphQL type AccessControlLockData.
+// The GraphQL type's documentation follows.
+//
+// Represents a lock on an access control field.
 type AccessControlLocksAccessControlLockData struct {
 	AccessControlLockData `json:"-"`
 }
@@ -1388,6 +1524,7 @@ func (v *AccessControlLocksAccessControlLockData) __premarshalJSON() (*__premars
 	return &retval, nil
 }
 
+// Defines the sorting configuration for access control lists.
 type AccessControlOrderByInput struct {
 	Name       *Sort `json:"name,omitempty"`
 	CreatedAt  *Sort `json:"createdAt,omitempty"`
@@ -1415,12 +1552,16 @@ func (v *AccessControlOrderByInput) GetState() *Sort { return v.State }
 // GetSync returns AccessControlOrderByInput.Sync, and is useful for accessing the field via an interface.
 func (v *AccessControlOrderByInput) GetSync() *Sort { return v.Sync }
 
+// The possible states an access control can be in.
 type AccessControlState string
 
 const (
-	AccessControlStateActive   AccessControlState = "Active"
+	// This access control is active and so will be synced to or from the underlying system.
+	AccessControlStateActive AccessControlState = "Active"
+	// This access control is not active and so will not be synced to the underlying system (removed if it was synced before).
 	AccessControlStateInactive AccessControlState = "Inactive"
-	AccessControlStateDeleted  AccessControlState = "Deleted"
+	// This access control is deleted and, once synced to the underlying system, it will be automatically deleted with a 48 hour delay.
+	AccessControlStateDeleted AccessControlState = "Deleted"
 )
 
 var AllAccessControlState = []AccessControlState{
@@ -1430,6 +1571,9 @@ var AllAccessControlState = []AccessControlState{
 }
 
 // AccessControlSyncData includes the requested fields of the GraphQL type SyncData.
+// The GraphQL type's documentation follows.
+//
+// Represents the synchronization data for an access control on a specific data source.
 type AccessControlSyncData struct {
 	SyncData `json:"-"`
 }
@@ -1565,6 +1709,9 @@ func (v *AccessControlTypeInput) GetAllowedWhoAccessControlTypes() []string {
 func (v *AccessControlTypeInput) GetCommonParentType() *string { return v.CommonParentType }
 
 // AccessControlWhatAbacRulesWhatAbacRule includes the requested fields of the GraphQL type WhatAbacRule.
+// The GraphQL type's documentation follows.
+//
+// Represents a single ABAC rule for the WHAT items of an access control.
 type AccessControlWhatAbacRulesWhatAbacRule struct {
 	WhatAbacRule `json:"-"`
 }
@@ -1646,6 +1793,7 @@ func (v *AccessControlWhatAbacRulesWhatAbacRule) __premarshalJSON() (*__premarsh
 	return &retval, nil
 }
 
+// Defines the sorting configuration for the access control WHAT list (access controls).
 type AccessControlWhatAccessControlFilterInput struct {
 	Actions    []AccessControlAction `json:"actions"`
 	Categories []string              `json:"categories"`
@@ -1671,8 +1819,11 @@ func (v *AccessControlWhatAccessControlFilterInput) GetHasTags() []TagFilter { r
 // GetSearch returns AccessControlWhatAccessControlFilterInput.Search, and is useful for accessing the field via an interface.
 func (v *AccessControlWhatAccessControlFilterInput) GetSearch() *string { return v.Search }
 
+// Input object to reference a data object by its `fullName`.
 type AccessControlWhatDoByNameInput struct {
-	FullName   string `json:"fullName"`
+	// The full name of the data object.
+	FullName string `json:"fullName"`
+	// The data source ID of the data object.
 	DataSource string `json:"dataSource"`
 }
 
@@ -1682,7 +1833,9 @@ func (v *AccessControlWhatDoByNameInput) GetFullName() string { return v.FullNam
 // GetDataSource returns AccessControlWhatDoByNameInput.DataSource, and is useful for accessing the field via an interface.
 func (v *AccessControlWhatDoByNameInput) GetDataSource() string { return v.DataSource }
 
+// Input object to represent an access control WHAT item for the access control.
 type AccessControlWhatInputAP struct {
+	// The ID of the access control to add in the WHAT of the access control.
 	AccessControl string     `json:"accessControl"`
 	ExpiresAt     *time.Time `json:"expiresAt,omitempty"`
 }
@@ -1693,12 +1846,18 @@ func (v *AccessControlWhatInputAP) GetAccessControl() string { return v.AccessCo
 // GetExpiresAt returns AccessControlWhatInputAP.ExpiresAt, and is useful for accessing the field via an interface.
 func (v *AccessControlWhatInputAP) GetExpiresAt() *time.Time { return v.ExpiresAt }
 
+// Input object to represent a data object WHAT item for the access control.
 type AccessControlWhatInputDO struct {
-	Permissions       []*string                        `json:"permissions,omitempty"`
-	GlobalPermissions []*string                        `json:"globalPermissions,omitempty"`
-	DataObjects       []*string                        `json:"dataObjects,omitempty"`
-	DataObjectByName  []AccessControlWhatDoByNameInput `json:"dataObjectByName"`
-	ExpiresAt         *time.Time                       `json:"expiresAt,omitempty"`
+	// The permissions to grant on the data object.
+	Permissions []*string `json:"permissions,omitempty"`
+	// The global permissions to grant on the data object.
+	GlobalPermissions []*string `json:"globalPermissions,omitempty"`
+	// The list of data object IDs to provide the access to.  Either this or `dataObjectByName` needs to be specified.
+	DataObjects []*string `json:"dataObjects,omitempty"`
+	// The reference by name to indicate the data object to provide access to. Either this or `dataObjects` needs to be specified.
+	DataObjectByName []AccessControlWhatDoByNameInput `json:"dataObjectByName"`
+	// The time at which this WHAT item will expire. Only used for Direct Access grants.
+	ExpiresAt *time.Time `json:"expiresAt,omitempty"`
 }
 
 // GetPermissions returns AccessControlWhatInputDO.Permissions, and is useful for accessing the field via an interface.
@@ -1719,6 +1878,9 @@ func (v *AccessControlWhatInputDO) GetDataObjectByName() []AccessControlWhatDoBy
 func (v *AccessControlWhatInputDO) GetExpiresAt() *time.Time { return v.ExpiresAt }
 
 // AccessControlWhoAbacRulesWhoAbacRule includes the requested fields of the GraphQL type WhoAbacRule.
+// The GraphQL type's documentation follows.
+//
+// Represents a single ABAC rule for the WHO items of an access control.
 type AccessControlWhoAbacRulesWhoAbacRule struct {
 	WhoAbacRule `json:"-"`
 }
@@ -1805,12 +1967,18 @@ func (v *AccessControlWhoFeedbackState) GetInheritFrom() []string { return v.Inh
 // GetRecipients returns AccessControlWhoFeedbackState.Recipients, and is useful for accessing the field via an interface.
 func (v *AccessControlWhoFeedbackState) GetRecipients() []string { return v.Recipients }
 
+// For filtering the WHO items of an access control. When using multiple filter options, all these options need to apply to return the item.
 type AccessControlWhoListFilter struct {
-	WhoType             *AccessWhoItemType `json:"whoType,omitempty"`
-	TargetUser          *string            `json:"targetUser,omitempty"`
-	TargetAccessControl *string            `json:"targetAccessControl,omitempty"`
-	EntityType          *EntityType        `json:"entityType,omitempty"`
-	Search              *string            `json:"search,omitempty"`
+	// To only filter on either grants or promises.
+	WhoType *AccessWhoItemType `json:"whoType,omitempty"`
+	// Only get the WHO item for a specific user.
+	TargetUser *string `json:"targetUser,omitempty"`
+	// Only get the WHO item for a specific access control.
+	TargetAccessControl *string `json:"targetAccessControl,omitempty"`
+	// Only get WHO items with a specific type (User or AccessControl)
+	EntityType *EntityType `json:"entityType,omitempty"`
+	// The search string to use (will do a case-insensitive 'contains').
+	Search *string `json:"search,omitempty"`
 	// Optional ABAC rule to filter the who-list on. Only applicable when requesting users who-list without unpacking
 	AbacRule *string `json:"abacRule,omitempty"`
 }
@@ -1833,6 +2001,7 @@ func (v *AccessControlWhoListFilter) GetSearch() *string { return v.Search }
 // GetAbacRule returns AccessControlWhoListFilter.AbacRule, and is useful for accessing the field via an interface.
 func (v *AccessControlWhoListFilter) GetAbacRule() *string { return v.AbacRule }
 
+// Defines the sorting configuration for the access control WHO list.
 type AccessControlWhoOrderByInput struct {
 	Name *Sort `json:"name,omitempty"`
 }
@@ -1841,9 +2010,14 @@ type AccessControlWhoOrderByInput struct {
 func (v *AccessControlWhoOrderByInput) GetName() *Sort { return v.Name }
 
 // AccessWhatAccessControlItem includes the GraphQL fields of AccessWhatAccessControlItem requested by the fragment AccessWhatAccessControlItem.
+// The GraphQL type's documentation follows.
+//
+// Represents the access control item in the WHAT list of an access control.
 type AccessWhatAccessControlItem struct {
+	// The access control that is part of the WHAT items of this access control.
 	AccessControl *AccessWhatAccessControlItemAccessControl `json:"accessControl"`
-	ExpiresAt     *time.Time                                `json:"expiresAt"`
+	// The optional expiration time for this WHAT item.
+	ExpiresAt *time.Time `json:"expiresAt"`
 }
 
 // GetAccessControl returns AccessWhatAccessControlItem.AccessControl, and is useful for accessing the field via an interface.
@@ -1855,6 +2029,9 @@ func (v *AccessWhatAccessControlItem) GetAccessControl() *AccessWhatAccessContro
 func (v *AccessWhatAccessControlItem) GetExpiresAt() *time.Time { return v.ExpiresAt }
 
 // AccessWhatAccessControlItemAccessControl includes the requested fields of the GraphQL type AccessControl.
+// The GraphQL type's documentation follows.
+//
+// Represents an access control object in the system. An access control is the abstract model representing grants, masks, filters and groups (determined by the `action` field).
 type AccessWhatAccessControlItemAccessControl struct {
 	AccessControl `json:"-"`
 }
@@ -2033,9 +2210,14 @@ func (v *AccessWhatAccessControlItemAccessControl) __premarshalJSON() (*__premar
 }
 
 // AccessWhatAccessControlItemConnection includes the GraphQL fields of AccessWhatAccessControlItemConnection requested by the fragment AccessWhatAccessControlItemConnection.
+// The GraphQL type's documentation follows.
+//
+// The connection type for paginated lists of [AccessWhatAccessControlItem]({{Types.AccessWhatAccessControlItem}}).
 type AccessWhatAccessControlItemConnection struct {
-	PageInfo AccessWhatAccessControlItemConnectionPageInfo                               `json:"pageInfo"`
-	Edges    []AccessWhatAccessControlItemConnectionEdgesAccessWhatAccessControlItemEdge `json:"edges"`
+	// Pagination information for the retrieved items.
+	PageInfo AccessWhatAccessControlItemConnectionPageInfo `json:"pageInfo"`
+	// The list of edges containing the actual queried items.
+	Edges []AccessWhatAccessControlItemConnectionEdgesAccessWhatAccessControlItemEdge `json:"edges"`
 }
 
 // GetPageInfo returns AccessWhatAccessControlItemConnection.PageInfo, and is useful for accessing the field via an interface.
@@ -2049,9 +2231,14 @@ func (v *AccessWhatAccessControlItemConnection) GetEdges() []AccessWhatAccessCon
 }
 
 // AccessWhatAccessControlItemConnectionEdgesAccessWhatAccessControlItemEdge includes the requested fields of the GraphQL type AccessWhatAccessControlItemEdge.
+// The GraphQL type's documentation follows.
+//
+// The edge type for [AccessWhatAccessControlItemConnection]({{Types.AccessWhatAccessControlItemConnection}})
 type AccessWhatAccessControlItemConnectionEdgesAccessWhatAccessControlItemEdge struct {
-	Cursor *string                                                                                                   `json:"cursor"`
-	Node   *AccessWhatAccessControlItemConnectionEdgesAccessWhatAccessControlItemEdgeNodeAccessWhatAccessControlItem `json:"node"`
+	// The cursor of this item for pagination.
+	Cursor *string `json:"cursor"`
+	// The actual access control item in the WHAT list.
+	Node *AccessWhatAccessControlItemConnectionEdgesAccessWhatAccessControlItemEdgeNodeAccessWhatAccessControlItem `json:"node"`
 }
 
 // GetCursor returns AccessWhatAccessControlItemConnectionEdgesAccessWhatAccessControlItemEdge.Cursor, and is useful for accessing the field via an interface.
@@ -2065,6 +2252,9 @@ func (v *AccessWhatAccessControlItemConnectionEdgesAccessWhatAccessControlItemEd
 }
 
 // AccessWhatAccessControlItemConnectionEdgesAccessWhatAccessControlItemEdgeNodeAccessWhatAccessControlItem includes the requested fields of the GraphQL type AccessWhatAccessControlItem.
+// The GraphQL type's documentation follows.
+//
+// Represents the access control item in the WHAT list of an access control.
 type AccessWhatAccessControlItemConnectionEdgesAccessWhatAccessControlItemEdgeNodeAccessWhatAccessControlItem struct {
 	AccessWhatAccessControlItem `json:"-"`
 }
@@ -2528,10 +2718,16 @@ func (v *AccessWhatAccessControlItemConnectionResultPermissionDeniedError) __pre
 }
 
 // AccessWhatDataObjectItem includes the GraphQL fields of AccessWhatDataObjectItem requested by the fragment AccessWhatDataObjectItem.
+// The GraphQL type's documentation follows.
+//
+// Represents the data object item in the WHAT list of an access control.
 type AccessWhatDataObjectItem struct {
-	DataObject        *AccessWhatDataObjectItemDataObject `json:"dataObject"`
-	GlobalPermissions []*string                           `json:"globalPermissions"`
-	Permissions       []*string                           `json:"permissions"`
+	// The data object that the access is provided on (granted, masked or filtered).
+	DataObject *AccessWhatDataObjectItemDataObject `json:"dataObject"`
+	// The global permissions that are granted on this data object in the access control.
+	GlobalPermissions []*string `json:"globalPermissions"`
+	// The permissions that are granted on this data object in the access control.
+	Permissions []*string `json:"permissions"`
 }
 
 // GetDataObject returns AccessWhatDataObjectItem.DataObject, and is useful for accessing the field via an interface.
@@ -2546,9 +2742,14 @@ func (v *AccessWhatDataObjectItem) GetGlobalPermissions() []*string { return v.G
 func (v *AccessWhatDataObjectItem) GetPermissions() []*string { return v.Permissions }
 
 // AccessWhatDataObjectItemConnection includes the GraphQL fields of AccessWhatDataObjectItemConnection requested by the fragment AccessWhatDataObjectItemConnection.
+// The GraphQL type's documentation follows.
+//
+// The connection type for paginated lists of [AccessWhatDataObjectItem]({{Types.AccessWhatDataObjectItem}}).
 type AccessWhatDataObjectItemConnection struct {
-	PageInfo AccessWhatDataObjectItemConnectionPageInfo                            `json:"pageInfo"`
-	Edges    []AccessWhatDataObjectItemConnectionEdgesAccessWhatDataObjectItemEdge `json:"edges"`
+	// Pagination information for the retrieved items.
+	PageInfo AccessWhatDataObjectItemConnectionPageInfo `json:"pageInfo"`
+	// The list of edges containing the actual queried items.
+	Edges []AccessWhatDataObjectItemConnectionEdgesAccessWhatDataObjectItemEdge `json:"edges"`
 }
 
 // GetPageInfo returns AccessWhatDataObjectItemConnection.PageInfo, and is useful for accessing the field via an interface.
@@ -2562,9 +2763,14 @@ func (v *AccessWhatDataObjectItemConnection) GetEdges() []AccessWhatDataObjectIt
 }
 
 // AccessWhatDataObjectItemConnectionEdgesAccessWhatDataObjectItemEdge includes the requested fields of the GraphQL type AccessWhatDataObjectItemEdge.
+// The GraphQL type's documentation follows.
+//
+// The edge type for [AccessWhatDataObjectItemConnection]({{Types.AccessWhatDataObjectItemConnection}})
 type AccessWhatDataObjectItemConnectionEdgesAccessWhatDataObjectItemEdge struct {
-	Cursor *string                                                                                          `json:"cursor"`
-	Node   *AccessWhatDataObjectItemConnectionEdgesAccessWhatDataObjectItemEdgeNodeAccessWhatDataObjectItem `json:"node"`
+	// The cursor of this item for pagination.
+	Cursor *string `json:"cursor"`
+	// The actual WHAT item for a data object.
+	Node *AccessWhatDataObjectItemConnectionEdgesAccessWhatDataObjectItemEdgeNodeAccessWhatDataObjectItem `json:"node"`
 }
 
 // GetCursor returns AccessWhatDataObjectItemConnectionEdgesAccessWhatDataObjectItemEdge.Cursor, and is useful for accessing the field via an interface.
@@ -2578,6 +2784,9 @@ func (v *AccessWhatDataObjectItemConnectionEdgesAccessWhatDataObjectItemEdge) Ge
 }
 
 // AccessWhatDataObjectItemConnectionEdgesAccessWhatDataObjectItemEdgeNodeAccessWhatDataObjectItem includes the requested fields of the GraphQL type AccessWhatDataObjectItem.
+// The GraphQL type's documentation follows.
+//
+// Represents the data object item in the WHAT list of an access control.
 type AccessWhatDataObjectItemConnectionEdgesAccessWhatDataObjectItemEdgeNodeAccessWhatDataObjectItem struct {
 	AccessWhatDataObjectItem `json:"-"`
 }
@@ -2710,6 +2919,9 @@ func (v *AccessWhatDataObjectItemConnectionPageInfo) __premarshalJSON() (*__prem
 }
 
 // AccessWhatDataObjectItemDataObject includes the requested fields of the GraphQL type DataObject.
+// The GraphQL type's documentation follows.
+//
+// Represents a data object in Collibra Data Access. These represents all the data entities in a data source (e.g. database, schema, table, column, folder, file, ...).
 type AccessWhatDataObjectItemDataObject struct {
 	DataObject `json:"-"`
 }
@@ -2805,13 +3017,18 @@ func (v *AccessWhatDataObjectItemDataObject) __premarshalJSON() (*__premarshalAc
 	return &retval, nil
 }
 
+// Defines the filter options for listing the WHAT items of an access control. When using multiple filter options, all these options need to apply to return the item.
 type AccessWhatFilterInput struct {
-	Search           *string     `json:"search,omitempty"`
-	IncludeDeleted   *bool       `json:"includeDeleted,omitempty"`
-	Owners           []string    `json:"owners"`
+	// The search string to use (will do a case-insensitive 'contains').
+	Search *string `json:"search,omitempty"`
+	// If true, also deleted WHAT items are returned.
+	IncludeDeleted *bool `json:"includeDeleted,omitempty"`
+	// List of user IDs to filter on who owns the WHAT items.
+	Owners []string `json:"owners"`
+	// Filter by which tags the WHAT item needs to have.
 	HasTags          []TagFilter `json:"hasTags"`
 	TargetDataObject *string     `json:"targetDataObject,omitempty"`
-	// Optional ABAC rule to filter the what-list on. Only applicable when requesting data objects what-list without unpacking
+	// Optional ABAC rule to filter the what-list on. Only applicable when requesting data objects WHAT list without unpacking
 	AbacRule *string `json:"abacRule,omitempty"`
 }
 
@@ -2833,6 +3050,7 @@ func (v *AccessWhatFilterInput) GetTargetDataObject() *string { return v.TargetD
 // GetAbacRule returns AccessWhatFilterInput.AbacRule, and is useful for accessing the field via an interface.
 func (v *AccessWhatFilterInput) GetAbacRule() *string { return v.AbacRule }
 
+// Defines the sorting configuration for the access control WHAT list.
 type AccessWhatOrderByInput struct {
 	Name *Sort `json:"name,omitempty"`
 }
@@ -2841,11 +3059,18 @@ type AccessWhatOrderByInput struct {
 func (v *AccessWhatOrderByInput) GetName() *Sort { return v.Name }
 
 // AccessWhoItem includes the GraphQL fields of AccessWhoItem requested by the fragment AccessWhoItem.
+// The GraphQL type's documentation follows.
+//
+// Represents an item in the WHO list of an access control.
 type AccessWhoItem struct {
-	ExpiresAt       *time.Time        `json:"expiresAt"`
-	PromiseDuration *int64            `json:"promiseDuration"`
-	Type            AccessWhoItemType `json:"type"`
-	Item            AccessWhoItemItem `json:"-"`
+	// The optional expiration time for this WHO item.
+	ExpiresAt *time.Time `json:"expiresAt"`
+	// In case `type=WhoPromise`, this indicates the duration of the grant when access to a promise is requested.
+	PromiseDuration *int64 `json:"promiseDuration"`
+	// Determines whether the access is granted directly or only as a promise (pre-approval).
+	Type AccessWhoItemType `json:"type"`
+	// The actual item in the WHO list.
+	Item AccessWhoItemItem `json:"-"`
 }
 
 // GetExpiresAt returns AccessWhoItem.ExpiresAt, and is useful for accessing the field via an interface.
@@ -2933,9 +3158,14 @@ func (v *AccessWhoItem) __premarshalJSON() (*__premarshalAccessWhoItem, error) {
 }
 
 // AccessWhoItemConnection includes the GraphQL fields of AccessWhoItemConnection requested by the fragment AccessWhoItemConnection.
+// The GraphQL type's documentation follows.
+//
+// The connection type for paginated lists of [AccessWhoItem]({{Types.AccessWhoItem}}).
 type AccessWhoItemConnection struct {
-	PageInfo AccessWhoItemConnectionPageInfo                 `json:"pageInfo"`
-	Edges    []AccessWhoItemConnectionEdgesAccessWhoItemEdge `json:"edges"`
+	// Pagination information for the retrieved items.
+	PageInfo AccessWhoItemConnectionPageInfo `json:"pageInfo"`
+	// The list of edges containing the actual queried items.
+	Edges []AccessWhoItemConnectionEdgesAccessWhoItemEdge `json:"edges"`
 }
 
 // GetPageInfo returns AccessWhoItemConnection.PageInfo, and is useful for accessing the field via an interface.
@@ -2947,9 +3177,14 @@ func (v *AccessWhoItemConnection) GetEdges() []AccessWhoItemConnectionEdgesAcces
 }
 
 // AccessWhoItemConnectionEdgesAccessWhoItemEdge includes the requested fields of the GraphQL type AccessWhoItemEdge.
+// The GraphQL type's documentation follows.
+//
+// The edge type for [AccessWhoItemConnection]({{Types.AccessWhoItemConnection}})
 type AccessWhoItemConnectionEdgesAccessWhoItemEdge struct {
-	Cursor *string                                                         `json:"cursor"`
-	Node   *AccessWhoItemConnectionEdgesAccessWhoItemEdgeNodeAccessWhoItem `json:"node"`
+	// The cursor of this item for pagination.
+	Cursor *string `json:"cursor"`
+	// The actual WHO item in the WHO list.
+	Node *AccessWhoItemConnectionEdgesAccessWhoItemEdgeNodeAccessWhoItem `json:"node"`
 }
 
 // GetCursor returns AccessWhoItemConnectionEdgesAccessWhoItemEdge.Cursor, and is useful for accessing the field via an interface.
@@ -2961,6 +3196,9 @@ func (v *AccessWhoItemConnectionEdgesAccessWhoItemEdge) GetNode() *AccessWhoItem
 }
 
 // AccessWhoItemConnectionEdgesAccessWhoItemEdgeNodeAccessWhoItem includes the requested fields of the GraphQL type AccessWhoItem.
+// The GraphQL type's documentation follows.
+//
+// Represents an item in the WHO list of an access control.
 type AccessWhoItemConnectionEdgesAccessWhoItemEdgeNodeAccessWhoItem struct {
 	AccessWhoItem `json:"-"`
 }
@@ -3235,10 +3473,15 @@ func __marshalAccessWhoItemItem(v *AccessWhoItemItem) ([]byte, error) {
 }
 
 // AccessWhoItemItemAccessControl includes the requested fields of the GraphQL type AccessControl.
+// The GraphQL type's documentation follows.
+//
+// Represents an access control object in the system. An access control is the abstract model representing grants, masks, filters and groups (determined by the `action` field).
 type AccessWhoItemItemAccessControl struct {
 	Typename *string `json:"__typename"`
-	Id       string  `json:"id"`
-	Name     string  `json:"name"`
+	// Unique identifier of the access control.
+	Id string `json:"id"`
+	// Name of the access control.
+	Name string `json:"name"`
 }
 
 // GetTypename returns AccessWhoItemItemAccessControl.Typename, and is useful for accessing the field via an interface.
@@ -3259,6 +3502,9 @@ type AccessWhoItemItemDataShareRecipient struct {
 func (v *AccessWhoItemItemDataShareRecipient) GetTypename() *string { return v.Typename }
 
 // AccessWhoItemItemDataSource includes the requested fields of the GraphQL type DataSource.
+// The GraphQL type's documentation follows.
+//
+// Represents a data sourcein Collibra Data Access.
 type AccessWhoItemItemDataSource struct {
 	Typename *string `json:"__typename"`
 }
@@ -3267,6 +3513,9 @@ type AccessWhoItemItemDataSource struct {
 func (v *AccessWhoItemItemDataSource) GetTypename() *string { return v.Typename }
 
 // AccessWhoItemItemInvalidInputError includes the requested fields of the GraphQL type InvalidInputError.
+// The GraphQL type's documentation follows.
+//
+// Error when some of the input parameters in the request are not valid.
 type AccessWhoItemItemInvalidInputError struct {
 	Typename *string `json:"__typename"`
 }
@@ -3275,6 +3524,9 @@ type AccessWhoItemItemInvalidInputError struct {
 func (v *AccessWhoItemItemInvalidInputError) GetTypename() *string { return v.Typename }
 
 // AccessWhoItemItemNotFoundError includes the requested fields of the GraphQL type NotFoundError.
+// The GraphQL type's documentation follows.
+//
+// Error when the user is requesting a resource that does not exist.
 type AccessWhoItemItemNotFoundError struct {
 	Typename *string `json:"__typename"`
 }
@@ -3283,6 +3535,9 @@ type AccessWhoItemItemNotFoundError struct {
 func (v *AccessWhoItemItemNotFoundError) GetTypename() *string { return v.Typename }
 
 // AccessWhoItemItemUser includes the requested fields of the GraphQL type User.
+// The GraphQL type's documentation follows.
+//
+// Represents a user in Collibra Data Access. It can be a human user or a machine user (service account) which groups accounts in different data sources.
 type AccessWhoItemItemUser struct {
 	Typename *string `json:"__typename"`
 	User     `json:"-"`
@@ -3359,10 +3614,13 @@ func (v *AccessWhoItemItemUser) __premarshalJSON() (*__premarshalAccessWhoItemIt
 	return &retval, nil
 }
 
+// The possible values for the type of a WHO item.
 type AccessWhoItemType string
 
 const (
-	AccessWhoItemTypeWhogrant   AccessWhoItemType = "WhoGrant"
+	// Access is immediately granted.
+	AccessWhoItemTypeWhogrant AccessWhoItemType = "WhoGrant"
+	// Access will automatically be granted if an access requests is created for this user or group.
 	AccessWhoItemTypeWhopromise AccessWhoItemType = "WhoPromise"
 )
 
@@ -3386,6 +3644,9 @@ var AllActionType = []ActionType{
 }
 
 // ActivateAccessControlActivateAccessControl includes the requested fields of the GraphQL type AccessControl.
+// The GraphQL type's documentation follows.
+//
+// Represents an access control object in the system. An access control is the abstract model representing grants, masks, filters and groups (determined by the `action` field).
 type ActivateAccessControlActivateAccessControl struct {
 	Typename      *string `json:"__typename"`
 	AccessControl `json:"-"`
@@ -3688,6 +3949,9 @@ func __marshalActivateAccessControlActivateAccessControlAccessControlResult(v *A
 }
 
 // ActivateAccessControlActivateAccessControlInvalidInputError includes the requested fields of the GraphQL type InvalidInputError.
+// The GraphQL type's documentation follows.
+//
+// Error when some of the input parameters in the request are not valid.
 type ActivateAccessControlActivateAccessControlInvalidInputError struct {
 	Typename          *string `json:"__typename"`
 	InvalidInputError `json:"-"`
@@ -3751,6 +4015,9 @@ func (v *ActivateAccessControlActivateAccessControlInvalidInputError) __premarsh
 }
 
 // ActivateAccessControlActivateAccessControlNotFoundError includes the requested fields of the GraphQL type NotFoundError.
+// The GraphQL type's documentation follows.
+//
+// Error when the user is requesting a resource that does not exist.
 type ActivateAccessControlActivateAccessControlNotFoundError struct {
 	Typename      *string `json:"__typename"`
 	NotFoundError `json:"-"`
@@ -3814,6 +4081,9 @@ func (v *ActivateAccessControlActivateAccessControlNotFoundError) __premarshalJS
 }
 
 // ActivateAccessControlActivateAccessControlPermissionDeniedError includes the requested fields of the GraphQL type PermissionDeniedError.
+// The GraphQL type's documentation follows.
+//
+// Error when permission to the requested resource is denied.
 type ActivateAccessControlActivateAccessControlPermissionDeniedError struct {
 	Typename              *string `json:"__typename"`
 	PermissionDeniedError `json:"-"`
@@ -3878,6 +4148,7 @@ func (v *ActivateAccessControlActivateAccessControlPermissionDeniedError) __prem
 
 // ActivateAccessControlResponse is returned by ActivateAccessControl on success.
 type ActivateAccessControlResponse struct {
+	// Put an access control to active.
 	ActivateAccessControl ActivateAccessControlActivateAccessControlAccessControlResult `json:"-"`
 }
 
@@ -3950,6 +4221,9 @@ func (v *ActivateAccessControlResponse) __premarshalJSON() (*__premarshalActivat
 }
 
 // AddSubtaskEventAddSubtaskEventSubtask includes the requested fields of the GraphQL type Subtask.
+// The GraphQL type's documentation follows.
+//
+// Represents a subtask of a task.
 type AddSubtaskEventAddSubtaskEventSubtask struct {
 	Subtask `json:"-"`
 }
@@ -4088,6 +4362,9 @@ func (v *AddSubtaskEventResponse) GetAddSubtaskEvent() AddSubtaskEventAddSubtask
 }
 
 // AddTaskEventAddTaskEventTask includes the requested fields of the GraphQL type Task.
+// The GraphQL type's documentation follows.
+//
+// Represents a task in a job.
 type AddTaskEventAddTaskEventTask struct {
 	Task `json:"-"`
 }
@@ -4195,6 +4472,7 @@ type AddTaskEventResponse struct {
 // GetAddTaskEvent returns AddTaskEventResponse.AddTaskEvent, and is useful for accessing the field via an interface.
 func (v *AddTaskEventResponse) GetAddTaskEvent() AddTaskEventAddTaskEventTask { return v.AddTaskEvent }
 
+// The aggregator operators for the boolean expressions.
 type BinaryExpressionAggregatorOperator string
 
 const (
@@ -4207,6 +4485,7 @@ var AllBinaryExpressionAggregatorOperator = []BinaryExpressionAggregatorOperator
 	BinaryExpressionAggregatorOperatorOr,
 }
 
+// The unary operators for the boolean expressions.
 type BinaryExpressionUnaryExpressionOperator string
 
 const (
@@ -4245,6 +4524,9 @@ func (v *CanLinkFilter) GetWhoAccessControls() []string { return v.WhoAccessCont
 func (v *CanLinkFilter) GetWhatAccessControls() []string { return v.WhatAccessControls }
 
 // CreateAccessControlCreateAccessControl includes the requested fields of the GraphQL type AccessControl.
+// The GraphQL type's documentation follows.
+//
+// Represents an access control object in the system. An access control is the abstract model representing grants, masks, filters and groups (determined by the `action` field).
 type CreateAccessControlCreateAccessControl struct {
 	Typename      *string `json:"__typename"`
 	AccessControl `json:"-"`
@@ -4426,8 +4708,12 @@ func (v *CreateAccessControlCreateAccessControl) __premarshalJSON() (*__premarsh
 }
 
 // CreateAccessControlCreateAccessControlAccessControlWithOptionalAccessRequests includes the requested fields of the GraphQL type AccessControlWithOptionalAccessRequests.
+// The GraphQL type's documentation follows.
+//
+// Represents the result of an access control update when access requests were created as part of the update.
 type CreateAccessControlCreateAccessControlAccessControlWithOptionalAccessRequests struct {
-	Typename      *string                                                                                    `json:"__typename"`
+	Typename *string `json:"__typename"`
+	// The updated access control.
 	AccessControl CreateAccessControlCreateAccessControlAccessControlWithOptionalAccessRequestsAccessControl `json:"accessControl"`
 }
 
@@ -4442,6 +4728,9 @@ func (v *CreateAccessControlCreateAccessControlAccessControlWithOptionalAccessRe
 }
 
 // CreateAccessControlCreateAccessControlAccessControlWithOptionalAccessRequestsAccessControl includes the requested fields of the GraphQL type AccessControl.
+// The GraphQL type's documentation follows.
+//
+// Represents an access control object in the system. An access control is the abstract model representing grants, masks, filters and groups (determined by the `action` field).
 type CreateAccessControlCreateAccessControlAccessControlWithOptionalAccessRequestsAccessControl struct {
 	AccessControl `json:"-"`
 }
@@ -4751,6 +5040,9 @@ func __marshalCreateAccessControlCreateAccessControlAccessControlWithOptionalAcc
 }
 
 // CreateAccessControlCreateAccessControlInvalidInputError includes the requested fields of the GraphQL type InvalidInputError.
+// The GraphQL type's documentation follows.
+//
+// Error when some of the input parameters in the request are not valid.
 type CreateAccessControlCreateAccessControlInvalidInputError struct {
 	Typename          *string `json:"__typename"`
 	InvalidInputError `json:"-"`
@@ -4814,6 +5106,9 @@ func (v *CreateAccessControlCreateAccessControlInvalidInputError) __premarshalJS
 }
 
 // CreateAccessControlCreateAccessControlNotFoundError includes the requested fields of the GraphQL type NotFoundError.
+// The GraphQL type's documentation follows.
+//
+// Error when the user is requesting a resource that does not exist.
 type CreateAccessControlCreateAccessControlNotFoundError struct {
 	Typename *string `json:"__typename"`
 }
@@ -4824,6 +5119,9 @@ func (v *CreateAccessControlCreateAccessControlNotFoundError) GetTypename() *str
 }
 
 // CreateAccessControlCreateAccessControlPermissionDeniedError includes the requested fields of the GraphQL type PermissionDeniedError.
+// The GraphQL type's documentation follows.
+//
+// Error when permission to the requested resource is denied.
 type CreateAccessControlCreateAccessControlPermissionDeniedError struct {
 	Typename              *string `json:"__typename"`
 	PermissionDeniedError `json:"-"`
@@ -4888,6 +5186,7 @@ func (v *CreateAccessControlCreateAccessControlPermissionDeniedError) __premarsh
 
 // CreateAccessControlResponse is returned by CreateAccessControl on success.
 type CreateAccessControlResponse struct {
+	// Create a new access control.
 	CreateAccessControl CreateAccessControlCreateAccessControlAccessControlWithOptionalAccessRequestsResult `json:"-"`
 }
 
@@ -4960,6 +5259,9 @@ func (v *CreateAccessControlResponse) __premarshalJSON() (*__premarshalCreateAcc
 }
 
 // CreateDataSourceCreateDataSource includes the requested fields of the GraphQL type DataSource.
+// The GraphQL type's documentation follows.
+//
+// Represents a data sourcein Collibra Data Access.
 type CreateDataSourceCreateDataSource struct {
 	Typename   *string `json:"__typename"`
 	DataSource `json:"-"`
@@ -5170,6 +5472,9 @@ func __marshalCreateDataSourceCreateDataSourceDataSourceResult(v *CreateDataSour
 }
 
 // CreateDataSourceCreateDataSourceInvalidInputError includes the requested fields of the GraphQL type InvalidInputError.
+// The GraphQL type's documentation follows.
+//
+// Error when some of the input parameters in the request are not valid.
 type CreateDataSourceCreateDataSourceInvalidInputError struct {
 	Typename *string `json:"__typename"`
 }
@@ -5178,6 +5483,9 @@ type CreateDataSourceCreateDataSourceInvalidInputError struct {
 func (v *CreateDataSourceCreateDataSourceInvalidInputError) GetTypename() *string { return v.Typename }
 
 // CreateDataSourceCreateDataSourceNotFoundError includes the requested fields of the GraphQL type NotFoundError.
+// The GraphQL type's documentation follows.
+//
+// Error when the user is requesting a resource that does not exist.
 type CreateDataSourceCreateDataSourceNotFoundError struct {
 	Typename      *string `json:"__typename"`
 	NotFoundError `json:"-"`
@@ -5239,6 +5547,9 @@ func (v *CreateDataSourceCreateDataSourceNotFoundError) __premarshalJSON() (*__p
 }
 
 // CreateDataSourceCreateDataSourcePermissionDeniedError includes the requested fields of the GraphQL type PermissionDeniedError.
+// The GraphQL type's documentation follows.
+//
+// Error when permission to the requested resource is denied.
 type CreateDataSourceCreateDataSourcePermissionDeniedError struct {
 	Typename              *string `json:"__typename"`
 	PermissionDeniedError `json:"-"`
@@ -5303,6 +5614,7 @@ func (v *CreateDataSourceCreateDataSourcePermissionDeniedError) __premarshalJSON
 
 // CreateDataSourceResponse is returned by CreateDataSource on success.
 type CreateDataSourceResponse struct {
+	// Create a new data source.
 	CreateDataSource CreateDataSourceCreateDataSourceDataSourceResult `json:"-"`
 }
 
@@ -5375,6 +5687,9 @@ func (v *CreateDataSourceResponse) __premarshalJSON() (*__premarshalCreateDataSo
 }
 
 // CreateGrantCategoryCreateGrantCategory includes the requested fields of the GraphQL type GrantCategory.
+// The GraphQL type's documentation follows.
+//
+// Represent a grant category. Grant categories are used to categorize access controls with `action=Grant` to allow structuring them better.
 type CreateGrantCategoryCreateGrantCategory struct {
 	Typename             *string `json:"__typename"`
 	GrantCategoryDetails `json:"-"`
@@ -5651,6 +5966,9 @@ func __marshalCreateGrantCategoryCreateGrantCategoryGrantCategoryResult(v *Creat
 }
 
 // CreateGrantCategoryCreateGrantCategoryInvalidInputError includes the requested fields of the GraphQL type InvalidInputError.
+// The GraphQL type's documentation follows.
+//
+// Error when some of the input parameters in the request are not valid.
 type CreateGrantCategoryCreateGrantCategoryInvalidInputError struct {
 	Typename          *string `json:"__typename"`
 	InvalidInputError `json:"-"`
@@ -5714,6 +6032,9 @@ func (v *CreateGrantCategoryCreateGrantCategoryInvalidInputError) __premarshalJS
 }
 
 // CreateGrantCategoryCreateGrantCategoryNotFoundError includes the requested fields of the GraphQL type NotFoundError.
+// The GraphQL type's documentation follows.
+//
+// Error when the user is requesting a resource that does not exist.
 type CreateGrantCategoryCreateGrantCategoryNotFoundError struct {
 	Typename      *string `json:"__typename"`
 	NotFoundError `json:"-"`
@@ -5777,6 +6098,9 @@ func (v *CreateGrantCategoryCreateGrantCategoryNotFoundError) __premarshalJSON()
 }
 
 // CreateGrantCategoryCreateGrantCategoryPermissionDeniedError includes the requested fields of the GraphQL type PermissionDeniedError.
+// The GraphQL type's documentation follows.
+//
+// Error when permission to the requested resource is denied.
 type CreateGrantCategoryCreateGrantCategoryPermissionDeniedError struct {
 	Typename              *string `json:"__typename"`
 	PermissionDeniedError `json:"-"`
@@ -5913,6 +6237,9 @@ func (v *CreateGrantCategoryResponse) __premarshalJSON() (*__premarshalCreateGra
 }
 
 // CreateJobCreateJob includes the requested fields of the GraphQL type Job.
+// The GraphQL type's documentation follows.
+//
+// Represents a synchronization job that is executed on a data source.
 type CreateJobCreateJob struct {
 	Job `json:"-"`
 }
@@ -6021,6 +6348,9 @@ type CreateJobResponse struct {
 func (v *CreateJobResponse) GetCreateJob() CreateJobCreateJob { return v.CreateJob }
 
 // CreateUserCreateUser includes the requested fields of the GraphQL type User.
+// The GraphQL type's documentation follows.
+//
+// Represents a user in Collibra Data Access. It can be a human user or a machine user (service account) which groups accounts in different data sources.
 type CreateUserCreateUser struct {
 	Typename *string `json:"__typename"`
 	User     `json:"-"`
@@ -6097,76 +6427,10 @@ func (v *CreateUserCreateUser) __premarshalJSON() (*__premarshalCreateUserCreate
 	return &retval, nil
 }
 
-// CreateUserCreateUserInvalidEmailError includes the requested fields of the GraphQL type InvalidEmailError.
-type CreateUserCreateUserInvalidEmailError struct {
-	Typename          *string `json:"__typename"`
-	InvalidEmailError `json:"-"`
-}
-
-// GetTypename returns CreateUserCreateUserInvalidEmailError.Typename, and is useful for accessing the field via an interface.
-func (v *CreateUserCreateUserInvalidEmailError) GetTypename() *string { return v.Typename }
-
-// GetErrEmail returns CreateUserCreateUserInvalidEmailError.ErrEmail, and is useful for accessing the field via an interface.
-func (v *CreateUserCreateUserInvalidEmailError) GetErrEmail() string {
-	return v.InvalidEmailError.ErrEmail
-}
-
-// GetMessage returns CreateUserCreateUserInvalidEmailError.Message, and is useful for accessing the field via an interface.
-func (v *CreateUserCreateUserInvalidEmailError) GetMessage() string {
-	return v.InvalidEmailError.Message
-}
-
-func (v *CreateUserCreateUserInvalidEmailError) UnmarshalJSON(b []byte) error {
-
-	if string(b) == "null" {
-		return nil
-	}
-
-	var firstPass struct {
-		*CreateUserCreateUserInvalidEmailError
-		graphql.NoUnmarshalJSON
-	}
-	firstPass.CreateUserCreateUserInvalidEmailError = v
-
-	err := json.Unmarshal(b, &firstPass)
-	if err != nil {
-		return err
-	}
-
-	err = json.Unmarshal(
-		b, &v.InvalidEmailError)
-	if err != nil {
-		return err
-	}
-	return nil
-}
-
-type __premarshalCreateUserCreateUserInvalidEmailError struct {
-	Typename *string `json:"__typename"`
-
-	ErrEmail string `json:"errEmail"`
-
-	Message string `json:"message"`
-}
-
-func (v *CreateUserCreateUserInvalidEmailError) MarshalJSON() ([]byte, error) {
-	premarshaled, err := v.__premarshalJSON()
-	if err != nil {
-		return nil, err
-	}
-	return json.Marshal(premarshaled)
-}
-
-func (v *CreateUserCreateUserInvalidEmailError) __premarshalJSON() (*__premarshalCreateUserCreateUserInvalidEmailError, error) {
-	var retval __premarshalCreateUserCreateUserInvalidEmailError
-
-	retval.Typename = v.Typename
-	retval.ErrEmail = v.InvalidEmailError.ErrEmail
-	retval.Message = v.InvalidEmailError.Message
-	return &retval, nil
-}
-
 // CreateUserCreateUserInvalidInputError includes the requested fields of the GraphQL type InvalidInputError.
+// The GraphQL type's documentation follows.
+//
+// Error when some of the input parameters in the request are not valid.
 type CreateUserCreateUserInvalidInputError struct {
 	Typename *string `json:"__typename"`
 }
@@ -6175,6 +6439,9 @@ type CreateUserCreateUserInvalidInputError struct {
 func (v *CreateUserCreateUserInvalidInputError) GetTypename() *string { return v.Typename }
 
 // CreateUserCreateUserNotFoundError includes the requested fields of the GraphQL type NotFoundError.
+// The GraphQL type's documentation follows.
+//
+// Error when the user is requesting a resource that does not exist.
 type CreateUserCreateUserNotFoundError struct {
 	Typename      *string `json:"__typename"`
 	NotFoundError `json:"-"`
@@ -6234,6 +6501,9 @@ func (v *CreateUserCreateUserNotFoundError) __premarshalJSON() (*__premarshalCre
 }
 
 // CreateUserCreateUserPermissionDeniedError includes the requested fields of the GraphQL type PermissionDeniedError.
+// The GraphQL type's documentation follows.
+//
+// Error when permission to the requested resource is denied.
 type CreateUserCreateUserPermissionDeniedError struct {
 	Typename              *string `json:"__typename"`
 	PermissionDeniedError `json:"-"`
@@ -6297,7 +6567,6 @@ func (v *CreateUserCreateUserPermissionDeniedError) __premarshalJSON() (*__prema
 // CreateUserCreateUserUserResult includes the requested fields of the GraphQL interface UserResult.
 //
 // CreateUserCreateUserUserResult is implemented by the following types:
-// CreateUserCreateUserInvalidEmailError
 // CreateUserCreateUserInvalidInputError
 // CreateUserCreateUserNotFoundError
 // CreateUserCreateUserPermissionDeniedError
@@ -6308,8 +6577,6 @@ type CreateUserCreateUserUserResult interface {
 	GetTypename() *string
 }
 
-func (v *CreateUserCreateUserInvalidEmailError) implementsGraphQLInterfaceCreateUserCreateUserUserResult() {
-}
 func (v *CreateUserCreateUserInvalidInputError) implementsGraphQLInterfaceCreateUserCreateUserUserResult() {
 }
 func (v *CreateUserCreateUserNotFoundError) implementsGraphQLInterfaceCreateUserCreateUserUserResult() {
@@ -6332,9 +6599,6 @@ func __unmarshalCreateUserCreateUserUserResult(b []byte, v *CreateUserCreateUser
 	}
 
 	switch tn.TypeName {
-	case "InvalidEmailError":
-		*v = new(CreateUserCreateUserInvalidEmailError)
-		return json.Unmarshal(b, *v)
 	case "InvalidInputError":
 		*v = new(CreateUserCreateUserInvalidInputError)
 		return json.Unmarshal(b, *v)
@@ -6360,18 +6624,6 @@ func __marshalCreateUserCreateUserUserResult(v *CreateUserCreateUserUserResult) 
 
 	var typename string
 	switch v := (*v).(type) {
-	case *CreateUserCreateUserInvalidEmailError:
-		typename = "InvalidEmailError"
-
-		premarshaled, err := v.__premarshalJSON()
-		if err != nil {
-			return nil, err
-		}
-		result := struct {
-			TypeName string `json:"__typename"`
-			*__premarshalCreateUserCreateUserInvalidEmailError
-		}{typename, premarshaled}
-		return json.Marshal(result)
 	case *CreateUserCreateUserInvalidInputError:
 		typename = "InvalidInputError"
 
@@ -6496,6 +6748,9 @@ func (v *CreateUserResponse) __premarshalJSON() (*__premarshalCreateUserResponse
 }
 
 // CurrentUserCurrentUser includes the requested fields of the GraphQL type User.
+// The GraphQL type's documentation follows.
+//
+// Represents a user in Collibra Data Access. It can be a human user or a machine user (service account) which groups accounts in different data sources.
 type CurrentUserCurrentUser struct {
 	User `json:"-"`
 }
@@ -6567,15 +6822,19 @@ func (v *CurrentUserCurrentUser) __premarshalJSON() (*__premarshalCurrentUserCur
 
 // CurrentUserResponse is returned by CurrentUser on success.
 type CurrentUserResponse struct {
+	// Retrieves the currently authenticated user.
 	CurrentUser *CurrentUserCurrentUser `json:"currentUser"`
 }
 
 // GetCurrentUser returns CurrentUserResponse.CurrentUser, and is useful for accessing the field via an interface.
 func (v *CurrentUserResponse) GetCurrentUser() *CurrentUserCurrentUser { return v.CurrentUser }
 
+// Input object to create an aggregator expression (e.g. `X OR Y OR Z`).
 type DataComparisonExpressionAggregatorInput struct {
+	// The operator to use.
 	Operator BinaryExpressionAggregatorOperator `json:"operator"`
-	Operands []DataComparisonExpressionInput    `json:"operands"`
+	// The operands which will be combined with the operator.
+	Operands []DataComparisonExpressionInput `json:"operands"`
 }
 
 // GetOperator returns DataComparisonExpressionAggregatorInput.Operator, and is useful for accessing the field via an interface.
@@ -6588,10 +6847,14 @@ func (v *DataComparisonExpressionAggregatorInput) GetOperands() []DataComparison
 	return v.Operands
 }
 
+// Input object to create a comparison expression (i.e. `field < value`).
 type DataComparisonExpressionComparisonInput struct {
-	Operator     DataComparisonExpressionComparisonOperator `json:"operator"`
-	LeftOperand  DataComparisonExpressionOperandInput       `json:"leftOperand"`
-	RightOperand DataComparisonExpressionOperandInput       `json:"rightOperand"`
+	// The operator for the expression.
+	Operator DataComparisonExpressionComparisonOperator `json:"operator"`
+	// The left operand.
+	LeftOperand DataComparisonExpressionOperandInput `json:"leftOperand"`
+	// The right operand.
+	RightOperand DataComparisonExpressionOperandInput `json:"rightOperand"`
 }
 
 // GetOperator returns DataComparisonExpressionComparisonInput.Operator, and is useful for accessing the field via an interface.
@@ -6609,6 +6872,7 @@ func (v *DataComparisonExpressionComparisonInput) GetRightOperand() DataComparis
 	return v.RightOperand
 }
 
+// The different comparison operators.
 type DataComparisonExpressionComparisonOperator string
 
 const (
@@ -6629,10 +6893,13 @@ var AllDataComparisonExpressionComparisonOperator = []DataComparisonExpressionCo
 	DataComparisonExpressionComparisonOperatorGreaterthanorequal,
 }
 
+// The possible ways to reference a data object.
 type DataComparisonExpressionEntityType string
 
 const (
-	DataComparisonExpressionEntityTypeDataobject            DataComparisonExpressionEntityType = "DataObject"
+	// Reference will happen through data object ID.
+	DataComparisonExpressionEntityTypeDataobject DataComparisonExpressionEntityType = "DataObject"
+	// Reference will happen through the column name.
 	DataComparisonExpressionEntityTypeColumnreferencebyname DataComparisonExpressionEntityType = "ColumnReferenceByName"
 )
 
@@ -6641,10 +6908,15 @@ var AllDataComparisonExpressionEntityType = []DataComparisonExpressionEntityType
 	DataComparisonExpressionEntityTypeColumnreferencebyname,
 }
 
+// Input object to create a comparison expression. Exactly one of the fields should be specific, depending on the type.
 type DataComparisonExpressionInput struct {
-	Literal         *bool                                         `json:"literal,omitempty"`
-	Comparison      *DataComparisonExpressionComparisonInput      `json:"comparison,omitempty"`
-	Aggregator      *DataComparisonExpressionAggregatorInput      `json:"aggregator,omitempty"`
+	// In case you want to simply have a boolean literal to determine the outcome.
+	Literal *bool `json:"literal,omitempty"`
+	// To specify a single comparison (e.g. `field < value`).
+	Comparison *DataComparisonExpressionComparisonInput `json:"comparison,omitempty"`
+	// To specify an aggregator expression (e.g. `X OR Y OR Z`).
+	Aggregator *DataComparisonExpressionAggregatorInput `json:"aggregator,omitempty"`
+	// To specify a unary expression (e.g. `NOT X`).
 	UnaryExpression *DataComparisonExpressionUnaryExpressionInput `json:"unaryExpression,omitempty"`
 }
 
@@ -6666,11 +6938,17 @@ func (v *DataComparisonExpressionInput) GetUnaryExpression() *DataComparisonExpr
 	return v.UnaryExpression
 }
 
+// Input object to represent a literal value. Exactly one of the fields should be specified.
 type DataComparisonExpressionLiteral struct {
-	Bool      *bool      `json:"bool,omitempty"`
-	Int       *int       `json:"int,omitempty"`
-	Float     *float64   `json:"float,omitempty"`
-	Str       *string    `json:"str,omitempty"`
+	// A boolean value.
+	Bool *bool `json:"bool,omitempty"`
+	// An integer value.
+	Int *int `json:"int,omitempty"`
+	// A float value
+	Float *float64 `json:"float,omitempty"`
+	// A string value.
+	Str *string `json:"str,omitempty"`
+	// A timestamp value.
 	Timestamp *time.Time `json:"timestamp,omitempty"`
 }
 
@@ -6689,9 +6967,12 @@ func (v *DataComparisonExpressionLiteral) GetStr() *string { return v.Str }
 // GetTimestamp returns DataComparisonExpressionLiteral.Timestamp, and is useful for accessing the field via an interface.
 func (v *DataComparisonExpressionLiteral) GetTimestamp() *time.Time { return v.Timestamp }
 
+// Input object to represent an operand. Exactly one of the fields should be specified.
 type DataComparisonExpressionOperandInput struct {
+	// A reference to a data object.
 	Reference *DataComparisonExpressionReferenceInput `json:"reference,omitempty"`
-	Literal   *DataComparisonExpressionLiteral        `json:"literal,omitempty"`
+	// A literal.
+	Literal *DataComparisonExpressionLiteral `json:"literal,omitempty"`
 }
 
 // GetReference returns DataComparisonExpressionOperandInput.Reference, and is useful for accessing the field via an interface.
@@ -6704,9 +6985,12 @@ func (v *DataComparisonExpressionOperandInput) GetLiteral() *DataComparisonExpre
 	return v.Literal
 }
 
+// Input object to reference a data object.
 type DataComparisonExpressionReferenceInput struct {
+	// The way you want to reference the data object.
 	EntityType DataComparisonExpressionEntityType `json:"entityType"`
-	EntityId   string                             `json:"entityId"`
+	// The data object ID or column name.
+	EntityId string `json:"entityId"`
 }
 
 // GetEntityType returns DataComparisonExpressionReferenceInput.EntityType, and is useful for accessing the field via an interface.
@@ -6717,9 +7001,12 @@ func (v *DataComparisonExpressionReferenceInput) GetEntityType() DataComparisonE
 // GetEntityId returns DataComparisonExpressionReferenceInput.EntityId, and is useful for accessing the field via an interface.
 func (v *DataComparisonExpressionReferenceInput) GetEntityId() string { return v.EntityId }
 
+// Input object to create a unary expression (e.g. `NOT X`).
 type DataComparisonExpressionUnaryExpressionInput struct {
+	// The operator to use.
 	Operator BinaryExpressionUnaryExpressionOperator `json:"operator"`
-	Operand  DataComparisonExpressionInput           `json:"operand"`
+	// The operand to use with the operator.
+	Operand DataComparisonExpressionInput `json:"operand"`
 }
 
 // GetOperator returns DataComparisonExpressionUnaryExpressionInput.Operator, and is useful for accessing the field via an interface.
@@ -6733,14 +7020,24 @@ func (v *DataComparisonExpressionUnaryExpressionInput) GetOperand() DataComparis
 }
 
 // DataObject includes the GraphQL fields of DataObject requested by the fragment DataObject.
+// The GraphQL type's documentation follows.
+//
+// Represents a data object in Collibra Data Access. These represents all the data entities in a data source (e.g. database, schema, table, column, folder, file, ...).
 type DataObject struct {
-	Id          string  `json:"id"`
-	Name        string  `json:"name"`
-	FullName    string  `json:"fullName"`
-	Type        string  `json:"type"`
-	DataType    *string `json:"dataType"`
-	Deleted     bool    `json:"deleted"`
-	Description string  `json:"description"`
+	// A internal unique identifier for the data object.
+	Id string `json:"id"`
+	// The name of the data object.
+	Name string `json:"name"`
+	// A name that can uniquely identify the data object within the data source. This is generated by the connector in a predefined format.
+	FullName string `json:"fullName"`
+	// The type name of data object (one of the data object types defined in the data source meta data).
+	Type string `json:"type"`
+	// Typically used for column to indicate the data type.
+	DataType *string `json:"dataType"`
+	// Indicates if the data object is deleted (unknown) or not.
+	Deleted bool `json:"deleted"`
+	// The description of the data object.
+	Description string `json:"description"`
 	// Returns the data source linked to the data object. This can be linked through its parents.
 	DataSource *DataObjectDataSource `json:"dataSource"`
 }
@@ -6770,9 +7067,13 @@ func (v *DataObject) GetDescription() string { return v.Description }
 func (v *DataObject) GetDataSource() *DataObjectDataSource { return v.DataSource }
 
 // DataObjectByExternalIdDataObjectsDataObjectConnection includes the requested fields of the GraphQL type DataObjectConnection.
+// The GraphQL type's documentation follows.
+//
+// The connection type for paginated lists of [DataObject]({{Types.DataObject}}).
 type DataObjectByExternalIdDataObjectsDataObjectConnection struct {
-	Typename *string                                                                    `json:"__typename"`
-	Edges    []DataObjectByExternalIdDataObjectsDataObjectConnectionEdgesDataObjectEdge `json:"edges"`
+	Typename *string `json:"__typename"`
+	// The list of edges containing the actual queried items.
+	Edges []DataObjectByExternalIdDataObjectsDataObjectConnectionEdgesDataObjectEdge `json:"edges"`
 }
 
 // GetTypename returns DataObjectByExternalIdDataObjectsDataObjectConnection.Typename, and is useful for accessing the field via an interface.
@@ -6786,7 +7087,11 @@ func (v *DataObjectByExternalIdDataObjectsDataObjectConnection) GetEdges() []Dat
 }
 
 // DataObjectByExternalIdDataObjectsDataObjectConnectionEdgesDataObjectEdge includes the requested fields of the GraphQL type DataObjectEdge.
+// The GraphQL type's documentation follows.
+//
+// The edge type for [DataObjectConnection]({{Types.DataObjectConnection}})
 type DataObjectByExternalIdDataObjectsDataObjectConnectionEdgesDataObjectEdge struct {
+	// The actual data object.
 	Node *DataObjectByExternalIdDataObjectsDataObjectConnectionEdgesDataObjectEdgeNodeDataObject `json:"node"`
 }
 
@@ -6796,6 +7101,9 @@ func (v *DataObjectByExternalIdDataObjectsDataObjectConnectionEdgesDataObjectEdg
 }
 
 // DataObjectByExternalIdDataObjectsDataObjectConnectionEdgesDataObjectEdgeNodeDataObject includes the requested fields of the GraphQL type DataObject.
+// The GraphQL type's documentation follows.
+//
+// Represents a data object in Collibra Data Access. These represents all the data entities in a data source (e.g. database, schema, table, column, folder, file, ...).
 type DataObjectByExternalIdDataObjectsDataObjectConnectionEdgesDataObjectEdgeNodeDataObject struct {
 	DataObject `json:"-"`
 }
@@ -7019,6 +7327,9 @@ func __marshalDataObjectByExternalIdDataObjectsDataObjectConnectionResult(v *Dat
 }
 
 // DataObjectByExternalIdDataObjectsInvalidInputError includes the requested fields of the GraphQL type InvalidInputError.
+// The GraphQL type's documentation follows.
+//
+// Error when some of the input parameters in the request are not valid.
 type DataObjectByExternalIdDataObjectsInvalidInputError struct {
 	Typename          *string `json:"__typename"`
 	InvalidInputError `json:"-"`
@@ -7080,6 +7391,9 @@ func (v *DataObjectByExternalIdDataObjectsInvalidInputError) __premarshalJSON() 
 }
 
 // DataObjectByExternalIdDataObjectsNotFoundError includes the requested fields of the GraphQL type NotFoundError.
+// The GraphQL type's documentation follows.
+//
+// Error when the user is requesting a resource that does not exist.
 type DataObjectByExternalIdDataObjectsNotFoundError struct {
 	Typename      *string `json:"__typename"`
 	NotFoundError `json:"-"`
@@ -7141,6 +7455,9 @@ func (v *DataObjectByExternalIdDataObjectsNotFoundError) __premarshalJSON() (*__
 }
 
 // DataObjectByExternalIdDataObjectsPermissionDeniedError includes the requested fields of the GraphQL type PermissionDeniedError.
+// The GraphQL type's documentation follows.
+//
+// Error when permission to the requested resource is denied.
 type DataObjectByExternalIdDataObjectsPermissionDeniedError struct {
 	Typename              *string `json:"__typename"`
 	PermissionDeniedError `json:"-"`
@@ -7205,6 +7522,7 @@ func (v *DataObjectByExternalIdDataObjectsPermissionDeniedError) __premarshalJSO
 
 // DataObjectByExternalIdResponse is returned by DataObjectByExternalId on success.
 type DataObjectByExternalIdResponse struct {
+	// Retrieves a paginated list of data objects.
 	DataObjects DataObjectByExternalIdDataObjectsDataObjectConnectionResult `json:"-"`
 }
 
@@ -7277,9 +7595,14 @@ func (v *DataObjectByExternalIdResponse) __premarshalJSON() (*__premarshalDataOb
 }
 
 // DataObjectConnection includes the GraphQL fields of DataObjectConnection requested by the fragment DataObjectConnection.
+// The GraphQL type's documentation follows.
+//
+// The connection type for paginated lists of [DataObject]({{Types.DataObject}}).
 type DataObjectConnection struct {
-	PageInfo DataObjectConnectionPageInfo              `json:"pageInfo"`
-	Edges    []DataObjectConnectionEdgesDataObjectEdge `json:"edges"`
+	// Pagination information for the retrieved items.
+	PageInfo DataObjectConnectionPageInfo `json:"pageInfo"`
+	// The list of edges containing the actual queried items.
+	Edges []DataObjectConnectionEdgesDataObjectEdge `json:"edges"`
 }
 
 // GetPageInfo returns DataObjectConnection.PageInfo, and is useful for accessing the field via an interface.
@@ -7289,9 +7612,14 @@ func (v *DataObjectConnection) GetPageInfo() DataObjectConnectionPageInfo { retu
 func (v *DataObjectConnection) GetEdges() []DataObjectConnectionEdgesDataObjectEdge { return v.Edges }
 
 // DataObjectConnectionEdgesDataObjectEdge includes the requested fields of the GraphQL type DataObjectEdge.
+// The GraphQL type's documentation follows.
+//
+// The edge type for [DataObjectConnection]({{Types.DataObjectConnection}})
 type DataObjectConnectionEdgesDataObjectEdge struct {
-	Cursor *string                                                `json:"cursor"`
-	Node   *DataObjectConnectionEdgesDataObjectEdgeNodeDataObject `json:"node"`
+	// The cursor of this item for pagination.
+	Cursor *string `json:"cursor"`
+	// The actual data object.
+	Node *DataObjectConnectionEdgesDataObjectEdgeNodeDataObject `json:"node"`
 }
 
 // GetCursor returns DataObjectConnectionEdgesDataObjectEdge.Cursor, and is useful for accessing the field via an interface.
@@ -7303,6 +7631,9 @@ func (v *DataObjectConnectionEdgesDataObjectEdge) GetNode() *DataObjectConnectio
 }
 
 // DataObjectConnectionEdgesDataObjectEdgeNodeDataObject includes the requested fields of the GraphQL type DataObject.
+// The GraphQL type's documentation follows.
+//
+// Represents a data object in Collibra Data Access. These represents all the data entities in a data source (e.g. database, schema, table, column, folder, file, ...).
 type DataObjectConnectionEdgesDataObjectEdgeNodeDataObject struct {
 	DataObject `json:"-"`
 }
@@ -7808,27 +8139,44 @@ func (v *DataObjectConnectionResultPermissionDeniedError) __premarshalJSON() (*_
 }
 
 // DataObjectDataSource includes the requested fields of the GraphQL type DataSource.
+// The GraphQL type's documentation follows.
+//
+// Represents a data sourcein Collibra Data Access.
 type DataObjectDataSource struct {
+	// The unique identifier of the data source.
 	Id string `json:"id"`
 }
 
 // GetId returns DataObjectDataSource.Id, and is useful for accessing the field via an interface.
 func (v *DataObjectDataSource) GetId() string { return v.Id }
 
+// Input object for filtering a list of data objects.
 type DataObjectFilterInput struct {
-	DataSources                 []string             `json:"dataSources"`
-	Parents                     []string             `json:"parents"`
-	Ancestors                   []string             `json:"ancestors"`
-	Types                       []string             `json:"types"`
-	FullNames                   []string             `json:"fullNames"`
-	Search                      *string              `json:"search,omitempty"`
-	IncludeDataSource           *bool                `json:"includeDataSource,omitempty"`
-	AsOwner                     *bool                `json:"asOwner,omitempty"`
-	CanUse                      *bool                `json:"canUse,omitempty"`
-	Owners                      []string             `json:"owners"`
-	IncludeDeleted              *bool                `json:"includeDeleted,omitempty"`
-	DataTypes                   []string             `json:"dataTypes"`
-	Exclude                     []string             `json:"exclude"`
+	// Limit only to data objects in specific data sources.
+	DataSources []string `json:"dataSources"`
+	// Limit only to data objects with given (direct) parents.
+	Parents []string `json:"parents"`
+	// Limit only to data objects with given ancestors.
+	Ancestors []string `json:"ancestors"`
+	// Limit only to data object with given types.
+	Types []string `json:"types"`
+	// Filter on the full names of the data object.
+	FullNames []string `json:"fullNames"`
+	// The search string to use (will do a case-insensitive 'contains').
+	Search *string `json:"search,omitempty"`
+	// If true, also data top-level data object of type `datasource` is included.
+	IncludeDataSource *bool `json:"includeDataSource,omitempty"`
+	AsOwner           *bool `json:"asOwner,omitempty"`
+	CanUse            *bool `json:"canUse,omitempty"`
+	// Limit the data objects for which any of the given users is an owner.
+	Owners []string `json:"owners"`
+	// If true, also deleted (unknown) data objects are included.
+	IncludeDeleted *bool `json:"includeDeleted,omitempty"`
+	// Limit to certain data types (typically for columns).
+	DataTypes []string `json:"dataTypes"`
+	// Excluded a fixed list of data objects.
+	Exclude []string `json:"exclude"`
+	// Filters by the tags that the data object has.
 	HasTags                     []TagFilter          `json:"hasTags"`
 	SupportedDataSourceFeatures []DataSourceFeatures `json:"supportedDataSourceFeatures"`
 	CanRequestAccess            *bool                `json:"canRequestAccess,omitempty"`
@@ -7927,6 +8275,7 @@ func (v *DataObjectImport) GetShareProviderIdentifier() *string { return v.Share
 // GetShareIdentifier returns DataObjectImport.ShareIdentifier, and is useful for accessing the field via an interface.
 func (v *DataObjectImport) GetShareIdentifier() *string { return v.ShareIdentifier }
 
+// Specifies the sorting options for a list of data objects.
 type DataObjectOrderByInput struct {
 	Name     *Sort `json:"name,omitempty"`
 	FullName *Sort `json:"fullName,omitempty"`
@@ -7981,25 +8330,23 @@ func (v *DataObjectTypeActionInput) GetAction() string { return v.Action }
 // GetGlobalActions returns DataObjectTypeActionInput.GlobalActions, and is useful for accessing the field via an interface.
 func (v *DataObjectTypeActionInput) GetGlobalActions() []string { return v.GlobalActions }
 
+// Input object to specify a data object type.
 type DataObjectTypeInput struct {
-	// the internal technical name used to reference the data object type. This must be unique.
+	// The unique name of the data object type within the data source.
 	Name *string `json:"name,omitempty"`
-	// Type is used to group conceptually similar data object types. Data object types with the same type will be shown in the same table in the UI. E.g. shared-table and table both have the type table.
+	// The name of the type of the data object type. This is used to group similar data object types in the same table in the user interface. For example, `external-table`, `table` and `special-table` could all have type `table`.
 	Type *string `json:"type,omitempty"`
-	// a display name for the type to be used in the UI
+	// The display label for this data object type.
 	Label *string `json:"label,omitempty"`
-	// The name or base64 encoded version of the icon to use for this data source.
-	Icon *string `json:"icon,omitempty"`
-	// Children describes all the data object types that could be a direct child of this data object type.
+	Icon  *string `json:"icon,omitempty"`
+	// The data object types that can be a child of this data object type (referenced by the `name` field).
 	Children []string `json:"children"`
-	// Permissions describes all the permissions that could be applied on this data object type.
-	Permissions []DataObjectTypePermissionInput `json:"permissions"`
-	// Actions describes all the actions that could be performed on this data object type.
-	Actions []DataObjectTypeActionInput `json:"actions"`
-	// DataOrigin describes the origin of the data object type.
+	// The permissions which are applicable on this data object type.
+	Permissions     []DataObjectTypePermissionInput `json:"permissions"`
+	Actions         []DataObjectTypeActionInput     `json:"actions"`
 	DataOrigin      *DataTypeOrigin                 `json:"dataOrigin,omitempty"`
 	ShareProperties *DataObjectSharePropertiesInput `json:"shareProperties,omitempty"`
-	// CatalogType is used to map the data object type to a catalog type in Collibra. For example, a data object type 'project' for Google BigQuery could map to catalog type 'database' in Collibra.
+	// Used to map the data object type to a catalog type in Collibra. For example, a data object type 'project' for Google BigQuery could map to catalog type 'database' in Collibra.
 	CatalogType *string `json:"catalogType,omitempty"`
 }
 
@@ -8035,16 +8382,16 @@ func (v *DataObjectTypeInput) GetShareProperties() *DataObjectSharePropertiesInp
 // GetCatalogType returns DataObjectTypeInput.CatalogType, and is useful for accessing the field via an interface.
 func (v *DataObjectTypeInput) GetCatalogType() *string { return v.CatalogType }
 
+// Input object for a permission on a data object type.
 type DataObjectTypePermissionInput struct {
-	// The name of the permission as used in the datasource
+	// The permission itself, specific to the data source (e.g. SELECT, INSERT, roles/bigquery.dataViewer...).
 	Permission *string `json:"permission,omitempty"`
-	// A list of global permissions (read, write, admin) that this permission should be included in. This is used when expanding the global permission into its specific ones for the datasource
-	GlobalPermissions []string `json:"globalPermissions"`
-	// The list of global permissions (read, write, admin) for which this permission should be counted for the usage.
+	// The global permissions under which this permission can be categorized.
+	GlobalPermissions      []string `json:"globalPermissions"`
 	UsageGlobalPermissions []string `json:"usageGlobalPermissions"`
-	// An explanation of what this permission does (typically from the documentation of the datasource)
+	// The description of the permissions.
 	Description *string `json:"description,omitempty"`
-	// This boolean can be set to false if this permission cannot be granted through the web application.
+	// If true, this permission cannot be set by the user in the user interface.
 	CannotBeGranted *bool `json:"cannotBeGranted,omitempty"`
 }
 
@@ -8066,14 +8413,24 @@ func (v *DataObjectTypePermissionInput) GetDescription() *string { return v.Desc
 func (v *DataObjectTypePermissionInput) GetCannotBeGranted() *bool { return v.CannotBeGranted }
 
 // DataSource includes the GraphQL fields of DataSource requested by the fragment DataSource.
+// The GraphQL type's documentation follows.
+//
+// Represents a data sourcein Collibra Data Access.
 type DataSource struct {
-	Id          string                      `json:"id"`
-	Name        string                      `json:"name"`
-	Type        string                      `json:"type"`
-	Description string                      `json:"description"`
-	CreatedAt   time.Time                   `json:"createdAt"`
-	ModifiedAt  time.Time                   `json:"modifiedAt"`
-	Parent      *DataSourceParentDataSource `json:"parent"`
+	// The unique identifier of the data source.
+	Id string `json:"id"`
+	// The display name of the data source.
+	Name string `json:"name"`
+	// The type identifier of this data source. This is set by the connector during a sync.
+	Type string `json:"type"`
+	// The description of the data source.
+	Description string `json:"description"`
+	// Indicates when the data source was initially created.
+	CreatedAt time.Time `json:"createdAt"`
+	// Indicates when the data source was last modified.
+	ModifiedAt time.Time `json:"modifiedAt"`
+	// The optional parent data source.
+	Parent *DataSourceParentDataSource `json:"parent"`
 }
 
 // GetId returns DataSource.Id, and is useful for accessing the field via an interface.
@@ -8098,9 +8455,14 @@ func (v *DataSource) GetModifiedAt() time.Time { return v.ModifiedAt }
 func (v *DataSource) GetParent() *DataSourceParentDataSource { return v.Parent }
 
 // DataSourceConnection includes the GraphQL fields of DataSourceConnection requested by the fragment DataSourceConnection.
+// The GraphQL type's documentation follows.
+//
+// The connection type for paginated lists of [DataSource]({{Types.DataSource}}).
 type DataSourceConnection struct {
-	PageInfo DataSourceConnectionPageInfo              `json:"pageInfo"`
-	Edges    []DataSourceConnectionEdgesDataSourceEdge `json:"edges"`
+	// Pagination information for the retrieved items.
+	PageInfo DataSourceConnectionPageInfo `json:"pageInfo"`
+	// The list of edges containing the actual queried items.
+	Edges []DataSourceConnectionEdgesDataSourceEdge `json:"edges"`
 }
 
 // GetPageInfo returns DataSourceConnection.PageInfo, and is useful for accessing the field via an interface.
@@ -8110,9 +8472,14 @@ func (v *DataSourceConnection) GetPageInfo() DataSourceConnectionPageInfo { retu
 func (v *DataSourceConnection) GetEdges() []DataSourceConnectionEdgesDataSourceEdge { return v.Edges }
 
 // DataSourceConnectionEdgesDataSourceEdge includes the requested fields of the GraphQL type DataSourceEdge.
+// The GraphQL type's documentation follows.
+//
+// The edge type for [DataSourceConnection]({{Types.DataSourceConnection}})
 type DataSourceConnectionEdgesDataSourceEdge struct {
-	Cursor *string                                                `json:"cursor"`
-	Node   *DataSourceConnectionEdgesDataSourceEdgeNodeDataSource `json:"node"`
+	// The cursor of this item for pagination.
+	Cursor *string `json:"cursor"`
+	// The actual data source.
+	Node *DataSourceConnectionEdgesDataSourceEdgeNodeDataSource `json:"node"`
 }
 
 // GetCursor returns DataSourceConnectionEdgesDataSourceEdge.Cursor, and is useful for accessing the field via an interface.
@@ -8124,6 +8491,9 @@ func (v *DataSourceConnectionEdgesDataSourceEdge) GetNode() *DataSourceConnectio
 }
 
 // DataSourceConnectionEdgesDataSourceEdgeNodeDataSource includes the requested fields of the GraphQL type DataSource.
+// The GraphQL type's documentation follows.
+//
+// Represents a data sourcein Collibra Data Access.
 type DataSourceConnectionEdgesDataSourceEdgeNodeDataSource struct {
 	DataSource `json:"-"`
 }
@@ -8634,10 +9004,14 @@ var AllDataSourceFeatures = []DataSourceFeatures{
 	DataSourceFeaturesDatasharing,
 }
 
+// Represents the filter options for listing data sources.
 type DataSourceFilterInput struct {
-	Types                 []string              `json:"types"`
-	Search                *string               `json:"search,omitempty"`
-	Parent                *string               `json:"parent,omitempty"`
+	Types []string `json:"types"`
+	// The search string to use (will do a case-insensitive 'contains').
+	Search *string `json:"search,omitempty"`
+	// Only show data sources with a specific parent data source.
+	Parent *string `json:"parent,omitempty"`
+	// List of user IDs to filter on who owns the data source.
 	Owners                []string              `json:"owners"`
 	IncompleteDataWarning *bool                 `json:"incompleteDataWarning,omitempty"`
 	SupportedFeatures     []*DataSourceFeatures `json:"supportedFeatures,omitempty"`
@@ -8663,14 +9037,20 @@ func (v *DataSourceFilterInput) GetSupportedFeatures() []*DataSourceFeatures {
 	return v.SupportedFeatures
 }
 
+// Input object for creating or updating a data source.
 type DataSourceInput struct {
-	Name                    *string                      `json:"name,omitempty"`
-	Description             *string                      `json:"description,omitempty"`
-	Parent                  *string                      `json:"parent,omitempty"`
-	CanRequestAccess        *bool                        `json:"canRequestAccess,omitempty"`
-	CanRequestAccessToTypes []string                     `json:"canRequestAccessToTypes"`
-	SyncSchedule            *DataSourceSyncScheduleInput `json:"syncSchedule,omitempty"`
-	CatalogSystemId         *uuid.UUID                   `json:"catalogSystemId,omitempty"`
+	// The display name of the data source.
+	Name *string `json:"name,omitempty"`
+	// The description of the data source.
+	Description *string `json:"description,omitempty"`
+	// The optional parent data source.
+	Parent                  *string  `json:"parent,omitempty"`
+	CanRequestAccess        *bool    `json:"canRequestAccess,omitempty"`
+	CanRequestAccessToTypes []string `json:"canRequestAccessToTypes"`
+	// The synchronization schedule configuration.
+	SyncSchedule *DataSourceSyncScheduleInput `json:"syncSchedule,omitempty"`
+	// The optional UUID of the system asset from Collibra Catalog this data source corresponds with.
+	CatalogSystemId *uuid.UUID `json:"catalogSystemId,omitempty"`
 }
 
 // GetName returns DataSourceInput.Name, and is useful for accessing the field via an interface.
@@ -8695,8 +9075,12 @@ func (v *DataSourceInput) GetSyncSchedule() *DataSourceSyncScheduleInput { retur
 func (v *DataSourceInput) GetCatalogSystemId() *uuid.UUID { return v.CatalogSystemId }
 
 // DataSourceMaskInformationDataSource includes the requested fields of the GraphQL type DataSource.
+// The GraphQL type's documentation follows.
+//
+// Represents a data sourcein Collibra Data Access.
 type DataSourceMaskInformationDataSource struct {
-	Typename        *string                                             `json:"__typename"`
+	Typename *string `json:"__typename"`
+	// Contains meta data about how column masking works in this data source.
 	MaskingMetadata *DataSourceMaskInformationDataSourceMaskingMetadata `json:"maskingMetadata"`
 }
 
@@ -8818,6 +9202,9 @@ func __marshalDataSourceMaskInformationDataSourceDataSourceResult(v *DataSourceM
 }
 
 // DataSourceMaskInformationDataSourceInvalidInputError includes the requested fields of the GraphQL type InvalidInputError.
+// The GraphQL type's documentation follows.
+//
+// Error when some of the input parameters in the request are not valid.
 type DataSourceMaskInformationDataSourceInvalidInputError struct {
 	Typename *string `json:"__typename"`
 }
@@ -8828,6 +9215,9 @@ func (v *DataSourceMaskInformationDataSourceInvalidInputError) GetTypename() *st
 }
 
 // DataSourceMaskInformationDataSourceMaskingMetadata includes the requested fields of the GraphQL type MaskingMetadata.
+// The GraphQL type's documentation follows.
+//
+// The meta data about how column masking works in the data source.
 type DataSourceMaskInformationDataSourceMaskingMetadata struct {
 	MaskingMetadata `json:"-"`
 }
@@ -8890,6 +9280,9 @@ func (v *DataSourceMaskInformationDataSourceMaskingMetadata) __premarshalJSON() 
 }
 
 // DataSourceMaskInformationDataSourceNotFoundError includes the requested fields of the GraphQL type NotFoundError.
+// The GraphQL type's documentation follows.
+//
+// Error when the user is requesting a resource that does not exist.
 type DataSourceMaskInformationDataSourceNotFoundError struct {
 	Typename      *string `json:"__typename"`
 	NotFoundError `json:"-"`
@@ -8951,6 +9344,9 @@ func (v *DataSourceMaskInformationDataSourceNotFoundError) __premarshalJSON() (*
 }
 
 // DataSourceMaskInformationDataSourcePermissionDeniedError includes the requested fields of the GraphQL type PermissionDeniedError.
+// The GraphQL type's documentation follows.
+//
+// Error when permission to the requested resource is denied.
 type DataSourceMaskInformationDataSourcePermissionDeniedError struct {
 	Typename              *string `json:"__typename"`
 	PermissionDeniedError `json:"-"`
@@ -9015,6 +9411,7 @@ func (v *DataSourceMaskInformationDataSourcePermissionDeniedError) __premarshalJ
 
 // DataSourceMaskInformationResponse is returned by DataSourceMaskInformation on success.
 type DataSourceMaskInformationResponse struct {
+	// Retrieves a single data source by its ID.
 	DataSource DataSourceMaskInformationDataSourceDataSourceResult `json:"-"`
 }
 
@@ -9087,9 +9484,9 @@ func (v *DataSourceMaskInformationResponse) __premarshalJSON() (*__premarshalDat
 }
 
 type DataSourceMetaDataInput struct {
-	// dataObjectTypes describes the data object types that are available in the data source
+	// The list of data object types that are available in this data source.
 	DataObjectTypes []DataObjectTypeInput `json:"dataObjectTypes"`
-	// accessControlTypes describes the access control types that are available in the data source
+	// The list of access control types that are available in this data source.
 	AccessControlTypes []AccessControlTypeInput `json:"accessControlTypes"`
 	// SupportedFeatures is a list of features supported by the data source
 	// Currently supported features: columnMasking, rowFiltering, columnFiltering, dataSharing
@@ -9145,6 +9542,7 @@ func (v *DataSourceMetaDataInput) GetFilterMetadata() *FilterMetadataInput { ret
 // GetShareMetadata returns DataSourceMetaDataInput.ShareMetadata, and is useful for accessing the field via an interface.
 func (v *DataSourceMetaDataInput) GetShareMetadata() *ShareMetadataInput { return v.ShareMetadata }
 
+// Defines the sorting options when listing data sources.
 type DataSourceOrderByInput struct {
 	Name *Sort `json:"name,omitempty"`
 }
@@ -9153,18 +9551,28 @@ type DataSourceOrderByInput struct {
 func (v *DataSourceOrderByInput) GetName() *Sort { return v.Name }
 
 // DataSourceParentDataSource includes the requested fields of the GraphQL type DataSource.
+// The GraphQL type's documentation follows.
+//
+// Represents a data sourcein Collibra Data Access.
 type DataSourceParentDataSource struct {
+	// The unique identifier of the data source.
 	Id string `json:"id"`
 }
 
 // GetId returns DataSourceParentDataSource.Id, and is useful for accessing the field via an interface.
 func (v *DataSourceParentDataSource) GetId() string { return v.Id }
 
+// Input object to set the sync scheduling for a data source.
 type DataSourceSyncScheduleInput struct {
-	Global               *string `json:"global,omitempty"`
-	DataObjectSync       *string `json:"dataObjectSync,omitempty"`
-	IdentitySync         *string `json:"identitySync,omitempty"`
-	AccessToTargetSync   *string `json:"accessToTargetSync,omitempty"`
+	// The cron expression for the global synchronization. Null will not update the global cron expression. Empty string will remove the global cron expression.
+	Global *string `json:"global,omitempty"`
+	// If set, this overrides the global cron expression for the data object sync specifically. Null will not update the global cron expression. Empty string will remove the global cron expression.
+	DataObjectSync *string `json:"dataObjectSync,omitempty"`
+	// If set, this overrides the global cron expression for the identity sync specifically. Null will not update the global cron expression. Empty string will remove the global cron expression.
+	IdentitySync *string `json:"identitySync,omitempty"`
+	// If set, this overrides the global cron expression for the access control to target sync specifically. Null will not update the global cron expression. Empty string will remove the global cron expression.
+	AccessToTargetSync *string `json:"accessToTargetSync,omitempty"`
+	// If set, this overrides the global cron expression for the access control from target sync specifically. Null will not update the global cron expression. Empty string will remove the global cron expression.
 	AccessFromTargetSync *string `json:"accessFromTargetSync,omitempty"`
 	UsageSync            *string `json:"usageSync,omitempty"`
 }
@@ -9190,7 +9598,9 @@ func (v *DataSourceSyncScheduleInput) GetAccessFromTargetSync() *string {
 func (v *DataSourceSyncScheduleInput) GetUsageSync() *string { return v.UsageSync }
 
 type DataSourceTypeInfo struct {
-	DataSource        string  `json:"dataSource"`
+	// The ID of the data source
+	DataSource string `json:"dataSource"`
+	// The technical type of how this access control is represented in the underlying system. For masks this represents the masking method to use.
 	AccessControlType *string `json:"accessControlType,omitempty"`
 }
 
@@ -9215,6 +9625,9 @@ var AllDataTypeOrigin = []DataTypeOrigin{
 }
 
 // DeactivateAccessControlDeactivateAccessControl includes the requested fields of the GraphQL type AccessControl.
+// The GraphQL type's documentation follows.
+//
+// Represents an access control object in the system. An access control is the abstract model representing grants, masks, filters and groups (determined by the `action` field).
 type DeactivateAccessControlDeactivateAccessControl struct {
 	Typename      *string `json:"__typename"`
 	AccessControl `json:"-"`
@@ -9519,6 +9932,9 @@ func __marshalDeactivateAccessControlDeactivateAccessControlAccessControlResult(
 }
 
 // DeactivateAccessControlDeactivateAccessControlInvalidInputError includes the requested fields of the GraphQL type InvalidInputError.
+// The GraphQL type's documentation follows.
+//
+// Error when some of the input parameters in the request are not valid.
 type DeactivateAccessControlDeactivateAccessControlInvalidInputError struct {
 	Typename          *string `json:"__typename"`
 	InvalidInputError `json:"-"`
@@ -9582,6 +9998,9 @@ func (v *DeactivateAccessControlDeactivateAccessControlInvalidInputError) __prem
 }
 
 // DeactivateAccessControlDeactivateAccessControlNotFoundError includes the requested fields of the GraphQL type NotFoundError.
+// The GraphQL type's documentation follows.
+//
+// Error when the user is requesting a resource that does not exist.
 type DeactivateAccessControlDeactivateAccessControlNotFoundError struct {
 	Typename      *string `json:"__typename"`
 	NotFoundError `json:"-"`
@@ -9645,6 +10064,9 @@ func (v *DeactivateAccessControlDeactivateAccessControlNotFoundError) __premarsh
 }
 
 // DeactivateAccessControlDeactivateAccessControlPermissionDeniedError includes the requested fields of the GraphQL type PermissionDeniedError.
+// The GraphQL type's documentation follows.
+//
+// Error when permission to the requested resource is denied.
 type DeactivateAccessControlDeactivateAccessControlPermissionDeniedError struct {
 	Typename              *string `json:"__typename"`
 	PermissionDeniedError `json:"-"`
@@ -9709,6 +10131,7 @@ func (v *DeactivateAccessControlDeactivateAccessControlPermissionDeniedError) __
 
 // DeactivateAccessControlResponse is returned by DeactivateAccessControl on success.
 type DeactivateAccessControlResponse struct {
+	// Put an access control to inactive. It will be removed from the underlying system, but will still exist in Collibra Data Access.
 	DeactivateAccessControl DeactivateAccessControlDeactivateAccessControlAccessControlResult `json:"-"`
 }
 
@@ -9781,6 +10204,9 @@ func (v *DeactivateAccessControlResponse) __premarshalJSON() (*__premarshalDeact
 }
 
 // DeleteAccessControlDeleteAccessControl includes the requested fields of the GraphQL type AccessControl.
+// The GraphQL type's documentation follows.
+//
+// Represents an access control object in the system. An access control is the abstract model representing grants, masks, filters and groups (determined by the `action` field).
 type DeleteAccessControlDeleteAccessControl struct {
 	Typename      *string `json:"__typename"`
 	AccessControl `json:"-"`
@@ -10079,6 +10505,9 @@ func __marshalDeleteAccessControlDeleteAccessControlAccessControlResult(v *Delet
 }
 
 // DeleteAccessControlDeleteAccessControlInvalidInputError includes the requested fields of the GraphQL type InvalidInputError.
+// The GraphQL type's documentation follows.
+//
+// Error when some of the input parameters in the request are not valid.
 type DeleteAccessControlDeleteAccessControlInvalidInputError struct {
 	Typename          *string `json:"__typename"`
 	InvalidInputError `json:"-"`
@@ -10142,6 +10571,9 @@ func (v *DeleteAccessControlDeleteAccessControlInvalidInputError) __premarshalJS
 }
 
 // DeleteAccessControlDeleteAccessControlNotFoundError includes the requested fields of the GraphQL type NotFoundError.
+// The GraphQL type's documentation follows.
+//
+// Error when the user is requesting a resource that does not exist.
 type DeleteAccessControlDeleteAccessControlNotFoundError struct {
 	Typename      *string `json:"__typename"`
 	NotFoundError `json:"-"`
@@ -10205,6 +10637,9 @@ func (v *DeleteAccessControlDeleteAccessControlNotFoundError) __premarshalJSON()
 }
 
 // DeleteAccessControlDeleteAccessControlPermissionDeniedError includes the requested fields of the GraphQL type PermissionDeniedError.
+// The GraphQL type's documentation follows.
+//
+// Error when permission to the requested resource is denied.
 type DeleteAccessControlDeleteAccessControlPermissionDeniedError struct {
 	Typename              *string `json:"__typename"`
 	PermissionDeniedError `json:"-"`
@@ -10269,6 +10704,7 @@ func (v *DeleteAccessControlDeleteAccessControlPermissionDeniedError) __premarsh
 
 // DeleteAccessControlResponse is returned by DeleteAccessControl on success.
 type DeleteAccessControlResponse struct {
+	// Delete an access control. It will be removed from the underlying system and 48 hours after the sync it will be removed from Collibra Data Access.
 	DeleteAccessControl DeleteAccessControlDeleteAccessControlAccessControlResult `json:"-"`
 }
 
@@ -10341,6 +10777,9 @@ func (v *DeleteAccessControlResponse) __premarshalJSON() (*__premarshalDeleteAcc
 }
 
 // DeleteDataSourceDeleteDataSource includes the requested fields of the GraphQL type DeleteDataSource.
+// The GraphQL type's documentation follows.
+//
+// The result of deleting a data source.
 type DeleteDataSourceDeleteDataSource struct {
 	Typename *string `json:"__typename"`
 	Success  bool    `json:"success"`
@@ -10458,6 +10897,9 @@ func __marshalDeleteDataSourceDeleteDataSourceDeleteDataSourceResult(v *DeleteDa
 }
 
 // DeleteDataSourceDeleteDataSourceInvalidInputError includes the requested fields of the GraphQL type InvalidInputError.
+// The GraphQL type's documentation follows.
+//
+// Error when some of the input parameters in the request are not valid.
 type DeleteDataSourceDeleteDataSourceInvalidInputError struct {
 	Typename *string `json:"__typename"`
 }
@@ -10466,6 +10908,9 @@ type DeleteDataSourceDeleteDataSourceInvalidInputError struct {
 func (v *DeleteDataSourceDeleteDataSourceInvalidInputError) GetTypename() *string { return v.Typename }
 
 // DeleteDataSourceDeleteDataSourceNotFoundError includes the requested fields of the GraphQL type NotFoundError.
+// The GraphQL type's documentation follows.
+//
+// Error when the user is requesting a resource that does not exist.
 type DeleteDataSourceDeleteDataSourceNotFoundError struct {
 	Typename *string `json:"__typename"`
 }
@@ -10474,6 +10919,9 @@ type DeleteDataSourceDeleteDataSourceNotFoundError struct {
 func (v *DeleteDataSourceDeleteDataSourceNotFoundError) GetTypename() *string { return v.Typename }
 
 // DeleteDataSourceDeleteDataSourcePermissionDeniedError includes the requested fields of the GraphQL type PermissionDeniedError.
+// The GraphQL type's documentation follows.
+//
+// Error when permission to the requested resource is denied.
 type DeleteDataSourceDeleteDataSourcePermissionDeniedError struct {
 	Typename              *string `json:"__typename"`
 	PermissionDeniedError `json:"-"`
@@ -10538,6 +10986,7 @@ func (v *DeleteDataSourceDeleteDataSourcePermissionDeniedError) __premarshalJSON
 
 // DeleteDataSourceResponse is returned by DeleteDataSource on success.
 type DeleteDataSourceResponse struct {
+	// Delete a data source. This will mark the data source as deleted and start cleaning up everything in it asynchronously. This action is destructive and cannot be undone!
 	DeleteDataSource DeleteDataSourceDeleteDataSourceDeleteDataSourceResult `json:"-"`
 }
 
@@ -10610,6 +11059,9 @@ func (v *DeleteDataSourceResponse) __premarshalJSON() (*__premarshalDeleteDataSo
 }
 
 // DeleteGrantCategoryDeleteGrantCategory includes the requested fields of the GraphQL type DeleteGrantCategory.
+// The GraphQL type's documentation follows.
+//
+// The result object when deleting a grant category.
 type DeleteGrantCategoryDeleteGrantCategory struct {
 	Typename                  *string `json:"__typename"`
 	DeleteGrantCategoryResult `json:"-"`
@@ -10788,6 +11240,9 @@ func __marshalDeleteGrantCategoryDeleteGrantCategoryDeleteGrantCategoryResult(v 
 }
 
 // DeleteGrantCategoryDeleteGrantCategoryInvalidInputError includes the requested fields of the GraphQL type InvalidInputError.
+// The GraphQL type's documentation follows.
+//
+// Error when some of the input parameters in the request are not valid.
 type DeleteGrantCategoryDeleteGrantCategoryInvalidInputError struct {
 	Typename          *string `json:"__typename"`
 	InvalidInputError `json:"-"`
@@ -10851,6 +11306,9 @@ func (v *DeleteGrantCategoryDeleteGrantCategoryInvalidInputError) __premarshalJS
 }
 
 // DeleteGrantCategoryDeleteGrantCategoryNotFoundError includes the requested fields of the GraphQL type NotFoundError.
+// The GraphQL type's documentation follows.
+//
+// Error when the user is requesting a resource that does not exist.
 type DeleteGrantCategoryDeleteGrantCategoryNotFoundError struct {
 	Typename      *string `json:"__typename"`
 	NotFoundError `json:"-"`
@@ -10914,6 +11372,9 @@ func (v *DeleteGrantCategoryDeleteGrantCategoryNotFoundError) __premarshalJSON()
 }
 
 // DeleteGrantCategoryDeleteGrantCategoryPermissionDeniedError includes the requested fields of the GraphQL type PermissionDeniedError.
+// The GraphQL type's documentation follows.
+//
+// Error when permission to the requested resource is denied.
 type DeleteGrantCategoryDeleteGrantCategoryPermissionDeniedError struct {
 	Typename              *string `json:"__typename"`
 	PermissionDeniedError `json:"-"`
@@ -11050,6 +11511,9 @@ func (v *DeleteGrantCategoryResponse) __premarshalJSON() (*__premarshalDeleteGra
 }
 
 // DeleteGrantCategoryResult includes the GraphQL fields of DeleteGrantCategory requested by the fragment DeleteGrantCategoryResult.
+// The GraphQL type's documentation follows.
+//
+// The result object when deleting a grant category.
 type DeleteGrantCategoryResult struct {
 	Success bool `json:"success"`
 }
@@ -11303,6 +11767,9 @@ func __marshalEndOfTargetsSyncEndOfTargetsSyncEndOfTargetsSyncResult(v *EndOfTar
 }
 
 // EndOfTargetsSyncEndOfTargetsSyncPermissionDeniedError includes the requested fields of the GraphQL type PermissionDeniedError.
+// The GraphQL type's documentation follows.
+//
+// Error when permission to the requested resource is denied.
 type EndOfTargetsSyncEndOfTargetsSyncPermissionDeniedError struct {
 	Typename              *string `json:"__typename"`
 	PermissionDeniedError `json:"-"`
@@ -11448,6 +11915,7 @@ func (v *EndOfTargetsSyncResponse) __premarshalJSON() (*__premarshalEndOfTargets
 	return &retval, nil
 }
 
+// All different types of entities in the system
 type EntityType string
 
 const (
@@ -13384,6 +13852,9 @@ func __marshalFetchExportAccessControlsFetchExportAccessControlsExportAccessCont
 }
 
 // FetchExportAccessControlsFetchExportAccessControlsInvalidInputError includes the requested fields of the GraphQL type InvalidInputError.
+// The GraphQL type's documentation follows.
+//
+// Error when some of the input parameters in the request are not valid.
 type FetchExportAccessControlsFetchExportAccessControlsInvalidInputError struct {
 	Typename          *string `json:"__typename"`
 	InvalidInputError `json:"-"`
@@ -13447,6 +13918,9 @@ func (v *FetchExportAccessControlsFetchExportAccessControlsInvalidInputError) __
 }
 
 // FetchExportAccessControlsFetchExportAccessControlsNotFoundError includes the requested fields of the GraphQL type NotFoundError.
+// The GraphQL type's documentation follows.
+//
+// Error when the user is requesting a resource that does not exist.
 type FetchExportAccessControlsFetchExportAccessControlsNotFoundError struct {
 	Typename      *string `json:"__typename"`
 	NotFoundError `json:"-"`
@@ -13510,6 +13984,9 @@ func (v *FetchExportAccessControlsFetchExportAccessControlsNotFoundError) __prem
 }
 
 // FetchExportAccessControlsFetchExportAccessControlsPermissionDeniedError includes the requested fields of the GraphQL type PermissionDeniedError.
+// The GraphQL type's documentation follows.
+//
+// Error when permission to the requested resource is denied.
 type FetchExportAccessControlsFetchExportAccessControlsPermissionDeniedError struct {
 	Typename              *string `json:"__typename"`
 	PermissionDeniedError `json:"-"`
@@ -13682,6 +14159,9 @@ type FinishImportFlowResponse struct {
 func (v *FinishImportFlowResponse) GetFinishImportFlow() bool { return v.FinishImportFlow }
 
 // GetAccessControlAccessControl includes the requested fields of the GraphQL type AccessControl.
+// The GraphQL type's documentation follows.
+//
+// Represents an access control object in the system. An access control is the abstract model representing grants, masks, filters and groups (determined by the `action` field).
 type GetAccessControlAccessControl struct {
 	Typename      *string `json:"__typename"`
 	AccessControl `json:"-"`
@@ -13968,6 +14448,9 @@ func __marshalGetAccessControlAccessControlAccessControlResult(v *GetAccessContr
 }
 
 // GetAccessControlAccessControlInvalidInputError includes the requested fields of the GraphQL type InvalidInputError.
+// The GraphQL type's documentation follows.
+//
+// Error when some of the input parameters in the request are not valid.
 type GetAccessControlAccessControlInvalidInputError struct {
 	Typename          *string `json:"__typename"`
 	InvalidInputError `json:"-"`
@@ -14029,6 +14512,9 @@ func (v *GetAccessControlAccessControlInvalidInputError) __premarshalJSON() (*__
 }
 
 // GetAccessControlAccessControlNotFoundError includes the requested fields of the GraphQL type NotFoundError.
+// The GraphQL type's documentation follows.
+//
+// Error when the user is requesting a resource that does not exist.
 type GetAccessControlAccessControlNotFoundError struct {
 	Typename      *string `json:"__typename"`
 	NotFoundError `json:"-"`
@@ -14090,6 +14576,9 @@ func (v *GetAccessControlAccessControlNotFoundError) __premarshalJSON() (*__prem
 }
 
 // GetAccessControlAccessControlPermissionDeniedError includes the requested fields of the GraphQL type PermissionDeniedError.
+// The GraphQL type's documentation follows.
+//
+// Error when permission to the requested resource is denied.
 type GetAccessControlAccessControlPermissionDeniedError struct {
 	Typename              *string `json:"__typename"`
 	PermissionDeniedError `json:"-"`
@@ -14152,6 +14641,7 @@ func (v *GetAccessControlAccessControlPermissionDeniedError) __premarshalJSON() 
 
 // GetAccessControlResponse is returned by GetAccessControl on success.
 type GetAccessControlResponse struct {
+	// Retrieves a single access control by its ID.
 	AccessControl GetAccessControlAccessControlAccessControlResult `json:"-"`
 }
 
@@ -14224,8 +14714,12 @@ func (v *GetAccessControlResponse) __premarshalJSON() (*__premarshalGetAccessCon
 }
 
 // GetAccessControlWhatAccessControlsAccessControl includes the requested fields of the GraphQL type AccessControl.
+// The GraphQL type's documentation follows.
+//
+// Represents an access control object in the system. An access control is the abstract model representing grants, masks, filters and groups (determined by the `action` field).
 type GetAccessControlWhatAccessControlsAccessControl struct {
-	Typename           *string                                                                                                      `json:"__typename"`
+	Typename *string `json:"__typename"`
+	// Retrieves the access controls which are in the WHAT list of this access control. This basically means that this access control is in the WHO list of those access controls.
 	WhatAccessControls GetAccessControlWhatAccessControlsAccessControlWhatAccessControlsAccessWhatAccessControlItemConnectionResult `json:"-"`
 }
 
@@ -14417,6 +14911,9 @@ func __marshalGetAccessControlWhatAccessControlsAccessControlAccessControlResult
 }
 
 // GetAccessControlWhatAccessControlsAccessControlInvalidInputError includes the requested fields of the GraphQL type InvalidInputError.
+// The GraphQL type's documentation follows.
+//
+// Error when some of the input parameters in the request are not valid.
 type GetAccessControlWhatAccessControlsAccessControlInvalidInputError struct {
 	Typename *string `json:"__typename"`
 }
@@ -14427,6 +14924,9 @@ func (v *GetAccessControlWhatAccessControlsAccessControlInvalidInputError) GetTy
 }
 
 // GetAccessControlWhatAccessControlsAccessControlNotFoundError includes the requested fields of the GraphQL type NotFoundError.
+// The GraphQL type's documentation follows.
+//
+// Error when the user is requesting a resource that does not exist.
 type GetAccessControlWhatAccessControlsAccessControlNotFoundError struct {
 	Typename      *string `json:"__typename"`
 	NotFoundError `json:"-"`
@@ -14490,6 +14990,9 @@ func (v *GetAccessControlWhatAccessControlsAccessControlNotFoundError) __premars
 }
 
 // GetAccessControlWhatAccessControlsAccessControlPermissionDeniedError includes the requested fields of the GraphQL type PermissionDeniedError.
+// The GraphQL type's documentation follows.
+//
+// Error when permission to the requested resource is denied.
 type GetAccessControlWhatAccessControlsAccessControlPermissionDeniedError struct {
 	Typename              *string `json:"__typename"`
 	PermissionDeniedError `json:"-"`
@@ -14553,6 +15056,9 @@ func (v *GetAccessControlWhatAccessControlsAccessControlPermissionDeniedError) _
 }
 
 // GetAccessControlWhatAccessControlsAccessControlWhatAccessControlsAccessWhatAccessControlItemConnection includes the requested fields of the GraphQL type AccessWhatAccessControlItemConnection.
+// The GraphQL type's documentation follows.
+//
+// The connection type for paginated lists of [AccessWhatAccessControlItem]({{Types.AccessWhatAccessControlItem}}).
 type GetAccessControlWhatAccessControlsAccessControlWhatAccessControlsAccessWhatAccessControlItemConnection struct {
 	Typename                                                                         *string `json:"__typename"`
 	AccessWhatAccessControlItemConnectionResultAccessWhatAccessControlItemConnection `json:"-"`
@@ -14742,6 +15248,9 @@ func __marshalGetAccessControlWhatAccessControlsAccessControlWhatAccessControlsA
 }
 
 // GetAccessControlWhatAccessControlsAccessControlWhatAccessControlsInvalidInputError includes the requested fields of the GraphQL type InvalidInputError.
+// The GraphQL type's documentation follows.
+//
+// Error when some of the input parameters in the request are not valid.
 type GetAccessControlWhatAccessControlsAccessControlWhatAccessControlsInvalidInputError struct {
 	Typename                                                     *string `json:"__typename"`
 	AccessWhatAccessControlItemConnectionResultInvalidInputError `json:"-"`
@@ -14805,6 +15314,9 @@ func (v *GetAccessControlWhatAccessControlsAccessControlWhatAccessControlsInvali
 }
 
 // GetAccessControlWhatAccessControlsAccessControlWhatAccessControlsNotFoundError includes the requested fields of the GraphQL type NotFoundError.
+// The GraphQL type's documentation follows.
+//
+// Error when the user is requesting a resource that does not exist.
 type GetAccessControlWhatAccessControlsAccessControlWhatAccessControlsNotFoundError struct {
 	Typename                                                 *string `json:"__typename"`
 	AccessWhatAccessControlItemConnectionResultNotFoundError `json:"-"`
@@ -14868,6 +15380,9 @@ func (v *GetAccessControlWhatAccessControlsAccessControlWhatAccessControlsNotFou
 }
 
 // GetAccessControlWhatAccessControlsAccessControlWhatAccessControlsPermissionDeniedError includes the requested fields of the GraphQL type PermissionDeniedError.
+// The GraphQL type's documentation follows.
+//
+// Error when permission to the requested resource is denied.
 type GetAccessControlWhatAccessControlsAccessControlWhatAccessControlsPermissionDeniedError struct {
 	Typename                                                         *string `json:"__typename"`
 	AccessWhatAccessControlItemConnectionResultPermissionDeniedError `json:"-"`
@@ -14938,6 +15453,7 @@ func (v *GetAccessControlWhatAccessControlsAccessControlWhatAccessControlsPermis
 
 // GetAccessControlWhatAccessControlsResponse is returned by GetAccessControlWhatAccessControls on success.
 type GetAccessControlWhatAccessControlsResponse struct {
+	// Retrieves a single access control by its ID.
 	AccessControl GetAccessControlWhatAccessControlsAccessControlAccessControlResult `json:"-"`
 }
 
@@ -15010,8 +15526,12 @@ func (v *GetAccessControlWhatAccessControlsResponse) __premarshalJSON() (*__prem
 }
 
 // GetAccessControlWhatDataObjectListAccessControl includes the requested fields of the GraphQL type AccessControl.
+// The GraphQL type's documentation follows.
+//
+// Represents an access control object in the system. An access control is the abstract model representing grants, masks, filters and groups (determined by the `action` field).
 type GetAccessControlWhatDataObjectListAccessControl struct {
-	Typename        *string                                                                                                `json:"__typename"`
+	Typename *string `json:"__typename"`
+	// Retrieves the WHAT data objects which are directly linked to this access control.
 	WhatDataObjects GetAccessControlWhatDataObjectListAccessControlWhatDataObjectsAccessWhatDataObjectItemConnectionResult `json:"-"`
 }
 
@@ -15203,6 +15723,9 @@ func __marshalGetAccessControlWhatDataObjectListAccessControlAccessControlResult
 }
 
 // GetAccessControlWhatDataObjectListAccessControlInvalidInputError includes the requested fields of the GraphQL type InvalidInputError.
+// The GraphQL type's documentation follows.
+//
+// Error when some of the input parameters in the request are not valid.
 type GetAccessControlWhatDataObjectListAccessControlInvalidInputError struct {
 	Typename *string `json:"__typename"`
 }
@@ -15213,6 +15736,9 @@ func (v *GetAccessControlWhatDataObjectListAccessControlInvalidInputError) GetTy
 }
 
 // GetAccessControlWhatDataObjectListAccessControlNotFoundError includes the requested fields of the GraphQL type NotFoundError.
+// The GraphQL type's documentation follows.
+//
+// Error when the user is requesting a resource that does not exist.
 type GetAccessControlWhatDataObjectListAccessControlNotFoundError struct {
 	Typename      *string `json:"__typename"`
 	NotFoundError `json:"-"`
@@ -15276,6 +15802,9 @@ func (v *GetAccessControlWhatDataObjectListAccessControlNotFoundError) __premars
 }
 
 // GetAccessControlWhatDataObjectListAccessControlPermissionDeniedError includes the requested fields of the GraphQL type PermissionDeniedError.
+// The GraphQL type's documentation follows.
+//
+// Error when permission to the requested resource is denied.
 type GetAccessControlWhatDataObjectListAccessControlPermissionDeniedError struct {
 	Typename              *string `json:"__typename"`
 	PermissionDeniedError `json:"-"`
@@ -15339,6 +15868,9 @@ func (v *GetAccessControlWhatDataObjectListAccessControlPermissionDeniedError) _
 }
 
 // GetAccessControlWhatDataObjectListAccessControlWhatDataObjectsAccessWhatDataObjectItemConnection includes the requested fields of the GraphQL type AccessWhatDataObjectItemConnection.
+// The GraphQL type's documentation follows.
+//
+// The connection type for paginated lists of [AccessWhatDataObjectItem]({{Types.AccessWhatDataObjectItem}}).
 type GetAccessControlWhatDataObjectListAccessControlWhatDataObjectsAccessWhatDataObjectItemConnection struct {
 	Typename                           *string `json:"__typename"`
 	AccessWhatDataObjectItemConnection `json:"-"`
@@ -15519,6 +16051,9 @@ func __marshalGetAccessControlWhatDataObjectListAccessControlWhatDataObjectsAcce
 }
 
 // GetAccessControlWhatDataObjectListAccessControlWhatDataObjectsInvalidInputError includes the requested fields of the GraphQL type InvalidInputError.
+// The GraphQL type's documentation follows.
+//
+// Error when some of the input parameters in the request are not valid.
 type GetAccessControlWhatDataObjectListAccessControlWhatDataObjectsInvalidInputError struct {
 	Typename *string `json:"__typename"`
 }
@@ -15529,6 +16064,9 @@ func (v *GetAccessControlWhatDataObjectListAccessControlWhatDataObjectsInvalidIn
 }
 
 // GetAccessControlWhatDataObjectListAccessControlWhatDataObjectsNotFoundError includes the requested fields of the GraphQL type NotFoundError.
+// The GraphQL type's documentation follows.
+//
+// Error when the user is requesting a resource that does not exist.
 type GetAccessControlWhatDataObjectListAccessControlWhatDataObjectsNotFoundError struct {
 	Typename *string `json:"__typename"`
 }
@@ -15539,6 +16077,9 @@ func (v *GetAccessControlWhatDataObjectListAccessControlWhatDataObjectsNotFoundE
 }
 
 // GetAccessControlWhatDataObjectListAccessControlWhatDataObjectsPermissionDeniedError includes the requested fields of the GraphQL type PermissionDeniedError.
+// The GraphQL type's documentation follows.
+//
+// Error when permission to the requested resource is denied.
 type GetAccessControlWhatDataObjectListAccessControlWhatDataObjectsPermissionDeniedError struct {
 	Typename              *string `json:"__typename"`
 	PermissionDeniedError `json:"-"`
@@ -15603,6 +16144,7 @@ func (v *GetAccessControlWhatDataObjectListAccessControlWhatDataObjectsPermissio
 
 // GetAccessControlWhatDataObjectListResponse is returned by GetAccessControlWhatDataObjectList on success.
 type GetAccessControlWhatDataObjectListResponse struct {
+	// Retrieves a single access control by its ID.
 	AccessControl GetAccessControlWhatDataObjectListAccessControlAccessControlResult `json:"-"`
 }
 
@@ -15675,6 +16217,9 @@ func (v *GetAccessControlWhatDataObjectListResponse) __premarshalJSON() (*__prem
 }
 
 // GetAccessControlWhoListAccessControl includes the requested fields of the GraphQL type AccessControl.
+// The GraphQL type's documentation follows.
+//
+// Represents an access control object in the system. An access control is the abstract model representing grants, masks, filters and groups (determined by the `action` field).
 type GetAccessControlWhoListAccessControl struct {
 	Typename *string                                                                  `json:"__typename"`
 	WhoList  GetAccessControlWhoListAccessControlWhoListAccessWhoItemConnectionResult `json:"-"`
@@ -15868,6 +16413,9 @@ func __marshalGetAccessControlWhoListAccessControlAccessControlResult(v *GetAcce
 }
 
 // GetAccessControlWhoListAccessControlInvalidInputError includes the requested fields of the GraphQL type InvalidInputError.
+// The GraphQL type's documentation follows.
+//
+// Error when some of the input parameters in the request are not valid.
 type GetAccessControlWhoListAccessControlInvalidInputError struct {
 	Typename *string `json:"__typename"`
 }
@@ -15878,6 +16426,9 @@ func (v *GetAccessControlWhoListAccessControlInvalidInputError) GetTypename() *s
 }
 
 // GetAccessControlWhoListAccessControlNotFoundError includes the requested fields of the GraphQL type NotFoundError.
+// The GraphQL type's documentation follows.
+//
+// Error when the user is requesting a resource that does not exist.
 type GetAccessControlWhoListAccessControlNotFoundError struct {
 	Typename      *string `json:"__typename"`
 	NotFoundError `json:"-"`
@@ -15939,6 +16490,9 @@ func (v *GetAccessControlWhoListAccessControlNotFoundError) __premarshalJSON() (
 }
 
 // GetAccessControlWhoListAccessControlPermissionDeniedError includes the requested fields of the GraphQL type PermissionDeniedError.
+// The GraphQL type's documentation follows.
+//
+// Error when permission to the requested resource is denied.
 type GetAccessControlWhoListAccessControlPermissionDeniedError struct {
 	Typename              *string `json:"__typename"`
 	PermissionDeniedError `json:"-"`
@@ -16002,6 +16556,9 @@ func (v *GetAccessControlWhoListAccessControlPermissionDeniedError) __premarshal
 }
 
 // GetAccessControlWhoListAccessControlWhoListAccessWhoItemConnection includes the requested fields of the GraphQL type AccessWhoItemConnection.
+// The GraphQL type's documentation follows.
+//
+// The connection type for paginated lists of [AccessWhoItem]({{Types.AccessWhoItem}}).
 type GetAccessControlWhoListAccessControlWhoListAccessWhoItemConnection struct {
 	Typename                *string `json:"__typename"`
 	AccessWhoItemConnection `json:"-"`
@@ -16182,6 +16739,9 @@ func __marshalGetAccessControlWhoListAccessControlWhoListAccessWhoItemConnection
 }
 
 // GetAccessControlWhoListAccessControlWhoListInvalidInputError includes the requested fields of the GraphQL type InvalidInputError.
+// The GraphQL type's documentation follows.
+//
+// Error when some of the input parameters in the request are not valid.
 type GetAccessControlWhoListAccessControlWhoListInvalidInputError struct {
 	Typename *string `json:"__typename"`
 }
@@ -16192,6 +16752,9 @@ func (v *GetAccessControlWhoListAccessControlWhoListInvalidInputError) GetTypena
 }
 
 // GetAccessControlWhoListAccessControlWhoListNotFoundError includes the requested fields of the GraphQL type NotFoundError.
+// The GraphQL type's documentation follows.
+//
+// Error when the user is requesting a resource that does not exist.
 type GetAccessControlWhoListAccessControlWhoListNotFoundError struct {
 	Typename *string `json:"__typename"`
 }
@@ -16202,6 +16765,9 @@ func (v *GetAccessControlWhoListAccessControlWhoListNotFoundError) GetTypename()
 }
 
 // GetAccessControlWhoListAccessControlWhoListPermissionDeniedError includes the requested fields of the GraphQL type PermissionDeniedError.
+// The GraphQL type's documentation follows.
+//
+// Error when permission to the requested resource is denied.
 type GetAccessControlWhoListAccessControlWhoListPermissionDeniedError struct {
 	Typename              *string `json:"__typename"`
 	PermissionDeniedError `json:"-"`
@@ -16266,6 +16832,7 @@ func (v *GetAccessControlWhoListAccessControlWhoListPermissionDeniedError) __pre
 
 // GetAccessControlWhoListResponse is returned by GetAccessControlWhoList on success.
 type GetAccessControlWhoListResponse struct {
+	// Retrieves a single access control by its ID.
 	AccessControl GetAccessControlWhoListAccessControlAccessControlResult `json:"-"`
 }
 
@@ -16338,6 +16905,9 @@ func (v *GetAccessControlWhoListResponse) __premarshalJSON() (*__premarshalGetAc
 }
 
 // GetDataObjectDataObject includes the requested fields of the GraphQL type DataObject.
+// The GraphQL type's documentation follows.
+//
+// Represents a data object in Collibra Data Access. These represents all the data entities in a data source (e.g. database, schema, table, column, folder, file, ...).
 type GetDataObjectDataObject struct {
 	DataObject `json:"-"`
 }
@@ -16435,6 +17005,7 @@ func (v *GetDataObjectDataObject) __premarshalJSON() (*__premarshalGetDataObject
 
 // GetDataObjectResponse is returned by GetDataObject on success.
 type GetDataObjectResponse struct {
+	// Retrieves a single data object by its ID.
 	DataObject GetDataObjectDataObject `json:"dataObject"`
 }
 
@@ -16442,6 +17013,9 @@ type GetDataObjectResponse struct {
 func (v *GetDataObjectResponse) GetDataObject() GetDataObjectDataObject { return v.DataObject }
 
 // GetDataSourceDataSource includes the requested fields of the GraphQL type DataSource.
+// The GraphQL type's documentation follows.
+//
+// Represents a data sourcein Collibra Data Access.
 type GetDataSourceDataSource struct {
 	Typename   *string `json:"__typename"`
 	DataSource `json:"-"`
@@ -16650,6 +17224,9 @@ func __marshalGetDataSourceDataSourceDataSourceResult(v *GetDataSourceDataSource
 }
 
 // GetDataSourceDataSourceInvalidInputError includes the requested fields of the GraphQL type InvalidInputError.
+// The GraphQL type's documentation follows.
+//
+// Error when some of the input parameters in the request are not valid.
 type GetDataSourceDataSourceInvalidInputError struct {
 	Typename *string `json:"__typename"`
 }
@@ -16658,6 +17235,9 @@ type GetDataSourceDataSourceInvalidInputError struct {
 func (v *GetDataSourceDataSourceInvalidInputError) GetTypename() *string { return v.Typename }
 
 // GetDataSourceDataSourceNotFoundError includes the requested fields of the GraphQL type NotFoundError.
+// The GraphQL type's documentation follows.
+//
+// Error when the user is requesting a resource that does not exist.
 type GetDataSourceDataSourceNotFoundError struct {
 	Typename      *string `json:"__typename"`
 	NotFoundError `json:"-"`
@@ -16717,6 +17297,9 @@ func (v *GetDataSourceDataSourceNotFoundError) __premarshalJSON() (*__premarshal
 }
 
 // GetDataSourceDataSourcePermissionDeniedError includes the requested fields of the GraphQL type PermissionDeniedError.
+// The GraphQL type's documentation follows.
+//
+// Error when permission to the requested resource is denied.
 type GetDataSourceDataSourcePermissionDeniedError struct {
 	Typename              *string `json:"__typename"`
 	PermissionDeniedError `json:"-"`
@@ -16779,6 +17362,7 @@ func (v *GetDataSourceDataSourcePermissionDeniedError) __premarshalJSON() (*__pr
 
 // GetDataSourceResponse is returned by GetDataSource on success.
 type GetDataSourceResponse struct {
+	// Retrieves a single data source by its ID.
 	DataSource GetDataSourceDataSourceDataSourceResult `json:"-"`
 }
 
@@ -16851,6 +17435,9 @@ func (v *GetDataSourceResponse) __premarshalJSON() (*__premarshalGetDataSourceRe
 }
 
 // GetGrantCategoryGrantCategory includes the requested fields of the GraphQL type GrantCategory.
+// The GraphQL type's documentation follows.
+//
+// Represent a grant category. Grant categories are used to categorize access controls with `action=Grant` to allow structuring them better.
 type GetGrantCategoryGrantCategory struct {
 	Typename             *string `json:"__typename"`
 	GrantCategoryDetails `json:"-"`
@@ -17121,6 +17708,9 @@ func __marshalGetGrantCategoryGrantCategoryGrantCategoryResult(v *GetGrantCatego
 }
 
 // GetGrantCategoryGrantCategoryInvalidInputError includes the requested fields of the GraphQL type InvalidInputError.
+// The GraphQL type's documentation follows.
+//
+// Error when some of the input parameters in the request are not valid.
 type GetGrantCategoryGrantCategoryInvalidInputError struct {
 	Typename          *string `json:"__typename"`
 	InvalidInputError `json:"-"`
@@ -17182,6 +17772,9 @@ func (v *GetGrantCategoryGrantCategoryInvalidInputError) __premarshalJSON() (*__
 }
 
 // GetGrantCategoryGrantCategoryNotFoundError includes the requested fields of the GraphQL type NotFoundError.
+// The GraphQL type's documentation follows.
+//
+// Error when the user is requesting a resource that does not exist.
 type GetGrantCategoryGrantCategoryNotFoundError struct {
 	Typename      *string `json:"__typename"`
 	NotFoundError `json:"-"`
@@ -17243,6 +17836,9 @@ func (v *GetGrantCategoryGrantCategoryNotFoundError) __premarshalJSON() (*__prem
 }
 
 // GetGrantCategoryGrantCategoryPermissionDeniedError includes the requested fields of the GraphQL type PermissionDeniedError.
+// The GraphQL type's documentation follows.
+//
+// Error when permission to the requested resource is denied.
 type GetGrantCategoryGrantCategoryPermissionDeniedError struct {
 	Typename              *string `json:"__typename"`
 	PermissionDeniedError `json:"-"`
@@ -17305,6 +17901,7 @@ func (v *GetGrantCategoryGrantCategoryPermissionDeniedError) __premarshalJSON() 
 
 // GetGrantCategoryResponse is returned by GetGrantCategory on success.
 type GetGrantCategoryResponse struct {
+	// Retrieves a single grant category by its ID.
 	GrantCategory GetGrantCategoryGrantCategoryGrantCategoryResult `json:"-"`
 }
 
@@ -17377,6 +17974,9 @@ func (v *GetGrantCategoryResponse) __premarshalJSON() (*__premarshalGetGrantCate
 }
 
 // GetJobJob includes the requested fields of the GraphQL type Job.
+// The GraphQL type's documentation follows.
+//
+// Represents a synchronization job that is executed on a data source.
 type GetJobJob struct {
 	Job `json:"-"`
 }
@@ -17493,6 +18093,9 @@ type GetRoleResponse struct {
 func (v *GetRoleResponse) GetRole() GetRoleRole { return v.Role }
 
 // GetRoleRole includes the requested fields of the GraphQL type Role.
+// The GraphQL type's documentation follows.
+//
+// Represents a role.
 type GetRoleRole struct {
 	Role `json:"-"`
 }
@@ -17557,6 +18160,9 @@ func (v *GetRoleRole) __premarshalJSON() (*__premarshalGetRoleRole, error) {
 }
 
 // GetSubtaskOfTaskJobSubtask includes the requested fields of the GraphQL type Subtask.
+// The GraphQL type's documentation follows.
+//
+// Represents a subtask of a task.
 type GetSubtaskOfTaskJobSubtask struct {
 	Subtask `json:"-"`
 }
@@ -17687,6 +18293,9 @@ type GetSubtaskOfTaskResponse struct {
 func (v *GetSubtaskOfTaskResponse) GetJobSubtask() GetSubtaskOfTaskJobSubtask { return v.JobSubtask }
 
 // GetTaskJobTask includes the requested fields of the GraphQL type Task.
+// The GraphQL type's documentation follows.
+//
+// Represents a task in a job.
 type GetTaskJobTask struct {
 	Task `json:"-"`
 }
@@ -17796,6 +18405,7 @@ func (v *GetTaskResponse) GetJobTask() GetTaskJobTask { return v.JobTask }
 
 // GetUserByEmailResponse is returned by GetUserByEmail on success.
 type GetUserByEmailResponse struct {
+	// Retrieves a single identity by its email address.
 	UserByEmail *GetUserByEmailUserByEmailUserResult `json:"-"`
 }
 
@@ -17870,76 +18480,10 @@ func (v *GetUserByEmailResponse) __premarshalJSON() (*__premarshalGetUserByEmail
 	return &retval, nil
 }
 
-// GetUserByEmailUserByEmailInvalidEmailError includes the requested fields of the GraphQL type InvalidEmailError.
-type GetUserByEmailUserByEmailInvalidEmailError struct {
-	Typename          *string `json:"__typename"`
-	InvalidEmailError `json:"-"`
-}
-
-// GetTypename returns GetUserByEmailUserByEmailInvalidEmailError.Typename, and is useful for accessing the field via an interface.
-func (v *GetUserByEmailUserByEmailInvalidEmailError) GetTypename() *string { return v.Typename }
-
-// GetErrEmail returns GetUserByEmailUserByEmailInvalidEmailError.ErrEmail, and is useful for accessing the field via an interface.
-func (v *GetUserByEmailUserByEmailInvalidEmailError) GetErrEmail() string {
-	return v.InvalidEmailError.ErrEmail
-}
-
-// GetMessage returns GetUserByEmailUserByEmailInvalidEmailError.Message, and is useful for accessing the field via an interface.
-func (v *GetUserByEmailUserByEmailInvalidEmailError) GetMessage() string {
-	return v.InvalidEmailError.Message
-}
-
-func (v *GetUserByEmailUserByEmailInvalidEmailError) UnmarshalJSON(b []byte) error {
-
-	if string(b) == "null" {
-		return nil
-	}
-
-	var firstPass struct {
-		*GetUserByEmailUserByEmailInvalidEmailError
-		graphql.NoUnmarshalJSON
-	}
-	firstPass.GetUserByEmailUserByEmailInvalidEmailError = v
-
-	err := json.Unmarshal(b, &firstPass)
-	if err != nil {
-		return err
-	}
-
-	err = json.Unmarshal(
-		b, &v.InvalidEmailError)
-	if err != nil {
-		return err
-	}
-	return nil
-}
-
-type __premarshalGetUserByEmailUserByEmailInvalidEmailError struct {
-	Typename *string `json:"__typename"`
-
-	ErrEmail string `json:"errEmail"`
-
-	Message string `json:"message"`
-}
-
-func (v *GetUserByEmailUserByEmailInvalidEmailError) MarshalJSON() ([]byte, error) {
-	premarshaled, err := v.__premarshalJSON()
-	if err != nil {
-		return nil, err
-	}
-	return json.Marshal(premarshaled)
-}
-
-func (v *GetUserByEmailUserByEmailInvalidEmailError) __premarshalJSON() (*__premarshalGetUserByEmailUserByEmailInvalidEmailError, error) {
-	var retval __premarshalGetUserByEmailUserByEmailInvalidEmailError
-
-	retval.Typename = v.Typename
-	retval.ErrEmail = v.InvalidEmailError.ErrEmail
-	retval.Message = v.InvalidEmailError.Message
-	return &retval, nil
-}
-
 // GetUserByEmailUserByEmailInvalidInputError includes the requested fields of the GraphQL type InvalidInputError.
+// The GraphQL type's documentation follows.
+//
+// Error when some of the input parameters in the request are not valid.
 type GetUserByEmailUserByEmailInvalidInputError struct {
 	Typename *string `json:"__typename"`
 }
@@ -17948,6 +18492,9 @@ type GetUserByEmailUserByEmailInvalidInputError struct {
 func (v *GetUserByEmailUserByEmailInvalidInputError) GetTypename() *string { return v.Typename }
 
 // GetUserByEmailUserByEmailNotFoundError includes the requested fields of the GraphQL type NotFoundError.
+// The GraphQL type's documentation follows.
+//
+// Error when the user is requesting a resource that does not exist.
 type GetUserByEmailUserByEmailNotFoundError struct {
 	Typename      *string `json:"__typename"`
 	NotFoundError `json:"-"`
@@ -18007,6 +18554,9 @@ func (v *GetUserByEmailUserByEmailNotFoundError) __premarshalJSON() (*__premarsh
 }
 
 // GetUserByEmailUserByEmailPermissionDeniedError includes the requested fields of the GraphQL type PermissionDeniedError.
+// The GraphQL type's documentation follows.
+//
+// Error when permission to the requested resource is denied.
 type GetUserByEmailUserByEmailPermissionDeniedError struct {
 	Typename              *string `json:"__typename"`
 	PermissionDeniedError `json:"-"`
@@ -18068,6 +18618,9 @@ func (v *GetUserByEmailUserByEmailPermissionDeniedError) __premarshalJSON() (*__
 }
 
 // GetUserByEmailUserByEmailUser includes the requested fields of the GraphQL type User.
+// The GraphQL type's documentation follows.
+//
+// Represents a user in Collibra Data Access. It can be a human user or a machine user (service account) which groups accounts in different data sources.
 type GetUserByEmailUserByEmailUser struct {
 	Typename *string `json:"__typename"`
 	User     `json:"-"`
@@ -18147,7 +18700,6 @@ func (v *GetUserByEmailUserByEmailUser) __premarshalJSON() (*__premarshalGetUser
 // GetUserByEmailUserByEmailUserResult includes the requested fields of the GraphQL interface UserResult.
 //
 // GetUserByEmailUserByEmailUserResult is implemented by the following types:
-// GetUserByEmailUserByEmailInvalidEmailError
 // GetUserByEmailUserByEmailInvalidInputError
 // GetUserByEmailUserByEmailNotFoundError
 // GetUserByEmailUserByEmailPermissionDeniedError
@@ -18158,8 +18710,6 @@ type GetUserByEmailUserByEmailUserResult interface {
 	GetTypename() *string
 }
 
-func (v *GetUserByEmailUserByEmailInvalidEmailError) implementsGraphQLInterfaceGetUserByEmailUserByEmailUserResult() {
-}
 func (v *GetUserByEmailUserByEmailInvalidInputError) implementsGraphQLInterfaceGetUserByEmailUserByEmailUserResult() {
 }
 func (v *GetUserByEmailUserByEmailNotFoundError) implementsGraphQLInterfaceGetUserByEmailUserByEmailUserResult() {
@@ -18183,9 +18733,6 @@ func __unmarshalGetUserByEmailUserByEmailUserResult(b []byte, v *GetUserByEmailU
 	}
 
 	switch tn.TypeName {
-	case "InvalidEmailError":
-		*v = new(GetUserByEmailUserByEmailInvalidEmailError)
-		return json.Unmarshal(b, *v)
 	case "InvalidInputError":
 		*v = new(GetUserByEmailUserByEmailInvalidInputError)
 		return json.Unmarshal(b, *v)
@@ -18211,18 +18758,6 @@ func __marshalGetUserByEmailUserByEmailUserResult(v *GetUserByEmailUserByEmailUs
 
 	var typename string
 	switch v := (*v).(type) {
-	case *GetUserByEmailUserByEmailInvalidEmailError:
-		typename = "InvalidEmailError"
-
-		premarshaled, err := v.__premarshalJSON()
-		if err != nil {
-			return nil, err
-		}
-		result := struct {
-			TypeName string `json:"__typename"`
-			*__premarshalGetUserByEmailUserByEmailInvalidEmailError
-		}{typename, premarshaled}
-		return json.Marshal(result)
 	case *GetUserByEmailUserByEmailInvalidInputError:
 		typename = "InvalidInputError"
 
@@ -18277,6 +18812,7 @@ func __marshalGetUserByEmailUserByEmailUserResult(v *GetUserByEmailUserByEmailUs
 
 // GetUserResponse is returned by GetUser on success.
 type GetUserResponse struct {
+	// Retrieves a single identity by its ID.
 	User GetUserUserUserResult `json:"-"`
 }
 
@@ -18347,6 +18883,9 @@ func (v *GetUserResponse) __premarshalJSON() (*__premarshalGetUserResponse, erro
 }
 
 // GetUserUser includes the requested fields of the GraphQL type User.
+// The GraphQL type's documentation follows.
+//
+// Represents a user in Collibra Data Access. It can be a human user or a machine user (service account) which groups accounts in different data sources.
 type GetUserUser struct {
 	Typename *string `json:"__typename"`
 	User     `json:"-"`
@@ -18423,72 +18962,10 @@ func (v *GetUserUser) __premarshalJSON() (*__premarshalGetUserUser, error) {
 	return &retval, nil
 }
 
-// GetUserUserInvalidEmailError includes the requested fields of the GraphQL type InvalidEmailError.
-type GetUserUserInvalidEmailError struct {
-	Typename          *string `json:"__typename"`
-	InvalidEmailError `json:"-"`
-}
-
-// GetTypename returns GetUserUserInvalidEmailError.Typename, and is useful for accessing the field via an interface.
-func (v *GetUserUserInvalidEmailError) GetTypename() *string { return v.Typename }
-
-// GetErrEmail returns GetUserUserInvalidEmailError.ErrEmail, and is useful for accessing the field via an interface.
-func (v *GetUserUserInvalidEmailError) GetErrEmail() string { return v.InvalidEmailError.ErrEmail }
-
-// GetMessage returns GetUserUserInvalidEmailError.Message, and is useful for accessing the field via an interface.
-func (v *GetUserUserInvalidEmailError) GetMessage() string { return v.InvalidEmailError.Message }
-
-func (v *GetUserUserInvalidEmailError) UnmarshalJSON(b []byte) error {
-
-	if string(b) == "null" {
-		return nil
-	}
-
-	var firstPass struct {
-		*GetUserUserInvalidEmailError
-		graphql.NoUnmarshalJSON
-	}
-	firstPass.GetUserUserInvalidEmailError = v
-
-	err := json.Unmarshal(b, &firstPass)
-	if err != nil {
-		return err
-	}
-
-	err = json.Unmarshal(
-		b, &v.InvalidEmailError)
-	if err != nil {
-		return err
-	}
-	return nil
-}
-
-type __premarshalGetUserUserInvalidEmailError struct {
-	Typename *string `json:"__typename"`
-
-	ErrEmail string `json:"errEmail"`
-
-	Message string `json:"message"`
-}
-
-func (v *GetUserUserInvalidEmailError) MarshalJSON() ([]byte, error) {
-	premarshaled, err := v.__premarshalJSON()
-	if err != nil {
-		return nil, err
-	}
-	return json.Marshal(premarshaled)
-}
-
-func (v *GetUserUserInvalidEmailError) __premarshalJSON() (*__premarshalGetUserUserInvalidEmailError, error) {
-	var retval __premarshalGetUserUserInvalidEmailError
-
-	retval.Typename = v.Typename
-	retval.ErrEmail = v.InvalidEmailError.ErrEmail
-	retval.Message = v.InvalidEmailError.Message
-	return &retval, nil
-}
-
 // GetUserUserInvalidInputError includes the requested fields of the GraphQL type InvalidInputError.
+// The GraphQL type's documentation follows.
+//
+// Error when some of the input parameters in the request are not valid.
 type GetUserUserInvalidInputError struct {
 	Typename          *string `json:"__typename"`
 	InvalidInputError `json:"-"`
@@ -18548,6 +19025,9 @@ func (v *GetUserUserInvalidInputError) __premarshalJSON() (*__premarshalGetUserU
 }
 
 // GetUserUserNotFoundError includes the requested fields of the GraphQL type NotFoundError.
+// The GraphQL type's documentation follows.
+//
+// Error when the user is requesting a resource that does not exist.
 type GetUserUserNotFoundError struct {
 	Typename      *string `json:"__typename"`
 	NotFoundError `json:"-"`
@@ -18607,6 +19087,9 @@ func (v *GetUserUserNotFoundError) __premarshalJSON() (*__premarshalGetUserUserN
 }
 
 // GetUserUserPermissionDeniedError includes the requested fields of the GraphQL type PermissionDeniedError.
+// The GraphQL type's documentation follows.
+//
+// Error when permission to the requested resource is denied.
 type GetUserUserPermissionDeniedError struct {
 	Typename              *string `json:"__typename"`
 	PermissionDeniedError `json:"-"`
@@ -18670,7 +19153,6 @@ func (v *GetUserUserPermissionDeniedError) __premarshalJSON() (*__premarshalGetU
 // GetUserUserUserResult includes the requested fields of the GraphQL interface UserResult.
 //
 // GetUserUserUserResult is implemented by the following types:
-// GetUserUserInvalidEmailError
 // GetUserUserInvalidInputError
 // GetUserUserNotFoundError
 // GetUserUserPermissionDeniedError
@@ -18681,7 +19163,6 @@ type GetUserUserUserResult interface {
 	GetTypename() *string
 }
 
-func (v *GetUserUserInvalidEmailError) implementsGraphQLInterfaceGetUserUserUserResult()     {}
 func (v *GetUserUserInvalidInputError) implementsGraphQLInterfaceGetUserUserUserResult()     {}
 func (v *GetUserUserNotFoundError) implementsGraphQLInterfaceGetUserUserUserResult()         {}
 func (v *GetUserUserPermissionDeniedError) implementsGraphQLInterfaceGetUserUserUserResult() {}
@@ -18701,9 +19182,6 @@ func __unmarshalGetUserUserUserResult(b []byte, v *GetUserUserUserResult) error 
 	}
 
 	switch tn.TypeName {
-	case "InvalidEmailError":
-		*v = new(GetUserUserInvalidEmailError)
-		return json.Unmarshal(b, *v)
 	case "InvalidInputError":
 		*v = new(GetUserUserInvalidInputError)
 		return json.Unmarshal(b, *v)
@@ -18729,18 +19207,6 @@ func __marshalGetUserUserUserResult(v *GetUserUserUserResult) ([]byte, error) {
 
 	var typename string
 	switch v := (*v).(type) {
-	case *GetUserUserInvalidEmailError:
-		typename = "InvalidEmailError"
-
-		premarshaled, err := v.__premarshalJSON()
-		if err != nil {
-			return nil, err
-		}
-		result := struct {
-			TypeName string `json:"__typename"`
-			*__premarshalGetUserUserInvalidEmailError
-		}{typename, premarshaled}
-		return json.Marshal(result)
 	case *GetUserUserInvalidInputError:
 		typename = "InvalidInputError"
 
@@ -18798,11 +19264,18 @@ func __marshalGetUserUserUserResult(v *GetUserUserUserResult) ([]byte, error) {
 }
 
 // GrantCategory includes the GraphQL fields of GrantCategory requested by the fragment GrantCategory.
+// The GraphQL type's documentation follows.
+//
+// Represent a grant category. Grant categories are used to categorize access controls with `action=Grant` to allow structuring them better.
 type GrantCategory struct {
-	Id        string `json:"id"`
-	Name      string `json:"name"`
-	IsSystem  bool   `json:"isSystem"`
-	IsDefault bool   `json:"isDefault"`
+	// A unique identifier for the grant category.
+	Id string `json:"id"`
+	// Display name for the grant category.
+	Name string `json:"name"`
+	// If true, this grant category is provisioned by the system and cannot be edited or removed.
+	IsSystem bool `json:"isSystem"`
+	// If true, new access controls will be created in this category as default and imported (external) access controls will also be in this category.
+	IsDefault bool `json:"isDefault"`
 }
 
 // GetId returns GrantCategory.Id, and is useful for accessing the field via an interface.
@@ -18818,14 +19291,20 @@ func (v *GrantCategory) GetIsSystem() bool { return v.IsSystem }
 func (v *GrantCategory) GetIsDefault() bool { return v.IsDefault }
 
 // GrantCategoryAllowedWhatItems includes the GraphQL fields of GrantCategoryAllowedWhatItems requested by the fragment GrantCategoryAllowedWhatItems.
+// The GraphQL type's documentation follows.
+//
+// Specifies which WHAT items are allowed for a grant category.
 type GrantCategoryAllowedWhatItems struct {
+	// If true, data objects are allowed in the WHAT list of the access control.
 	DataObject bool `json:"dataObject"`
 }
 
 // GetDataObject returns GrantCategoryAllowedWhatItems.DataObject, and is useful for accessing the field via an interface.
 func (v *GrantCategoryAllowedWhatItems) GetDataObject() bool { return v.DataObject }
 
+// Input object to specify which WHAT items are allowed for a grant category.
 type GrantCategoryAllowedWhatItemsInput struct {
+	// If true, data objects are allowed in the WHAT list of the access control.
 	DataObject bool `json:"dataObject"`
 }
 
@@ -18833,11 +19312,18 @@ type GrantCategoryAllowedWhatItemsInput struct {
 func (v *GrantCategoryAllowedWhatItemsInput) GetDataObject() bool { return v.DataObject }
 
 // GrantCategoryAllowedWhoItems includes the GraphQL fields of GrantCategoryAllowedWhoItems requested by the fragment GrantCategoryAllowedWhoItems.
+// The GraphQL type's documentation follows.
+//
+// Specifies which WHO items are allowed for a grant category.
 type GrantCategoryAllowedWhoItems struct {
-	User        bool     `json:"user"`
-	Inheritance bool     `json:"inheritance"`
-	Self        bool     `json:"self"`
-	Categories  []string `json:"categories"`
+	// If true, users are allowed in the WHO list of the access control.
+	User bool `json:"user"`
+	// If true, other access controls from any category are allowed in the WHO list of the access control.
+	Inheritance bool `json:"inheritance"`
+	// If true, other access controls from the same category are allowed in the WHO list of the access control.
+	Self bool `json:"self"`
+	// Access controls from the given categories are allowed in the WHO list of the access control.
+	Categories []string `json:"categories"`
 }
 
 // GetUser returns GrantCategoryAllowedWhoItems.User, and is useful for accessing the field via an interface.
@@ -18852,11 +19338,16 @@ func (v *GrantCategoryAllowedWhoItems) GetSelf() bool { return v.Self }
 // GetCategories returns GrantCategoryAllowedWhoItems.Categories, and is useful for accessing the field via an interface.
 func (v *GrantCategoryAllowedWhoItems) GetCategories() []string { return v.Categories }
 
+// Input object to specify which WHO items are allowed for a grant category.
 type GrantCategoryAllowedWhoItemsInput struct {
-	User        bool     `json:"user"`
-	Inheritance bool     `json:"inheritance"`
-	Self        bool     `json:"self"`
-	Categories  []string `json:"categories"`
+	// If true, users are allowed in the WHO list of the access control.
+	User bool `json:"user"`
+	// If true, other access controls from any category are allowed in the WHO list of the access control.
+	Inheritance bool `json:"inheritance"`
+	// If true, other access controls from the same category are allowed in the WHO list of the access control.
+	Self bool `json:"self"`
+	// Access controls from the given categories are allowed in the WHO list of the access control.
+	Categories []string `json:"categories"`
 }
 
 // GetUser returns GrantCategoryAllowedWhoItemsInput.User, and is useful for accessing the field via an interface.
@@ -18872,21 +19363,38 @@ func (v *GrantCategoryAllowedWhoItemsInput) GetSelf() bool { return v.Self }
 func (v *GrantCategoryAllowedWhoItemsInput) GetCategories() []string { return v.Categories }
 
 // GrantCategoryDetails includes the GraphQL fields of GrantCategory requested by the fragment GrantCategoryDetails.
+// The GraphQL type's documentation follows.
+//
+// Represent a grant category. Grant categories are used to categorize access controls with `action=Grant` to allow structuring them better.
 type GrantCategoryDetails struct {
-	Id                       string                                                                       `json:"id"`
-	CreatedAt                time.Time                                                                    `json:"createdAt"`
-	ModifiedAt               time.Time                                                                    `json:"modifiedAt"`
-	IsSystem                 bool                                                                         `json:"isSystem"`
-	Name                     string                                                                       `json:"name"`
-	Description              string                                                                       `json:"description"`
-	Icon                     string                                                                       `json:"icon"`
-	IsDefault                bool                                                                         `json:"isDefault"`
-	CanCreate                bool                                                                         `json:"canCreate"`
-	AllowDuplicateNames      bool                                                                         `json:"allowDuplicateNames"`
-	MultiDataSource          bool                                                                         `json:"multiDataSource"`
+	// A unique identifier for the grant category.
+	Id string `json:"id"`
+	// The time at which the grant category was created.
+	CreatedAt time.Time `json:"createdAt"`
+	// The time at which the grant category was last modified.
+	ModifiedAt time.Time `json:"modifiedAt"`
+	// If true, this grant category is provisioned by the system and cannot be edited or removed.
+	IsSystem bool `json:"isSystem"`
+	// Display name for the grant category.
+	Name string `json:"name"`
+	// Description of the grant category.
+	Description string `json:"description"`
+	// The icon to use in the user interface to identify grants of this category.
+	Icon string `json:"icon"`
+	// If true, new access controls will be created in this category as default and imported (external) access controls will also be in this category.
+	IsDefault bool `json:"isDefault"`
+	// If true, access controls of this category can be created in the UI.
+	CanCreate bool `json:"canCreate"`
+	// If true, it is possible to create multiple access controls with the same name in this category. Otherwise, this will be blocked.
+	AllowDuplicateNames bool `json:"allowDuplicateNames"`
+	// If true, access controls in this category can be linked to multiple data sources. Otherwise, they will be limited to a single data source.
+	MultiDataSource bool `json:"multiDataSource"`
+	// For each data source, a default access control type can be specified.
 	DefaultTypePerDataSource []GrantCategoryDetailsDefaultTypePerDataSourceGrantCategoryTypeForDataSource `json:"defaultTypePerDataSource"`
-	AllowedWhoItems          GrantCategoryDetailsAllowedWhoItemsGrantCategoryAllowedWhoItems              `json:"allowedWhoItems"`
-	AllowedWhatItems         GrantCategoryDetailsAllowedWhatItemsGrantCategoryAllowedWhatItems            `json:"allowedWhatItems"`
+	// Specifies which types can be put as WHO items for access controls in this category.
+	AllowedWhoItems GrantCategoryDetailsAllowedWhoItemsGrantCategoryAllowedWhoItems `json:"allowedWhoItems"`
+	// Specifies which types can be put as WHAT items for access controls in this category.
+	AllowedWhatItems GrantCategoryDetailsAllowedWhatItemsGrantCategoryAllowedWhatItems `json:"allowedWhatItems"`
 }
 
 // GetId returns GrantCategoryDetails.Id, and is useful for accessing the field via an interface.
@@ -18938,6 +19446,9 @@ func (v *GrantCategoryDetails) GetAllowedWhatItems() GrantCategoryDetailsAllowed
 }
 
 // GrantCategoryDetailsAllowedWhatItemsGrantCategoryAllowedWhatItems includes the requested fields of the GraphQL type GrantCategoryAllowedWhatItems.
+// The GraphQL type's documentation follows.
+//
+// Specifies which WHAT items are allowed for a grant category.
 type GrantCategoryDetailsAllowedWhatItemsGrantCategoryAllowedWhatItems struct {
 	GrantCategoryAllowedWhatItems `json:"-"`
 }
@@ -18992,6 +19503,9 @@ func (v *GrantCategoryDetailsAllowedWhatItemsGrantCategoryAllowedWhatItems) __pr
 }
 
 // GrantCategoryDetailsAllowedWhoItemsGrantCategoryAllowedWhoItems includes the requested fields of the GraphQL type GrantCategoryAllowedWhoItems.
+// The GraphQL type's documentation follows.
+//
+// Specifies which WHO items are allowed for a grant category.
 type GrantCategoryDetailsAllowedWhoItemsGrantCategoryAllowedWhoItems struct {
 	GrantCategoryAllowedWhoItems `json:"-"`
 }
@@ -19070,6 +19584,9 @@ func (v *GrantCategoryDetailsAllowedWhoItemsGrantCategoryAllowedWhoItems) __prem
 }
 
 // GrantCategoryDetailsDefaultTypePerDataSourceGrantCategoryTypeForDataSource includes the requested fields of the GraphQL type GrantCategoryTypeForDataSource.
+// The GraphQL type's documentation follows.
+//
+// Specifies the type of the access control in the data source for a grant category.
 type GrantCategoryDetailsDefaultTypePerDataSourceGrantCategoryTypeForDataSource struct {
 	GrantCategoryTypeForDataSource `json:"-"`
 }
@@ -19131,23 +19648,40 @@ func (v *GrantCategoryDetailsDefaultTypePerDataSourceGrantCategoryTypeForDataSou
 	return &retval, nil
 }
 
+// Input object to create or update a grant category.
 type GrantCategoryInput struct {
-	Name                     *string                               `json:"name,omitempty"`
-	Description              *string                               `json:"description,omitempty"`
-	Icon                     *string                               `json:"icon,omitempty"`
-	CanCreate                *bool                                 `json:"canCreate,omitempty"`
-	CanRequestAccess         *bool                                 `json:"canRequestAccess,omitempty"`
-	DescriptionMandatory     *bool                                 `json:"descriptionMandatory,omitempty"`
-	AllowDuplicateNames      *bool                                 `json:"allowDuplicateNames,omitempty"`
-	MultiDataSource          *bool                                 `json:"multiDataSource,omitempty"`
+	// Display name for the grant category.
+	Name *string `json:"name,omitempty"`
+	// Description of the grant category.
+	Description *string `json:"description,omitempty"`
+	// The icon to use in the user interface to identify grants of this category.
+	Icon *string `json:"icon,omitempty"`
+	// If true, access controls of this category can be created in the UI.
+	CanCreate *bool `json:"canCreate,omitempty"`
+	// Specifies if a user can request access to grants of this category or not. This is purely a frontend check.
+	CanRequestAccess *bool `json:"canRequestAccess,omitempty"`
+	// If true, providing a description for access controls in this category is mandatory.
+	DescriptionMandatory *bool `json:"descriptionMandatory,omitempty"`
+	// If true, it is possible to create multiple access controls with the same name in this category. Otherwise, this will be blocked.
+	AllowDuplicateNames *bool `json:"allowDuplicateNames,omitempty"`
+	// If true, access controls in this category can be linked to multiple data sources. Otherwise, they will be limited to a single data source.
+	MultiDataSource *bool `json:"multiDataSource,omitempty"`
+	// For each data source, a default access control type can be specified.
 	DefaultTypePerDataSource []GrantCategoryTypeForDataSourceInput `json:"defaultTypePerDataSource"`
-	AllowedWhoItems          *GrantCategoryAllowedWhoItemsInput    `json:"allowedWhoItems,omitempty"`
-	AllowedWhatItems         *GrantCategoryAllowedWhatItemsInput   `json:"allowedWhatItems,omitempty"`
-	NameRegEx                *string                               `json:"nameRegEx,omitempty"`
-	NameRegExMsg             *string                               `json:"nameRegExMsg,omitempty"`
-	NamingHintRegEx          *string                               `json:"namingHintRegEx,omitempty"`
-	NamingHintRegExMsg       *string                               `json:"namingHintRegExMsg,omitempty"`
-	LocksOnCreate            []AccessControlLock                   `json:"locksOnCreate"`
+	// Specifies which types can be put as WHO items for access controls in this category.
+	AllowedWhoItems *GrantCategoryAllowedWhoItemsInput `json:"allowedWhoItems,omitempty"`
+	// Specifies which types can be put as WHAT items for access controls in this category.
+	AllowedWhatItems *GrantCategoryAllowedWhatItemsInput `json:"allowedWhatItems,omitempty"`
+	// If specified, the name of access controls in this category need to comply with the given regular expression.
+	NameRegEx *string `json:"nameRegEx,omitempty"`
+	// The message shown to the user when the name does not comply with the regular expression.
+	NameRegExMsg *string `json:"nameRegExMsg,omitempty"`
+	// If specified, the naming hint of access controls in this category need to comply with the given regular expression.
+	NamingHintRegEx *string `json:"namingHintRegEx,omitempty"`
+	// The message shown to the user when the name does not comply with the regular expression.
+	NamingHintRegExMsg *string `json:"namingHintRegExMsg,omitempty"`
+	// The locks that need to be set when an access control in this category is created.
+	LocksOnCreate []AccessControlLock `json:"locksOnCreate"`
 }
 
 // GetName returns GrantCategoryInput.Name, and is useful for accessing the field via an interface.
@@ -19205,9 +19739,14 @@ func (v *GrantCategoryInput) GetNamingHintRegExMsg() *string { return v.NamingHi
 func (v *GrantCategoryInput) GetLocksOnCreate() []AccessControlLock { return v.LocksOnCreate }
 
 // GrantCategoryTypeForDataSource includes the GraphQL fields of GrantCategoryTypeForDataSource requested by the fragment GrantCategoryTypeForDataSource.
+// The GraphQL type's documentation follows.
+//
+// Specifies the type of the access control in the data source for a grant category.
 type GrantCategoryTypeForDataSource struct {
+	// The data source this type applies to.
 	DataSource string `json:"dataSource"`
-	Type       string `json:"type"`
+	// The access control type that will be used for this data source.
+	Type string `json:"type"`
 }
 
 // GetDataSource returns GrantCategoryTypeForDataSource.DataSource, and is useful for accessing the field via an interface.
@@ -19216,9 +19755,12 @@ func (v *GrantCategoryTypeForDataSource) GetDataSource() string { return v.DataS
 // GetType returns GrantCategoryTypeForDataSource.Type, and is useful for accessing the field via an interface.
 func (v *GrantCategoryTypeForDataSource) GetType() string { return v.Type }
 
+// Input object to specify the type of the access control in the data source for a grant category.
 type GrantCategoryTypeForDataSourceInput struct {
+	// The data source this type applies to.
 	DataSource string `json:"dataSource"`
-	Type       string `json:"type"`
+	// The access control type that will be used for this data source.
+	Type string `json:"type"`
 }
 
 // GetDataSource returns GrantCategoryTypeForDataSourceInput.DataSource, and is useful for accessing the field via an interface.
@@ -19281,6 +19823,9 @@ type ImportFlowOptions struct {
 func (v *ImportFlowOptions) GetTagSourcesScope() []string { return v.TagSourcesScope }
 
 // ImportHeartbeatDataFetchingHeartbeatInvalidInputError includes the requested fields of the GraphQL type InvalidInputError.
+// The GraphQL type's documentation follows.
+//
+// Error when some of the input parameters in the request are not valid.
 type ImportHeartbeatDataFetchingHeartbeatInvalidInputError struct {
 	Typename          *string `json:"__typename"`
 	InvalidInputError `json:"-"`
@@ -19344,6 +19889,9 @@ func (v *ImportHeartbeatDataFetchingHeartbeatInvalidInputError) __premarshalJSON
 }
 
 // ImportHeartbeatDataFetchingHeartbeatNotFoundError includes the requested fields of the GraphQL type NotFoundError.
+// The GraphQL type's documentation follows.
+//
+// Error when the user is requesting a resource that does not exist.
 type ImportHeartbeatDataFetchingHeartbeatNotFoundError struct {
 	Typename      *string `json:"__typename"`
 	NotFoundError `json:"-"`
@@ -19405,6 +19953,9 @@ func (v *ImportHeartbeatDataFetchingHeartbeatNotFoundError) __premarshalJSON() (
 }
 
 // ImportHeartbeatDataFetchingHeartbeatPermissionDeniedError includes the requested fields of the GraphQL type PermissionDeniedError.
+// The GraphQL type's documentation follows.
+//
+// Error when permission to the requested resource is denied.
 type ImportHeartbeatDataFetchingHeartbeatPermissionDeniedError struct {
 	Typename              *string `json:"__typename"`
 	PermissionDeniedError `json:"-"`
@@ -19468,6 +20019,9 @@ func (v *ImportHeartbeatDataFetchingHeartbeatPermissionDeniedError) __premarshal
 }
 
 // ImportHeartbeatDataFetchingHeartbeatSubtask includes the requested fields of the GraphQL type Subtask.
+// The GraphQL type's documentation follows.
+//
+// Represents a subtask of a task.
 type ImportHeartbeatDataFetchingHeartbeatSubtask struct {
 	Typename *string `json:"__typename"`
 	Subtask  `json:"-"`
@@ -19800,19 +20354,10 @@ func (v *ImportHeartbeatResponse) __premarshalJSON() (*__premarshalImportHeartbe
 	return &retval, nil
 }
 
-// InvalidEmailError includes the GraphQL fields of InvalidEmailError requested by the fragment InvalidEmailError.
-type InvalidEmailError struct {
-	ErrEmail string `json:"errEmail"`
-	Message  string `json:"message"`
-}
-
-// GetErrEmail returns InvalidEmailError.ErrEmail, and is useful for accessing the field via an interface.
-func (v *InvalidEmailError) GetErrEmail() string { return v.ErrEmail }
-
-// GetMessage returns InvalidEmailError.Message, and is useful for accessing the field via an interface.
-func (v *InvalidEmailError) GetMessage() string { return v.Message }
-
 // InvalidInputError includes the GraphQL fields of InvalidInputError requested by the fragment InvalidInputError.
+// The GraphQL type's documentation follows.
+//
+// Error when some of the input parameters in the request are not valid.
 type InvalidInputError struct {
 	Message string `json:"message"`
 }
@@ -19821,16 +20366,28 @@ type InvalidInputError struct {
 func (v *InvalidInputError) GetMessage() string { return v.Message }
 
 // Job includes the GraphQL fields of Job requested by the fragment Job.
+// The GraphQL type's documentation follows.
+//
+// Represents a synchronization job that is executed on a data source.
 type Job struct {
-	Id          string        `json:"id"`
-	Status      JobStatus     `json:"status"`
-	StartTime   time.Time     `json:"startTime"`
-	LastUpdate  time.Time     `json:"lastUpdate"`
-	EndTime     *time.Time    `json:"endTime"`
-	Duration    *int64        `json:"duration"`
-	HasErrors   *bool         `json:"hasErrors"`
-	HasWarnings *bool         `json:"hasWarnings"`
-	DataSource  JobDataSource `json:"dataSource"`
+	// Unique identifier of the job.
+	Id string `json:"id"`
+	// The current status of the job.
+	Status JobStatus `json:"status"`
+	// The time at which this job was started.
+	StartTime time.Time `json:"startTime"`
+	// The time when this job was last updated.
+	LastUpdate time.Time `json:"lastUpdate"`
+	// The time at which this job ended.
+	EndTime *time.Time `json:"endTime"`
+	// The duration of the job (endTime-startTime).
+	Duration *int64 `json:"duration"`
+	// If true, errors occurred during this job.
+	HasErrors *bool `json:"hasErrors"`
+	// If true, warnings occurred during this job.
+	HasWarnings *bool `json:"hasWarnings"`
+	// The data source on which this job ran.
+	DataSource JobDataSource `json:"dataSource"`
 }
 
 // GetId returns Job.Id, and is useful for accessing the field via an interface.
@@ -19861,9 +20418,14 @@ func (v *Job) GetHasWarnings() *bool { return v.HasWarnings }
 func (v *Job) GetDataSource() JobDataSource { return v.DataSource }
 
 // JobConnection includes the GraphQL fields of JobConnection requested by the fragment JobConnection.
+// The GraphQL type's documentation follows.
+//
+// The connection type for paginated lists of [Job]({{Types.Job}}).
 type JobConnection struct {
-	PageInfo JobConnectionPageInfo       `json:"pageInfo"`
-	Edges    []JobConnectionEdgesJobEdge `json:"edges"`
+	// Pagination information for the retrieved items.
+	PageInfo JobConnectionPageInfo `json:"pageInfo"`
+	// The list of edges containing the actual queried items.
+	Edges []JobConnectionEdgesJobEdge `json:"edges"`
 }
 
 // GetPageInfo returns JobConnection.PageInfo, and is useful for accessing the field via an interface.
@@ -19873,9 +20435,14 @@ func (v *JobConnection) GetPageInfo() JobConnectionPageInfo { return v.PageInfo 
 func (v *JobConnection) GetEdges() []JobConnectionEdgesJobEdge { return v.Edges }
 
 // JobConnectionEdgesJobEdge includes the requested fields of the GraphQL type JobEdge.
+// The GraphQL type's documentation follows.
+//
+// The edge type for [JobConnection]({{Types.JobConnection}})
 type JobConnectionEdgesJobEdge struct {
-	Cursor *string                           `json:"cursor"`
-	Node   *JobConnectionEdgesJobEdgeNodeJob `json:"node"`
+	// The cursor of this item for pagination.
+	Cursor *string `json:"cursor"`
+	// The actual job.
+	Node *JobConnectionEdgesJobEdgeNodeJob `json:"node"`
 }
 
 // GetCursor returns JobConnectionEdgesJobEdge.Cursor, and is useful for accessing the field via an interface.
@@ -19885,6 +20452,9 @@ func (v *JobConnectionEdgesJobEdge) GetCursor() *string { return v.Cursor }
 func (v *JobConnectionEdgesJobEdge) GetNode() *JobConnectionEdgesJobEdgeNodeJob { return v.Node }
 
 // JobConnectionEdgesJobEdgeNodeJob includes the requested fields of the GraphQL type Job.
+// The GraphQL type's documentation follows.
+//
+// Represents a synchronization job that is executed on a data source.
 type JobConnectionEdgesJobEdgeNodeJob struct {
 	Job `json:"-"`
 }
@@ -20376,6 +20946,9 @@ func (v *JobConnectionResultPermissionDeniedError) __premarshalJSON() (*__premar
 }
 
 // JobDataSource includes the requested fields of the GraphQL type DataSource.
+// The GraphQL type's documentation follows.
+//
+// Represents a data sourcein Collibra Data Access.
 type JobDataSource struct {
 	DataSource `json:"-"`
 }
@@ -20508,8 +21081,12 @@ type JobsFilter struct {
 func (v *JobsFilter) GetDataSource() *string { return v.DataSource }
 
 // ListAccessControlAbacWhatScopeAccessControl includes the requested fields of the GraphQL type AccessControl.
+// The GraphQL type's documentation follows.
+//
+// Represents an access control object in the system. An access control is the abstract model representing grants, masks, filters and groups (determined by the `action` field).
 type ListAccessControlAbacWhatScopeAccessControl struct {
-	Typename      *string                                                                            `json:"__typename"`
+	Typename *string `json:"__typename"`
+	// Retrieves the scope Data Objects for a specific WHAT ABAC rule.
 	WhatAbacScope ListAccessControlAbacWhatScopeAccessControlWhatAbacScopeDataObjectConnectionResult `json:"-"`
 }
 
@@ -20701,6 +21278,9 @@ func __marshalListAccessControlAbacWhatScopeAccessControlAccessControlResult(v *
 }
 
 // ListAccessControlAbacWhatScopeAccessControlInvalidInputError includes the requested fields of the GraphQL type InvalidInputError.
+// The GraphQL type's documentation follows.
+//
+// Error when some of the input parameters in the request are not valid.
 type ListAccessControlAbacWhatScopeAccessControlInvalidInputError struct {
 	Typename *string `json:"__typename"`
 }
@@ -20711,6 +21291,9 @@ func (v *ListAccessControlAbacWhatScopeAccessControlInvalidInputError) GetTypena
 }
 
 // ListAccessControlAbacWhatScopeAccessControlNotFoundError includes the requested fields of the GraphQL type NotFoundError.
+// The GraphQL type's documentation follows.
+//
+// Error when the user is requesting a resource that does not exist.
 type ListAccessControlAbacWhatScopeAccessControlNotFoundError struct {
 	Typename      *string `json:"__typename"`
 	NotFoundError `json:"-"`
@@ -20774,6 +21357,9 @@ func (v *ListAccessControlAbacWhatScopeAccessControlNotFoundError) __premarshalJ
 }
 
 // ListAccessControlAbacWhatScopeAccessControlPermissionDeniedError includes the requested fields of the GraphQL type PermissionDeniedError.
+// The GraphQL type's documentation follows.
+//
+// Error when permission to the requested resource is denied.
 type ListAccessControlAbacWhatScopeAccessControlPermissionDeniedError struct {
 	Typename              *string `json:"__typename"`
 	PermissionDeniedError `json:"-"`
@@ -20837,6 +21423,9 @@ func (v *ListAccessControlAbacWhatScopeAccessControlPermissionDeniedError) __pre
 }
 
 // ListAccessControlAbacWhatScopeAccessControlWhatAbacScopeDataObjectConnection includes the requested fields of the GraphQL type DataObjectConnection.
+// The GraphQL type's documentation follows.
+//
+// The connection type for paginated lists of [DataObject]({{Types.DataObject}}).
 type ListAccessControlAbacWhatScopeAccessControlWhatAbacScopeDataObjectConnection struct {
 	Typename             *string `json:"__typename"`
 	DataObjectConnection `json:"-"`
@@ -21017,6 +21606,9 @@ func __marshalListAccessControlAbacWhatScopeAccessControlWhatAbacScopeDataObject
 }
 
 // ListAccessControlAbacWhatScopeAccessControlWhatAbacScopeInvalidInputError includes the requested fields of the GraphQL type InvalidInputError.
+// The GraphQL type's documentation follows.
+//
+// Error when some of the input parameters in the request are not valid.
 type ListAccessControlAbacWhatScopeAccessControlWhatAbacScopeInvalidInputError struct {
 	Typename *string `json:"__typename"`
 }
@@ -21027,6 +21619,9 @@ func (v *ListAccessControlAbacWhatScopeAccessControlWhatAbacScopeInvalidInputErr
 }
 
 // ListAccessControlAbacWhatScopeAccessControlWhatAbacScopeNotFoundError includes the requested fields of the GraphQL type NotFoundError.
+// The GraphQL type's documentation follows.
+//
+// Error when the user is requesting a resource that does not exist.
 type ListAccessControlAbacWhatScopeAccessControlWhatAbacScopeNotFoundError struct {
 	Typename *string `json:"__typename"`
 }
@@ -21037,6 +21632,9 @@ func (v *ListAccessControlAbacWhatScopeAccessControlWhatAbacScopeNotFoundError) 
 }
 
 // ListAccessControlAbacWhatScopeAccessControlWhatAbacScopePermissionDeniedError includes the requested fields of the GraphQL type PermissionDeniedError.
+// The GraphQL type's documentation follows.
+//
+// Error when permission to the requested resource is denied.
 type ListAccessControlAbacWhatScopeAccessControlWhatAbacScopePermissionDeniedError struct {
 	Typename              *string `json:"__typename"`
 	PermissionDeniedError `json:"-"`
@@ -21101,6 +21699,7 @@ func (v *ListAccessControlAbacWhatScopeAccessControlWhatAbacScopePermissionDenie
 
 // ListAccessControlAbacWhatScopeResponse is returned by ListAccessControlAbacWhatScope on success.
 type ListAccessControlAbacWhatScopeResponse struct {
+	// Retrieves a single access control by its ID.
 	AccessControl ListAccessControlAbacWhatScopeAccessControlAccessControlResult `json:"-"`
 }
 
@@ -21173,6 +21772,9 @@ func (v *ListAccessControlAbacWhatScopeResponse) __premarshalJSON() (*__premarsh
 }
 
 // ListAccessControlsAccessControlsAccessControlConnection includes the requested fields of the GraphQL type AccessControlConnection.
+// The GraphQL type's documentation follows.
+//
+// The connection type for paginated lists of [AccessControl]({{Types.AccessControl}}).
 type ListAccessControlsAccessControlsAccessControlConnection struct {
 	Typename                                             *string `json:"__typename"`
 	AccessControlConnectionResultAccessControlConnection `json:"-"`
@@ -21362,6 +21964,9 @@ func __marshalListAccessControlsAccessControlsAccessControlConnectionResult(v *L
 }
 
 // ListAccessControlsAccessControlsInvalidInputError includes the requested fields of the GraphQL type InvalidInputError.
+// The GraphQL type's documentation follows.
+//
+// Error when some of the input parameters in the request are not valid.
 type ListAccessControlsAccessControlsInvalidInputError struct {
 	Typename                                       *string `json:"__typename"`
 	AccessControlConnectionResultInvalidInputError `json:"-"`
@@ -21423,6 +22028,9 @@ func (v *ListAccessControlsAccessControlsInvalidInputError) __premarshalJSON() (
 }
 
 // ListAccessControlsAccessControlsNotFoundError includes the requested fields of the GraphQL type NotFoundError.
+// The GraphQL type's documentation follows.
+//
+// Error when the user is requesting a resource that does not exist.
 type ListAccessControlsAccessControlsNotFoundError struct {
 	Typename                                   *string `json:"__typename"`
 	AccessControlConnectionResultNotFoundError `json:"-"`
@@ -21484,6 +22092,9 @@ func (v *ListAccessControlsAccessControlsNotFoundError) __premarshalJSON() (*__p
 }
 
 // ListAccessControlsAccessControlsPermissionDeniedError includes the requested fields of the GraphQL type PermissionDeniedError.
+// The GraphQL type's documentation follows.
+//
+// Error when permission to the requested resource is denied.
 type ListAccessControlsAccessControlsPermissionDeniedError struct {
 	Typename                                           *string `json:"__typename"`
 	AccessControlConnectionResultPermissionDeniedError `json:"-"`
@@ -21548,6 +22159,7 @@ func (v *ListAccessControlsAccessControlsPermissionDeniedError) __premarshalJSON
 
 // ListAccessControlsResponse is returned by ListAccessControls on success.
 type ListAccessControlsResponse struct {
+	// Retrieves a paginated list of access controls.
 	AccessControls ListAccessControlsAccessControlsAccessControlConnectionResult `json:"-"`
 }
 
@@ -21620,6 +22232,9 @@ func (v *ListAccessControlsResponse) __premarshalJSON() (*__premarshalListAccess
 }
 
 // ListDataObjectsDataObjectsDataObjectConnection includes the requested fields of the GraphQL type DataObjectConnection.
+// The GraphQL type's documentation follows.
+//
+// The connection type for paginated lists of [DataObject]({{Types.DataObject}}).
 type ListDataObjectsDataObjectsDataObjectConnection struct {
 	Typename                                       *string `json:"__typename"`
 	DataObjectConnectionResultDataObjectConnection `json:"-"`
@@ -21807,6 +22422,9 @@ func __marshalListDataObjectsDataObjectsDataObjectConnectionResult(v *ListDataOb
 }
 
 // ListDataObjectsDataObjectsInvalidInputError includes the requested fields of the GraphQL type InvalidInputError.
+// The GraphQL type's documentation follows.
+//
+// Error when some of the input parameters in the request are not valid.
 type ListDataObjectsDataObjectsInvalidInputError struct {
 	Typename                                    *string `json:"__typename"`
 	DataObjectConnectionResultInvalidInputError `json:"-"`
@@ -21868,6 +22486,9 @@ func (v *ListDataObjectsDataObjectsInvalidInputError) __premarshalJSON() (*__pre
 }
 
 // ListDataObjectsDataObjectsNotFoundError includes the requested fields of the GraphQL type NotFoundError.
+// The GraphQL type's documentation follows.
+//
+// Error when the user is requesting a resource that does not exist.
 type ListDataObjectsDataObjectsNotFoundError struct {
 	Typename                                *string `json:"__typename"`
 	DataObjectConnectionResultNotFoundError `json:"-"`
@@ -21929,6 +22550,9 @@ func (v *ListDataObjectsDataObjectsNotFoundError) __premarshalJSON() (*__premars
 }
 
 // ListDataObjectsDataObjectsPermissionDeniedError includes the requested fields of the GraphQL type PermissionDeniedError.
+// The GraphQL type's documentation follows.
+//
+// Error when permission to the requested resource is denied.
 type ListDataObjectsDataObjectsPermissionDeniedError struct {
 	Typename                                        *string `json:"__typename"`
 	DataObjectConnectionResultPermissionDeniedError `json:"-"`
@@ -21991,6 +22615,7 @@ func (v *ListDataObjectsDataObjectsPermissionDeniedError) __premarshalJSON() (*_
 
 // ListDataObjectsResponse is returned by ListDataObjects on success.
 type ListDataObjectsResponse struct {
+	// Retrieves a paginated list of data objects.
 	DataObjects ListDataObjectsDataObjectsDataObjectConnectionResult `json:"-"`
 }
 
@@ -22063,6 +22688,9 @@ func (v *ListDataObjectsResponse) __premarshalJSON() (*__premarshalListDataObjec
 }
 
 // ListDataSourcesDataSourcesDataSourceConnection includes the requested fields of the GraphQL type DataSourceConnection.
+// The GraphQL type's documentation follows.
+//
+// The connection type for paginated lists of [DataSource]({{Types.DataSource}}).
 type ListDataSourcesDataSourcesDataSourceConnection struct {
 	Typename                                       *string `json:"__typename"`
 	DataSourceConnectionResultDataSourceConnection `json:"-"`
@@ -22250,6 +22878,9 @@ func __marshalListDataSourcesDataSourcesDataSourceConnectionResult(v *ListDataSo
 }
 
 // ListDataSourcesDataSourcesInvalidInputError includes the requested fields of the GraphQL type InvalidInputError.
+// The GraphQL type's documentation follows.
+//
+// Error when some of the input parameters in the request are not valid.
 type ListDataSourcesDataSourcesInvalidInputError struct {
 	Typename                                    *string `json:"__typename"`
 	DataSourceConnectionResultInvalidInputError `json:"-"`
@@ -22311,6 +22942,9 @@ func (v *ListDataSourcesDataSourcesInvalidInputError) __premarshalJSON() (*__pre
 }
 
 // ListDataSourcesDataSourcesNotFoundError includes the requested fields of the GraphQL type NotFoundError.
+// The GraphQL type's documentation follows.
+//
+// Error when the user is requesting a resource that does not exist.
 type ListDataSourcesDataSourcesNotFoundError struct {
 	Typename                                *string `json:"__typename"`
 	DataSourceConnectionResultNotFoundError `json:"-"`
@@ -22372,6 +23006,9 @@ func (v *ListDataSourcesDataSourcesNotFoundError) __premarshalJSON() (*__premars
 }
 
 // ListDataSourcesDataSourcesPermissionDeniedError includes the requested fields of the GraphQL type PermissionDeniedError.
+// The GraphQL type's documentation follows.
+//
+// Error when permission to the requested resource is denied.
 type ListDataSourcesDataSourcesPermissionDeniedError struct {
 	Typename                                        *string `json:"__typename"`
 	DataSourceConnectionResultPermissionDeniedError `json:"-"`
@@ -22434,6 +23071,7 @@ func (v *ListDataSourcesDataSourcesPermissionDeniedError) __premarshalJSON() (*_
 
 // ListDataSourcesResponse is returned by ListDataSources on success.
 type ListDataSourcesResponse struct {
+	// Retrieves a paginated list of data sources.
 	DataSources ListDataSourcesDataSourcesDataSourceConnectionResult `json:"-"`
 }
 
@@ -22506,6 +23144,9 @@ func (v *ListDataSourcesResponse) __premarshalJSON() (*__premarshalListDataSourc
 }
 
 // ListGrantCategoriesGrantCategoriesGrantCategory includes the requested fields of the GraphQL type GrantCategory.
+// The GraphQL type's documentation follows.
+//
+// Represent a grant category. Grant categories are used to categorize access controls with `action=Grant` to allow structuring them better.
 type ListGrantCategoriesGrantCategoriesGrantCategory struct {
 	GrantCategoryDetails `json:"-"`
 }
@@ -22665,6 +23306,7 @@ func (v *ListGrantCategoriesGrantCategoriesGrantCategory) __premarshalJSON() (*_
 
 // ListGrantCategoriesResponse is returned by ListGrantCategories on success.
 type ListGrantCategoriesResponse struct {
+	// Retrieves a list of all grant categories.
 	GrantCategories []ListGrantCategoriesGrantCategoriesGrantCategory `json:"grantCategories"`
 }
 
@@ -22674,6 +23316,9 @@ func (v *ListGrantCategoriesResponse) GetGrantCategories() []ListGrantCategories
 }
 
 // ListJobsJobsInvalidInputError includes the requested fields of the GraphQL type InvalidInputError.
+// The GraphQL type's documentation follows.
+//
+// Error when some of the input parameters in the request are not valid.
 type ListJobsJobsInvalidInputError struct {
 	Typename                             *string `json:"__typename"`
 	JobConnectionResultInvalidInputError `json:"-"`
@@ -22735,6 +23380,9 @@ func (v *ListJobsJobsInvalidInputError) __premarshalJSON() (*__premarshalListJob
 }
 
 // ListJobsJobsJobConnection includes the requested fields of the GraphQL type JobConnection.
+// The GraphQL type's documentation follows.
+//
+// The connection type for paginated lists of [Job]({{Types.Job}}).
 type ListJobsJobsJobConnection struct {
 	Typename                         *string `json:"__typename"`
 	JobConnectionResultJobConnection `json:"-"`
@@ -22919,6 +23567,9 @@ func __marshalListJobsJobsJobConnectionResult(v *ListJobsJobsJobConnectionResult
 }
 
 // ListJobsJobsNotFoundError includes the requested fields of the GraphQL type NotFoundError.
+// The GraphQL type's documentation follows.
+//
+// Error when the user is requesting a resource that does not exist.
 type ListJobsJobsNotFoundError struct {
 	Typename                         *string `json:"__typename"`
 	JobConnectionResultNotFoundError `json:"-"`
@@ -22980,6 +23631,9 @@ func (v *ListJobsJobsNotFoundError) __premarshalJSON() (*__premarshalListJobsJob
 }
 
 // ListJobsJobsPermissionDeniedError includes the requested fields of the GraphQL type PermissionDeniedError.
+// The GraphQL type's documentation follows.
+//
+// Error when permission to the requested resource is denied.
 type ListJobsJobsPermissionDeniedError struct {
 	Typename                                 *string `json:"__typename"`
 	JobConnectionResultPermissionDeniedError `json:"-"`
@@ -23112,6 +23766,9 @@ func (v *ListJobsResponse) __premarshalJSON() (*__premarshalListJobsResponse, er
 }
 
 // ListRoleAssignmentsOnAccessControlAccessControl includes the requested fields of the GraphQL type AccessControl.
+// The GraphQL type's documentation follows.
+//
+// Represents an access control object in the system. An access control is the abstract model representing grants, masks, filters and groups (determined by the `action` field).
 type ListRoleAssignmentsOnAccessControlAccessControl struct {
 	Typename        *string                                                                                      `json:"__typename"`
 	RoleAssignments ListRoleAssignmentsOnAccessControlAccessControlRoleAssignmentsRoleAssignmentConnectionResult `json:"-"`
@@ -23305,6 +23962,9 @@ func __marshalListRoleAssignmentsOnAccessControlAccessControlAccessControlResult
 }
 
 // ListRoleAssignmentsOnAccessControlAccessControlInvalidInputError includes the requested fields of the GraphQL type InvalidInputError.
+// The GraphQL type's documentation follows.
+//
+// Error when some of the input parameters in the request are not valid.
 type ListRoleAssignmentsOnAccessControlAccessControlInvalidInputError struct {
 	Typename *string `json:"__typename"`
 }
@@ -23315,6 +23975,9 @@ func (v *ListRoleAssignmentsOnAccessControlAccessControlInvalidInputError) GetTy
 }
 
 // ListRoleAssignmentsOnAccessControlAccessControlNotFoundError includes the requested fields of the GraphQL type NotFoundError.
+// The GraphQL type's documentation follows.
+//
+// Error when the user is requesting a resource that does not exist.
 type ListRoleAssignmentsOnAccessControlAccessControlNotFoundError struct {
 	Typename      *string `json:"__typename"`
 	NotFoundError `json:"-"`
@@ -23378,6 +24041,9 @@ func (v *ListRoleAssignmentsOnAccessControlAccessControlNotFoundError) __premars
 }
 
 // ListRoleAssignmentsOnAccessControlAccessControlPermissionDeniedError includes the requested fields of the GraphQL type PermissionDeniedError.
+// The GraphQL type's documentation follows.
+//
+// Error when permission to the requested resource is denied.
 type ListRoleAssignmentsOnAccessControlAccessControlPermissionDeniedError struct {
 	Typename              *string `json:"__typename"`
 	PermissionDeniedError `json:"-"`
@@ -23441,6 +24107,9 @@ func (v *ListRoleAssignmentsOnAccessControlAccessControlPermissionDeniedError) _
 }
 
 // ListRoleAssignmentsOnAccessControlAccessControlRoleAssignmentsInvalidInputError includes the requested fields of the GraphQL type InvalidInputError.
+// The GraphQL type's documentation follows.
+//
+// Error when some of the input parameters in the request are not valid.
 type ListRoleAssignmentsOnAccessControlAccessControlRoleAssignmentsInvalidInputError struct {
 	Typename                                        *string `json:"__typename"`
 	RoleAssignmentConnectionResultInvalidInputError `json:"-"`
@@ -23504,6 +24173,9 @@ func (v *ListRoleAssignmentsOnAccessControlAccessControlRoleAssignmentsInvalidIn
 }
 
 // ListRoleAssignmentsOnAccessControlAccessControlRoleAssignmentsNotFoundError includes the requested fields of the GraphQL type NotFoundError.
+// The GraphQL type's documentation follows.
+//
+// Error when the user is requesting a resource that does not exist.
 type ListRoleAssignmentsOnAccessControlAccessControlRoleAssignmentsNotFoundError struct {
 	Typename                                    *string `json:"__typename"`
 	RoleAssignmentConnectionResultNotFoundError `json:"-"`
@@ -23567,6 +24239,9 @@ func (v *ListRoleAssignmentsOnAccessControlAccessControlRoleAssignmentsNotFoundE
 }
 
 // ListRoleAssignmentsOnAccessControlAccessControlRoleAssignmentsPermissionDeniedError includes the requested fields of the GraphQL type PermissionDeniedError.
+// The GraphQL type's documentation follows.
+//
+// Error when permission to the requested resource is denied.
 type ListRoleAssignmentsOnAccessControlAccessControlRoleAssignmentsPermissionDeniedError struct {
 	Typename                                            *string `json:"__typename"`
 	RoleAssignmentConnectionResultPermissionDeniedError `json:"-"`
@@ -23630,6 +24305,9 @@ func (v *ListRoleAssignmentsOnAccessControlAccessControlRoleAssignmentsPermissio
 }
 
 // ListRoleAssignmentsOnAccessControlAccessControlRoleAssignmentsRoleAssignmentConnection includes the requested fields of the GraphQL type RoleAssignmentConnection.
+// The GraphQL type's documentation follows.
+//
+// The connection type for paginated lists of [RoleAssignment]({{Types.RoleAssignment}}).
 type ListRoleAssignmentsOnAccessControlAccessControlRoleAssignmentsRoleAssignmentConnection struct {
 	Typename                                               *string `json:"__typename"`
 	RoleAssignmentConnectionResultRoleAssignmentConnection `json:"-"`
@@ -23820,6 +24498,7 @@ func __marshalListRoleAssignmentsOnAccessControlAccessControlRoleAssignmentsRole
 
 // ListRoleAssignmentsOnAccessControlResponse is returned by ListRoleAssignmentsOnAccessControl on success.
 type ListRoleAssignmentsOnAccessControlResponse struct {
+	// Retrieves a single access control by its ID.
 	AccessControl ListRoleAssignmentsOnAccessControlAccessControlAccessControlResult `json:"-"`
 }
 
@@ -23892,6 +24571,9 @@ func (v *ListRoleAssignmentsOnAccessControlResponse) __premarshalJSON() (*__prem
 }
 
 // ListRoleAssignmentsOnDataObjectDataObject includes the requested fields of the GraphQL type DataObject.
+// The GraphQL type's documentation follows.
+//
+// Represents a data object in Collibra Data Access. These represents all the data entities in a data source (e.g. database, schema, table, column, folder, file, ...).
 type ListRoleAssignmentsOnDataObjectDataObject struct {
 	RoleAssignments ListRoleAssignmentsOnDataObjectDataObjectRoleAssignmentsRoleAssignmentConnectionResult `json:"-"`
 }
@@ -23965,6 +24647,9 @@ func (v *ListRoleAssignmentsOnDataObjectDataObject) __premarshalJSON() (*__prema
 }
 
 // ListRoleAssignmentsOnDataObjectDataObjectRoleAssignmentsInvalidInputError includes the requested fields of the GraphQL type InvalidInputError.
+// The GraphQL type's documentation follows.
+//
+// Error when some of the input parameters in the request are not valid.
 type ListRoleAssignmentsOnDataObjectDataObjectRoleAssignmentsInvalidInputError struct {
 	Typename                                        *string `json:"__typename"`
 	RoleAssignmentConnectionResultInvalidInputError `json:"-"`
@@ -24028,6 +24713,9 @@ func (v *ListRoleAssignmentsOnDataObjectDataObjectRoleAssignmentsInvalidInputErr
 }
 
 // ListRoleAssignmentsOnDataObjectDataObjectRoleAssignmentsNotFoundError includes the requested fields of the GraphQL type NotFoundError.
+// The GraphQL type's documentation follows.
+//
+// Error when the user is requesting a resource that does not exist.
 type ListRoleAssignmentsOnDataObjectDataObjectRoleAssignmentsNotFoundError struct {
 	Typename                                    *string `json:"__typename"`
 	RoleAssignmentConnectionResultNotFoundError `json:"-"`
@@ -24091,6 +24779,9 @@ func (v *ListRoleAssignmentsOnDataObjectDataObjectRoleAssignmentsNotFoundError) 
 }
 
 // ListRoleAssignmentsOnDataObjectDataObjectRoleAssignmentsPermissionDeniedError includes the requested fields of the GraphQL type PermissionDeniedError.
+// The GraphQL type's documentation follows.
+//
+// Error when permission to the requested resource is denied.
 type ListRoleAssignmentsOnDataObjectDataObjectRoleAssignmentsPermissionDeniedError struct {
 	Typename                                            *string `json:"__typename"`
 	RoleAssignmentConnectionResultPermissionDeniedError `json:"-"`
@@ -24154,6 +24845,9 @@ func (v *ListRoleAssignmentsOnDataObjectDataObjectRoleAssignmentsPermissionDenie
 }
 
 // ListRoleAssignmentsOnDataObjectDataObjectRoleAssignmentsRoleAssignmentConnection includes the requested fields of the GraphQL type RoleAssignmentConnection.
+// The GraphQL type's documentation follows.
+//
+// The connection type for paginated lists of [RoleAssignment]({{Types.RoleAssignment}}).
 type ListRoleAssignmentsOnDataObjectDataObjectRoleAssignmentsRoleAssignmentConnection struct {
 	Typename                                               *string `json:"__typename"`
 	RoleAssignmentConnectionResultRoleAssignmentConnection `json:"-"`
@@ -24344,6 +25038,7 @@ func __marshalListRoleAssignmentsOnDataObjectDataObjectRoleAssignmentsRoleAssign
 
 // ListRoleAssignmentsOnDataObjectResponse is returned by ListRoleAssignmentsOnDataObject on success.
 type ListRoleAssignmentsOnDataObjectResponse struct {
+	// Retrieves a single data object by its ID.
 	DataObject ListRoleAssignmentsOnDataObjectDataObject `json:"dataObject"`
 }
 
@@ -24353,6 +25048,9 @@ func (v *ListRoleAssignmentsOnDataObjectResponse) GetDataObject() ListRoleAssign
 }
 
 // ListRoleAssignmentsOnDataSourceDataSource includes the requested fields of the GraphQL type DataSource.
+// The GraphQL type's documentation follows.
+//
+// Represents a data sourcein Collibra Data Access.
 type ListRoleAssignmentsOnDataSourceDataSource struct {
 	Typename        *string                                                                                `json:"__typename"`
 	RoleAssignments ListRoleAssignmentsOnDataSourceDataSourceRoleAssignmentsRoleAssignmentConnectionResult `json:"-"`
@@ -24546,6 +25244,9 @@ func __marshalListRoleAssignmentsOnDataSourceDataSourceDataSourceResult(v *ListR
 }
 
 // ListRoleAssignmentsOnDataSourceDataSourceInvalidInputError includes the requested fields of the GraphQL type InvalidInputError.
+// The GraphQL type's documentation follows.
+//
+// Error when some of the input parameters in the request are not valid.
 type ListRoleAssignmentsOnDataSourceDataSourceInvalidInputError struct {
 	Typename *string `json:"__typename"`
 }
@@ -24556,6 +25257,9 @@ func (v *ListRoleAssignmentsOnDataSourceDataSourceInvalidInputError) GetTypename
 }
 
 // ListRoleAssignmentsOnDataSourceDataSourceNotFoundError includes the requested fields of the GraphQL type NotFoundError.
+// The GraphQL type's documentation follows.
+//
+// Error when the user is requesting a resource that does not exist.
 type ListRoleAssignmentsOnDataSourceDataSourceNotFoundError struct {
 	Typename      *string `json:"__typename"`
 	NotFoundError `json:"-"`
@@ -24619,6 +25323,9 @@ func (v *ListRoleAssignmentsOnDataSourceDataSourceNotFoundError) __premarshalJSO
 }
 
 // ListRoleAssignmentsOnDataSourceDataSourcePermissionDeniedError includes the requested fields of the GraphQL type PermissionDeniedError.
+// The GraphQL type's documentation follows.
+//
+// Error when permission to the requested resource is denied.
 type ListRoleAssignmentsOnDataSourceDataSourcePermissionDeniedError struct {
 	Typename              *string `json:"__typename"`
 	PermissionDeniedError `json:"-"`
@@ -24682,6 +25389,9 @@ func (v *ListRoleAssignmentsOnDataSourceDataSourcePermissionDeniedError) __prema
 }
 
 // ListRoleAssignmentsOnDataSourceDataSourceRoleAssignmentsInvalidInputError includes the requested fields of the GraphQL type InvalidInputError.
+// The GraphQL type's documentation follows.
+//
+// Error when some of the input parameters in the request are not valid.
 type ListRoleAssignmentsOnDataSourceDataSourceRoleAssignmentsInvalidInputError struct {
 	Typename                                        *string `json:"__typename"`
 	RoleAssignmentConnectionResultInvalidInputError `json:"-"`
@@ -24745,6 +25455,9 @@ func (v *ListRoleAssignmentsOnDataSourceDataSourceRoleAssignmentsInvalidInputErr
 }
 
 // ListRoleAssignmentsOnDataSourceDataSourceRoleAssignmentsNotFoundError includes the requested fields of the GraphQL type NotFoundError.
+// The GraphQL type's documentation follows.
+//
+// Error when the user is requesting a resource that does not exist.
 type ListRoleAssignmentsOnDataSourceDataSourceRoleAssignmentsNotFoundError struct {
 	Typename                                    *string `json:"__typename"`
 	RoleAssignmentConnectionResultNotFoundError `json:"-"`
@@ -24808,6 +25521,9 @@ func (v *ListRoleAssignmentsOnDataSourceDataSourceRoleAssignmentsNotFoundError) 
 }
 
 // ListRoleAssignmentsOnDataSourceDataSourceRoleAssignmentsPermissionDeniedError includes the requested fields of the GraphQL type PermissionDeniedError.
+// The GraphQL type's documentation follows.
+//
+// Error when permission to the requested resource is denied.
 type ListRoleAssignmentsOnDataSourceDataSourceRoleAssignmentsPermissionDeniedError struct {
 	Typename                                            *string `json:"__typename"`
 	RoleAssignmentConnectionResultPermissionDeniedError `json:"-"`
@@ -24871,6 +25587,9 @@ func (v *ListRoleAssignmentsOnDataSourceDataSourceRoleAssignmentsPermissionDenie
 }
 
 // ListRoleAssignmentsOnDataSourceDataSourceRoleAssignmentsRoleAssignmentConnection includes the requested fields of the GraphQL type RoleAssignmentConnection.
+// The GraphQL type's documentation follows.
+//
+// The connection type for paginated lists of [RoleAssignment]({{Types.RoleAssignment}}).
 type ListRoleAssignmentsOnDataSourceDataSourceRoleAssignmentsRoleAssignmentConnection struct {
 	Typename                                               *string `json:"__typename"`
 	RoleAssignmentConnectionResultRoleAssignmentConnection `json:"-"`
@@ -25061,6 +25780,7 @@ func __marshalListRoleAssignmentsOnDataSourceDataSourceRoleAssignmentsRoleAssign
 
 // ListRoleAssignmentsOnDataSourceResponse is returned by ListRoleAssignmentsOnDataSource on success.
 type ListRoleAssignmentsOnDataSourceResponse struct {
+	// Retrieves a single data source by its ID.
 	DataSource ListRoleAssignmentsOnDataSourceDataSourceDataSourceResult `json:"-"`
 }
 
@@ -25134,6 +25854,7 @@ func (v *ListRoleAssignmentsOnDataSourceResponse) __premarshalJSON() (*__premars
 
 // ListRoleAssignmentsOnUserResponse is returned by ListRoleAssignmentsOnUser on success.
 type ListRoleAssignmentsOnUserResponse struct {
+	// Retrieves a single identity by its ID.
 	User ListRoleAssignmentsOnUserUserUserResult `json:"-"`
 }
 
@@ -25206,6 +25927,9 @@ func (v *ListRoleAssignmentsOnUserResponse) __premarshalJSON() (*__premarshalLis
 }
 
 // ListRoleAssignmentsOnUserUser includes the requested fields of the GraphQL type User.
+// The GraphQL type's documentation follows.
+//
+// Represents a user in Collibra Data Access. It can be a human user or a machine user (service account) which groups accounts in different data sources.
 type ListRoleAssignmentsOnUserUser struct {
 	Typename        *string                                                                    `json:"__typename"`
 	RoleAssignments ListRoleAssignmentsOnUserUserRoleAssignmentsRoleAssignmentConnectionResult `json:"-"`
@@ -25285,76 +26009,10 @@ func (v *ListRoleAssignmentsOnUserUser) __premarshalJSON() (*__premarshalListRol
 	return &retval, nil
 }
 
-// ListRoleAssignmentsOnUserUserInvalidEmailError includes the requested fields of the GraphQL type InvalidEmailError.
-type ListRoleAssignmentsOnUserUserInvalidEmailError struct {
-	Typename          *string `json:"__typename"`
-	InvalidEmailError `json:"-"`
-}
-
-// GetTypename returns ListRoleAssignmentsOnUserUserInvalidEmailError.Typename, and is useful for accessing the field via an interface.
-func (v *ListRoleAssignmentsOnUserUserInvalidEmailError) GetTypename() *string { return v.Typename }
-
-// GetErrEmail returns ListRoleAssignmentsOnUserUserInvalidEmailError.ErrEmail, and is useful for accessing the field via an interface.
-func (v *ListRoleAssignmentsOnUserUserInvalidEmailError) GetErrEmail() string {
-	return v.InvalidEmailError.ErrEmail
-}
-
-// GetMessage returns ListRoleAssignmentsOnUserUserInvalidEmailError.Message, and is useful for accessing the field via an interface.
-func (v *ListRoleAssignmentsOnUserUserInvalidEmailError) GetMessage() string {
-	return v.InvalidEmailError.Message
-}
-
-func (v *ListRoleAssignmentsOnUserUserInvalidEmailError) UnmarshalJSON(b []byte) error {
-
-	if string(b) == "null" {
-		return nil
-	}
-
-	var firstPass struct {
-		*ListRoleAssignmentsOnUserUserInvalidEmailError
-		graphql.NoUnmarshalJSON
-	}
-	firstPass.ListRoleAssignmentsOnUserUserInvalidEmailError = v
-
-	err := json.Unmarshal(b, &firstPass)
-	if err != nil {
-		return err
-	}
-
-	err = json.Unmarshal(
-		b, &v.InvalidEmailError)
-	if err != nil {
-		return err
-	}
-	return nil
-}
-
-type __premarshalListRoleAssignmentsOnUserUserInvalidEmailError struct {
-	Typename *string `json:"__typename"`
-
-	ErrEmail string `json:"errEmail"`
-
-	Message string `json:"message"`
-}
-
-func (v *ListRoleAssignmentsOnUserUserInvalidEmailError) MarshalJSON() ([]byte, error) {
-	premarshaled, err := v.__premarshalJSON()
-	if err != nil {
-		return nil, err
-	}
-	return json.Marshal(premarshaled)
-}
-
-func (v *ListRoleAssignmentsOnUserUserInvalidEmailError) __premarshalJSON() (*__premarshalListRoleAssignmentsOnUserUserInvalidEmailError, error) {
-	var retval __premarshalListRoleAssignmentsOnUserUserInvalidEmailError
-
-	retval.Typename = v.Typename
-	retval.ErrEmail = v.InvalidEmailError.ErrEmail
-	retval.Message = v.InvalidEmailError.Message
-	return &retval, nil
-}
-
 // ListRoleAssignmentsOnUserUserInvalidInputError includes the requested fields of the GraphQL type InvalidInputError.
+// The GraphQL type's documentation follows.
+//
+// Error when some of the input parameters in the request are not valid.
 type ListRoleAssignmentsOnUserUserInvalidInputError struct {
 	Typename          *string `json:"__typename"`
 	InvalidInputError `json:"-"`
@@ -25416,6 +26074,9 @@ func (v *ListRoleAssignmentsOnUserUserInvalidInputError) __premarshalJSON() (*__
 }
 
 // ListRoleAssignmentsOnUserUserNotFoundError includes the requested fields of the GraphQL type NotFoundError.
+// The GraphQL type's documentation follows.
+//
+// Error when the user is requesting a resource that does not exist.
 type ListRoleAssignmentsOnUserUserNotFoundError struct {
 	Typename      *string `json:"__typename"`
 	NotFoundError `json:"-"`
@@ -25477,6 +26138,9 @@ func (v *ListRoleAssignmentsOnUserUserNotFoundError) __premarshalJSON() (*__prem
 }
 
 // ListRoleAssignmentsOnUserUserPermissionDeniedError includes the requested fields of the GraphQL type PermissionDeniedError.
+// The GraphQL type's documentation follows.
+//
+// Error when permission to the requested resource is denied.
 type ListRoleAssignmentsOnUserUserPermissionDeniedError struct {
 	Typename              *string `json:"__typename"`
 	PermissionDeniedError `json:"-"`
@@ -25538,6 +26202,9 @@ func (v *ListRoleAssignmentsOnUserUserPermissionDeniedError) __premarshalJSON() 
 }
 
 // ListRoleAssignmentsOnUserUserRoleAssignmentsInvalidInputError includes the requested fields of the GraphQL type InvalidInputError.
+// The GraphQL type's documentation follows.
+//
+// Error when some of the input parameters in the request are not valid.
 type ListRoleAssignmentsOnUserUserRoleAssignmentsInvalidInputError struct {
 	Typename                                        *string `json:"__typename"`
 	RoleAssignmentConnectionResultInvalidInputError `json:"-"`
@@ -25601,6 +26268,9 @@ func (v *ListRoleAssignmentsOnUserUserRoleAssignmentsInvalidInputError) __premar
 }
 
 // ListRoleAssignmentsOnUserUserRoleAssignmentsNotFoundError includes the requested fields of the GraphQL type NotFoundError.
+// The GraphQL type's documentation follows.
+//
+// Error when the user is requesting a resource that does not exist.
 type ListRoleAssignmentsOnUserUserRoleAssignmentsNotFoundError struct {
 	Typename                                    *string `json:"__typename"`
 	RoleAssignmentConnectionResultNotFoundError `json:"-"`
@@ -25664,6 +26334,9 @@ func (v *ListRoleAssignmentsOnUserUserRoleAssignmentsNotFoundError) __premarshal
 }
 
 // ListRoleAssignmentsOnUserUserRoleAssignmentsPermissionDeniedError includes the requested fields of the GraphQL type PermissionDeniedError.
+// The GraphQL type's documentation follows.
+//
+// Error when permission to the requested resource is denied.
 type ListRoleAssignmentsOnUserUserRoleAssignmentsPermissionDeniedError struct {
 	Typename                                            *string `json:"__typename"`
 	RoleAssignmentConnectionResultPermissionDeniedError `json:"-"`
@@ -25727,6 +26400,9 @@ func (v *ListRoleAssignmentsOnUserUserRoleAssignmentsPermissionDeniedError) __pr
 }
 
 // ListRoleAssignmentsOnUserUserRoleAssignmentsRoleAssignmentConnection includes the requested fields of the GraphQL type RoleAssignmentConnection.
+// The GraphQL type's documentation follows.
+//
+// The connection type for paginated lists of [RoleAssignment]({{Types.RoleAssignment}}).
 type ListRoleAssignmentsOnUserUserRoleAssignmentsRoleAssignmentConnection struct {
 	Typename                                               *string `json:"__typename"`
 	RoleAssignmentConnectionResultRoleAssignmentConnection `json:"-"`
@@ -25918,7 +26594,6 @@ func __marshalListRoleAssignmentsOnUserUserRoleAssignmentsRoleAssignmentConnecti
 // ListRoleAssignmentsOnUserUserUserResult includes the requested fields of the GraphQL interface UserResult.
 //
 // ListRoleAssignmentsOnUserUserUserResult is implemented by the following types:
-// ListRoleAssignmentsOnUserUserInvalidEmailError
 // ListRoleAssignmentsOnUserUserInvalidInputError
 // ListRoleAssignmentsOnUserUserNotFoundError
 // ListRoleAssignmentsOnUserUserPermissionDeniedError
@@ -25929,8 +26604,6 @@ type ListRoleAssignmentsOnUserUserUserResult interface {
 	GetTypename() *string
 }
 
-func (v *ListRoleAssignmentsOnUserUserInvalidEmailError) implementsGraphQLInterfaceListRoleAssignmentsOnUserUserUserResult() {
-}
 func (v *ListRoleAssignmentsOnUserUserInvalidInputError) implementsGraphQLInterfaceListRoleAssignmentsOnUserUserUserResult() {
 }
 func (v *ListRoleAssignmentsOnUserUserNotFoundError) implementsGraphQLInterfaceListRoleAssignmentsOnUserUserUserResult() {
@@ -25954,9 +26627,6 @@ func __unmarshalListRoleAssignmentsOnUserUserUserResult(b []byte, v *ListRoleAss
 	}
 
 	switch tn.TypeName {
-	case "InvalidEmailError":
-		*v = new(ListRoleAssignmentsOnUserUserInvalidEmailError)
-		return json.Unmarshal(b, *v)
 	case "InvalidInputError":
 		*v = new(ListRoleAssignmentsOnUserUserInvalidInputError)
 		return json.Unmarshal(b, *v)
@@ -25982,18 +26652,6 @@ func __marshalListRoleAssignmentsOnUserUserUserResult(v *ListRoleAssignmentsOnUs
 
 	var typename string
 	switch v := (*v).(type) {
-	case *ListRoleAssignmentsOnUserUserInvalidEmailError:
-		typename = "InvalidEmailError"
-
-		premarshaled, err := v.__premarshalJSON()
-		if err != nil {
-			return nil, err
-		}
-		result := struct {
-			TypeName string `json:"__typename"`
-			*__premarshalListRoleAssignmentsOnUserUserInvalidEmailError
-		}{typename, premarshaled}
-		return json.Marshal(result)
 	case *ListRoleAssignmentsOnUserUserInvalidInputError:
 		typename = "InvalidInputError"
 
@@ -26052,6 +26710,7 @@ func __marshalListRoleAssignmentsOnUserUserUserResult(v *ListRoleAssignmentsOnUs
 
 // ListRoleAssignmentsResponse is returned by ListRoleAssignments on success.
 type ListRoleAssignmentsResponse struct {
+	// Retrieves the role assignments matching the given filter. Currently this is only used for the `ownerRole`.
 	RoleAssignments ListRoleAssignmentsRoleAssignmentsRoleAssignmentConnectionResult `json:"-"`
 }
 
@@ -26124,6 +26783,9 @@ func (v *ListRoleAssignmentsResponse) __premarshalJSON() (*__premarshalListRoleA
 }
 
 // ListRoleAssignmentsRoleAssignmentsInvalidInputError includes the requested fields of the GraphQL type InvalidInputError.
+// The GraphQL type's documentation follows.
+//
+// Error when some of the input parameters in the request are not valid.
 type ListRoleAssignmentsRoleAssignmentsInvalidInputError struct {
 	Typename                                        *string `json:"__typename"`
 	RoleAssignmentConnectionResultInvalidInputError `json:"-"`
@@ -26187,6 +26849,9 @@ func (v *ListRoleAssignmentsRoleAssignmentsInvalidInputError) __premarshalJSON()
 }
 
 // ListRoleAssignmentsRoleAssignmentsNotFoundError includes the requested fields of the GraphQL type NotFoundError.
+// The GraphQL type's documentation follows.
+//
+// Error when the user is requesting a resource that does not exist.
 type ListRoleAssignmentsRoleAssignmentsNotFoundError struct {
 	Typename                                    *string `json:"__typename"`
 	RoleAssignmentConnectionResultNotFoundError `json:"-"`
@@ -26248,6 +26913,9 @@ func (v *ListRoleAssignmentsRoleAssignmentsNotFoundError) __premarshalJSON() (*_
 }
 
 // ListRoleAssignmentsRoleAssignmentsPermissionDeniedError includes the requested fields of the GraphQL type PermissionDeniedError.
+// The GraphQL type's documentation follows.
+//
+// Error when permission to the requested resource is denied.
 type ListRoleAssignmentsRoleAssignmentsPermissionDeniedError struct {
 	Typename                                            *string `json:"__typename"`
 	RoleAssignmentConnectionResultPermissionDeniedError `json:"-"`
@@ -26311,6 +26979,9 @@ func (v *ListRoleAssignmentsRoleAssignmentsPermissionDeniedError) __premarshalJS
 }
 
 // ListRoleAssignmentsRoleAssignmentsRoleAssignmentConnection includes the requested fields of the GraphQL type RoleAssignmentConnection.
+// The GraphQL type's documentation follows.
+//
+// The connection type for paginated lists of [RoleAssignment]({{Types.RoleAssignment}}).
 type ListRoleAssignmentsRoleAssignmentsRoleAssignmentConnection struct {
 	Typename                                               *string `json:"__typename"`
 	RoleAssignmentConnectionResultRoleAssignmentConnection `json:"-"`
@@ -26500,7 +27171,11 @@ func __marshalListRoleAssignmentsRoleAssignmentsRoleAssignmentConnectionResult(v
 }
 
 // ListTasksOfJobJob includes the requested fields of the GraphQL type Job.
+// The GraphQL type's documentation follows.
+//
+// Represents a synchronization job that is executed on a data source.
 type ListTasksOfJobJob struct {
+	// List the tasks that were executed in this job.
 	Tasks ListTasksOfJobJobTasksTaskConnectionResult `json:"-"`
 }
 
@@ -26571,6 +27246,9 @@ func (v *ListTasksOfJobJob) __premarshalJSON() (*__premarshalListTasksOfJobJob, 
 }
 
 // ListTasksOfJobJobTasksInvalidInputError includes the requested fields of the GraphQL type InvalidInputError.
+// The GraphQL type's documentation follows.
+//
+// Error when some of the input parameters in the request are not valid.
 type ListTasksOfJobJobTasksInvalidInputError struct {
 	Typename                              *string `json:"__typename"`
 	TaskConnectionResultInvalidInputError `json:"-"`
@@ -26632,6 +27310,9 @@ func (v *ListTasksOfJobJobTasksInvalidInputError) __premarshalJSON() (*__premars
 }
 
 // ListTasksOfJobJobTasksNotFoundError includes the requested fields of the GraphQL type NotFoundError.
+// The GraphQL type's documentation follows.
+//
+// Error when the user is requesting a resource that does not exist.
 type ListTasksOfJobJobTasksNotFoundError struct {
 	Typename                          *string `json:"__typename"`
 	TaskConnectionResultNotFoundError `json:"-"`
@@ -26693,6 +27374,9 @@ func (v *ListTasksOfJobJobTasksNotFoundError) __premarshalJSON() (*__premarshalL
 }
 
 // ListTasksOfJobJobTasksPermissionDeniedError includes the requested fields of the GraphQL type PermissionDeniedError.
+// The GraphQL type's documentation follows.
+//
+// Error when permission to the requested resource is denied.
 type ListTasksOfJobJobTasksPermissionDeniedError struct {
 	Typename                                  *string `json:"__typename"`
 	TaskConnectionResultPermissionDeniedError `json:"-"`
@@ -26754,6 +27438,9 @@ func (v *ListTasksOfJobJobTasksPermissionDeniedError) __premarshalJSON() (*__pre
 }
 
 // ListTasksOfJobJobTasksTaskConnection includes the requested fields of the GraphQL type TaskConnection.
+// The GraphQL type's documentation follows.
+//
+// The connection type for paginated lists of [Task]({{Types.Task}}).
 type ListTasksOfJobJobTasksTaskConnection struct {
 	Typename                           *string `json:"__typename"`
 	TaskConnectionResultTaskConnection `json:"-"`
@@ -26949,11 +27636,18 @@ type ListTasksOfJobResponse struct {
 func (v *ListTasksOfJobResponse) GetJob() ListTasksOfJobJob { return v.Job }
 
 // MaskType includes the GraphQL fields of MaskType requested by the fragment MaskType.
+// The GraphQL type's documentation follows.
+//
+// A single masking type.
 type MaskType struct {
-	ExternalId  string   `json:"externalId"`
-	DisplayName string   `json:"displayName"`
-	Description string   `json:"description"`
-	DataTypes   []string `json:"dataTypes"`
+	// The IDof the masking type known by the connector.
+	ExternalId string `json:"externalId"`
+	// The display name of the masking type.
+	DisplayName string `json:"displayName"`
+	// The description of the masking type.
+	Description string `json:"description"`
+	// The list of data types on which this masking rule can be applied.
+	DataTypes []string `json:"dataTypes"`
 }
 
 // GetExternalId returns MaskType.ExternalId, and is useful for accessing the field via an interface.
@@ -26992,9 +27686,14 @@ func (v *MaskTypeInput) GetDataTypes() []string { return v.DataTypes }
 func (v *MaskTypeInput) GetPrecedence() *int { return v.Precedence }
 
 // MaskingMetadata includes the GraphQL fields of MaskingMetadata requested by the fragment MaskingMetadata.
+// The GraphQL type's documentation follows.
+//
+// The meta data about how column masking works in the data source.
 type MaskingMetadata struct {
-	DefaultMaskExternalName *string                            `json:"defaultMaskExternalName"`
-	MaskTypes               []MaskingMetadataMaskTypesMaskType `json:"maskTypes"`
+	// The default mask type.
+	DefaultMaskExternalName *string `json:"defaultMaskExternalName"`
+	// The available masking types the data source supports.
+	MaskTypes []MaskingMetadataMaskTypesMaskType `json:"maskTypes"`
 }
 
 // GetDefaultMaskExternalName returns MaskingMetadata.DefaultMaskExternalName, and is useful for accessing the field via an interface.
@@ -27025,6 +27724,9 @@ func (v *MaskingMetadataInput) GetMaskOverridePermissions() []string {
 func (v *MaskingMetadataInput) GetApplicableTypes() []string { return v.ApplicableTypes }
 
 // MaskingMetadataMaskTypesMaskType includes the requested fields of the GraphQL type MaskType.
+// The GraphQL type's documentation follows.
+//
+// A single masking type.
 type MaskingMetadataMaskTypesMaskType struct {
 	MaskType `json:"-"`
 }
@@ -27095,6 +27797,9 @@ func (v *MaskingMetadataMaskTypesMaskType) __premarshalJSON() (*__premarshalMask
 }
 
 // NextSyncJobForSiteNextSyncJobForSiteInvalidInputError includes the requested fields of the GraphQL type InvalidInputError.
+// The GraphQL type's documentation follows.
+//
+// Error when some of the input parameters in the request are not valid.
 type NextSyncJobForSiteNextSyncJobForSiteInvalidInputError struct {
 	Typename          *string `json:"__typename"`
 	InvalidInputError `json:"-"`
@@ -27158,6 +27863,9 @@ func (v *NextSyncJobForSiteNextSyncJobForSiteInvalidInputError) __premarshalJSON
 }
 
 // NextSyncJobForSiteNextSyncJobForSiteNotFoundError includes the requested fields of the GraphQL type NotFoundError.
+// The GraphQL type's documentation follows.
+//
+// Error when the user is requesting a resource that does not exist.
 type NextSyncJobForSiteNextSyncJobForSiteNotFoundError struct {
 	Typename      *string `json:"__typename"`
 	NotFoundError `json:"-"`
@@ -27219,6 +27927,9 @@ func (v *NextSyncJobForSiteNextSyncJobForSiteNotFoundError) __premarshalJSON() (
 }
 
 // NextSyncJobForSiteNextSyncJobForSitePermissionDeniedError includes the requested fields of the GraphQL type PermissionDeniedError.
+// The GraphQL type's documentation follows.
+//
+// Error when permission to the requested resource is denied.
 type NextSyncJobForSiteNextSyncJobForSitePermissionDeniedError struct {
 	Typename              *string `json:"__typename"`
 	PermissionDeniedError `json:"-"`
@@ -27616,6 +28327,9 @@ func (v *NextSyncJobForSiteResponse) __premarshalJSON() (*__premarshalNextSyncJo
 }
 
 // NotFoundError includes the GraphQL fields of NotFoundError requested by the fragment NotFoundError.
+// The GraphQL type's documentation follows.
+//
+// Error when the user is requesting a resource that does not exist.
 type NotFoundError struct {
 	Message string `json:"message"`
 }
@@ -27624,11 +28338,18 @@ type NotFoundError struct {
 func (v *NotFoundError) GetMessage() string { return v.Message }
 
 // ObjectTypeTaskResult includes the GraphQL fields of TaskResult requested by the fragment ObjectTypeTaskResult.
+// The GraphQL type's documentation follows.
+//
+// Describes the result of a task by describing how many entities were added, updated and removed.
 type ObjectTypeTaskResult struct {
+	// The type of object that we are counting.
 	ObjectType string `json:"objectType"`
-	Added      int    `json:"added"`
-	Updated    int    `json:"updated"`
-	Removed    int    `json:"removed"`
+	// How many objects of this type were added.
+	Added int `json:"added"`
+	// How many objects of this type were updated.
+	Updated int `json:"updated"`
+	// How many objects of this type were removed.
+	Removed int `json:"removed"`
 }
 
 // GetObjectType returns ObjectTypeTaskResult.ObjectType, and is useful for accessing the field via an interface.
@@ -27755,6 +28476,9 @@ var AllParameterType = []ParameterType{
 }
 
 // PermissionDeniedError includes the GraphQL fields of PermissionDeniedError requested by the fragment PermissionDeniedError.
+// The GraphQL type's documentation follows.
+//
+// Error when permission to the requested resource is denied.
 type PermissionDeniedError struct {
 	Message string `json:"message"`
 }
@@ -27816,6 +28540,9 @@ func (v *QueryStatementImport) GetRows() *int { return v.Rows }
 func (v *QueryStatementImport) GetCredits() *float64 { return v.Credits }
 
 // Role includes the GraphQL fields of Role requested by the fragment Role.
+// The GraphQL type's documentation follows.
+//
+// Represents a role.
 type Role struct {
 	Id          string `json:"id"`
 	Description string `json:"description"`
@@ -27832,11 +28559,18 @@ func (v *Role) GetDescription() string { return v.Description }
 func (v *Role) GetName() string { return v.Name }
 
 // RoleAssignment includes the GraphQL fields of RoleAssignment requested by the fragment RoleAssignment.
+// The GraphQL type's documentation follows.
+//
+// Represents the assignment of a role.
 type RoleAssignment struct {
-	Id   string             `json:"id"`
+	// The unique identifier for this role assignment.
+	Id string `json:"id"`
+	// The role that is assigned.
 	Role RoleAssignmentRole `json:"role"`
-	On   *RoleAssignmentOn  `json:"-"`
-	To   RoleAssignmentTo   `json:"-"`
+	// Optionally describes which entity the role is assigned on.
+	On *RoleAssignmentOn `json:"-"`
+	// Describes who/what the role is assigned to.
+	To RoleAssignmentTo `json:"-"`
 }
 
 // GetId returns RoleAssignment.Id, and is useful for accessing the field via an interface.
@@ -27952,9 +28686,14 @@ func (v *RoleAssignment) __premarshalJSON() (*__premarshalRoleAssignment, error)
 }
 
 // RoleAssignmentConnection includes the GraphQL fields of RoleAssignmentConnection requested by the fragment RoleAssignmentConnection.
+// The GraphQL type's documentation follows.
+//
+// The connection type for paginated lists of [RoleAssignment]({{Types.RoleAssignment}}).
 type RoleAssignmentConnection struct {
-	PageInfo RoleAssignmentConnectionPageInfo                  `json:"pageInfo"`
-	Edges    []RoleAssignmentConnectionEdgesRoleAssignmentEdge `json:"edges"`
+	// Pagination information for the retrieved items.
+	PageInfo RoleAssignmentConnectionPageInfo `json:"pageInfo"`
+	// The list of edges containing the actual queried items.
+	Edges []RoleAssignmentConnectionEdgesRoleAssignmentEdge `json:"edges"`
 }
 
 // GetPageInfo returns RoleAssignmentConnection.PageInfo, and is useful for accessing the field via an interface.
@@ -27966,9 +28705,14 @@ func (v *RoleAssignmentConnection) GetEdges() []RoleAssignmentConnectionEdgesRol
 }
 
 // RoleAssignmentConnectionEdgesRoleAssignmentEdge includes the requested fields of the GraphQL type RoleAssignmentEdge.
+// The GraphQL type's documentation follows.
+//
+// The edge type for [RoleAssignmentConnection]({{Types.RoleAssignmentConnection}})
 type RoleAssignmentConnectionEdgesRoleAssignmentEdge struct {
-	Cursor *string                                                            `json:"cursor"`
-	Node   *RoleAssignmentConnectionEdgesRoleAssignmentEdgeNodeRoleAssignment `json:"node"`
+	// The cursor of this item for pagination.
+	Cursor *string `json:"cursor"`
+	// The actual role assignment.
+	Node *RoleAssignmentConnectionEdgesRoleAssignmentEdgeNodeRoleAssignment `json:"node"`
 }
 
 // GetCursor returns RoleAssignmentConnectionEdgesRoleAssignmentEdge.Cursor, and is useful for accessing the field via an interface.
@@ -27980,6 +28724,9 @@ func (v *RoleAssignmentConnectionEdgesRoleAssignmentEdge) GetNode() *RoleAssignm
 }
 
 // RoleAssignmentConnectionEdgesRoleAssignmentEdgeNodeRoleAssignment includes the requested fields of the GraphQL type RoleAssignment.
+// The GraphQL type's documentation follows.
+//
+// Represents the assignment of a role.
 type RoleAssignmentConnectionEdgesRoleAssignmentEdgeNodeRoleAssignment struct {
 	RoleAssignment `json:"-"`
 }
@@ -28478,14 +29225,20 @@ func (v *RoleAssignmentConnectionResultRoleAssignmentConnection) __premarshalJSO
 	return &retval, nil
 }
 
+// Describes the filter options for listing role assignments.
 type RoleAssignmentFilterInput struct {
-	Resource           *string `json:"resource,omitempty"`
-	Role               *string `json:"role,omitempty"`
-	User               *string `json:"user,omitempty"`
-	Inherited          *bool   `json:"inherited,omitempty"`
-	InheritedOnly      *bool   `json:"inheritedOnly,omitempty"`
-	ExcludeDelegations *bool   `json:"excludeDelegations,omitempty"`
-	ExcludeDelegated   *bool   `json:"excludeDelegated,omitempty"`
+	// Filter on assignments on a specific resource.
+	Resource *string `json:"resource,omitempty"`
+	// Filter assignments for a specific role.
+	Role *string `json:"role,omitempty"`
+	// Filter assignments to a specific user.
+	User *string `json:"user,omitempty"`
+	// Also included inherited assignments (from ancestor resources). By default (if not set), this is true.
+	Inherited *bool `json:"inherited,omitempty"`
+	// If true, only the assignments on the ancestor resources are returned. By default (if not set), this is false.
+	InheritedOnly      *bool `json:"inheritedOnly,omitempty"`
+	ExcludeDelegations *bool `json:"excludeDelegations,omitempty"`
+	ExcludeDelegated   *bool `json:"excludeDelegated,omitempty"`
 }
 
 // GetResource returns RoleAssignmentFilterInput.Resource, and is useful for accessing the field via an interface.
@@ -28637,9 +29390,13 @@ func __marshalRoleAssignmentOn(v *RoleAssignmentOn) ([]byte, error) {
 }
 
 // RoleAssignmentOnAccessControl includes the requested fields of the GraphQL type AccessControl.
+// The GraphQL type's documentation follows.
+//
+// Represents an access control object in the system. An access control is the abstract model representing grants, masks, filters and groups (determined by the `action` field).
 type RoleAssignmentOnAccessControl struct {
 	Typename *string `json:"__typename"`
-	Id       string  `json:"id"`
+	// Unique identifier of the access control.
+	Id string `json:"id"`
 }
 
 // GetTypename returns RoleAssignmentOnAccessControl.Typename, and is useful for accessing the field via an interface.
@@ -28649,9 +29406,13 @@ func (v *RoleAssignmentOnAccessControl) GetTypename() *string { return v.Typenam
 func (v *RoleAssignmentOnAccessControl) GetId() string { return v.Id }
 
 // RoleAssignmentOnDataObject includes the requested fields of the GraphQL type DataObject.
+// The GraphQL type's documentation follows.
+//
+// Represents a data object in Collibra Data Access. These represents all the data entities in a data source (e.g. database, schema, table, column, folder, file, ...).
 type RoleAssignmentOnDataObject struct {
 	Typename *string `json:"__typename"`
-	Id       string  `json:"id"`
+	// A internal unique identifier for the data object.
+	Id string `json:"id"`
 }
 
 // GetTypename returns RoleAssignmentOnDataObject.Typename, and is useful for accessing the field via an interface.
@@ -28661,9 +29422,13 @@ func (v *RoleAssignmentOnDataObject) GetTypename() *string { return v.Typename }
 func (v *RoleAssignmentOnDataObject) GetId() string { return v.Id }
 
 // RoleAssignmentOnDataSource includes the requested fields of the GraphQL type DataSource.
+// The GraphQL type's documentation follows.
+//
+// Represents a data sourcein Collibra Data Access.
 type RoleAssignmentOnDataSource struct {
 	Typename *string `json:"__typename"`
-	Id       string  `json:"id"`
+	// The unique identifier of the data source.
+	Id string `json:"id"`
 }
 
 // GetTypename returns RoleAssignmentOnDataSource.Typename, and is useful for accessing the field via an interface.
@@ -28673,6 +29438,9 @@ func (v *RoleAssignmentOnDataSource) GetTypename() *string { return v.Typename }
 func (v *RoleAssignmentOnDataSource) GetId() string { return v.Id }
 
 // RoleAssignmentOnInvalidInputError includes the requested fields of the GraphQL type InvalidInputError.
+// The GraphQL type's documentation follows.
+//
+// Error when some of the input parameters in the request are not valid.
 type RoleAssignmentOnInvalidInputError struct {
 	Typename *string `json:"__typename"`
 }
@@ -28681,6 +29449,9 @@ type RoleAssignmentOnInvalidInputError struct {
 func (v *RoleAssignmentOnInvalidInputError) GetTypename() *string { return v.Typename }
 
 // RoleAssignmentOnNotFoundError includes the requested fields of the GraphQL type NotFoundError.
+// The GraphQL type's documentation follows.
+//
+// Error when the user is requesting a resource that does not exist.
 type RoleAssignmentOnNotFoundError struct {
 	Typename      *string `json:"__typename"`
 	NotFoundError `json:"-"`
@@ -28740,6 +29511,9 @@ func (v *RoleAssignmentOnNotFoundError) __premarshalJSON() (*__premarshalRoleAss
 }
 
 // RoleAssignmentOnPermissionDeniedError includes the requested fields of the GraphQL type PermissionDeniedError.
+// The GraphQL type's documentation follows.
+//
+// Error when permission to the requested resource is denied.
 type RoleAssignmentOnPermissionDeniedError struct {
 	Typename *string `json:"__typename"`
 }
@@ -28747,6 +29521,7 @@ type RoleAssignmentOnPermissionDeniedError struct {
 // GetTypename returns RoleAssignmentOnPermissionDeniedError.Typename, and is useful for accessing the field via an interface.
 func (v *RoleAssignmentOnPermissionDeniedError) GetTypename() *string { return v.Typename }
 
+// Sorting options for list role assignments.
 type RoleAssignmentOrderInput struct {
 	ResourceName *Sort `json:"resourceName,omitempty"`
 	UserName     *Sort `json:"userName,omitempty"`
@@ -28763,6 +29538,9 @@ func (v *RoleAssignmentOrderInput) GetUserName() *Sort { return v.UserName }
 func (v *RoleAssignmentOrderInput) GetRoleName() *Sort { return v.RoleName }
 
 // RoleAssignmentRole includes the requested fields of the GraphQL type Role.
+// The GraphQL type's documentation follows.
+//
+// Represents a role.
 type RoleAssignmentRole struct {
 	Role `json:"-"`
 }
@@ -28898,9 +29676,13 @@ func __marshalRoleAssignmentTo(v *RoleAssignmentTo) ([]byte, error) {
 }
 
 // RoleAssignmentToAccessControl includes the requested fields of the GraphQL type AccessControl.
+// The GraphQL type's documentation follows.
+//
+// Represents an access control object in the system. An access control is the abstract model representing grants, masks, filters and groups (determined by the `action` field).
 type RoleAssignmentToAccessControl struct {
 	Typename *string `json:"__typename"`
-	Id       string  `json:"id"`
+	// Unique identifier of the access control.
+	Id string `json:"id"`
 }
 
 // GetTypename returns RoleAssignmentToAccessControl.Typename, and is useful for accessing the field via an interface.
@@ -28910,9 +29692,13 @@ func (v *RoleAssignmentToAccessControl) GetTypename() *string { return v.Typenam
 func (v *RoleAssignmentToAccessControl) GetId() string { return v.Id }
 
 // RoleAssignmentToUser includes the requested fields of the GraphQL type User.
+// The GraphQL type's documentation follows.
+//
+// Represents a user in Collibra Data Access. It can be a human user or a machine user (service account) which groups accounts in different data sources.
 type RoleAssignmentToUser struct {
 	Typename *string `json:"__typename"`
-	Id       string  `json:"id"`
+	// The unique identifier for the user.
+	Id string `json:"id"`
 }
 
 // GetTypename returns RoleAssignmentToUser.Typename, and is useful for accessing the field via an interface.
@@ -29036,6 +29822,9 @@ func (v *SetDataSourceMetadataResponse) __premarshalJSON() (*__premarshalSetData
 }
 
 // SetDataSourceMetadataSetDataSourceMetaDataDataSource includes the requested fields of the GraphQL type DataSource.
+// The GraphQL type's documentation follows.
+//
+// Represents a data sourcein Collibra Data Access.
 type SetDataSourceMetadataSetDataSourceMetaDataDataSource struct {
 	Typename   *string `json:"__typename"`
 	DataSource `json:"-"`
@@ -29262,6 +30051,9 @@ func __marshalSetDataSourceMetadataSetDataSourceMetaDataDataSourceResult(v *SetD
 }
 
 // SetDataSourceMetadataSetDataSourceMetaDataInvalidInputError includes the requested fields of the GraphQL type InvalidInputError.
+// The GraphQL type's documentation follows.
+//
+// Error when some of the input parameters in the request are not valid.
 type SetDataSourceMetadataSetDataSourceMetaDataInvalidInputError struct {
 	Typename          *string `json:"__typename"`
 	InvalidInputError `json:"-"`
@@ -29325,6 +30117,9 @@ func (v *SetDataSourceMetadataSetDataSourceMetaDataInvalidInputError) __premarsh
 }
 
 // SetDataSourceMetadataSetDataSourceMetaDataNotFoundError includes the requested fields of the GraphQL type NotFoundError.
+// The GraphQL type's documentation follows.
+//
+// Error when the user is requesting a resource that does not exist.
 type SetDataSourceMetadataSetDataSourceMetaDataNotFoundError struct {
 	Typename      *string `json:"__typename"`
 	NotFoundError `json:"-"`
@@ -29388,6 +30183,9 @@ func (v *SetDataSourceMetadataSetDataSourceMetaDataNotFoundError) __premarshalJS
 }
 
 // SetDataSourceMetadataSetDataSourceMetaDataPermissionDeniedError includes the requested fields of the GraphQL type PermissionDeniedError.
+// The GraphQL type's documentation follows.
+//
+// Error when permission to the requested resource is denied.
 type SetDataSourceMetadataSetDataSourceMetaDataPermissionDeniedError struct {
 	Typename              *string `json:"__typename"`
 	PermissionDeniedError `json:"-"`
@@ -29470,7 +30268,9 @@ func (v *ShareMetadataInput) GetDataSourceShareIdentifier() string {
 type Sort string
 
 const (
-	SortAsc  Sort = "Asc"
+	// Sort ascendingly (lowest to highest)
+	SortAsc Sort = "Asc"
+	// Sort descendingly (highest to lowest)
 	SortDesc Sort = "Desc"
 )
 
@@ -29588,6 +30388,9 @@ func (v *StartImportFlowResponse) __premarshalJSON() (*__premarshalStartImportFl
 }
 
 // StartImportFlowStartImportFlowInvalidInputError includes the requested fields of the GraphQL type InvalidInputError.
+// The GraphQL type's documentation follows.
+//
+// Error when some of the input parameters in the request are not valid.
 type StartImportFlowStartImportFlowInvalidInputError struct {
 	Typename          *string `json:"__typename"`
 	InvalidInputError `json:"-"`
@@ -29649,6 +30452,9 @@ func (v *StartImportFlowStartImportFlowInvalidInputError) __premarshalJSON() (*_
 }
 
 // StartImportFlowStartImportFlowNotFoundError includes the requested fields of the GraphQL type NotFoundError.
+// The GraphQL type's documentation follows.
+//
+// Error when the user is requesting a resource that does not exist.
 type StartImportFlowStartImportFlowNotFoundError struct {
 	Typename      *string `json:"__typename"`
 	NotFoundError `json:"-"`
@@ -29710,6 +30516,9 @@ func (v *StartImportFlowStartImportFlowNotFoundError) __premarshalJSON() (*__pre
 }
 
 // StartImportFlowStartImportFlowPermissionDeniedError includes the requested fields of the GraphQL type PermissionDeniedError.
+// The GraphQL type's documentation follows.
+//
+// Error when permission to the requested resource is denied.
 type StartImportFlowStartImportFlowPermissionDeniedError struct {
 	Typename              *string `json:"__typename"`
 	PermissionDeniedError `json:"-"`
@@ -29773,6 +30582,9 @@ func (v *StartImportFlowStartImportFlowPermissionDeniedError) __premarshalJSON()
 }
 
 // StartImportFlowStartImportFlowSubtask includes the requested fields of the GraphQL type Subtask.
+// The GraphQL type's documentation follows.
+//
+// Represents a subtask of a task.
 type StartImportFlowStartImportFlowSubtask struct {
 	Typename *string `json:"__typename"`
 	Subtask  `json:"-"`
@@ -30113,6 +30925,9 @@ func (v *SubmitImportObjectsResponse) __premarshalJSON() (*__premarshalSubmitImp
 }
 
 // SubmitImportObjectsSubmitImportObjectsInvalidInputError includes the requested fields of the GraphQL type InvalidInputError.
+// The GraphQL type's documentation follows.
+//
+// Error when some of the input parameters in the request are not valid.
 type SubmitImportObjectsSubmitImportObjectsInvalidInputError struct {
 	Typename          *string `json:"__typename"`
 	InvalidInputError `json:"-"`
@@ -30176,6 +30991,9 @@ func (v *SubmitImportObjectsSubmitImportObjectsInvalidInputError) __premarshalJS
 }
 
 // SubmitImportObjectsSubmitImportObjectsNotFoundError includes the requested fields of the GraphQL type NotFoundError.
+// The GraphQL type's documentation follows.
+//
+// Error when the user is requesting a resource that does not exist.
 type SubmitImportObjectsSubmitImportObjectsNotFoundError struct {
 	Typename      *string `json:"__typename"`
 	NotFoundError `json:"-"`
@@ -30239,6 +31057,9 @@ func (v *SubmitImportObjectsSubmitImportObjectsNotFoundError) __premarshalJSON()
 }
 
 // SubmitImportObjectsSubmitImportObjectsPermissionDeniedError includes the requested fields of the GraphQL type PermissionDeniedError.
+// The GraphQL type's documentation follows.
+//
+// Error when permission to the requested resource is denied.
 type SubmitImportObjectsSubmitImportObjectsPermissionDeniedError struct {
 	Typename              *string `json:"__typename"`
 	PermissionDeniedError `json:"-"`
@@ -30490,6 +31311,9 @@ type SubmittedCommands struct {
 func (v *SubmittedCommands) GetSubmitted() int { return v.Submitted }
 
 // Subtask includes the GraphQL fields of Subtask requested by the fragment Subtask.
+// The GraphQL type's documentation follows.
+//
+// Represents a subtask of a task.
 type Subtask struct {
 	JobId               string        `json:"jobId"`
 	TaskType            string        `json:"taskType"`
@@ -30695,12 +31519,20 @@ func (v *SupportedCliVersionDeprecatedVersionsDeprecatedCLIVersion) GetDeprecate
 func (v *SupportedCliVersionDeprecatedVersionsDeprecatedCLIVersion) GetMsg() *string { return v.Msg }
 
 // SyncData includes the GraphQL fields of SyncData requested by the fragment SyncData.
+// The GraphQL type's documentation follows.
+//
+// Represents the synchronization data for an access control on a specific data source.
 type SyncData struct {
-	DataSource        SyncDataDataSource         `json:"dataSource"`
+	// The data source this is applicable to
+	DataSource SyncDataDataSource `json:"dataSource"`
+	// The meta data of the access control type in the target system.
 	AccessControlType *SyncDataAccessControlType `json:"accessControlType"`
-	ActualName        *string                    `json:"actualName"`
-	MaskType          *SyncDataMaskType          `json:"maskType"`
-	SyncStatus        SyncStatus                 `json:"syncStatus"`
+	// The actual name of the access control in the target system, if applicable.
+	ActualName *string `json:"actualName"`
+	// In case of a mask access control, this indicates the type of mask.
+	MaskType *SyncDataMaskType `json:"maskType"`
+	// The current synchronization status of the access control on the data source.
+	SyncStatus SyncStatus `json:"syncStatus"`
 }
 
 // GetDataSource returns SyncData.DataSource, and is useful for accessing the field via an interface.
@@ -30719,7 +31551,11 @@ func (v *SyncData) GetMaskType() *SyncDataMaskType { return v.MaskType }
 func (v *SyncData) GetSyncStatus() SyncStatus { return v.SyncStatus }
 
 // SyncDataAccessControlType includes the requested fields of the GraphQL type AccessControlType.
+// The GraphQL type's documentation follows.
+//
+// A single access control type.
 type SyncDataAccessControlType struct {
+	// The internal identifier for the access control type.
 	Type *string `json:"type"`
 }
 
@@ -30727,6 +31563,9 @@ type SyncDataAccessControlType struct {
 func (v *SyncDataAccessControlType) GetType() *string { return v.Type }
 
 // SyncDataDataSource includes the requested fields of the GraphQL type DataSource.
+// The GraphQL type's documentation follows.
+//
+// Represents a data sourcein Collibra Data Access.
 type SyncDataDataSource struct {
 	DataSource `json:"-"`
 }
@@ -30815,6 +31654,9 @@ func (v *SyncDataDataSource) __premarshalJSON() (*__premarshalSyncDataDataSource
 }
 
 // SyncDataMaskType includes the requested fields of the GraphQL type MaskType.
+// The GraphQL type's documentation follows.
+//
+// A single masking type.
 type SyncDataMaskType struct {
 	MaskType `json:"-"`
 }
@@ -31054,6 +31896,9 @@ func (v *SyncJob) __premarshalJSON() (*__premarshalSyncJob, error) {
 }
 
 // SyncJobDataSource includes the requested fields of the GraphQL type DataSource.
+// The GraphQL type's documentation follows.
+//
+// Represents a data sourcein Collibra Data Access.
 type SyncJobDataSource struct {
 	Typename   *string `json:"__typename"`
 	DataSource `json:"-"`
@@ -31265,6 +32110,9 @@ func __marshalSyncJobDataSourceDataSourceResult(v *SyncJobDataSourceDataSourceRe
 }
 
 // SyncJobDataSourceInvalidInputError includes the requested fields of the GraphQL type InvalidInputError.
+// The GraphQL type's documentation follows.
+//
+// Error when some of the input parameters in the request are not valid.
 type SyncJobDataSourceInvalidInputError struct {
 	Typename          *string `json:"__typename"`
 	InvalidInputError `json:"-"`
@@ -31324,6 +32172,9 @@ func (v *SyncJobDataSourceInvalidInputError) __premarshalJSON() (*__premarshalSy
 }
 
 // SyncJobDataSourceNotFoundError includes the requested fields of the GraphQL type NotFoundError.
+// The GraphQL type's documentation follows.
+//
+// Error when the user is requesting a resource that does not exist.
 type SyncJobDataSourceNotFoundError struct {
 	Typename      *string `json:"__typename"`
 	NotFoundError `json:"-"`
@@ -31383,6 +32234,9 @@ func (v *SyncJobDataSourceNotFoundError) __premarshalJSON() (*__premarshalSyncJo
 }
 
 // SyncJobDataSourcePermissionDeniedError includes the requested fields of the GraphQL type PermissionDeniedError.
+// The GraphQL type's documentation follows.
+//
+// Error when permission to the requested resource is denied.
 type SyncJobDataSourcePermissionDeniedError struct {
 	Typename              *string `json:"__typename"`
 	PermissionDeniedError `json:"-"`
@@ -31444,6 +32298,9 @@ func (v *SyncJobDataSourcePermissionDeniedError) __premarshalJSON() (*__premarsh
 }
 
 // SyncJobJob includes the requested fields of the GraphQL type Job.
+// The GraphQL type's documentation follows.
+//
+// Represents a synchronization job that is executed on a data source.
 type SyncJobJob struct {
 	Typename *string `json:"__typename"`
 	Job      `json:"-"`
@@ -31551,6 +32408,9 @@ func (v *SyncJobJob) __premarshalJSON() (*__premarshalSyncJobJob, error) {
 }
 
 // SyncJobJobInvalidInputError includes the requested fields of the GraphQL type InvalidInputError.
+// The GraphQL type's documentation follows.
+//
+// Error when some of the input parameters in the request are not valid.
 type SyncJobJobInvalidInputError struct {
 	Typename          *string `json:"__typename"`
 	InvalidInputError `json:"-"`
@@ -31723,6 +32583,9 @@ func __marshalSyncJobJobJobResult(v *SyncJobJobJobResult) ([]byte, error) {
 }
 
 // SyncJobJobNotFoundError includes the requested fields of the GraphQL type NotFoundError.
+// The GraphQL type's documentation follows.
+//
+// Error when the user is requesting a resource that does not exist.
 type SyncJobJobNotFoundError struct {
 	Typename      *string `json:"__typename"`
 	NotFoundError `json:"-"`
@@ -31782,6 +32645,9 @@ func (v *SyncJobJobNotFoundError) __premarshalJSON() (*__premarshalSyncJobJobNot
 }
 
 // SyncJobJobPermissionDeniedError includes the requested fields of the GraphQL type PermissionDeniedError.
+// The GraphQL type's documentation follows.
+//
+// Error when permission to the requested resource is denied.
 type SyncJobJobPermissionDeniedError struct {
 	Typename              *string `json:"__typename"`
 	PermissionDeniedError `json:"-"`
@@ -31843,12 +32709,18 @@ func (v *SyncJobJobPermissionDeniedError) __premarshalJSON() (*__premarshalSyncJ
 type SyncStatus string
 
 const (
+	// This data source has not been synced yet.
 	SyncStatusNotconnected SyncStatus = "NotConnected"
-	SyncStatusFailed       SyncStatus = "Failed"
-	SyncStatusOutofdate    SyncStatus = "OutOfDate"
-	SyncStatusInprogress   SyncStatus = "InProgress"
-	SyncStatusSynced       SyncStatus = "Synced"
-	SyncStatusOutofsync    SyncStatus = "OutOfSync"
+	// The sync process has failed.
+	SyncStatusFailed SyncStatus = "Failed"
+	// This data source hasn't been synced in a long time.
+	SyncStatusOutofdate SyncStatus = "OutOfDate"
+	// The sync process is currently running.
+	SyncStatusInprogress SyncStatus = "InProgress"
+	// The data source is fully synced.
+	SyncStatusSynced SyncStatus = "Synced"
+	// There are access control changes made in the data source that have not been synced yet.
+	SyncStatusOutofsync SyncStatus = "OutOfSync"
 )
 
 var AllSyncStatus = []SyncStatus{
@@ -31860,8 +32732,11 @@ var AllSyncStatus = []SyncStatus{
 	SyncStatusOutofsync,
 }
 
+// Specifies the filter options to filter lists of tags.
 type TagFilter struct {
-	Key         *string `json:"key,omitempty"`
+	// Only return tags with a specify key.
+	Key *string `json:"key,omitempty"`
+	// Only return tags with a specific string value.
 	StringValue *string `json:"stringValue,omitempty"`
 }
 
@@ -31887,16 +32762,28 @@ func (v *TagImport) GetValue() string { return v.Value }
 func (v *TagImport) GetSource() string { return v.Source }
 
 // Task includes the GraphQL fields of Task requested by the fragment Task.
+// The GraphQL type's documentation follows.
+//
+// Represents a task in a job.
 type Task struct {
-	JobId            string       `json:"jobId"`
-	TaskType         string       `json:"taskType"`
-	Status           TaskStatus   `json:"status"`
-	StartTime        time.Time    `json:"startTime"`
-	LastUpdate       time.Time    `json:"lastUpdate"`
-	EndTime          *time.Time   `json:"endTime"`
-	Duration         *int64       `json:"duration"`
-	NumberOfWarnings int          `json:"numberOfWarnings"`
-	Result           []TaskResult `json:"result"`
+	// The ID of the job the task belongs to.
+	JobId string `json:"jobId"`
+	// The type of the task
+	TaskType string `json:"taskType"`
+	// The current status of the task.
+	Status TaskStatus `json:"status"`
+	// The time when this task started.
+	StartTime time.Time `json:"startTime"`
+	// The time when this task was last updated.
+	LastUpdate time.Time `json:"lastUpdate"`
+	// The time when this task ended.
+	EndTime *time.Time `json:"endTime"`
+	// The duration of this task (endTime-startTime).
+	Duration *int64 `json:"duration"`
+	// The number of warnings that occurred in this task.
+	NumberOfWarnings int `json:"numberOfWarnings"`
+	// The list of results from this task.
+	Result []TaskResult `json:"result"`
 }
 
 // GetJobId returns Task.JobId, and is useful for accessing the field via an interface.
@@ -31927,9 +32814,14 @@ func (v *Task) GetNumberOfWarnings() int { return v.NumberOfWarnings }
 func (v *Task) GetResult() []TaskResult { return v.Result }
 
 // TaskConnection includes the GraphQL fields of TaskConnection requested by the fragment TaskConnection.
+// The GraphQL type's documentation follows.
+//
+// The connection type for paginated lists of [Task]({{Types.Task}}).
 type TaskConnection struct {
-	PageInfo TaskConnectionPageInfo        `json:"pageInfo"`
-	Edges    []TaskConnectionEdgesTaskEdge `json:"edges"`
+	// Pagination information for the retrieved items.
+	PageInfo TaskConnectionPageInfo `json:"pageInfo"`
+	// The list of edges containing the actual queried items.
+	Edges []TaskConnectionEdgesTaskEdge `json:"edges"`
 }
 
 // GetPageInfo returns TaskConnection.PageInfo, and is useful for accessing the field via an interface.
@@ -31939,9 +32831,14 @@ func (v *TaskConnection) GetPageInfo() TaskConnectionPageInfo { return v.PageInf
 func (v *TaskConnection) GetEdges() []TaskConnectionEdgesTaskEdge { return v.Edges }
 
 // TaskConnectionEdgesTaskEdge includes the requested fields of the GraphQL type TaskEdge.
+// The GraphQL type's documentation follows.
+//
+// The edge type for [TaskConnection]({{Types.TaskConnection}})
 type TaskConnectionEdgesTaskEdge struct {
-	Cursor *string                              `json:"cursor"`
-	Node   *TaskConnectionEdgesTaskEdgeNodeTask `json:"node"`
+	// The cursor of this item for pagination.
+	Cursor *string `json:"cursor"`
+	// The actual task.
+	Node *TaskConnectionEdgesTaskEdgeNodeTask `json:"node"`
 }
 
 // GetCursor returns TaskConnectionEdgesTaskEdge.Cursor, and is useful for accessing the field via an interface.
@@ -31951,6 +32848,9 @@ func (v *TaskConnectionEdgesTaskEdge) GetCursor() *string { return v.Cursor }
 func (v *TaskConnectionEdgesTaskEdge) GetNode() *TaskConnectionEdgesTaskEdgeNodeTask { return v.Node }
 
 // TaskConnectionEdgesTaskEdgeNodeTask includes the requested fields of the GraphQL type Task.
+// The GraphQL type's documentation follows.
+//
+// Represents a task in a job.
 type TaskConnectionEdgesTaskEdgeNodeTask struct {
 	Task `json:"-"`
 }
@@ -32480,6 +33380,9 @@ func (v *TaskEventInput) GetWarnings() []string { return v.Warnings }
 func (v *TaskEventInput) GetResult() []TaskResultInput { return v.Result }
 
 // TaskResult includes the requested fields of the GraphQL type TaskResult.
+// The GraphQL type's documentation follows.
+//
+// Describes the result of a task by describing how many entities were added, updated and removed.
 type TaskResult struct {
 	ObjectTypeTaskResult `json:"-"`
 }
@@ -32747,6 +33650,9 @@ func (v *TriggerExportFlowStartExportFlow) __premarshalJSON() (*__premarshalTrig
 }
 
 // TriggerExportFlowStartExportFlowInvalidInputError includes the requested fields of the GraphQL type InvalidInputError.
+// The GraphQL type's documentation follows.
+//
+// Error when some of the input parameters in the request are not valid.
 type TriggerExportFlowStartExportFlowInvalidInputError struct {
 	Typename          *string `json:"__typename"`
 	InvalidInputError `json:"-"`
@@ -32808,6 +33714,9 @@ func (v *TriggerExportFlowStartExportFlowInvalidInputError) __premarshalJSON() (
 }
 
 // TriggerExportFlowStartExportFlowNotFoundError includes the requested fields of the GraphQL type NotFoundError.
+// The GraphQL type's documentation follows.
+//
+// Error when the user is requesting a resource that does not exist.
 type TriggerExportFlowStartExportFlowNotFoundError struct {
 	Typename      *string `json:"__typename"`
 	NotFoundError `json:"-"`
@@ -32869,6 +33778,9 @@ func (v *TriggerExportFlowStartExportFlowNotFoundError) __premarshalJSON() (*__p
 }
 
 // TriggerExportFlowStartExportFlowPermissionDeniedError includes the requested fields of the GraphQL type PermissionDeniedError.
+// The GraphQL type's documentation follows.
+//
+// Error when permission to the requested resource is denied.
 type TriggerExportFlowStartExportFlowPermissionDeniedError struct {
 	Typename              *string `json:"__typename"`
 	PermissionDeniedError `json:"-"`
@@ -33050,6 +33962,7 @@ func __marshalTriggerExportFlowStartExportFlowStartExportFlowResult(v *TriggerEx
 
 // UpdateAccessControlResponse is returned by UpdateAccessControl on success.
 type UpdateAccessControlResponse struct {
+	// Update an existing access control.
 	UpdateAccessControl UpdateAccessControlUpdateAccessControlAccessControlWithOptionalAccessRequestsResult `json:"-"`
 }
 
@@ -33122,6 +34035,9 @@ func (v *UpdateAccessControlResponse) __premarshalJSON() (*__premarshalUpdateAcc
 }
 
 // UpdateAccessControlUpdateAccessControl includes the requested fields of the GraphQL type AccessControl.
+// The GraphQL type's documentation follows.
+//
+// Represents an access control object in the system. An access control is the abstract model representing grants, masks, filters and groups (determined by the `action` field).
 type UpdateAccessControlUpdateAccessControl struct {
 	Typename      *string `json:"__typename"`
 	AccessControl `json:"-"`
@@ -33303,8 +34219,12 @@ func (v *UpdateAccessControlUpdateAccessControl) __premarshalJSON() (*__premarsh
 }
 
 // UpdateAccessControlUpdateAccessControlAccessControlWithOptionalAccessRequests includes the requested fields of the GraphQL type AccessControlWithOptionalAccessRequests.
+// The GraphQL type's documentation follows.
+//
+// Represents the result of an access control update when access requests were created as part of the update.
 type UpdateAccessControlUpdateAccessControlAccessControlWithOptionalAccessRequests struct {
-	Typename      *string                                                                                    `json:"__typename"`
+	Typename *string `json:"__typename"`
+	// The updated access control.
 	AccessControl UpdateAccessControlUpdateAccessControlAccessControlWithOptionalAccessRequestsAccessControl `json:"accessControl"`
 }
 
@@ -33319,6 +34239,9 @@ func (v *UpdateAccessControlUpdateAccessControlAccessControlWithOptionalAccessRe
 }
 
 // UpdateAccessControlUpdateAccessControlAccessControlWithOptionalAccessRequestsAccessControl includes the requested fields of the GraphQL type AccessControl.
+// The GraphQL type's documentation follows.
+//
+// Represents an access control object in the system. An access control is the abstract model representing grants, masks, filters and groups (determined by the `action` field).
 type UpdateAccessControlUpdateAccessControlAccessControlWithOptionalAccessRequestsAccessControl struct {
 	AccessControl `json:"-"`
 }
@@ -33632,6 +34555,9 @@ func __marshalUpdateAccessControlUpdateAccessControlAccessControlWithOptionalAcc
 }
 
 // UpdateAccessControlUpdateAccessControlInvalidInputError includes the requested fields of the GraphQL type InvalidInputError.
+// The GraphQL type's documentation follows.
+//
+// Error when some of the input parameters in the request are not valid.
 type UpdateAccessControlUpdateAccessControlInvalidInputError struct {
 	Typename          *string `json:"__typename"`
 	InvalidInputError `json:"-"`
@@ -33695,6 +34621,9 @@ func (v *UpdateAccessControlUpdateAccessControlInvalidInputError) __premarshalJS
 }
 
 // UpdateAccessControlUpdateAccessControlNotFoundError includes the requested fields of the GraphQL type NotFoundError.
+// The GraphQL type's documentation follows.
+//
+// Error when the user is requesting a resource that does not exist.
 type UpdateAccessControlUpdateAccessControlNotFoundError struct {
 	Typename      *string `json:"__typename"`
 	NotFoundError `json:"-"`
@@ -33758,6 +34687,9 @@ func (v *UpdateAccessControlUpdateAccessControlNotFoundError) __premarshalJSON()
 }
 
 // UpdateAccessControlUpdateAccessControlPermissionDeniedError includes the requested fields of the GraphQL type PermissionDeniedError.
+// The GraphQL type's documentation follows.
+//
+// Error when permission to the requested resource is denied.
 type UpdateAccessControlUpdateAccessControlPermissionDeniedError struct {
 	Typename              *string `json:"__typename"`
 	PermissionDeniedError `json:"-"`
@@ -33822,6 +34754,7 @@ func (v *UpdateAccessControlUpdateAccessControlPermissionDeniedError) __premarsh
 
 // UpdateDataSourceResponse is returned by UpdateDataSource on success.
 type UpdateDataSourceResponse struct {
+	// Update an existing data source.
 	UpdateDataSource UpdateDataSourceUpdateDataSourceDataSourceResult `json:"-"`
 }
 
@@ -33894,6 +34827,9 @@ func (v *UpdateDataSourceResponse) __premarshalJSON() (*__premarshalUpdateDataSo
 }
 
 // UpdateDataSourceUpdateDataSource includes the requested fields of the GraphQL type DataSource.
+// The GraphQL type's documentation follows.
+//
+// Represents a data sourcein Collibra Data Access.
 type UpdateDataSourceUpdateDataSource struct {
 	Typename   *string `json:"__typename"`
 	DataSource `json:"-"`
@@ -34104,6 +35040,9 @@ func __marshalUpdateDataSourceUpdateDataSourceDataSourceResult(v *UpdateDataSour
 }
 
 // UpdateDataSourceUpdateDataSourceInvalidInputError includes the requested fields of the GraphQL type InvalidInputError.
+// The GraphQL type's documentation follows.
+//
+// Error when some of the input parameters in the request are not valid.
 type UpdateDataSourceUpdateDataSourceInvalidInputError struct {
 	Typename *string `json:"__typename"`
 }
@@ -34112,6 +35051,9 @@ type UpdateDataSourceUpdateDataSourceInvalidInputError struct {
 func (v *UpdateDataSourceUpdateDataSourceInvalidInputError) GetTypename() *string { return v.Typename }
 
 // UpdateDataSourceUpdateDataSourceNotFoundError includes the requested fields of the GraphQL type NotFoundError.
+// The GraphQL type's documentation follows.
+//
+// Error when the user is requesting a resource that does not exist.
 type UpdateDataSourceUpdateDataSourceNotFoundError struct {
 	Typename      *string `json:"__typename"`
 	NotFoundError `json:"-"`
@@ -34173,6 +35115,9 @@ func (v *UpdateDataSourceUpdateDataSourceNotFoundError) __premarshalJSON() (*__p
 }
 
 // UpdateDataSourceUpdateDataSourcePermissionDeniedError includes the requested fields of the GraphQL type PermissionDeniedError.
+// The GraphQL type's documentation follows.
+//
+// Error when permission to the requested resource is denied.
 type UpdateDataSourceUpdateDataSourcePermissionDeniedError struct {
 	Typename              *string `json:"__typename"`
 	PermissionDeniedError `json:"-"`
@@ -34309,6 +35254,9 @@ func (v *UpdateGrantCategoryResponse) __premarshalJSON() (*__premarshalUpdateGra
 }
 
 // UpdateGrantCategoryUpdateGrantCategory includes the requested fields of the GraphQL type GrantCategory.
+// The GraphQL type's documentation follows.
+//
+// Represent a grant category. Grant categories are used to categorize access controls with `action=Grant` to allow structuring them better.
 type UpdateGrantCategoryUpdateGrantCategory struct {
 	Typename             *string `json:"__typename"`
 	GrantCategoryDetails `json:"-"`
@@ -34585,6 +35533,9 @@ func __marshalUpdateGrantCategoryUpdateGrantCategoryGrantCategoryResult(v *Updat
 }
 
 // UpdateGrantCategoryUpdateGrantCategoryInvalidInputError includes the requested fields of the GraphQL type InvalidInputError.
+// The GraphQL type's documentation follows.
+//
+// Error when some of the input parameters in the request are not valid.
 type UpdateGrantCategoryUpdateGrantCategoryInvalidInputError struct {
 	Typename          *string `json:"__typename"`
 	InvalidInputError `json:"-"`
@@ -34648,6 +35599,9 @@ func (v *UpdateGrantCategoryUpdateGrantCategoryInvalidInputError) __premarshalJS
 }
 
 // UpdateGrantCategoryUpdateGrantCategoryNotFoundError includes the requested fields of the GraphQL type NotFoundError.
+// The GraphQL type's documentation follows.
+//
+// Error when the user is requesting a resource that does not exist.
 type UpdateGrantCategoryUpdateGrantCategoryNotFoundError struct {
 	Typename      *string `json:"__typename"`
 	NotFoundError `json:"-"`
@@ -34711,6 +35665,9 @@ func (v *UpdateGrantCategoryUpdateGrantCategoryNotFoundError) __premarshalJSON()
 }
 
 // UpdateGrantCategoryUpdateGrantCategoryPermissionDeniedError includes the requested fields of the GraphQL type PermissionDeniedError.
+// The GraphQL type's documentation follows.
+//
+// Error when permission to the requested resource is denied.
 type UpdateGrantCategoryUpdateGrantCategoryPermissionDeniedError struct {
 	Typename              *string `json:"__typename"`
 	PermissionDeniedError `json:"-"`
@@ -34782,6 +35739,9 @@ type UpdateJobResponse struct {
 func (v *UpdateJobResponse) GetUpdateJob() UpdateJobUpdateJob { return v.UpdateJob }
 
 // UpdateJobUpdateJob includes the requested fields of the GraphQL type Job.
+// The GraphQL type's documentation follows.
+//
+// Represents a synchronization job that is executed on a data source.
 type UpdateJobUpdateJob struct {
 	Job `json:"-"`
 }
@@ -34883,6 +35843,7 @@ func (v *UpdateJobUpdateJob) __premarshalJSON() (*__premarshalUpdateJobUpdateJob
 
 // UpdateRoleAssigneesOnAccessControlResponse is returned by UpdateRoleAssigneesOnAccessControl on success.
 type UpdateRoleAssigneesOnAccessControlResponse struct {
+	// Update the assigned roles on a specific access control.
 	UpdateRoleAssigneesOnAccessControl UpdateRoleAssigneesOnAccessControlUpdateRoleAssigneesOnAccessControlRoleResult `json:"-"`
 }
 
@@ -34955,6 +35916,9 @@ func (v *UpdateRoleAssigneesOnAccessControlResponse) __premarshalJSON() (*__prem
 }
 
 // UpdateRoleAssigneesOnAccessControlUpdateRoleAssigneesOnAccessControlInvalidInputError includes the requested fields of the GraphQL type InvalidInputError.
+// The GraphQL type's documentation follows.
+//
+// Error when some of the input parameters in the request are not valid.
 type UpdateRoleAssigneesOnAccessControlUpdateRoleAssigneesOnAccessControlInvalidInputError struct {
 	Typename *string `json:"__typename"`
 }
@@ -34965,6 +35929,9 @@ func (v *UpdateRoleAssigneesOnAccessControlUpdateRoleAssigneesOnAccessControlInv
 }
 
 // UpdateRoleAssigneesOnAccessControlUpdateRoleAssigneesOnAccessControlNotFoundError includes the requested fields of the GraphQL type NotFoundError.
+// The GraphQL type's documentation follows.
+//
+// Error when the user is requesting a resource that does not exist.
 type UpdateRoleAssigneesOnAccessControlUpdateRoleAssigneesOnAccessControlNotFoundError struct {
 	Typename      *string `json:"__typename"`
 	NotFoundError `json:"-"`
@@ -35028,6 +35995,9 @@ func (v *UpdateRoleAssigneesOnAccessControlUpdateRoleAssigneesOnAccessControlNot
 }
 
 // UpdateRoleAssigneesOnAccessControlUpdateRoleAssigneesOnAccessControlPermissionDeniedError includes the requested fields of the GraphQL type PermissionDeniedError.
+// The GraphQL type's documentation follows.
+//
+// Error when permission to the requested resource is denied.
 type UpdateRoleAssigneesOnAccessControlUpdateRoleAssigneesOnAccessControlPermissionDeniedError struct {
 	Typename              *string `json:"__typename"`
 	PermissionDeniedError `json:"-"`
@@ -35091,6 +36061,9 @@ func (v *UpdateRoleAssigneesOnAccessControlUpdateRoleAssigneesOnAccessControlPer
 }
 
 // UpdateRoleAssigneesOnAccessControlUpdateRoleAssigneesOnAccessControlRole includes the requested fields of the GraphQL type Role.
+// The GraphQL type's documentation follows.
+//
+// Represents a role.
 type UpdateRoleAssigneesOnAccessControlUpdateRoleAssigneesOnAccessControlRole struct {
 	Typename *string `json:"__typename"`
 	Role     `json:"-"`
@@ -35284,6 +36257,7 @@ func __marshalUpdateRoleAssigneesOnAccessControlUpdateRoleAssigneesOnAccessContr
 
 // UpdateRoleAssigneesOnDataObjectResponse is returned by UpdateRoleAssigneesOnDataObject on success.
 type UpdateRoleAssigneesOnDataObjectResponse struct {
+	// Update the assigned roles on a specific data object.
 	UpdateRoleAssigneesOnDataObject UpdateRoleAssigneesOnDataObjectUpdateRoleAssigneesOnDataObjectRoleResult `json:"-"`
 }
 
@@ -35356,6 +36330,9 @@ func (v *UpdateRoleAssigneesOnDataObjectResponse) __premarshalJSON() (*__premars
 }
 
 // UpdateRoleAssigneesOnDataObjectUpdateRoleAssigneesOnDataObjectInvalidInputError includes the requested fields of the GraphQL type InvalidInputError.
+// The GraphQL type's documentation follows.
+//
+// Error when some of the input parameters in the request are not valid.
 type UpdateRoleAssigneesOnDataObjectUpdateRoleAssigneesOnDataObjectInvalidInputError struct {
 	Typename *string `json:"__typename"`
 }
@@ -35366,6 +36343,9 @@ func (v *UpdateRoleAssigneesOnDataObjectUpdateRoleAssigneesOnDataObjectInvalidIn
 }
 
 // UpdateRoleAssigneesOnDataObjectUpdateRoleAssigneesOnDataObjectNotFoundError includes the requested fields of the GraphQL type NotFoundError.
+// The GraphQL type's documentation follows.
+//
+// Error when the user is requesting a resource that does not exist.
 type UpdateRoleAssigneesOnDataObjectUpdateRoleAssigneesOnDataObjectNotFoundError struct {
 	Typename      *string `json:"__typename"`
 	NotFoundError `json:"-"`
@@ -35429,6 +36409,9 @@ func (v *UpdateRoleAssigneesOnDataObjectUpdateRoleAssigneesOnDataObjectNotFoundE
 }
 
 // UpdateRoleAssigneesOnDataObjectUpdateRoleAssigneesOnDataObjectPermissionDeniedError includes the requested fields of the GraphQL type PermissionDeniedError.
+// The GraphQL type's documentation follows.
+//
+// Error when permission to the requested resource is denied.
 type UpdateRoleAssigneesOnDataObjectUpdateRoleAssigneesOnDataObjectPermissionDeniedError struct {
 	Typename              *string `json:"__typename"`
 	PermissionDeniedError `json:"-"`
@@ -35492,6 +36475,9 @@ func (v *UpdateRoleAssigneesOnDataObjectUpdateRoleAssigneesOnDataObjectPermissio
 }
 
 // UpdateRoleAssigneesOnDataObjectUpdateRoleAssigneesOnDataObjectRole includes the requested fields of the GraphQL type Role.
+// The GraphQL type's documentation follows.
+//
+// Represents a role.
 type UpdateRoleAssigneesOnDataObjectUpdateRoleAssigneesOnDataObjectRole struct {
 	Typename *string `json:"__typename"`
 	Role     `json:"-"`
@@ -35685,6 +36671,7 @@ func __marshalUpdateRoleAssigneesOnDataObjectUpdateRoleAssigneesOnDataObjectRole
 
 // UpdateRoleAssigneesOnDataSourceResponse is returned by UpdateRoleAssigneesOnDataSource on success.
 type UpdateRoleAssigneesOnDataSourceResponse struct {
+	// Update the assigned roles on a specific data source.
 	UpdateRoleAssigneesOnDataSource UpdateRoleAssigneesOnDataSourceUpdateRoleAssigneesOnDataSourceRoleResult `json:"-"`
 }
 
@@ -35757,6 +36744,9 @@ func (v *UpdateRoleAssigneesOnDataSourceResponse) __premarshalJSON() (*__premars
 }
 
 // UpdateRoleAssigneesOnDataSourceUpdateRoleAssigneesOnDataSourceInvalidInputError includes the requested fields of the GraphQL type InvalidInputError.
+// The GraphQL type's documentation follows.
+//
+// Error when some of the input parameters in the request are not valid.
 type UpdateRoleAssigneesOnDataSourceUpdateRoleAssigneesOnDataSourceInvalidInputError struct {
 	Typename *string `json:"__typename"`
 }
@@ -35767,6 +36757,9 @@ func (v *UpdateRoleAssigneesOnDataSourceUpdateRoleAssigneesOnDataSourceInvalidIn
 }
 
 // UpdateRoleAssigneesOnDataSourceUpdateRoleAssigneesOnDataSourceNotFoundError includes the requested fields of the GraphQL type NotFoundError.
+// The GraphQL type's documentation follows.
+//
+// Error when the user is requesting a resource that does not exist.
 type UpdateRoleAssigneesOnDataSourceUpdateRoleAssigneesOnDataSourceNotFoundError struct {
 	Typename      *string `json:"__typename"`
 	NotFoundError `json:"-"`
@@ -35830,6 +36823,9 @@ func (v *UpdateRoleAssigneesOnDataSourceUpdateRoleAssigneesOnDataSourceNotFoundE
 }
 
 // UpdateRoleAssigneesOnDataSourceUpdateRoleAssigneesOnDataSourcePermissionDeniedError includes the requested fields of the GraphQL type PermissionDeniedError.
+// The GraphQL type's documentation follows.
+//
+// Error when permission to the requested resource is denied.
 type UpdateRoleAssigneesOnDataSourceUpdateRoleAssigneesOnDataSourcePermissionDeniedError struct {
 	Typename              *string `json:"__typename"`
 	PermissionDeniedError `json:"-"`
@@ -35893,6 +36889,9 @@ func (v *UpdateRoleAssigneesOnDataSourceUpdateRoleAssigneesOnDataSourcePermissio
 }
 
 // UpdateRoleAssigneesOnDataSourceUpdateRoleAssigneesOnDataSourceRole includes the requested fields of the GraphQL type Role.
+// The GraphQL type's documentation follows.
+//
+// Represents a role.
 type UpdateRoleAssigneesOnDataSourceUpdateRoleAssigneesOnDataSourceRole struct {
 	Typename *string `json:"__typename"`
 	Role     `json:"-"`
@@ -36302,6 +37301,9 @@ func __marshalUpdateSiteSettingsUpdateEdgeSiteParameterDefinitionsEdgeSiteUpdate
 }
 
 // UpdateSiteSettingsUpdateEdgeSiteParameterDefinitionsPermissionDeniedError includes the requested fields of the GraphQL type PermissionDeniedError.
+// The GraphQL type's documentation follows.
+//
+// Error when permission to the requested resource is denied.
 type UpdateSiteSettingsUpdateEdgeSiteParameterDefinitionsPermissionDeniedError struct {
 	Typename              *string `json:"__typename"`
 	PermissionDeniedError `json:"-"`
@@ -36436,6 +37438,9 @@ func (v *UpdateUserResponse) __premarshalJSON() (*__premarshalUpdateUserResponse
 }
 
 // UpdateUserUpdateUser includes the requested fields of the GraphQL type User.
+// The GraphQL type's documentation follows.
+//
+// Represents a user in Collibra Data Access. It can be a human user or a machine user (service account) which groups accounts in different data sources.
 type UpdateUserUpdateUser struct {
 	Typename *string `json:"__typename"`
 	User     `json:"-"`
@@ -36512,76 +37517,10 @@ func (v *UpdateUserUpdateUser) __premarshalJSON() (*__premarshalUpdateUserUpdate
 	return &retval, nil
 }
 
-// UpdateUserUpdateUserInvalidEmailError includes the requested fields of the GraphQL type InvalidEmailError.
-type UpdateUserUpdateUserInvalidEmailError struct {
-	Typename          *string `json:"__typename"`
-	InvalidEmailError `json:"-"`
-}
-
-// GetTypename returns UpdateUserUpdateUserInvalidEmailError.Typename, and is useful for accessing the field via an interface.
-func (v *UpdateUserUpdateUserInvalidEmailError) GetTypename() *string { return v.Typename }
-
-// GetErrEmail returns UpdateUserUpdateUserInvalidEmailError.ErrEmail, and is useful for accessing the field via an interface.
-func (v *UpdateUserUpdateUserInvalidEmailError) GetErrEmail() string {
-	return v.InvalidEmailError.ErrEmail
-}
-
-// GetMessage returns UpdateUserUpdateUserInvalidEmailError.Message, and is useful for accessing the field via an interface.
-func (v *UpdateUserUpdateUserInvalidEmailError) GetMessage() string {
-	return v.InvalidEmailError.Message
-}
-
-func (v *UpdateUserUpdateUserInvalidEmailError) UnmarshalJSON(b []byte) error {
-
-	if string(b) == "null" {
-		return nil
-	}
-
-	var firstPass struct {
-		*UpdateUserUpdateUserInvalidEmailError
-		graphql.NoUnmarshalJSON
-	}
-	firstPass.UpdateUserUpdateUserInvalidEmailError = v
-
-	err := json.Unmarshal(b, &firstPass)
-	if err != nil {
-		return err
-	}
-
-	err = json.Unmarshal(
-		b, &v.InvalidEmailError)
-	if err != nil {
-		return err
-	}
-	return nil
-}
-
-type __premarshalUpdateUserUpdateUserInvalidEmailError struct {
-	Typename *string `json:"__typename"`
-
-	ErrEmail string `json:"errEmail"`
-
-	Message string `json:"message"`
-}
-
-func (v *UpdateUserUpdateUserInvalidEmailError) MarshalJSON() ([]byte, error) {
-	premarshaled, err := v.__premarshalJSON()
-	if err != nil {
-		return nil, err
-	}
-	return json.Marshal(premarshaled)
-}
-
-func (v *UpdateUserUpdateUserInvalidEmailError) __premarshalJSON() (*__premarshalUpdateUserUpdateUserInvalidEmailError, error) {
-	var retval __premarshalUpdateUserUpdateUserInvalidEmailError
-
-	retval.Typename = v.Typename
-	retval.ErrEmail = v.InvalidEmailError.ErrEmail
-	retval.Message = v.InvalidEmailError.Message
-	return &retval, nil
-}
-
 // UpdateUserUpdateUserInvalidInputError includes the requested fields of the GraphQL type InvalidInputError.
+// The GraphQL type's documentation follows.
+//
+// Error when some of the input parameters in the request are not valid.
 type UpdateUserUpdateUserInvalidInputError struct {
 	Typename *string `json:"__typename"`
 }
@@ -36590,6 +37529,9 @@ type UpdateUserUpdateUserInvalidInputError struct {
 func (v *UpdateUserUpdateUserInvalidInputError) GetTypename() *string { return v.Typename }
 
 // UpdateUserUpdateUserNotFoundError includes the requested fields of the GraphQL type NotFoundError.
+// The GraphQL type's documentation follows.
+//
+// Error when the user is requesting a resource that does not exist.
 type UpdateUserUpdateUserNotFoundError struct {
 	Typename      *string `json:"__typename"`
 	NotFoundError `json:"-"`
@@ -36649,6 +37591,9 @@ func (v *UpdateUserUpdateUserNotFoundError) __premarshalJSON() (*__premarshalUpd
 }
 
 // UpdateUserUpdateUserPermissionDeniedError includes the requested fields of the GraphQL type PermissionDeniedError.
+// The GraphQL type's documentation follows.
+//
+// Error when permission to the requested resource is denied.
 type UpdateUserUpdateUserPermissionDeniedError struct {
 	Typename              *string `json:"__typename"`
 	PermissionDeniedError `json:"-"`
@@ -36712,7 +37657,6 @@ func (v *UpdateUserUpdateUserPermissionDeniedError) __premarshalJSON() (*__prema
 // UpdateUserUpdateUserUserResult includes the requested fields of the GraphQL interface UserResult.
 //
 // UpdateUserUpdateUserUserResult is implemented by the following types:
-// UpdateUserUpdateUserInvalidEmailError
 // UpdateUserUpdateUserInvalidInputError
 // UpdateUserUpdateUserNotFoundError
 // UpdateUserUpdateUserPermissionDeniedError
@@ -36723,8 +37667,6 @@ type UpdateUserUpdateUserUserResult interface {
 	GetTypename() *string
 }
 
-func (v *UpdateUserUpdateUserInvalidEmailError) implementsGraphQLInterfaceUpdateUserUpdateUserUserResult() {
-}
 func (v *UpdateUserUpdateUserInvalidInputError) implementsGraphQLInterfaceUpdateUserUpdateUserUserResult() {
 }
 func (v *UpdateUserUpdateUserNotFoundError) implementsGraphQLInterfaceUpdateUserUpdateUserUserResult() {
@@ -36747,9 +37689,6 @@ func __unmarshalUpdateUserUpdateUserUserResult(b []byte, v *UpdateUserUpdateUser
 	}
 
 	switch tn.TypeName {
-	case "InvalidEmailError":
-		*v = new(UpdateUserUpdateUserInvalidEmailError)
-		return json.Unmarshal(b, *v)
 	case "InvalidInputError":
 		*v = new(UpdateUserUpdateUserInvalidInputError)
 		return json.Unmarshal(b, *v)
@@ -36775,18 +37714,6 @@ func __marshalUpdateUserUpdateUserUserResult(v *UpdateUserUpdateUserUserResult) 
 
 	var typename string
 	switch v := (*v).(type) {
-	case *UpdateUserUpdateUserInvalidEmailError:
-		typename = "InvalidEmailError"
-
-		premarshaled, err := v.__premarshalJSON()
-		if err != nil {
-			return nil, err
-		}
-		result := struct {
-			TypeName string `json:"__typename"`
-			*__premarshalUpdateUserUpdateUserInvalidEmailError
-		}{typename, premarshaled}
-		return json.Marshal(result)
 	case *UpdateUserUpdateUserInvalidInputError:
 		typename = "InvalidInputError"
 
@@ -36862,11 +37789,18 @@ func (v *UsageMetaInputDetail) GetName() string { return v.Name }
 func (v *UsageMetaInputDetail) GetDataObjectTypes() []string { return v.DataObjectTypes }
 
 // User includes the GraphQL fields of User requested by the fragment User.
+// The GraphQL type's documentation follows.
+//
+// Represents a user in Collibra Data Access. It can be a human user or a machine user (service account) which groups accounts in different data sources.
 type User struct {
-	Id    string   `json:"id"`
-	Name  string   `json:"name"`
-	Email *string  `json:"email"`
-	Type  UserType `json:"type"`
+	// The unique identifier for the user.
+	Id string `json:"id"`
+	// The display name for the user.
+	Name string `json:"name"`
+	// The email address for the user. This will be used to match new accounts. If the email address matches, the new accounts will be automatically added to the user.
+	Email *string `json:"email"`
+	// Whether this user is a human or machine user.
+	Type UserType `json:"type"`
 }
 
 // GetId returns User.Id, and is useful for accessing the field via an interface.
@@ -36935,6 +37869,7 @@ func (v *UserInput) GetDelegationStart() *time.Time { return v.DelegationStart }
 // GetDelegationEnd returns UserInput.DelegationEnd, and is useful for accessing the field via an interface.
 func (v *UserInput) GetDelegationEnd() *time.Time { return v.DelegationEnd }
 
+// The possible user types.
 type UserType string
 
 const (
@@ -36948,12 +37883,18 @@ var AllUserType = []UserType{
 }
 
 // WhatAbacRule includes the GraphQL fields of WhatAbacRule requested by the fragment WhatAbacRule.
+// The GraphQL type's documentation follows.
+//
+// Represents a single ABAC rule for the WHAT items of an access control.
 type WhatAbacRule struct {
-	Id                string   `json:"id"`
-	Permissions       []string `json:"permissions"`
+	Id string `json:"id"`
+	// The permissions the data objects from this ABAC rule will receive.
+	Permissions []string `json:"permissions"`
+	// The global permissions the data objects from this ABAC rule will receive.
 	GlobalPermissions []string `json:"globalPermissions"`
-	DoTypes           []string `json:"doTypes"`
-	RuleJson          *string  `json:"ruleJson"`
+	// The data object types that this ABAC rule applies to.
+	DoTypes  []string `json:"doTypes"`
+	RuleJson *string  `json:"ruleJson"`
 }
 
 // GetId returns WhatAbacRule.Id, and is useful for accessing the field via an interface.
@@ -36971,13 +37912,20 @@ func (v *WhatAbacRule) GetDoTypes() []string { return v.DoTypes }
 // GetRuleJson returns WhatAbacRule.RuleJson, and is useful for accessing the field via an interface.
 func (v *WhatAbacRule) GetRuleJson() *string { return v.RuleJson }
 
+// Input object for creating and updating WHAT ABAC rules in an access control.
 type WhatAbacRuleInput struct {
-	Id                *string                       `json:"id,omitempty"`
-	DoTypes           []string                      `json:"doTypes"`
-	Permissions       []string                      `json:"permissions"`
-	GlobalPermissions []string                      `json:"globalPermissions"`
-	Scope             []string                      `json:"scope"`
-	Rule              AbacComparisonExpressionInput `json:"rule"`
+	// The optional ID of the ABAC rule to create or update. If not specified a new ID will be generated.
+	Id *string `json:"id,omitempty"`
+	// The data object types that will be matched by this ABAC rule.
+	DoTypes []string `json:"doTypes"`
+	// In case of a grant, the permissions that will be granted on the data objects matching the ABAC rule.
+	Permissions []string `json:"permissions"`
+	// In case of a grant, the global permissions that will be granted on the data objects matching the ABAC rule.
+	GlobalPermissions []string `json:"globalPermissions"`
+	// The list of data objects in which this ABAC rule will apply. Only descendants of these data objects will be considered.
+	Scope []string `json:"scope"`
+	// The actual boolean expression to define which data objects to match.
+	Rule AbacComparisonExpressionInput `json:"rule"`
 }
 
 // GetId returns WhatAbacRuleInput.Id, and is useful for accessing the field via an interface.
@@ -37014,11 +37962,16 @@ func (v *WhatItemImport) GetDataObject() DataObjectReferenceImport { return v.Da
 func (v *WhatItemImport) GetPermissions() []string { return v.Permissions }
 
 // WhoAbacRule includes the GraphQL fields of WhoAbacRule requested by the fragment WhoAbacRule.
+// The GraphQL type's documentation follows.
+//
+// Represents a single ABAC rule for the WHO items of an access control.
 type WhoAbacRule struct {
-	Id              string            `json:"id"`
-	PromiseDuration *int64            `json:"promiseDuration"`
-	Type            AccessWhoItemType `json:"type"`
-	RuleJson        *string           `json:"ruleJson"`
+	Id string `json:"id"`
+	// In case `type=WhoPromise`, this indicates the duration of the promise.
+	PromiseDuration *int64 `json:"promiseDuration"`
+	// Determines whether the users from this ABAC rule will get access granted directly or only a promise (pre-approval).
+	Type     AccessWhoItemType `json:"type"`
+	RuleJson *string           `json:"ruleJson"`
 }
 
 // GetId returns WhoAbacRule.Id, and is useful for accessing the field via an interface.
@@ -37033,15 +37986,20 @@ func (v *WhoAbacRule) GetType() AccessWhoItemType { return v.Type }
 // GetRuleJson returns WhoAbacRule.RuleJson, and is useful for accessing the field via an interface.
 func (v *WhoAbacRule) GetRuleJson() *string { return v.RuleJson }
 
+// Input object for creating and updating WHO ABAC rules in an access control.
 type WhoAbacRuleInput struct {
-	Id              string                        `json:"id"`
-	Rule            AbacComparisonExpressionInput `json:"rule"`
-	Type            AccessWhoItemType             `json:"type"`
-	PromiseDuration *int64                        `json:"promiseDuration,omitempty"`
+	// The optional ID of the ABAC rule to create or update. If not specified a new ID will be generated.
+	Id *string `json:"id,omitempty"`
+	// The actual boolean expression to define which users to match.
+	Rule AbacComparisonExpressionInput `json:"rule"`
+	// Defines if the users that are matched by this ABAC rule will get the access granted directly or as a promise (pre-approval).
+	Type AccessWhoItemType `json:"type"`
+	// In case `type=whoPromise`, this indicates for how long the promise will provide access when requested.
+	PromiseDuration *int64 `json:"promiseDuration,omitempty"`
 }
 
 // GetId returns WhoAbacRuleInput.Id, and is useful for accessing the field via an interface.
-func (v *WhoAbacRuleInput) GetId() string { return v.Id }
+func (v *WhoAbacRuleInput) GetId() *string { return v.Id }
 
 // GetRule returns WhoAbacRuleInput.Rule, and is useful for accessing the field via an interface.
 func (v *WhoAbacRuleInput) GetRule() AbacComparisonExpressionInput { return v.Rule }
@@ -37067,14 +38025,22 @@ func (v *WhoItemImport) GetAccessControls() []string { return v.AccessControls }
 // GetRecipients returns WhoItemImport.Recipients, and is useful for accessing the field via an interface.
 func (v *WhoItemImport) GetRecipients() []string { return v.Recipients }
 
+// Input object to represent a WHO item for the access control. Only one of `user`, `accessControl`, `dataSource` or `recipient` should be filled in, depending on the type of the WHO item.
 type WhoItemInput struct {
-	User            *string            `json:"user,omitempty"`
-	AccessControl   *string            `json:"accessControl,omitempty"`
-	DataSource      *string            `json:"dataSource,omitempty"`
-	Recipient       *string            `json:"recipient,omitempty"`
-	ExpiresAt       *time.Time         `json:"expiresAt,omitempty"`
-	Type            *AccessWhoItemType `json:"type,omitempty"`
-	PromiseDuration *int64             `json:"promiseDuration,omitempty"`
+	// The ID of the user for the WHO item.
+	User *string `json:"user,omitempty"`
+	// The ID of the access control for the WHO item.
+	AccessControl *string `json:"accessControl,omitempty"`
+	// The ID of the data source for the WHO item (for shares).
+	DataSource *string `json:"dataSource,omitempty"`
+	// The identifier of the recipient account (for shares).
+	Recipient *string `json:"recipient,omitempty"`
+	// The time at which this WHO item will expire.
+	ExpiresAt *time.Time `json:"expiresAt,omitempty"`
+	// Defines if the users that are matched by this ABAC rule will get the access granted directly or as a promise (pre-approval).
+	Type *AccessWhoItemType `json:"type,omitempty"`
+	// In case `type=whoPromise`, this indicates for how long the promise will provide access when requested.
+	PromiseDuration *int64 `json:"promiseDuration,omitempty"`
 }
 
 // GetUser returns WhoItemInput.User, and is useful for accessing the field via an interface.
@@ -38438,7 +39404,6 @@ mutation CreateUser ($input: UserInput!) {
 		... User
 		... PermissionDeniedError
 		... NotFoundError
-		... InvalidEmailError
 	}
 }
 fragment User on User {
@@ -38451,10 +39416,6 @@ fragment PermissionDeniedError on PermissionDeniedError {
 	message
 }
 fragment NotFoundError on NotFoundError {
-	message
-}
-fragment InvalidEmailError on InvalidEmailError {
-	errEmail: email
 	message
 }
 `
@@ -40148,7 +41109,6 @@ query GetUser ($id: ID!) {
 		... User
 		... NotFoundError
 		... PermissionDeniedError
-		... InvalidEmailError
 		... InvalidInputError
 	}
 }
@@ -40162,10 +41122,6 @@ fragment NotFoundError on NotFoundError {
 	message
 }
 fragment PermissionDeniedError on PermissionDeniedError {
-	message
-}
-fragment InvalidEmailError on InvalidEmailError {
-	errEmail: email
 	message
 }
 fragment InvalidInputError on InvalidInputError {
@@ -40206,7 +41162,6 @@ query GetUserByEmail ($email: String!) {
 		... User
 		... PermissionDeniedError
 		... NotFoundError
-		... InvalidEmailError
 	}
 }
 fragment User on User {
@@ -40219,10 +41174,6 @@ fragment PermissionDeniedError on PermissionDeniedError {
 	message
 }
 fragment NotFoundError on NotFoundError {
-	message
-}
-fragment InvalidEmailError on InvalidEmailError {
-	errEmail: email
 	message
 }
 `
@@ -41337,7 +42288,6 @@ query ListRoleAssignmentsOnUser ($userId: ID!, $after: String, $limit: Int, $fil
 			}
 		}
 		... InvalidInputError
-		... InvalidEmailError
 		... PermissionDeniedError
 		... NotFoundError
 	}
@@ -41349,10 +42299,6 @@ fragment RoleAssignmentConnectionResult on RoleAssignmentConnectionResult {
 	... PermissionDeniedError
 }
 fragment InvalidInputError on InvalidInputError {
-	message
-}
-fragment InvalidEmailError on InvalidEmailError {
-	errEmail: email
 	message
 }
 fragment PermissionDeniedError on PermissionDeniedError {
@@ -42443,7 +43389,6 @@ mutation UpdateUser ($uId: ID!, $input: UserInput!) {
 		... User
 		... PermissionDeniedError
 		... NotFoundError
-		... InvalidEmailError
 	}
 }
 fragment User on User {
@@ -42456,10 +43401,6 @@ fragment PermissionDeniedError on PermissionDeniedError {
 	message
 }
 fragment NotFoundError on NotFoundError {
-	message
-}
-fragment InvalidEmailError on InvalidEmailError {
-	errEmail: email
 	message
 }
 `
