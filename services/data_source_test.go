@@ -40,8 +40,8 @@ func createDataSource(suite *suite.Suite, dataSourceClient *services.DataSourceC
 
 	dataSource, err := dataSourceClient.CreateDataSource(ctx, *input)
 
-	suite.Require().NoError(err, "Failed to create data source")
-	suite.Require().NotNil(dataSource, "Failed to create data source")
+	suite.Require().NoErrorf(err, "Failed to create data source with name %q", *input.Name)
+	suite.Require().NotNilf(dataSource, "Failed to create data source with name %q", *input.Name)
 
 	return dataSource
 }
