@@ -14,5 +14,5 @@ type BasicAuthRoundTripper struct {
 func (a *BasicAuthRoundTripper) RoundTrip(req *http.Request) (*http.Response, error) {
 	req.SetBasicAuth(a.User, a.Password)
 
-	return a.Proxied.RoundTrip(req)
+	return a.Proxied.RoundTrip(req) //nolint:wrapcheck
 }

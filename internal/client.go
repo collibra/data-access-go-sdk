@@ -81,7 +81,7 @@ func (t *SdkHeaderTransport) RoundTrip(req *http.Request) (*http.Response, error
 
 	req.Header.Set("User-Agent", t.agent)
 
-	return t.Proxied.RoundTrip(req)
+	return t.Proxied.RoundTrip(req) //nolint:wrapcheck
 }
 
 const myModulePath = "github.com/collibra/data-access-go-sdk"

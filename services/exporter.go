@@ -142,6 +142,10 @@ func (c *ExporterClient) FetchExportAccessControls(ctx context.Context, flowId u
 					toReturn = &types.ExportedItemExportColumnMask{
 						ExportColumnMask: ac.ExportColumnMask,
 					}
+				case *types.ExportAccessControlsAccessControlsExportRowFilter:
+					toReturn = &types.ExportedItemExportRowFilter{
+						ExportRowFilter: ac.ExportRowFilter,
+					}
 				default:
 					yield(nil, fmt.Errorf("unknown exported access control type: %T", ac))
 
