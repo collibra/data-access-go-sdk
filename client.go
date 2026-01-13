@@ -49,50 +49,6 @@ type CollibraClient struct {
 	siteClient          singletonClient[services.SiteService]
 }
 
-type ClientOptionSetter = func(*internal.ClientOptions)
-
-func WithRetryWaitMin(d time.Duration) ClientOptionSetter {
-	return func(ops *internal.ClientOptions) {
-		ops.RetryWaitMin = d
-	}
-}
-
-func WithRetryWaitMax(d time.Duration) ClientOptionSetter {
-	return func(ops *internal.ClientOptions) {
-		ops.RetryWaitMax = d
-	}
-}
-
-func WithRetryMax(retries int) ClientOptionSetter {
-	return func(ops *internal.ClientOptions) {
-		ops.RetryMax = retries
-	}
-}
-
-func WithLinearJitterBackoff() ClientOptionSetter {
-	return func(ops *internal.ClientOptions) {
-		ops.Backoff = retryablehttp.LinearJitterBackoff
-	}
-}
-
-func WithRateLimitLinearJitterBackoff() ClientOptionSetter {
-	return func(ops *internal.ClientOptions) {
-		ops.Backoff = retryablehttp.RateLimitLinearJitterBackoff
-	}
-}
-
-func WithUsername(username string) ClientOptionSetter {
-	return func(ops *internal.ClientOptions) {
-		ops.Username = username
-	}
-}
-
-func WithPassword(password string) ClientOptionSetter {
-	return func(ops *internal.ClientOptions) {
-		ops.Password = password
-	}
-}
-
 // NewClient creates a new CollibraClient with the given credentials.
 func NewClient(url string, options ...ClientOptions) *CollibraClient {
 	ops := internal.ClientOptions{
