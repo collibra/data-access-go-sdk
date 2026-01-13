@@ -38,6 +38,8 @@ func createDataSource(suite *suite.Suite, dataSourceClient *services.DataSourceC
 		}
 	}
 
+	suite.T().Logf("Creating Data Source %s", *input.Name)
+
 	dataSource, err := dataSourceClient.CreateDataSource(ctx, *input)
 
 	suite.Require().NoErrorf(err, "Failed to create data source with name %q", *input.Name)
