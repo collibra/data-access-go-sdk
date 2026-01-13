@@ -32,7 +32,7 @@ func GetEnvConfig(suite *suite.Suite) (string, []ClientOptions) {
 			ops.Username = getEnv(suite, "COLLIBRA_USER")
 		},
 		func(ops *internal.ClientOptions) {
-			ops.Username = getEnv(suite, "COLLIBRA_PASSWORD")
+			ops.Password = getEnv(suite, "COLLIBRA_PASSWORD")
 		},
 	}
 
