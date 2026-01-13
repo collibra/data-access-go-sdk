@@ -29,10 +29,15 @@ func CreateHttpClient(options *ClientOptions) *http.Client {
 	transport := cleanhttp.DefaultPooledTransport()
 
 	// 2. Wrap it with an auth round tripper
-	authRoundTripper := &BasicAuthRoundTripper{
-		User:     options.Username,
-		Password: options.Password,
-		Proxied:  transport,
+	var authRoundTripper http.RoundTripper
+	if options.Username == "" && options.Password == "" {
+		authRoundTripper = transport
+	} else {
+		authRoundTripper = &BasicAuthRoundTripper{
+			User:     options.Username,
+			Password: options.Password,
+			Proxied:  transport,
+		}
 	}
 
 	// 3. Create a retryable http client
