@@ -9,7 +9,7 @@ func MarshalSyncConfiguration(v *map[string]any) ([]byte, error) { //nolint:gocr
 		return nil, nil
 	}
 
-	return yaml.Marshal(v)
+	return yaml.Marshal(v) //nolint:wrapcheck
 }
 
 func UnmarshalSyncConfiguration(b []byte, v *map[string]any) error { //nolint:gocritic
@@ -17,5 +17,5 @@ func UnmarshalSyncConfiguration(b []byte, v *map[string]any) error { //nolint:go
 		return nil
 	}
 
-	return yaml.Unmarshal(b, v)
+	return yaml.Unmarshal(b, v) //nolint:wrapcheck
 }

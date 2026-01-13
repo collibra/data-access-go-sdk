@@ -63,7 +63,7 @@ linters:
     - usestdlibvars
     - wastedassign
     - whitespace
-    # - wrapcheck # TODO: A separate ticket is created to enable wrapcheck linter as this will require quite some changes (Jira: DEV-141302)
+    - wrapcheck # TODO: A separate ticket is created to enable wrapcheck linter as this will require quite some changes (Jira: DEV-141302)
     - wsl_v5
   #    - wsl # TODO: Collibra: This is disabled temporarily so we can comment out code while doing the lift and shift to CHI (Jira: DEV-135346)
   settings:
@@ -174,6 +174,10 @@ linters:
     rules:
       - path: (.+)\.go$
         text: string `email` has (\d+) occurrences, make it a constant
+      - path: (.+)_test\.go$
+        linters:
+          - prealloc
+          - wrapcheck
     paths:
       - (.+)wire_gen\.go
       - internal/graphql/generated/generated.go

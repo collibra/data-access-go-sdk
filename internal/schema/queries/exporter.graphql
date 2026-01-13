@@ -88,9 +88,53 @@ fragment ExportColumnMask on ExportColumnMask {
     }
 }
 
+fragment ExportRowFilter on ExportRowFilter {
+    tableReferences {
+        table {
+            ... ExportDataObjectReference
+        }
+        id
+        externalId
+    }
+    rowFilterDetails {
+        ... ExportFilterDetail
+    }
+    rules {
+        ... ExportFilterRule
+    }
+    delete
+    deletedRules {
+        externalId
+    }
+}
+
+fragment ExportFilterRule on ExportFilterRule {
+    id
+    name
+    description
+    namingHint
+    externalId
+    rowFilterId
+    who {
+        ... ExportWhoItem
+    }
+    deletedWho {
+        ... ExportWhoItem
+    }
+}
+
+fragment ExportFilterDetail on ExportFilterDetails {
+    id
+    name
+    namingHint
+    description
+    delete
+}
+
 fragment ExportedItem on ExportedItem {
     ... ExportAccessControl
     ... ExportColumnMask
+    ... ExportRowFilter
 }
 
 fragment ExportAccessControls on ExportAccessControls {

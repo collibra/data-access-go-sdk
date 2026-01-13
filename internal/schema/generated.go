@@ -270,7 +270,8 @@ const (
 	AccessControlActionFilter AccessControlAction = "Filter"
 	AccessControlActionShare  AccessControlAction = "Share"
 	// For grouping users or other groups. The access control doesn't have WHAT items in this case.
-	AccessControlActionGroup AccessControlAction = "Group"
+	AccessControlActionGroup      AccessControlAction = "Group"
+	AccessControlActionFilterrule AccessControlAction = "FilterRule"
 )
 
 var AllAccessControlAction = []AccessControlAction{
@@ -279,6 +280,7 @@ var AllAccessControlAction = []AccessControlAction{
 	AccessControlActionFilter,
 	AccessControlActionShare,
 	AccessControlActionGroup,
+	AccessControlActionFilterrule,
 }
 
 // AccessControlCategoryGrantCategory includes the requested fields of the GraphQL type GrantCategory.
@@ -989,13 +991,14 @@ func (v *AccessControlDataSourceInput) GetDataSource() string { return v.DataSou
 func (v *AccessControlDataSourceInput) GetType() *string { return v.Type }
 
 type AccessControlFeedbackImport struct {
-	AccessControlId string                      `json:"accessControlId"`
-	ActualName      string                      `json:"actualName"`
-	ExternalId      *string                     `json:"externalId,omitempty"`
-	Type            *string                     `json:"type,omitempty"`
-	Errors          []string                    `json:"errors"`
-	Warnings        []string                    `json:"warnings"`
-	State           *AccessControlFeedbackState `json:"state,omitempty"`
+	AccessControlId    string                      `json:"accessControlId"`
+	ActualName         string                      `json:"actualName"`
+	ExternalId         *string                     `json:"externalId,omitempty"`
+	Type               *string                     `json:"type,omitempty"`
+	Errors             []string                    `json:"errors"`
+	Warnings           []string                    `json:"warnings"`
+	State              *AccessControlFeedbackState `json:"state,omitempty"`
+	FilterRuleFeedback []FilterRuleFeedbackImport  `json:"filterRuleFeedback"`
 }
 
 // GetAccessControlId returns AccessControlFeedbackImport.AccessControlId, and is useful for accessing the field via an interface.
@@ -1018,6 +1021,11 @@ func (v *AccessControlFeedbackImport) GetWarnings() []string { return v.Warnings
 
 // GetState returns AccessControlFeedbackImport.State, and is useful for accessing the field via an interface.
 func (v *AccessControlFeedbackImport) GetState() *AccessControlFeedbackState { return v.State }
+
+// GetFilterRuleFeedback returns AccessControlFeedbackImport.FilterRuleFeedback, and is useful for accessing the field via an interface.
+func (v *AccessControlFeedbackImport) GetFilterRuleFeedback() []FilterRuleFeedbackImport {
+	return v.FilterRuleFeedback
+}
 
 type AccessControlFeedbackState struct {
 	Who *AccessControlWhoFeedbackState `json:"who,omitempty"`
@@ -12778,11 +12786,105 @@ func (v *ExportAccessControlsAccessControlsExportColumnMask) __premarshalJSON() 
 	return &retval, nil
 }
 
+// ExportAccessControlsAccessControlsExportRowFilter includes the requested fields of the GraphQL type ExportRowFilter.
+type ExportAccessControlsAccessControlsExportRowFilter struct {
+	Typename                    *string `json:"__typename"`
+	ExportedItemExportRowFilter `json:"-"`
+}
+
+// GetTypename returns ExportAccessControlsAccessControlsExportRowFilter.Typename, and is useful for accessing the field via an interface.
+func (v *ExportAccessControlsAccessControlsExportRowFilter) GetTypename() *string { return v.Typename }
+
+// GetTableReferences returns ExportAccessControlsAccessControlsExportRowFilter.TableReferences, and is useful for accessing the field via an interface.
+func (v *ExportAccessControlsAccessControlsExportRowFilter) GetTableReferences() []ExportRowFilterTableReferencesExportRowFilterTableReference {
+	return v.ExportedItemExportRowFilter.ExportRowFilter.TableReferences
+}
+
+// GetRowFilterDetails returns ExportAccessControlsAccessControlsExportRowFilter.RowFilterDetails, and is useful for accessing the field via an interface.
+func (v *ExportAccessControlsAccessControlsExportRowFilter) GetRowFilterDetails() []ExportRowFilterRowFilterDetailsExportFilterDetails {
+	return v.ExportedItemExportRowFilter.ExportRowFilter.RowFilterDetails
+}
+
+// GetRules returns ExportAccessControlsAccessControlsExportRowFilter.Rules, and is useful for accessing the field via an interface.
+func (v *ExportAccessControlsAccessControlsExportRowFilter) GetRules() []ExportRowFilterRulesExportFilterRule {
+	return v.ExportedItemExportRowFilter.ExportRowFilter.Rules
+}
+
+// GetDelete returns ExportAccessControlsAccessControlsExportRowFilter.Delete, and is useful for accessing the field via an interface.
+func (v *ExportAccessControlsAccessControlsExportRowFilter) GetDelete() bool {
+	return v.ExportedItemExportRowFilter.ExportRowFilter.Delete
+}
+
+// GetDeletedRules returns ExportAccessControlsAccessControlsExportRowFilter.DeletedRules, and is useful for accessing the field via an interface.
+func (v *ExportAccessControlsAccessControlsExportRowFilter) GetDeletedRules() []ExportRowFilterDeletedRulesExportDeletedFilterRule {
+	return v.ExportedItemExportRowFilter.ExportRowFilter.DeletedRules
+}
+
+func (v *ExportAccessControlsAccessControlsExportRowFilter) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*ExportAccessControlsAccessControlsExportRowFilter
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.ExportAccessControlsAccessControlsExportRowFilter = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.ExportedItemExportRowFilter)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalExportAccessControlsAccessControlsExportRowFilter struct {
+	Typename *string `json:"__typename"`
+
+	TableReferences []ExportRowFilterTableReferencesExportRowFilterTableReference `json:"tableReferences"`
+
+	RowFilterDetails []ExportRowFilterRowFilterDetailsExportFilterDetails `json:"rowFilterDetails"`
+
+	Rules []ExportRowFilterRulesExportFilterRule `json:"rules"`
+
+	Delete bool `json:"delete"`
+
+	DeletedRules []ExportRowFilterDeletedRulesExportDeletedFilterRule `json:"deletedRules"`
+}
+
+func (v *ExportAccessControlsAccessControlsExportRowFilter) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *ExportAccessControlsAccessControlsExportRowFilter) __premarshalJSON() (*__premarshalExportAccessControlsAccessControlsExportRowFilter, error) {
+	var retval __premarshalExportAccessControlsAccessControlsExportRowFilter
+
+	retval.Typename = v.Typename
+	retval.TableReferences = v.ExportedItemExportRowFilter.ExportRowFilter.TableReferences
+	retval.RowFilterDetails = v.ExportedItemExportRowFilter.ExportRowFilter.RowFilterDetails
+	retval.Rules = v.ExportedItemExportRowFilter.ExportRowFilter.Rules
+	retval.Delete = v.ExportedItemExportRowFilter.ExportRowFilter.Delete
+	retval.DeletedRules = v.ExportedItemExportRowFilter.ExportRowFilter.DeletedRules
+	return &retval, nil
+}
+
 // ExportAccessControlsAccessControlsExportedItem includes the requested fields of the GraphQL interface ExportedItem.
 //
 // ExportAccessControlsAccessControlsExportedItem is implemented by the following types:
 // ExportAccessControlsAccessControlsExportAccessControl
 // ExportAccessControlsAccessControlsExportColumnMask
+// ExportAccessControlsAccessControlsExportRowFilter
 type ExportAccessControlsAccessControlsExportedItem interface {
 	implementsGraphQLInterfaceExportAccessControlsAccessControlsExportedItem()
 	// GetTypename returns the receiver's concrete GraphQL type-name (see interface doc for possible values).
@@ -12793,6 +12895,8 @@ type ExportAccessControlsAccessControlsExportedItem interface {
 func (v *ExportAccessControlsAccessControlsExportAccessControl) implementsGraphQLInterfaceExportAccessControlsAccessControlsExportedItem() {
 }
 func (v *ExportAccessControlsAccessControlsExportColumnMask) implementsGraphQLInterfaceExportAccessControlsAccessControlsExportedItem() {
+}
+func (v *ExportAccessControlsAccessControlsExportRowFilter) implementsGraphQLInterfaceExportAccessControlsAccessControlsExportedItem() {
 }
 
 func __unmarshalExportAccessControlsAccessControlsExportedItem(b []byte, v *ExportAccessControlsAccessControlsExportedItem) error {
@@ -12814,6 +12918,9 @@ func __unmarshalExportAccessControlsAccessControlsExportedItem(b []byte, v *Expo
 		return json.Unmarshal(b, *v)
 	case "ExportColumnMask":
 		*v = new(ExportAccessControlsAccessControlsExportColumnMask)
+		return json.Unmarshal(b, *v)
+	case "ExportRowFilter":
+		*v = new(ExportAccessControlsAccessControlsExportRowFilter)
 		return json.Unmarshal(b, *v)
 	case "":
 		return fmt.Errorf(
@@ -12850,6 +12957,18 @@ func __marshalExportAccessControlsAccessControlsExportedItem(v *ExportAccessCont
 		result := struct {
 			TypeName string `json:"__typename"`
 			*__premarshalExportAccessControlsAccessControlsExportColumnMask
+		}{typename, premarshaled}
+		return json.Marshal(result)
+	case *ExportAccessControlsAccessControlsExportRowFilter:
+		typename = "ExportRowFilter"
+
+		premarshaled, err := v.__premarshalJSON()
+		if err != nil {
+			return nil, err
+		}
+		result := struct {
+			TypeName string `json:"__typename"`
+			*__premarshalExportAccessControlsAccessControlsExportRowFilter
 		}{typename, premarshaled}
 		return json.Marshal(result)
 	case nil:
@@ -13160,6 +13279,204 @@ func (v *ExportDataObjectReference) GetFullName() string { return v.FullName }
 // GetType returns ExportDataObjectReference.Type, and is useful for accessing the field via an interface.
 func (v *ExportDataObjectReference) GetType() string { return v.Type }
 
+// ExportFilterDetail includes the GraphQL fields of ExportFilterDetails requested by the fragment ExportFilterDetail.
+type ExportFilterDetail struct {
+	Id          string `json:"id"`
+	Name        string `json:"name"`
+	NamingHint  string `json:"namingHint"`
+	Description string `json:"description"`
+	Delete      bool   `json:"delete"`
+}
+
+// GetId returns ExportFilterDetail.Id, and is useful for accessing the field via an interface.
+func (v *ExportFilterDetail) GetId() string { return v.Id }
+
+// GetName returns ExportFilterDetail.Name, and is useful for accessing the field via an interface.
+func (v *ExportFilterDetail) GetName() string { return v.Name }
+
+// GetNamingHint returns ExportFilterDetail.NamingHint, and is useful for accessing the field via an interface.
+func (v *ExportFilterDetail) GetNamingHint() string { return v.NamingHint }
+
+// GetDescription returns ExportFilterDetail.Description, and is useful for accessing the field via an interface.
+func (v *ExportFilterDetail) GetDescription() string { return v.Description }
+
+// GetDelete returns ExportFilterDetail.Delete, and is useful for accessing the field via an interface.
+func (v *ExportFilterDetail) GetDelete() bool { return v.Delete }
+
+// ExportFilterRule includes the GraphQL fields of ExportFilterRule requested by the fragment ExportFilterRule.
+type ExportFilterRule struct {
+	Id          string                                   `json:"id"`
+	Name        string                                   `json:"name"`
+	Description string                                   `json:"description"`
+	NamingHint  string                                   `json:"namingHint"`
+	ExternalId  *string                                  `json:"externalId"`
+	RowFilterId string                                   `json:"rowFilterId"`
+	Who         ExportFilterRuleWhoExportWhoItem         `json:"who"`
+	DeletedWho  *ExportFilterRuleDeletedWhoExportWhoItem `json:"deletedWho"`
+}
+
+// GetId returns ExportFilterRule.Id, and is useful for accessing the field via an interface.
+func (v *ExportFilterRule) GetId() string { return v.Id }
+
+// GetName returns ExportFilterRule.Name, and is useful for accessing the field via an interface.
+func (v *ExportFilterRule) GetName() string { return v.Name }
+
+// GetDescription returns ExportFilterRule.Description, and is useful for accessing the field via an interface.
+func (v *ExportFilterRule) GetDescription() string { return v.Description }
+
+// GetNamingHint returns ExportFilterRule.NamingHint, and is useful for accessing the field via an interface.
+func (v *ExportFilterRule) GetNamingHint() string { return v.NamingHint }
+
+// GetExternalId returns ExportFilterRule.ExternalId, and is useful for accessing the field via an interface.
+func (v *ExportFilterRule) GetExternalId() *string { return v.ExternalId }
+
+// GetRowFilterId returns ExportFilterRule.RowFilterId, and is useful for accessing the field via an interface.
+func (v *ExportFilterRule) GetRowFilterId() string { return v.RowFilterId }
+
+// GetWho returns ExportFilterRule.Who, and is useful for accessing the field via an interface.
+func (v *ExportFilterRule) GetWho() ExportFilterRuleWhoExportWhoItem { return v.Who }
+
+// GetDeletedWho returns ExportFilterRule.DeletedWho, and is useful for accessing the field via an interface.
+func (v *ExportFilterRule) GetDeletedWho() *ExportFilterRuleDeletedWhoExportWhoItem {
+	return v.DeletedWho
+}
+
+// ExportFilterRuleDeletedWhoExportWhoItem includes the requested fields of the GraphQL type ExportWhoItem.
+type ExportFilterRuleDeletedWhoExportWhoItem struct {
+	ExportWhoItem `json:"-"`
+}
+
+// GetUsers returns ExportFilterRuleDeletedWhoExportWhoItem.Users, and is useful for accessing the field via an interface.
+func (v *ExportFilterRuleDeletedWhoExportWhoItem) GetUsers() []string { return v.ExportWhoItem.Users }
+
+// GetInheritFrom returns ExportFilterRuleDeletedWhoExportWhoItem.InheritFrom, and is useful for accessing the field via an interface.
+func (v *ExportFilterRuleDeletedWhoExportWhoItem) GetInheritFrom() []string {
+	return v.ExportWhoItem.InheritFrom
+}
+
+// GetRecipients returns ExportFilterRuleDeletedWhoExportWhoItem.Recipients, and is useful for accessing the field via an interface.
+func (v *ExportFilterRuleDeletedWhoExportWhoItem) GetRecipients() []string {
+	return v.ExportWhoItem.Recipients
+}
+
+func (v *ExportFilterRuleDeletedWhoExportWhoItem) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*ExportFilterRuleDeletedWhoExportWhoItem
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.ExportFilterRuleDeletedWhoExportWhoItem = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.ExportWhoItem)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalExportFilterRuleDeletedWhoExportWhoItem struct {
+	Users []string `json:"users"`
+
+	InheritFrom []string `json:"inheritFrom"`
+
+	Recipients []string `json:"recipients"`
+}
+
+func (v *ExportFilterRuleDeletedWhoExportWhoItem) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *ExportFilterRuleDeletedWhoExportWhoItem) __premarshalJSON() (*__premarshalExportFilterRuleDeletedWhoExportWhoItem, error) {
+	var retval __premarshalExportFilterRuleDeletedWhoExportWhoItem
+
+	retval.Users = v.ExportWhoItem.Users
+	retval.InheritFrom = v.ExportWhoItem.InheritFrom
+	retval.Recipients = v.ExportWhoItem.Recipients
+	return &retval, nil
+}
+
+// ExportFilterRuleWhoExportWhoItem includes the requested fields of the GraphQL type ExportWhoItem.
+type ExportFilterRuleWhoExportWhoItem struct {
+	ExportWhoItem `json:"-"`
+}
+
+// GetUsers returns ExportFilterRuleWhoExportWhoItem.Users, and is useful for accessing the field via an interface.
+func (v *ExportFilterRuleWhoExportWhoItem) GetUsers() []string { return v.ExportWhoItem.Users }
+
+// GetInheritFrom returns ExportFilterRuleWhoExportWhoItem.InheritFrom, and is useful for accessing the field via an interface.
+func (v *ExportFilterRuleWhoExportWhoItem) GetInheritFrom() []string {
+	return v.ExportWhoItem.InheritFrom
+}
+
+// GetRecipients returns ExportFilterRuleWhoExportWhoItem.Recipients, and is useful for accessing the field via an interface.
+func (v *ExportFilterRuleWhoExportWhoItem) GetRecipients() []string {
+	return v.ExportWhoItem.Recipients
+}
+
+func (v *ExportFilterRuleWhoExportWhoItem) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*ExportFilterRuleWhoExportWhoItem
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.ExportFilterRuleWhoExportWhoItem = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.ExportWhoItem)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalExportFilterRuleWhoExportWhoItem struct {
+	Users []string `json:"users"`
+
+	InheritFrom []string `json:"inheritFrom"`
+
+	Recipients []string `json:"recipients"`
+}
+
+func (v *ExportFilterRuleWhoExportWhoItem) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *ExportFilterRuleWhoExportWhoItem) __premarshalJSON() (*__premarshalExportFilterRuleWhoExportWhoItem, error) {
+	var retval __premarshalExportFilterRuleWhoExportWhoItem
+
+	retval.Users = v.ExportWhoItem.Users
+	retval.InheritFrom = v.ExportWhoItem.InheritFrom
+	retval.Recipients = v.ExportWhoItem.Recipients
+	return &retval, nil
+}
+
 type ExportFlowOptions struct {
 	OnlyOutOfSync *bool `json:"onlyOutOfSync,omitempty"`
 }
@@ -13182,6 +13499,328 @@ func (v *ExportOwner) GetAccountName() *string { return v.AccountName }
 
 // GetAccessControlName returns ExportOwner.AccessControlName, and is useful for accessing the field via an interface.
 func (v *ExportOwner) GetAccessControlName() *string { return v.AccessControlName }
+
+// ExportRowFilter includes the GraphQL fields of ExportRowFilter requested by the fragment ExportRowFilter.
+type ExportRowFilter struct {
+	TableReferences  []ExportRowFilterTableReferencesExportRowFilterTableReference `json:"tableReferences"`
+	RowFilterDetails []ExportRowFilterRowFilterDetailsExportFilterDetails          `json:"rowFilterDetails"`
+	Rules            []ExportRowFilterRulesExportFilterRule                        `json:"rules"`
+	Delete           bool                                                          `json:"delete"`
+	DeletedRules     []ExportRowFilterDeletedRulesExportDeletedFilterRule          `json:"deletedRules"`
+}
+
+// GetTableReferences returns ExportRowFilter.TableReferences, and is useful for accessing the field via an interface.
+func (v *ExportRowFilter) GetTableReferences() []ExportRowFilterTableReferencesExportRowFilterTableReference {
+	return v.TableReferences
+}
+
+// GetRowFilterDetails returns ExportRowFilter.RowFilterDetails, and is useful for accessing the field via an interface.
+func (v *ExportRowFilter) GetRowFilterDetails() []ExportRowFilterRowFilterDetailsExportFilterDetails {
+	return v.RowFilterDetails
+}
+
+// GetRules returns ExportRowFilter.Rules, and is useful for accessing the field via an interface.
+func (v *ExportRowFilter) GetRules() []ExportRowFilterRulesExportFilterRule { return v.Rules }
+
+// GetDelete returns ExportRowFilter.Delete, and is useful for accessing the field via an interface.
+func (v *ExportRowFilter) GetDelete() bool { return v.Delete }
+
+// GetDeletedRules returns ExportRowFilter.DeletedRules, and is useful for accessing the field via an interface.
+func (v *ExportRowFilter) GetDeletedRules() []ExportRowFilterDeletedRulesExportDeletedFilterRule {
+	return v.DeletedRules
+}
+
+// ExportRowFilterDeletedRulesExportDeletedFilterRule includes the requested fields of the GraphQL type ExportDeletedFilterRule.
+type ExportRowFilterDeletedRulesExportDeletedFilterRule struct {
+	ExternalId string `json:"externalId"`
+}
+
+// GetExternalId returns ExportRowFilterDeletedRulesExportDeletedFilterRule.ExternalId, and is useful for accessing the field via an interface.
+func (v *ExportRowFilterDeletedRulesExportDeletedFilterRule) GetExternalId() string {
+	return v.ExternalId
+}
+
+// ExportRowFilterRowFilterDetailsExportFilterDetails includes the requested fields of the GraphQL type ExportFilterDetails.
+type ExportRowFilterRowFilterDetailsExportFilterDetails struct {
+	ExportFilterDetail `json:"-"`
+}
+
+// GetId returns ExportRowFilterRowFilterDetailsExportFilterDetails.Id, and is useful for accessing the field via an interface.
+func (v *ExportRowFilterRowFilterDetailsExportFilterDetails) GetId() string {
+	return v.ExportFilterDetail.Id
+}
+
+// GetName returns ExportRowFilterRowFilterDetailsExportFilterDetails.Name, and is useful for accessing the field via an interface.
+func (v *ExportRowFilterRowFilterDetailsExportFilterDetails) GetName() string {
+	return v.ExportFilterDetail.Name
+}
+
+// GetNamingHint returns ExportRowFilterRowFilterDetailsExportFilterDetails.NamingHint, and is useful for accessing the field via an interface.
+func (v *ExportRowFilterRowFilterDetailsExportFilterDetails) GetNamingHint() string {
+	return v.ExportFilterDetail.NamingHint
+}
+
+// GetDescription returns ExportRowFilterRowFilterDetailsExportFilterDetails.Description, and is useful for accessing the field via an interface.
+func (v *ExportRowFilterRowFilterDetailsExportFilterDetails) GetDescription() string {
+	return v.ExportFilterDetail.Description
+}
+
+// GetDelete returns ExportRowFilterRowFilterDetailsExportFilterDetails.Delete, and is useful for accessing the field via an interface.
+func (v *ExportRowFilterRowFilterDetailsExportFilterDetails) GetDelete() bool {
+	return v.ExportFilterDetail.Delete
+}
+
+func (v *ExportRowFilterRowFilterDetailsExportFilterDetails) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*ExportRowFilterRowFilterDetailsExportFilterDetails
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.ExportRowFilterRowFilterDetailsExportFilterDetails = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.ExportFilterDetail)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalExportRowFilterRowFilterDetailsExportFilterDetails struct {
+	Id string `json:"id"`
+
+	Name string `json:"name"`
+
+	NamingHint string `json:"namingHint"`
+
+	Description string `json:"description"`
+
+	Delete bool `json:"delete"`
+}
+
+func (v *ExportRowFilterRowFilterDetailsExportFilterDetails) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *ExportRowFilterRowFilterDetailsExportFilterDetails) __premarshalJSON() (*__premarshalExportRowFilterRowFilterDetailsExportFilterDetails, error) {
+	var retval __premarshalExportRowFilterRowFilterDetailsExportFilterDetails
+
+	retval.Id = v.ExportFilterDetail.Id
+	retval.Name = v.ExportFilterDetail.Name
+	retval.NamingHint = v.ExportFilterDetail.NamingHint
+	retval.Description = v.ExportFilterDetail.Description
+	retval.Delete = v.ExportFilterDetail.Delete
+	return &retval, nil
+}
+
+// ExportRowFilterRulesExportFilterRule includes the requested fields of the GraphQL type ExportFilterRule.
+type ExportRowFilterRulesExportFilterRule struct {
+	ExportFilterRule `json:"-"`
+}
+
+// GetId returns ExportRowFilterRulesExportFilterRule.Id, and is useful for accessing the field via an interface.
+func (v *ExportRowFilterRulesExportFilterRule) GetId() string { return v.ExportFilterRule.Id }
+
+// GetName returns ExportRowFilterRulesExportFilterRule.Name, and is useful for accessing the field via an interface.
+func (v *ExportRowFilterRulesExportFilterRule) GetName() string { return v.ExportFilterRule.Name }
+
+// GetDescription returns ExportRowFilterRulesExportFilterRule.Description, and is useful for accessing the field via an interface.
+func (v *ExportRowFilterRulesExportFilterRule) GetDescription() string {
+	return v.ExportFilterRule.Description
+}
+
+// GetNamingHint returns ExportRowFilterRulesExportFilterRule.NamingHint, and is useful for accessing the field via an interface.
+func (v *ExportRowFilterRulesExportFilterRule) GetNamingHint() string {
+	return v.ExportFilterRule.NamingHint
+}
+
+// GetExternalId returns ExportRowFilterRulesExportFilterRule.ExternalId, and is useful for accessing the field via an interface.
+func (v *ExportRowFilterRulesExportFilterRule) GetExternalId() *string {
+	return v.ExportFilterRule.ExternalId
+}
+
+// GetRowFilterId returns ExportRowFilterRulesExportFilterRule.RowFilterId, and is useful for accessing the field via an interface.
+func (v *ExportRowFilterRulesExportFilterRule) GetRowFilterId() string {
+	return v.ExportFilterRule.RowFilterId
+}
+
+// GetWho returns ExportRowFilterRulesExportFilterRule.Who, and is useful for accessing the field via an interface.
+func (v *ExportRowFilterRulesExportFilterRule) GetWho() ExportFilterRuleWhoExportWhoItem {
+	return v.ExportFilterRule.Who
+}
+
+// GetDeletedWho returns ExportRowFilterRulesExportFilterRule.DeletedWho, and is useful for accessing the field via an interface.
+func (v *ExportRowFilterRulesExportFilterRule) GetDeletedWho() *ExportFilterRuleDeletedWhoExportWhoItem {
+	return v.ExportFilterRule.DeletedWho
+}
+
+func (v *ExportRowFilterRulesExportFilterRule) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*ExportRowFilterRulesExportFilterRule
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.ExportRowFilterRulesExportFilterRule = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.ExportFilterRule)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalExportRowFilterRulesExportFilterRule struct {
+	Id string `json:"id"`
+
+	Name string `json:"name"`
+
+	Description string `json:"description"`
+
+	NamingHint string `json:"namingHint"`
+
+	ExternalId *string `json:"externalId"`
+
+	RowFilterId string `json:"rowFilterId"`
+
+	Who ExportFilterRuleWhoExportWhoItem `json:"who"`
+
+	DeletedWho *ExportFilterRuleDeletedWhoExportWhoItem `json:"deletedWho"`
+}
+
+func (v *ExportRowFilterRulesExportFilterRule) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *ExportRowFilterRulesExportFilterRule) __premarshalJSON() (*__premarshalExportRowFilterRulesExportFilterRule, error) {
+	var retval __premarshalExportRowFilterRulesExportFilterRule
+
+	retval.Id = v.ExportFilterRule.Id
+	retval.Name = v.ExportFilterRule.Name
+	retval.Description = v.ExportFilterRule.Description
+	retval.NamingHint = v.ExportFilterRule.NamingHint
+	retval.ExternalId = v.ExportFilterRule.ExternalId
+	retval.RowFilterId = v.ExportFilterRule.RowFilterId
+	retval.Who = v.ExportFilterRule.Who
+	retval.DeletedWho = v.ExportFilterRule.DeletedWho
+	return &retval, nil
+}
+
+// ExportRowFilterTableReferencesExportRowFilterTableReference includes the requested fields of the GraphQL type ExportRowFilterTableReference.
+type ExportRowFilterTableReferencesExportRowFilterTableReference struct {
+	Table      ExportRowFilterTableReferencesExportRowFilterTableReferenceTableExportDataObjectReference `json:"table"`
+	Id         string                                                                                    `json:"id"`
+	ExternalId *string                                                                                   `json:"externalId"`
+}
+
+// GetTable returns ExportRowFilterTableReferencesExportRowFilterTableReference.Table, and is useful for accessing the field via an interface.
+func (v *ExportRowFilterTableReferencesExportRowFilterTableReference) GetTable() ExportRowFilterTableReferencesExportRowFilterTableReferenceTableExportDataObjectReference {
+	return v.Table
+}
+
+// GetId returns ExportRowFilterTableReferencesExportRowFilterTableReference.Id, and is useful for accessing the field via an interface.
+func (v *ExportRowFilterTableReferencesExportRowFilterTableReference) GetId() string { return v.Id }
+
+// GetExternalId returns ExportRowFilterTableReferencesExportRowFilterTableReference.ExternalId, and is useful for accessing the field via an interface.
+func (v *ExportRowFilterTableReferencesExportRowFilterTableReference) GetExternalId() *string {
+	return v.ExternalId
+}
+
+// ExportRowFilterTableReferencesExportRowFilterTableReferenceTableExportDataObjectReference includes the requested fields of the GraphQL type ExportDataObjectReference.
+type ExportRowFilterTableReferencesExportRowFilterTableReferenceTableExportDataObjectReference struct {
+	ExportDataObjectReference `json:"-"`
+}
+
+// GetId returns ExportRowFilterTableReferencesExportRowFilterTableReferenceTableExportDataObjectReference.Id, and is useful for accessing the field via an interface.
+func (v *ExportRowFilterTableReferencesExportRowFilterTableReferenceTableExportDataObjectReference) GetId() string {
+	return v.ExportDataObjectReference.Id
+}
+
+// GetFullName returns ExportRowFilterTableReferencesExportRowFilterTableReferenceTableExportDataObjectReference.FullName, and is useful for accessing the field via an interface.
+func (v *ExportRowFilterTableReferencesExportRowFilterTableReferenceTableExportDataObjectReference) GetFullName() string {
+	return v.ExportDataObjectReference.FullName
+}
+
+// GetType returns ExportRowFilterTableReferencesExportRowFilterTableReferenceTableExportDataObjectReference.Type, and is useful for accessing the field via an interface.
+func (v *ExportRowFilterTableReferencesExportRowFilterTableReferenceTableExportDataObjectReference) GetType() string {
+	return v.ExportDataObjectReference.Type
+}
+
+func (v *ExportRowFilterTableReferencesExportRowFilterTableReferenceTableExportDataObjectReference) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*ExportRowFilterTableReferencesExportRowFilterTableReferenceTableExportDataObjectReference
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.ExportRowFilterTableReferencesExportRowFilterTableReferenceTableExportDataObjectReference = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.ExportDataObjectReference)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalExportRowFilterTableReferencesExportRowFilterTableReferenceTableExportDataObjectReference struct {
+	Id string `json:"id"`
+
+	FullName string `json:"fullName"`
+
+	Type string `json:"type"`
+}
+
+func (v *ExportRowFilterTableReferencesExportRowFilterTableReferenceTableExportDataObjectReference) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *ExportRowFilterTableReferencesExportRowFilterTableReferenceTableExportDataObjectReference) __premarshalJSON() (*__premarshalExportRowFilterTableReferencesExportRowFilterTableReferenceTableExportDataObjectReference, error) {
+	var retval __premarshalExportRowFilterTableReferencesExportRowFilterTableReferenceTableExportDataObjectReference
+
+	retval.Id = v.ExportDataObjectReference.Id
+	retval.FullName = v.ExportDataObjectReference.FullName
+	retval.Type = v.ExportDataObjectReference.Type
+	return &retval, nil
+}
 
 // ExportWhatItem includes the GraphQL fields of ExportWhatItem requested by the fragment ExportWhatItem.
 type ExportWhatItem struct {
@@ -13288,12 +13927,14 @@ func (v *ExportWhoItem) GetRecipients() []string { return v.Recipients }
 // ExportedItem is implemented by the following types:
 // ExportedItemExportAccessControl
 // ExportedItemExportColumnMask
+// ExportedItemExportRowFilter
 type ExportedItem interface {
 	implementsGraphQLInterfaceExportedItem()
 }
 
 func (v *ExportedItemExportAccessControl) implementsGraphQLInterfaceExportedItem() {}
 func (v *ExportedItemExportColumnMask) implementsGraphQLInterfaceExportedItem()    {}
+func (v *ExportedItemExportRowFilter) implementsGraphQLInterfaceExportedItem()     {}
 
 func __unmarshalExportedItem(b []byte, v *ExportedItem) error {
 	if string(b) == "null" {
@@ -13314,6 +13955,9 @@ func __unmarshalExportedItem(b []byte, v *ExportedItem) error {
 		return json.Unmarshal(b, *v)
 	case "ExportColumnMask":
 		*v = new(ExportedItemExportColumnMask)
+		return json.Unmarshal(b, *v)
+	case "ExportRowFilter":
+		*v = new(ExportedItemExportRowFilter)
 		return json.Unmarshal(b, *v)
 	case "":
 		return fmt.Errorf(
@@ -13350,6 +13994,18 @@ func __marshalExportedItem(v *ExportedItem) ([]byte, error) {
 		result := struct {
 			TypeName string `json:"__typename"`
 			*__premarshalExportedItemExportColumnMask
+		}{typename, premarshaled}
+		return json.Marshal(result)
+	case *ExportedItemExportRowFilter:
+		typename = "ExportRowFilter"
+
+		premarshaled, err := v.__premarshalJSON()
+		if err != nil {
+			return nil, err
+		}
+		result := struct {
+			TypeName string `json:"__typename"`
+			*__premarshalExportedItemExportRowFilter
 		}{typename, premarshaled}
 		return json.Marshal(result)
 	case nil:
@@ -13645,6 +14301,90 @@ func (v *ExportedItemExportColumnMask) __premarshalJSON() (*__premarshalExported
 	retval.Delete = v.ExportColumnMask.Delete
 	retval.Who = v.ExportColumnMask.Who
 	retval.DeletedWho = v.ExportColumnMask.DeletedWho
+	return &retval, nil
+}
+
+// ExportedItem includes the GraphQL fields of ExportRowFilter requested by the fragment ExportedItem.
+type ExportedItemExportRowFilter struct {
+	ExportRowFilter `json:"-"`
+}
+
+// GetTableReferences returns ExportedItemExportRowFilter.TableReferences, and is useful for accessing the field via an interface.
+func (v *ExportedItemExportRowFilter) GetTableReferences() []ExportRowFilterTableReferencesExportRowFilterTableReference {
+	return v.ExportRowFilter.TableReferences
+}
+
+// GetRowFilterDetails returns ExportedItemExportRowFilter.RowFilterDetails, and is useful for accessing the field via an interface.
+func (v *ExportedItemExportRowFilter) GetRowFilterDetails() []ExportRowFilterRowFilterDetailsExportFilterDetails {
+	return v.ExportRowFilter.RowFilterDetails
+}
+
+// GetRules returns ExportedItemExportRowFilter.Rules, and is useful for accessing the field via an interface.
+func (v *ExportedItemExportRowFilter) GetRules() []ExportRowFilterRulesExportFilterRule {
+	return v.ExportRowFilter.Rules
+}
+
+// GetDelete returns ExportedItemExportRowFilter.Delete, and is useful for accessing the field via an interface.
+func (v *ExportedItemExportRowFilter) GetDelete() bool { return v.ExportRowFilter.Delete }
+
+// GetDeletedRules returns ExportedItemExportRowFilter.DeletedRules, and is useful for accessing the field via an interface.
+func (v *ExportedItemExportRowFilter) GetDeletedRules() []ExportRowFilterDeletedRulesExportDeletedFilterRule {
+	return v.ExportRowFilter.DeletedRules
+}
+
+func (v *ExportedItemExportRowFilter) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*ExportedItemExportRowFilter
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.ExportedItemExportRowFilter = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.ExportRowFilter)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalExportedItemExportRowFilter struct {
+	TableReferences []ExportRowFilterTableReferencesExportRowFilterTableReference `json:"tableReferences"`
+
+	RowFilterDetails []ExportRowFilterRowFilterDetailsExportFilterDetails `json:"rowFilterDetails"`
+
+	Rules []ExportRowFilterRulesExportFilterRule `json:"rules"`
+
+	Delete bool `json:"delete"`
+
+	DeletedRules []ExportRowFilterDeletedRulesExportDeletedFilterRule `json:"deletedRules"`
+}
+
+func (v *ExportedItemExportRowFilter) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *ExportedItemExportRowFilter) __premarshalJSON() (*__premarshalExportedItemExportRowFilter, error) {
+	var retval __premarshalExportedItemExportRowFilter
+
+	retval.TableReferences = v.ExportRowFilter.TableReferences
+	retval.RowFilterDetails = v.ExportRowFilter.RowFilterDetails
+	retval.Rules = v.ExportRowFilter.Rules
+	retval.Delete = v.ExportRowFilter.Delete
+	retval.DeletedRules = v.ExportRowFilter.DeletedRules
 	return &retval, nil
 }
 
@@ -14134,6 +14874,17 @@ func (v *FilterMetadataInput) GetFilterOverridePermissions() []string {
 
 // GetApplicableTypes returns FilterMetadataInput.ApplicableTypes, and is useful for accessing the field via an interface.
 func (v *FilterMetadataInput) GetApplicableTypes() []string { return v.ApplicableTypes }
+
+type FilterRuleFeedbackImport struct {
+	RuleId string                      `json:"ruleId"`
+	State  *AccessControlFeedbackState `json:"state,omitempty"`
+}
+
+// GetRuleId returns FilterRuleFeedbackImport.RuleId, and is useful for accessing the field via an interface.
+func (v *FilterRuleFeedbackImport) GetRuleId() string { return v.RuleId }
+
+// GetState returns FilterRuleFeedbackImport.State, and is useful for accessing the field via an interface.
+func (v *FilterRuleFeedbackImport) GetState() *AccessControlFeedbackState { return v.State }
 
 // FinalizeExportFlowResponse is returned by FinalizeExportFlow on success.
 type FinalizeExportFlowResponse struct {
@@ -40043,6 +40794,7 @@ fragment InvalidInputError on InvalidInputError {
 fragment ExportedItem on ExportedItem {
 	... ExportAccessControl
 	... ExportColumnMask
+	... ExportRowFilter
 }
 fragment ExportAccessControl on ExportAccessControl {
 	id
@@ -40101,6 +40853,25 @@ fragment ExportColumnMask on ExportColumnMask {
 		... ExportWhoItem
 	}
 }
+fragment ExportRowFilter on ExportRowFilter {
+	tableReferences {
+		table {
+			... ExportDataObjectReference
+		}
+		id
+		externalId
+	}
+	rowFilterDetails {
+		... ExportFilterDetail
+	}
+	rules {
+		... ExportFilterRule
+	}
+	delete
+	deletedRules {
+		externalId
+	}
+}
 fragment ExportWhoItem on ExportWhoItem {
 	users
 	inheritFrom
@@ -40121,6 +40892,27 @@ fragment ExportDataObjectReference on ExportDataObjectReference {
 	id
 	fullName
 	type
+}
+fragment ExportFilterDetail on ExportFilterDetails {
+	id
+	name
+	namingHint
+	description
+	delete
+}
+fragment ExportFilterRule on ExportFilterRule {
+	id
+	name
+	description
+	namingHint
+	externalId
+	rowFilterId
+	who {
+		... ExportWhoItem
+	}
+	deletedWho {
+		... ExportWhoItem
+	}
 }
 `
 
