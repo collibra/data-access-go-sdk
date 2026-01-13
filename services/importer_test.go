@@ -46,12 +46,8 @@ func Test_ImporterServiceTestSuite(t *testing.T) {
 }
 
 func (suite *ImporterServiceTestSuite) SetupSuite() {
-	config := utils.GetEnvConfig(&suite.Suite)
-	sdkClient := sdk.NewClient(
-		config.User,
-		config.Password,
-		config.URL,
-	)
+	url, clientOptions := utils.GetEnvConfig(&suite.Suite)
+	sdkClient := sdk.NewClient(url, clientOptions...)
 
 	suite.Require().NotNil(sdkClient, "Failed to create SDK client")
 	suite.sdkClient = sdkClient

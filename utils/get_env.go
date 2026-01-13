@@ -3,8 +3,11 @@ package utils
 import (
 	"os"
 
+	"github.com/collibra/data-access-go-sdk/internal"
 	"github.com/stretchr/testify/suite"
 )
+
+type ClientOptions = func(*internal.ClientOptions)
 
 type EnvConfig struct {
 	User     string
@@ -22,10 +25,16 @@ func getEnv(suite *suite.Suite, key string) string {
 	return value
 }
 
-func GetEnvConfig(suite *suite.Suite) EnvConfig {
-	return EnvConfig{
-		User:     getEnv(suite, "COLLIBRA_USER"),
-		Password: getEnv(suite, "COLLIBRA_PASSWORD"),
-		URL:      getEnv(suite, "COLLIBRA_URL"),
+func GetEnvConfig(suite *suite.Suite) (string, []ClientOptions) {
+	url := getEnv(suite, "COLLIBRA_URL")
+	options := []ClientOptions{
+		func(ops *internal.ClientOptions) {
+			ops.Username = getEnv(suite, "COLLIBRA_USER")
+		},
+		func(ops *internal.ClientOptions) {
+			ops.Password = getEnv(suite, "COLLIBRA_PASSWORD")
+		},
 	}
+
+	return url, options
 }

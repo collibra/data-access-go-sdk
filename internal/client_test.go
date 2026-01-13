@@ -40,18 +40,14 @@ func (suite *ClientTestSuite) TestCreateHttpClient() {
 	suite.True(ok, "Expected Transport to be *SdkHeaderTransport")
 }
 
-func (suite *ClientTestSuite) TestSdkHeaderTransport_RoundTrip() {
+func (suite *ClientTestSuite) TestBasicAuth() {
 	var requestCount int32
 
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		atomic.AddInt32(&requestCount, 1) // Atomic increment
 
-		userAgent := r.Header.Get("User-Agent")
-		suite.NotEmpty(userAgent)
-		suite.True(strings.HasPrefix(userAgent, "Collibra Data Access SDK/"))
-
-		username, password, ok := r.BasicAuth()
-		suite.True(ok)
+		username, password, found := r.BasicAuth()
+		suite.True(found)
 		suite.Equal("testuser", username)
 		suite.Equal("testpass", password)
 
@@ -77,7 +73,81 @@ func (suite *ClientTestSuite) TestSdkHeaderTransport_RoundTrip() {
 	client := CreateHttpClient(options)
 	resp, err := client.Get(server.URL)
 	suite.Require().NoError(err)
-	resp.Body.Close()
+
+	_ = resp.Body.Close()
+
+	suite.Equal(int32(1), atomic.LoadInt32(&requestCount))
+}
+
+func (suite *ClientTestSuite) TestNoBasicAuth() {
+	var requestCount int32
+
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		atomic.AddInt32(&requestCount, 1) // Atomic increment
+
+		_, _, found := r.BasicAuth()
+		suite.False(found)
+
+		w.WriteHeader(http.StatusOK)
+
+		_, err := w.Write([]byte("OK"))
+		if err != nil {
+			// Handle the error (log it, return it, etc.)
+			suite.T().Logf("failed to write status: %v", err)
+		}
+	}))
+	defer server.Close()
+
+	options := &ClientOptions{
+		RetryWaitMin: 1 * time.Millisecond,
+		RetryWaitMax: 10 * time.Millisecond,
+		RetryMax:     0,
+		Backoff:      retryablehttp.DefaultBackoff,
+	}
+
+	client := CreateHttpClient(options)
+	resp, err := client.Get(server.URL)
+	suite.Require().NoError(err)
+
+	_ = resp.Body.Close()
+
+	suite.Equal(int32(1), atomic.LoadInt32(&requestCount))
+}
+
+func (suite *ClientTestSuite) TestSdkHeaderTransport_RoundTrip() {
+	var requestCount int32
+
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		atomic.AddInt32(&requestCount, 1) // Atomic increment
+
+		userAgent := r.Header.Get("User-Agent")
+		suite.NotEmpty(userAgent)
+		suite.True(strings.HasPrefix(userAgent, "Collibra Data Access SDK/"))
+
+		w.WriteHeader(http.StatusOK)
+
+		_, err := w.Write([]byte("OK"))
+		if err != nil {
+			// Handle the error (log it, return it, etc.)
+			suite.T().Logf("failed to write status: %v", err)
+		}
+	}))
+	defer server.Close()
+
+	options := &ClientOptions{
+		Username:     "testuser",
+		Password:     "testpass",
+		RetryWaitMin: 1 * time.Millisecond,
+		RetryWaitMax: 10 * time.Millisecond,
+		RetryMax:     0,
+		Backoff:      retryablehttp.DefaultBackoff,
+	}
+
+	client := CreateHttpClient(options)
+	resp, err := client.Get(server.URL)
+	suite.Require().NoError(err)
+
+	_ = resp.Body.Close()
 
 	suite.Equal(int32(1), atomic.LoadInt32(&requestCount))
 }
@@ -110,7 +180,8 @@ func (suite *ClientTestSuite) TestRetryBehavior() {
 	suite.Equal(http.StatusOK, resp.StatusCode)
 
 	suite.GreaterOrEqual(atomic.LoadInt32(&attemptCount), int32(3))
-	resp.Body.Close()
+
+	_ = resp.Body.Close()
 }
 
 func (suite *ClientTestSuite) TestSdkHeaderTransport_GetVersion_Sanity() {

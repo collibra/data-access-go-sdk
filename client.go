@@ -79,12 +79,21 @@ func WithRateLimitLinearJitterBackoff() ClientOptions {
 	}
 }
 
-// NewClient creates a new CollibraClient with the given credentials.
-func NewClient(user, password, url string, options ...ClientOptions) *CollibraClient {
-	ops := internal.ClientOptions{
-		Username: user,
-		Password: password,
+func WithUsername(username string) ClientOptions {
+	return func(ops *internal.ClientOptions) {
+		ops.Username = username
+	}
+}
 
+func WithPassword(password string) ClientOptions {
+	return func(ops *internal.ClientOptions) {
+		ops.Password = password
+	}
+}
+
+// NewClient creates a new CollibraClient with the given credentials.
+func NewClient(url string, options ...ClientOptions) *CollibraClient {
+	ops := internal.ClientOptions{
 		RetryWaitMin: 550 * time.Millisecond,
 		RetryWaitMax: 30 * time.Second,
 		RetryMax:     4,
