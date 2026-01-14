@@ -50,7 +50,7 @@ jobs:
         run: go build ./...
 
       - name: Test
-        run: make test
+        run: make test-coverage
         env:
           COLLIBRA_URL: ${{ secrets.COLLIBRA_URL }}
           COLLIBRA_USER: ${{ secrets.COLLIBRA_USER }}

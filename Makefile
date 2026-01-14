@@ -1,6 +1,10 @@
-.PHONY: gql fetch-schema fetch-local-schema fix-lint lint build test
+.PHONY: gql fetch-schema fetch-local-schema fix-lint lint build test test-coverage
 
-gotestsum := go run gotest.tools/gotestsum@latest
+ifeq ($(GITHUB_ACTIONS),true)
+  	gotestsum := go run gotest.tools/gotestsum@latest --format github-actions --format-hide-empty-pkg --debug
+else
+	gotestsum := go run gotest.tools/gotestsum@latest --format testname --debug
+endif
 
 gql:
 	go run github.com/Khan/genqlient internal/schema/genqlient.yaml
@@ -25,3 +29,6 @@ build:
 
 test:
 	$(gotestsum) -- -race ./...
+
+test-coverage:
+	$(gotestsum) --junitfile .tests/test-results.xml --jsonfile .tests/test-results.json -- -coverpkg=./... -covermode=atomic -coverprofile=.tests/coverage.out -race -mod=readonly ./...

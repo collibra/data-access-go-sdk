@@ -121,6 +121,8 @@ fragment ExportFilterRule on ExportFilterRule {
     deletedWho {
         ... ExportWhoItem
     }
+    filterCriteria
+    policy
 }
 
 fragment ExportFilterDetail on ExportFilterDetails {
