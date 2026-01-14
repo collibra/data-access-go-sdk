@@ -1,9 +1,9 @@
 .PHONY: gql fetch-schema fetch-local-schema fix-lint lint build test
 
 ifeq ($(GITHUB_ACTIONS),true)
-  	gotestsum := $(GO) run gotest.tools/gotestsum --format github-actions --format-hide-empty-pkg --debug
+  	gotestsum := go run gotest.tools/gotestsum --format github-actions --format-hide-empty-pkg --debug
 else
-	gotestsum := $(GO) run gotest.tools/gotestsum --format testname --debug
+	gotestsum := go run gotest.tools/gotestsum --format testname --debug
 endif
 
 gql:
