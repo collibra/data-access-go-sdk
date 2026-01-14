@@ -1,4 +1,4 @@
-.PHONY: gql fetch-schema fetch-local-schema fix-lint lint build test
+.PHONY: gql fetch-schema fetch-local-schema fix-lint lint build test test-coverage
 
 ifeq ($(GITHUB_ACTIONS),true)
   	gotestsum := go run gotest.tools/gotestsum@latest --format github-actions --format-hide-empty-pkg --debug
@@ -29,3 +29,6 @@ build:
 
 test:
 	$(gotestsum) -- -race ./...
+
+test-coverage:
+	$(gotestsum) -- --junitfile .tests/test-results.xml --jsonfile .tests/test-results.json -- -coverpkg=./... -covermode=atomic -coverprofile=.tests/coverage.out -race -mod=readonly ./...
