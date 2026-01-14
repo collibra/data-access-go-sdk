@@ -122,6 +122,7 @@ fragment ExportFilterRule on ExportFilterRule {
         ... ExportWhoItem
     }
     filterCriteria
+    policy
 }
 
 fragment ExportFilterDetail on ExportFilterDetails {

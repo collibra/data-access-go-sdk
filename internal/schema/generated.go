@@ -13313,7 +13313,8 @@ type ExportFilterRule struct {
 	RowFilterId    string                                   `json:"rowFilterId"`
 	Who            ExportFilterRuleWhoExportWhoItem         `json:"who"`
 	DeletedWho     *ExportFilterRuleDeletedWhoExportWhoItem `json:"deletedWho"`
-	FilterCriteria string                                   `json:"filterCriteria"`
+	FilterCriteria *string                                  `json:"filterCriteria"`
+	Policy         *string                                  `json:"policy"`
 }
 
 // GetId returns ExportFilterRule.Id, and is useful for accessing the field via an interface.
@@ -13343,7 +13344,10 @@ func (v *ExportFilterRule) GetDeletedWho() *ExportFilterRuleDeletedWhoExportWhoI
 }
 
 // GetFilterCriteria returns ExportFilterRule.FilterCriteria, and is useful for accessing the field via an interface.
-func (v *ExportFilterRule) GetFilterCriteria() string { return v.FilterCriteria }
+func (v *ExportFilterRule) GetFilterCriteria() *string { return v.FilterCriteria }
+
+// GetPolicy returns ExportFilterRule.Policy, and is useful for accessing the field via an interface.
+func (v *ExportFilterRule) GetPolicy() *string { return v.Policy }
 
 // ExportFilterRuleDeletedWhoExportWhoItem includes the requested fields of the GraphQL type ExportWhoItem.
 type ExportFilterRuleDeletedWhoExportWhoItem struct {
@@ -13672,9 +13676,12 @@ func (v *ExportRowFilterRulesExportFilterRule) GetDeletedWho() *ExportFilterRule
 }
 
 // GetFilterCriteria returns ExportRowFilterRulesExportFilterRule.FilterCriteria, and is useful for accessing the field via an interface.
-func (v *ExportRowFilterRulesExportFilterRule) GetFilterCriteria() string {
+func (v *ExportRowFilterRulesExportFilterRule) GetFilterCriteria() *string {
 	return v.ExportFilterRule.FilterCriteria
 }
+
+// GetPolicy returns ExportRowFilterRulesExportFilterRule.Policy, and is useful for accessing the field via an interface.
+func (v *ExportRowFilterRulesExportFilterRule) GetPolicy() *string { return v.ExportFilterRule.Policy }
 
 func (v *ExportRowFilterRulesExportFilterRule) UnmarshalJSON(b []byte) error {
 
@@ -13718,7 +13725,9 @@ type __premarshalExportRowFilterRulesExportFilterRule struct {
 
 	DeletedWho *ExportFilterRuleDeletedWhoExportWhoItem `json:"deletedWho"`
 
-	FilterCriteria string `json:"filterCriteria"`
+	FilterCriteria *string `json:"filterCriteria"`
+
+	Policy *string `json:"policy"`
 }
 
 func (v *ExportRowFilterRulesExportFilterRule) MarshalJSON() ([]byte, error) {
@@ -13741,6 +13750,7 @@ func (v *ExportRowFilterRulesExportFilterRule) __premarshalJSON() (*__premarshal
 	retval.Who = v.ExportFilterRule.Who
 	retval.DeletedWho = v.ExportFilterRule.DeletedWho
 	retval.FilterCriteria = v.ExportFilterRule.FilterCriteria
+	retval.Policy = v.ExportFilterRule.Policy
 	return &retval, nil
 }
 
@@ -40926,6 +40936,7 @@ fragment ExportFilterRule on ExportFilterRule {
 		... ExportWhoItem
 	}
 	filterCriteria
+	policy
 }
 `
 
