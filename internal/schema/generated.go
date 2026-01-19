@@ -1065,7 +1065,8 @@ type AccessControlFilterInput struct {
 	// Filter by which tags the access control needs to have.
 	HasTags []TagFilter `json:"hasTags"`
 	// Only return the access controls that have the given data object in its WHAT list.
-	DataObjectInWhat *string `json:"dataObjectInWhat,omitempty"`
+	DataObjectInWhat     *string `json:"dataObjectInWhat,omitempty"`
+	IsRoleAssignableOnly bool    `json:"isRoleAssignableOnly"`
 }
 
 // GetActions returns AccessControlFilterInput.Actions, and is useful for accessing the field via an interface.
@@ -1115,6 +1116,9 @@ func (v *AccessControlFilterInput) GetHasTags() []TagFilter { return v.HasTags }
 
 // GetDataObjectInWhat returns AccessControlFilterInput.DataObjectInWhat, and is useful for accessing the field via an interface.
 func (v *AccessControlFilterInput) GetDataObjectInWhat() *string { return v.DataObjectInWhat }
+
+// GetIsRoleAssignableOnly returns AccessControlFilterInput.IsRoleAssignableOnly, and is useful for accessing the field via an interface.
+func (v *AccessControlFilterInput) GetIsRoleAssignableOnly() bool { return v.IsRoleAssignableOnly }
 
 type AccessControlImport struct {
 	ExternalId              string              `json:"externalId"`
@@ -14898,12 +14902,20 @@ func (v *FilterMetadataInput) GetFilterOverridePermissions() []string {
 func (v *FilterMetadataInput) GetApplicableTypes() []string { return v.ApplicableTypes }
 
 type FilterRuleFeedbackImport struct {
-	RuleId string                      `json:"ruleId"`
-	State  *AccessControlFeedbackState `json:"state,omitempty"`
+	RuleId     string                      `json:"ruleId"`
+	ActualName *string                     `json:"actualName,omitempty"`
+	ExternalId *string                     `json:"externalId,omitempty"`
+	State      *AccessControlFeedbackState `json:"state,omitempty"`
 }
 
 // GetRuleId returns FilterRuleFeedbackImport.RuleId, and is useful for accessing the field via an interface.
 func (v *FilterRuleFeedbackImport) GetRuleId() string { return v.RuleId }
+
+// GetActualName returns FilterRuleFeedbackImport.ActualName, and is useful for accessing the field via an interface.
+func (v *FilterRuleFeedbackImport) GetActualName() *string { return v.ActualName }
+
+// GetExternalId returns FilterRuleFeedbackImport.ExternalId, and is useful for accessing the field via an interface.
+func (v *FilterRuleFeedbackImport) GetExternalId() *string { return v.ExternalId }
 
 // GetState returns FilterRuleFeedbackImport.State, and is useful for accessing the field via an interface.
 func (v *FilterRuleFeedbackImport) GetState() *AccessControlFeedbackState { return v.State }
@@ -20441,6 +20453,8 @@ type GrantCategoryInput struct {
 	MultiDataSource *bool `json:"multiDataSource,omitempty"`
 	// For each data source, a default access control type can be specified.
 	DefaultTypePerDataSource []GrantCategoryTypeForDataSourceInput `json:"defaultTypePerDataSource"`
+	// If true, no local exceptions for masks and filters are calculated for corresponding access controls. Regular global exceptions will be used instead.
+	GlobalExceptions *bool `json:"globalExceptions,omitempty"`
 	// Specifies which types can be put as WHO items for access controls in this category.
 	AllowedWhoItems *GrantCategoryAllowedWhoItemsInput `json:"allowedWhoItems,omitempty"`
 	// Specifies which types can be put as WHAT items for access controls in this category.
@@ -20485,6 +20499,9 @@ func (v *GrantCategoryInput) GetMultiDataSource() *bool { return v.MultiDataSour
 func (v *GrantCategoryInput) GetDefaultTypePerDataSource() []GrantCategoryTypeForDataSourceInput {
 	return v.DefaultTypePerDataSource
 }
+
+// GetGlobalExceptions returns GrantCategoryInput.GlobalExceptions, and is useful for accessing the field via an interface.
+func (v *GrantCategoryInput) GetGlobalExceptions() *bool { return v.GlobalExceptions }
 
 // GetAllowedWhoItems returns GrantCategoryInput.AllowedWhoItems, and is useful for accessing the field via an interface.
 func (v *GrantCategoryInput) GetAllowedWhoItems() *GrantCategoryAllowedWhoItemsInput {
