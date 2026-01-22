@@ -91,6 +91,12 @@ func WithPassword(password string) ClientOptions {
 	}
 }
 
+func WithUserAgent(userAgent string) ClientOptions {
+	return func(ops *internal.ClientOptions) {
+		ops.UserAgent = userAgent
+	}
+}
+
 // NewClient creates a new CollibraClient with the given credentials.
 func NewClient(url string, options ...ClientOptions) *CollibraClient {
 	ops := internal.ClientOptions{
