@@ -22,6 +22,8 @@ type ClientOptions struct {
 	RetryMax     int
 
 	Backoff retryablehttp.Backoff
+
+	UserAgent string
 }
 
 func CreateHttpClient(options *ClientOptions) *http.Client {
@@ -59,7 +61,8 @@ func CreateHttpClient(options *ClientOptions) *http.Client {
 
 	// 4. Wrap it with SDK header transport
 	sdkHeaderTransport := &SdkHeaderTransport{
-		Proxied: &retryableTransport,
+		UserAgent: options.UserAgent,
+		Proxied:   &retryableTransport,
 	}
 
 	return &http.Client{
@@ -70,16 +73,19 @@ func CreateHttpClient(options *ClientOptions) *http.Client {
 type SdkHeaderTransport struct {
 	Proxied http.RoundTripper
 
-	agent string
-	once  sync.Once
+	UserAgent string
+	once      sync.Once
 }
 
 func (t *SdkHeaderTransport) RoundTrip(req *http.Request) (*http.Response, error) {
 	t.once.Do(func() {
-		t.agent = fmt.Sprintf("Collibra Data Access SDK/%s", t.GetVersion())
+		if t.UserAgent == "" {
+			// Set default User-Agent if not provided
+			t.UserAgent = fmt.Sprintf("Collibra Data Access SDK/%s", t.GetVersion())
+		}
 	})
 
-	req.Header.Set("User-Agent", t.agent)
+	req.Header.Set("User-Agent", t.UserAgent)
 
 	return t.Proxied.RoundTrip(req) //nolint:wrapcheck
 }
