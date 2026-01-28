@@ -23,12 +23,28 @@ fragment SyncJob on SyncJob {
     triggered
 }
 
+fragment EdgeSiteInfoResult on EdgeSiteInfoResponse {
+    edgeSite
+    connectors {
+        agentVersion
+        connectorVersion
+    }
+}
+
 query NextSyncJobForSite($site: String!) {
     nextSyncJobForSite(edgeSite: $site) {
         ... SyncJob
         ... PermissionDeniedError
         ... NotFoundError
         ... InvalidInputError
+    }
+}
+
+query EdgeSiteInfo($site: String!) {
+    edgeSiteInfo(edgeSite: $site) {
+        ... EdgeSiteInfoResult
+        ... PermissionDeniedError
+        ... NotFoundError
     }
 }
 
