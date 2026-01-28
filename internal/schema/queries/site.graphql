@@ -26,6 +26,7 @@ fragment SyncJob on SyncJob {
 fragment EdgeSiteInfoResult on EdgeSiteInfoResponse {
     edgeSite
     connectors {
+        dataSourceType
         agentVersion
         connectorVersion
     }

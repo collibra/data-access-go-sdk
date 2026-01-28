@@ -12084,8 +12084,14 @@ func (v *EdgeSiteInfoResult) GetConnectors() []*EdgeSiteInfoResultConnectorsSync
 
 // EdgeSiteInfoResultConnectorsSyncConnectionInfo includes the requested fields of the GraphQL type SyncConnectionInfo.
 type EdgeSiteInfoResultConnectorsSyncConnectionInfo struct {
+	DataSourceType   string          `json:"dataSourceType"`
 	AgentVersion     *scalar.Version `json:"-"`
 	ConnectorVersion *scalar.Version `json:"-"`
+}
+
+// GetDataSourceType returns EdgeSiteInfoResultConnectorsSyncConnectionInfo.DataSourceType, and is useful for accessing the field via an interface.
+func (v *EdgeSiteInfoResultConnectorsSyncConnectionInfo) GetDataSourceType() string {
+	return v.DataSourceType
 }
 
 // GetAgentVersion returns EdgeSiteInfoResultConnectorsSyncConnectionInfo.AgentVersion, and is useful for accessing the field via an interface.
@@ -12148,6 +12154,8 @@ func (v *EdgeSiteInfoResultConnectorsSyncConnectionInfo) UnmarshalJSON(b []byte)
 }
 
 type __premarshalEdgeSiteInfoResultConnectorsSyncConnectionInfo struct {
+	DataSourceType string `json:"dataSourceType"`
+
 	AgentVersion json.RawMessage `json:"agentVersion"`
 
 	ConnectorVersion json.RawMessage `json:"connectorVersion"`
@@ -12164,6 +12172,7 @@ func (v *EdgeSiteInfoResultConnectorsSyncConnectionInfo) MarshalJSON() ([]byte, 
 func (v *EdgeSiteInfoResultConnectorsSyncConnectionInfo) __premarshalJSON() (*__premarshalEdgeSiteInfoResultConnectorsSyncConnectionInfo, error) {
 	var retval __premarshalEdgeSiteInfoResultConnectorsSyncConnectionInfo
 
+	retval.DataSourceType = v.DataSourceType
 	{
 
 		dst := &retval.AgentVersion
@@ -41297,6 +41306,7 @@ query EdgeSiteInfo ($site: String!) {
 fragment EdgeSiteInfoResult on EdgeSiteInfoResponse {
 	edgeSite
 	connectors {
+		dataSourceType
 		agentVersion
 		connectorVersion
 	}
