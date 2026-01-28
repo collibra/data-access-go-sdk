@@ -10,6 +10,7 @@ import (
 
 	"github.com/Khan/genqlient/graphql"
 	"github.com/collibra/data-access-go-sdk/internal/scalar"
+	"github.com/collibra/data-access-go-sdk/types/version"
 	"github.com/google/uuid"
 )
 
@@ -11555,8 +11556,8 @@ func (v *DeleteGrantCategoryResult) GetSuccess() bool { return v.Success }
 
 type EdgeSiteConnectorInfoInput struct {
 	DataSourceType       string                       `json:"dataSourceType"`
-	AgentVersion         *scalar.Version              `json:"-"`
-	ConnectorVersion     *scalar.Version              `json:"-"`
+	AgentVersion         *version.Version             `json:"-"`
+	ConnectorVersion     *version.Version             `json:"-"`
 	SupportedSyncMethods []string                     `json:"supportedSyncMethods"`
 	ParameterDefinition  RootParameterDefinitionInput `json:"parameterDefinition"`
 }
@@ -11565,10 +11566,12 @@ type EdgeSiteConnectorInfoInput struct {
 func (v *EdgeSiteConnectorInfoInput) GetDataSourceType() string { return v.DataSourceType }
 
 // GetAgentVersion returns EdgeSiteConnectorInfoInput.AgentVersion, and is useful for accessing the field via an interface.
-func (v *EdgeSiteConnectorInfoInput) GetAgentVersion() *scalar.Version { return v.AgentVersion }
+func (v *EdgeSiteConnectorInfoInput) GetAgentVersion() *version.Version { return v.AgentVersion }
 
 // GetConnectorVersion returns EdgeSiteConnectorInfoInput.ConnectorVersion, and is useful for accessing the field via an interface.
-func (v *EdgeSiteConnectorInfoInput) GetConnectorVersion() *scalar.Version { return v.ConnectorVersion }
+func (v *EdgeSiteConnectorInfoInput) GetConnectorVersion() *version.Version {
+	return v.ConnectorVersion
+}
 
 // GetSupportedSyncMethods returns EdgeSiteConnectorInfoInput.SupportedSyncMethods, and is useful for accessing the field via an interface.
 func (v *EdgeSiteConnectorInfoInput) GetSupportedSyncMethods() []string {
@@ -11603,8 +11606,8 @@ func (v *EdgeSiteConnectorInfoInput) UnmarshalJSON(b []byte) error {
 		dst := &v.AgentVersion
 		src := firstPass.AgentVersion
 		if len(src) != 0 && string(src) != "null" {
-			*dst = new(scalar.Version)
-			err = scalar.UnmarshalVersion(
+			*dst = new(version.Version)
+			err = version.UnmarshalVersion(
 				src, *dst)
 			if err != nil {
 				return fmt.Errorf(
@@ -11617,8 +11620,8 @@ func (v *EdgeSiteConnectorInfoInput) UnmarshalJSON(b []byte) error {
 		dst := &v.ConnectorVersion
 		src := firstPass.ConnectorVersion
 		if len(src) != 0 && string(src) != "null" {
-			*dst = new(scalar.Version)
-			err = scalar.UnmarshalVersion(
+			*dst = new(version.Version)
+			err = version.UnmarshalVersion(
 				src, *dst)
 			if err != nil {
 				return fmt.Errorf(
@@ -11659,7 +11662,7 @@ func (v *EdgeSiteConnectorInfoInput) __premarshalJSON() (*__premarshalEdgeSiteCo
 		src := v.AgentVersion
 		if src != nil {
 			var err error
-			*dst, err = scalar.MarshalVersion(
+			*dst, err = version.MarshalVersion(
 				src)
 			if err != nil {
 				return nil, fmt.Errorf(
@@ -11673,7 +11676,7 @@ func (v *EdgeSiteConnectorInfoInput) __premarshalJSON() (*__premarshalEdgeSiteCo
 		src := v.ConnectorVersion
 		if src != nil {
 			var err error
-			*dst, err = scalar.MarshalVersion(
+			*dst, err = version.MarshalVersion(
 				src)
 			if err != nil {
 				return nil, fmt.Errorf(
@@ -12084,9 +12087,9 @@ func (v *EdgeSiteInfoResult) GetConnectors() []*EdgeSiteInfoResultConnectorsSync
 
 // EdgeSiteInfoResultConnectorsSyncConnectionInfo includes the requested fields of the GraphQL type SyncConnectionInfo.
 type EdgeSiteInfoResultConnectorsSyncConnectionInfo struct {
-	DataSourceType   string          `json:"dataSourceType"`
-	AgentVersion     *scalar.Version `json:"-"`
-	ConnectorVersion *scalar.Version `json:"-"`
+	DataSourceType   string           `json:"dataSourceType"`
+	AgentVersion     *version.Version `json:"-"`
+	ConnectorVersion *version.Version `json:"-"`
 }
 
 // GetDataSourceType returns EdgeSiteInfoResultConnectorsSyncConnectionInfo.DataSourceType, and is useful for accessing the field via an interface.
@@ -12095,12 +12098,12 @@ func (v *EdgeSiteInfoResultConnectorsSyncConnectionInfo) GetDataSourceType() str
 }
 
 // GetAgentVersion returns EdgeSiteInfoResultConnectorsSyncConnectionInfo.AgentVersion, and is useful for accessing the field via an interface.
-func (v *EdgeSiteInfoResultConnectorsSyncConnectionInfo) GetAgentVersion() *scalar.Version {
+func (v *EdgeSiteInfoResultConnectorsSyncConnectionInfo) GetAgentVersion() *version.Version {
 	return v.AgentVersion
 }
 
 // GetConnectorVersion returns EdgeSiteInfoResultConnectorsSyncConnectionInfo.ConnectorVersion, and is useful for accessing the field via an interface.
-func (v *EdgeSiteInfoResultConnectorsSyncConnectionInfo) GetConnectorVersion() *scalar.Version {
+func (v *EdgeSiteInfoResultConnectorsSyncConnectionInfo) GetConnectorVersion() *version.Version {
 	return v.ConnectorVersion
 }
 
@@ -12127,8 +12130,8 @@ func (v *EdgeSiteInfoResultConnectorsSyncConnectionInfo) UnmarshalJSON(b []byte)
 		dst := &v.AgentVersion
 		src := firstPass.AgentVersion
 		if len(src) != 0 && string(src) != "null" {
-			*dst = new(scalar.Version)
-			err = scalar.UnmarshalVersion(
+			*dst = new(version.Version)
+			err = version.UnmarshalVersion(
 				src, *dst)
 			if err != nil {
 				return fmt.Errorf(
@@ -12141,8 +12144,8 @@ func (v *EdgeSiteInfoResultConnectorsSyncConnectionInfo) UnmarshalJSON(b []byte)
 		dst := &v.ConnectorVersion
 		src := firstPass.ConnectorVersion
 		if len(src) != 0 && string(src) != "null" {
-			*dst = new(scalar.Version)
-			err = scalar.UnmarshalVersion(
+			*dst = new(version.Version)
+			err = version.UnmarshalVersion(
 				src, *dst)
 			if err != nil {
 				return fmt.Errorf(
@@ -12179,7 +12182,7 @@ func (v *EdgeSiteInfoResultConnectorsSyncConnectionInfo) __premarshalJSON() (*__
 		src := v.AgentVersion
 		if src != nil {
 			var err error
-			*dst, err = scalar.MarshalVersion(
+			*dst, err = version.MarshalVersion(
 				src)
 			if err != nil {
 				return nil, fmt.Errorf(
@@ -12193,7 +12196,7 @@ func (v *EdgeSiteInfoResultConnectorsSyncConnectionInfo) __premarshalJSON() (*__
 		src := v.ConnectorVersion
 		if src != nil {
 			var err error
-			*dst, err = scalar.MarshalVersion(
+			*dst, err = version.MarshalVersion(
 				src)
 			if err != nil {
 				return nil, fmt.Errorf(

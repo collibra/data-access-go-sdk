@@ -21,8 +21,8 @@ bindings:
     marshaler: github.com/collibra/data-access-go-sdk/internal/scalar.MarshalSyncConfiguration
     unmarshaler: github.com/collibra/data-access-go-sdk/internal/scalar.UnmarshalSyncConfiguration
   SemVer:
-    type: github.com/collibra/data-access-go-sdk/internal/scalar.Version
-    marshaler: github.com/collibra/data-access-go-sdk/internal/scalar.MarshalVersion
-    unmarshaler: github.com/collibra/data-access-go-sdk/internal/scalar.UnmarshalVersion
+    type: github.com/collibra/data-access-go-sdk/types/version.Version
+    marshaler: github.com/collibra/data-access-go-sdk/types/version.MarshalVersion
+    unmarshaler: github.com/collibra/data-access-go-sdk/types/version.UnmarshalVersion
   Any:
     type: interface{}
