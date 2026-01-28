@@ -8170,8 +8170,12 @@ type DataObjectFilterInput struct {
 	Parents []string `json:"parents"`
 	// Limit only to data objects with given ancestors.
 	Ancestors []string `json:"ancestors"`
-	// Limit only to data object with given types.
+	// Limit only to data object with given types. Cannot be used together with the `excludedTypes` filter.
 	Types []string `json:"types"`
+	// Do not returns data objects with the given types. Cannot be used together with the `types` filter.
+	ExcludedTypes []string `json:"excludedTypes"`
+	// Only returns data objects of types that can have permissions assigned to them (e.g. this will exclude columns). This is false by default.
+	CanHavePermissions *bool `json:"canHavePermissions,omitempty"`
 	// Filter on the full names of the data object.
 	FullNames []string `json:"fullNames"`
 	// The search string to use (will do a case-insensitive 'contains').
@@ -8205,6 +8209,12 @@ func (v *DataObjectFilterInput) GetAncestors() []string { return v.Ancestors }
 
 // GetTypes returns DataObjectFilterInput.Types, and is useful for accessing the field via an interface.
 func (v *DataObjectFilterInput) GetTypes() []string { return v.Types }
+
+// GetExcludedTypes returns DataObjectFilterInput.ExcludedTypes, and is useful for accessing the field via an interface.
+func (v *DataObjectFilterInput) GetExcludedTypes() []string { return v.ExcludedTypes }
+
+// GetCanHavePermissions returns DataObjectFilterInput.CanHavePermissions, and is useful for accessing the field via an interface.
+func (v *DataObjectFilterInput) GetCanHavePermissions() *bool { return v.CanHavePermissions }
 
 // GetFullNames returns DataObjectFilterInput.FullNames, and is useful for accessing the field via an interface.
 func (v *DataObjectFilterInput) GetFullNames() []string { return v.FullNames }
@@ -9061,8 +9071,12 @@ type DataSourceInput struct {
 	CanRequestAccessToTypes []string `json:"canRequestAccessToTypes"`
 	// The synchronization schedule configuration.
 	SyncSchedule *DataSourceSyncScheduleInput `json:"syncSchedule,omitempty"`
-	// The optional UUID of the system asset from Collibra Catalog this data source corresponds with.
+	// The optional UUID of the system asset from Collibra Catalog this data source corresponds with. Pass 00000000-0000-0000-0000-000000000000 to clear.
 	CatalogSystemId *uuid.UUID `json:"catalogSystemId,omitempty"`
+	// The UUID of the Edge Site associated with this data source.
+	EdgeSiteId *uuid.UUID `json:"edgeSiteId,omitempty"`
+	// The UUID of the Edge Connection associated with this data source.
+	EdgeConnectionId *uuid.UUID `json:"edgeConnectionId,omitempty"`
 }
 
 // GetName returns DataSourceInput.Name, and is useful for accessing the field via an interface.
@@ -9085,6 +9099,12 @@ func (v *DataSourceInput) GetSyncSchedule() *DataSourceSyncScheduleInput { retur
 
 // GetCatalogSystemId returns DataSourceInput.CatalogSystemId, and is useful for accessing the field via an interface.
 func (v *DataSourceInput) GetCatalogSystemId() *uuid.UUID { return v.CatalogSystemId }
+
+// GetEdgeSiteId returns DataSourceInput.EdgeSiteId, and is useful for accessing the field via an interface.
+func (v *DataSourceInput) GetEdgeSiteId() *uuid.UUID { return v.EdgeSiteId }
+
+// GetEdgeConnectionId returns DataSourceInput.EdgeConnectionId, and is useful for accessing the field via an interface.
+func (v *DataSourceInput) GetEdgeConnectionId() *uuid.UUID { return v.EdgeConnectionId }
 
 // DataSourceMaskInformationDataSource includes the requested fields of the GraphQL type DataSource.
 // The GraphQL type's documentation follows.
@@ -11666,6 +11686,300 @@ func (v *EdgeSiteConnectorInfoInput) __premarshalJSON() (*__premarshalEdgeSiteCo
 	return &retval, nil
 }
 
+// EdgeSiteInfoEdgeSiteInfoEdgeSiteInfoResponse includes the requested fields of the GraphQL type EdgeSiteInfoResponse.
+type EdgeSiteInfoEdgeSiteInfoEdgeSiteInfoResponse struct {
+	Typename           *string `json:"__typename"`
+	EdgeSiteInfoResult `json:"-"`
+}
+
+// GetTypename returns EdgeSiteInfoEdgeSiteInfoEdgeSiteInfoResponse.Typename, and is useful for accessing the field via an interface.
+func (v *EdgeSiteInfoEdgeSiteInfoEdgeSiteInfoResponse) GetTypename() *string { return v.Typename }
+
+// GetEdgeSite returns EdgeSiteInfoEdgeSiteInfoEdgeSiteInfoResponse.EdgeSite, and is useful for accessing the field via an interface.
+func (v *EdgeSiteInfoEdgeSiteInfoEdgeSiteInfoResponse) GetEdgeSite() string {
+	return v.EdgeSiteInfoResult.EdgeSite
+}
+
+// GetConnectors returns EdgeSiteInfoEdgeSiteInfoEdgeSiteInfoResponse.Connectors, and is useful for accessing the field via an interface.
+func (v *EdgeSiteInfoEdgeSiteInfoEdgeSiteInfoResponse) GetConnectors() []*EdgeSiteInfoResultConnectorsSyncConnectionInfo {
+	return v.EdgeSiteInfoResult.Connectors
+}
+
+func (v *EdgeSiteInfoEdgeSiteInfoEdgeSiteInfoResponse) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*EdgeSiteInfoEdgeSiteInfoEdgeSiteInfoResponse
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.EdgeSiteInfoEdgeSiteInfoEdgeSiteInfoResponse = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.EdgeSiteInfoResult)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalEdgeSiteInfoEdgeSiteInfoEdgeSiteInfoResponse struct {
+	Typename *string `json:"__typename"`
+
+	EdgeSite string `json:"edgeSite"`
+
+	Connectors []*EdgeSiteInfoResultConnectorsSyncConnectionInfo `json:"connectors"`
+}
+
+func (v *EdgeSiteInfoEdgeSiteInfoEdgeSiteInfoResponse) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *EdgeSiteInfoEdgeSiteInfoEdgeSiteInfoResponse) __premarshalJSON() (*__premarshalEdgeSiteInfoEdgeSiteInfoEdgeSiteInfoResponse, error) {
+	var retval __premarshalEdgeSiteInfoEdgeSiteInfoEdgeSiteInfoResponse
+
+	retval.Typename = v.Typename
+	retval.EdgeSite = v.EdgeSiteInfoResult.EdgeSite
+	retval.Connectors = v.EdgeSiteInfoResult.Connectors
+	return &retval, nil
+}
+
+// EdgeSiteInfoEdgeSiteInfoEdgeSiteInfoResult includes the requested fields of the GraphQL interface EdgeSiteInfoResult.
+//
+// EdgeSiteInfoEdgeSiteInfoEdgeSiteInfoResult is implemented by the following types:
+// EdgeSiteInfoEdgeSiteInfoEdgeSiteInfoResponse
+// EdgeSiteInfoEdgeSiteInfoNotFoundError
+// EdgeSiteInfoEdgeSiteInfoPermissionDeniedError
+type EdgeSiteInfoEdgeSiteInfoEdgeSiteInfoResult interface {
+	implementsGraphQLInterfaceEdgeSiteInfoEdgeSiteInfoEdgeSiteInfoResult()
+	// GetTypename returns the receiver's concrete GraphQL type-name (see interface doc for possible values).
+	GetTypename() *string
+}
+
+func (v *EdgeSiteInfoEdgeSiteInfoEdgeSiteInfoResponse) implementsGraphQLInterfaceEdgeSiteInfoEdgeSiteInfoEdgeSiteInfoResult() {
+}
+func (v *EdgeSiteInfoEdgeSiteInfoNotFoundError) implementsGraphQLInterfaceEdgeSiteInfoEdgeSiteInfoEdgeSiteInfoResult() {
+}
+func (v *EdgeSiteInfoEdgeSiteInfoPermissionDeniedError) implementsGraphQLInterfaceEdgeSiteInfoEdgeSiteInfoEdgeSiteInfoResult() {
+}
+
+func __unmarshalEdgeSiteInfoEdgeSiteInfoEdgeSiteInfoResult(b []byte, v *EdgeSiteInfoEdgeSiteInfoEdgeSiteInfoResult) error {
+	if string(b) == "null" {
+		return nil
+	}
+
+	var tn struct {
+		TypeName string `json:"__typename"`
+	}
+	err := json.Unmarshal(b, &tn)
+	if err != nil {
+		return err
+	}
+
+	switch tn.TypeName {
+	case "EdgeSiteInfoResponse":
+		*v = new(EdgeSiteInfoEdgeSiteInfoEdgeSiteInfoResponse)
+		return json.Unmarshal(b, *v)
+	case "NotFoundError":
+		*v = new(EdgeSiteInfoEdgeSiteInfoNotFoundError)
+		return json.Unmarshal(b, *v)
+	case "PermissionDeniedError":
+		*v = new(EdgeSiteInfoEdgeSiteInfoPermissionDeniedError)
+		return json.Unmarshal(b, *v)
+	case "":
+		return fmt.Errorf(
+			"response was missing EdgeSiteInfoResult.__typename")
+	default:
+		return fmt.Errorf(
+			`unexpected concrete type for EdgeSiteInfoEdgeSiteInfoEdgeSiteInfoResult: "%v"`, tn.TypeName)
+	}
+}
+
+func __marshalEdgeSiteInfoEdgeSiteInfoEdgeSiteInfoResult(v *EdgeSiteInfoEdgeSiteInfoEdgeSiteInfoResult) ([]byte, error) {
+
+	var typename string
+	switch v := (*v).(type) {
+	case *EdgeSiteInfoEdgeSiteInfoEdgeSiteInfoResponse:
+		typename = "EdgeSiteInfoResponse"
+
+		premarshaled, err := v.__premarshalJSON()
+		if err != nil {
+			return nil, err
+		}
+		result := struct {
+			TypeName string `json:"__typename"`
+			*__premarshalEdgeSiteInfoEdgeSiteInfoEdgeSiteInfoResponse
+		}{typename, premarshaled}
+		return json.Marshal(result)
+	case *EdgeSiteInfoEdgeSiteInfoNotFoundError:
+		typename = "NotFoundError"
+
+		premarshaled, err := v.__premarshalJSON()
+		if err != nil {
+			return nil, err
+		}
+		result := struct {
+			TypeName string `json:"__typename"`
+			*__premarshalEdgeSiteInfoEdgeSiteInfoNotFoundError
+		}{typename, premarshaled}
+		return json.Marshal(result)
+	case *EdgeSiteInfoEdgeSiteInfoPermissionDeniedError:
+		typename = "PermissionDeniedError"
+
+		premarshaled, err := v.__premarshalJSON()
+		if err != nil {
+			return nil, err
+		}
+		result := struct {
+			TypeName string `json:"__typename"`
+			*__premarshalEdgeSiteInfoEdgeSiteInfoPermissionDeniedError
+		}{typename, premarshaled}
+		return json.Marshal(result)
+	case nil:
+		return []byte("null"), nil
+	default:
+		return nil, fmt.Errorf(
+			`unexpected concrete type for EdgeSiteInfoEdgeSiteInfoEdgeSiteInfoResult: "%T"`, v)
+	}
+}
+
+// EdgeSiteInfoEdgeSiteInfoNotFoundError includes the requested fields of the GraphQL type NotFoundError.
+// The GraphQL type's documentation follows.
+//
+// Error when the user is requesting a resource that does not exist.
+type EdgeSiteInfoEdgeSiteInfoNotFoundError struct {
+	Typename      *string `json:"__typename"`
+	NotFoundError `json:"-"`
+}
+
+// GetTypename returns EdgeSiteInfoEdgeSiteInfoNotFoundError.Typename, and is useful for accessing the field via an interface.
+func (v *EdgeSiteInfoEdgeSiteInfoNotFoundError) GetTypename() *string { return v.Typename }
+
+// GetMessage returns EdgeSiteInfoEdgeSiteInfoNotFoundError.Message, and is useful for accessing the field via an interface.
+func (v *EdgeSiteInfoEdgeSiteInfoNotFoundError) GetMessage() string { return v.NotFoundError.Message }
+
+func (v *EdgeSiteInfoEdgeSiteInfoNotFoundError) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*EdgeSiteInfoEdgeSiteInfoNotFoundError
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.EdgeSiteInfoEdgeSiteInfoNotFoundError = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.NotFoundError)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalEdgeSiteInfoEdgeSiteInfoNotFoundError struct {
+	Typename *string `json:"__typename"`
+
+	Message string `json:"message"`
+}
+
+func (v *EdgeSiteInfoEdgeSiteInfoNotFoundError) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *EdgeSiteInfoEdgeSiteInfoNotFoundError) __premarshalJSON() (*__premarshalEdgeSiteInfoEdgeSiteInfoNotFoundError, error) {
+	var retval __premarshalEdgeSiteInfoEdgeSiteInfoNotFoundError
+
+	retval.Typename = v.Typename
+	retval.Message = v.NotFoundError.Message
+	return &retval, nil
+}
+
+// EdgeSiteInfoEdgeSiteInfoPermissionDeniedError includes the requested fields of the GraphQL type PermissionDeniedError.
+// The GraphQL type's documentation follows.
+//
+// Error when permission to the requested resource is denied.
+type EdgeSiteInfoEdgeSiteInfoPermissionDeniedError struct {
+	Typename              *string `json:"__typename"`
+	PermissionDeniedError `json:"-"`
+}
+
+// GetTypename returns EdgeSiteInfoEdgeSiteInfoPermissionDeniedError.Typename, and is useful for accessing the field via an interface.
+func (v *EdgeSiteInfoEdgeSiteInfoPermissionDeniedError) GetTypename() *string { return v.Typename }
+
+// GetMessage returns EdgeSiteInfoEdgeSiteInfoPermissionDeniedError.Message, and is useful for accessing the field via an interface.
+func (v *EdgeSiteInfoEdgeSiteInfoPermissionDeniedError) GetMessage() string {
+	return v.PermissionDeniedError.Message
+}
+
+func (v *EdgeSiteInfoEdgeSiteInfoPermissionDeniedError) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*EdgeSiteInfoEdgeSiteInfoPermissionDeniedError
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.EdgeSiteInfoEdgeSiteInfoPermissionDeniedError = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.PermissionDeniedError)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalEdgeSiteInfoEdgeSiteInfoPermissionDeniedError struct {
+	Typename *string `json:"__typename"`
+
+	Message string `json:"message"`
+}
+
+func (v *EdgeSiteInfoEdgeSiteInfoPermissionDeniedError) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *EdgeSiteInfoEdgeSiteInfoPermissionDeniedError) __premarshalJSON() (*__premarshalEdgeSiteInfoEdgeSiteInfoPermissionDeniedError, error) {
+	var retval __premarshalEdgeSiteInfoEdgeSiteInfoPermissionDeniedError
+
+	retval.Typename = v.Typename
+	retval.Message = v.PermissionDeniedError.Message
+	return &retval, nil
+}
+
 type EdgeSiteInfoInput struct {
 	EdgeSite   string                       `json:"edgeSite"`
 	External   bool                         `json:"external"`
@@ -11680,6 +11994,215 @@ func (v *EdgeSiteInfoInput) GetExternal() bool { return v.External }
 
 // GetConnectors returns EdgeSiteInfoInput.Connectors, and is useful for accessing the field via an interface.
 func (v *EdgeSiteInfoInput) GetConnectors() []EdgeSiteConnectorInfoInput { return v.Connectors }
+
+// EdgeSiteInfoResponse is returned by EdgeSiteInfo on success.
+type EdgeSiteInfoResponse struct {
+	EdgeSiteInfo EdgeSiteInfoEdgeSiteInfoEdgeSiteInfoResult `json:"-"`
+}
+
+// GetEdgeSiteInfo returns EdgeSiteInfoResponse.EdgeSiteInfo, and is useful for accessing the field via an interface.
+func (v *EdgeSiteInfoResponse) GetEdgeSiteInfo() EdgeSiteInfoEdgeSiteInfoEdgeSiteInfoResult {
+	return v.EdgeSiteInfo
+}
+
+func (v *EdgeSiteInfoResponse) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*EdgeSiteInfoResponse
+		EdgeSiteInfo json.RawMessage `json:"edgeSiteInfo"`
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.EdgeSiteInfoResponse = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	{
+		dst := &v.EdgeSiteInfo
+		src := firstPass.EdgeSiteInfo
+		if len(src) != 0 && string(src) != "null" {
+			err = __unmarshalEdgeSiteInfoEdgeSiteInfoEdgeSiteInfoResult(
+				src, dst)
+			if err != nil {
+				return fmt.Errorf(
+					"unable to unmarshal EdgeSiteInfoResponse.EdgeSiteInfo: %w", err)
+			}
+		}
+	}
+	return nil
+}
+
+type __premarshalEdgeSiteInfoResponse struct {
+	EdgeSiteInfo json.RawMessage `json:"edgeSiteInfo"`
+}
+
+func (v *EdgeSiteInfoResponse) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *EdgeSiteInfoResponse) __premarshalJSON() (*__premarshalEdgeSiteInfoResponse, error) {
+	var retval __premarshalEdgeSiteInfoResponse
+
+	{
+
+		dst := &retval.EdgeSiteInfo
+		src := v.EdgeSiteInfo
+		var err error
+		*dst, err = __marshalEdgeSiteInfoEdgeSiteInfoEdgeSiteInfoResult(
+			&src)
+		if err != nil {
+			return nil, fmt.Errorf(
+				"unable to marshal EdgeSiteInfoResponse.EdgeSiteInfo: %w", err)
+		}
+	}
+	return &retval, nil
+}
+
+// EdgeSiteInfoResult includes the GraphQL fields of EdgeSiteInfoResponse requested by the fragment EdgeSiteInfoResult.
+type EdgeSiteInfoResult struct {
+	EdgeSite   string                                            `json:"edgeSite"`
+	Connectors []*EdgeSiteInfoResultConnectorsSyncConnectionInfo `json:"connectors"`
+}
+
+// GetEdgeSite returns EdgeSiteInfoResult.EdgeSite, and is useful for accessing the field via an interface.
+func (v *EdgeSiteInfoResult) GetEdgeSite() string { return v.EdgeSite }
+
+// GetConnectors returns EdgeSiteInfoResult.Connectors, and is useful for accessing the field via an interface.
+func (v *EdgeSiteInfoResult) GetConnectors() []*EdgeSiteInfoResultConnectorsSyncConnectionInfo {
+	return v.Connectors
+}
+
+// EdgeSiteInfoResultConnectorsSyncConnectionInfo includes the requested fields of the GraphQL type SyncConnectionInfo.
+type EdgeSiteInfoResultConnectorsSyncConnectionInfo struct {
+	DataSourceType   string          `json:"dataSourceType"`
+	AgentVersion     *scalar.Version `json:"-"`
+	ConnectorVersion *scalar.Version `json:"-"`
+}
+
+// GetDataSourceType returns EdgeSiteInfoResultConnectorsSyncConnectionInfo.DataSourceType, and is useful for accessing the field via an interface.
+func (v *EdgeSiteInfoResultConnectorsSyncConnectionInfo) GetDataSourceType() string {
+	return v.DataSourceType
+}
+
+// GetAgentVersion returns EdgeSiteInfoResultConnectorsSyncConnectionInfo.AgentVersion, and is useful for accessing the field via an interface.
+func (v *EdgeSiteInfoResultConnectorsSyncConnectionInfo) GetAgentVersion() *scalar.Version {
+	return v.AgentVersion
+}
+
+// GetConnectorVersion returns EdgeSiteInfoResultConnectorsSyncConnectionInfo.ConnectorVersion, and is useful for accessing the field via an interface.
+func (v *EdgeSiteInfoResultConnectorsSyncConnectionInfo) GetConnectorVersion() *scalar.Version {
+	return v.ConnectorVersion
+}
+
+func (v *EdgeSiteInfoResultConnectorsSyncConnectionInfo) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*EdgeSiteInfoResultConnectorsSyncConnectionInfo
+		AgentVersion     json.RawMessage `json:"agentVersion"`
+		ConnectorVersion json.RawMessage `json:"connectorVersion"`
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.EdgeSiteInfoResultConnectorsSyncConnectionInfo = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	{
+		dst := &v.AgentVersion
+		src := firstPass.AgentVersion
+		if len(src) != 0 && string(src) != "null" {
+			*dst = new(scalar.Version)
+			err = scalar.UnmarshalVersion(
+				src, *dst)
+			if err != nil {
+				return fmt.Errorf(
+					"unable to unmarshal EdgeSiteInfoResultConnectorsSyncConnectionInfo.AgentVersion: %w", err)
+			}
+		}
+	}
+
+	{
+		dst := &v.ConnectorVersion
+		src := firstPass.ConnectorVersion
+		if len(src) != 0 && string(src) != "null" {
+			*dst = new(scalar.Version)
+			err = scalar.UnmarshalVersion(
+				src, *dst)
+			if err != nil {
+				return fmt.Errorf(
+					"unable to unmarshal EdgeSiteInfoResultConnectorsSyncConnectionInfo.ConnectorVersion: %w", err)
+			}
+		}
+	}
+	return nil
+}
+
+type __premarshalEdgeSiteInfoResultConnectorsSyncConnectionInfo struct {
+	DataSourceType string `json:"dataSourceType"`
+
+	AgentVersion json.RawMessage `json:"agentVersion"`
+
+	ConnectorVersion json.RawMessage `json:"connectorVersion"`
+}
+
+func (v *EdgeSiteInfoResultConnectorsSyncConnectionInfo) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *EdgeSiteInfoResultConnectorsSyncConnectionInfo) __premarshalJSON() (*__premarshalEdgeSiteInfoResultConnectorsSyncConnectionInfo, error) {
+	var retval __premarshalEdgeSiteInfoResultConnectorsSyncConnectionInfo
+
+	retval.DataSourceType = v.DataSourceType
+	{
+
+		dst := &retval.AgentVersion
+		src := v.AgentVersion
+		if src != nil {
+			var err error
+			*dst, err = scalar.MarshalVersion(
+				src)
+			if err != nil {
+				return nil, fmt.Errorf(
+					"unable to marshal EdgeSiteInfoResultConnectorsSyncConnectionInfo.AgentVersion: %w", err)
+			}
+		}
+	}
+	{
+
+		dst := &retval.ConnectorVersion
+		src := v.ConnectorVersion
+		if src != nil {
+			var err error
+			*dst, err = scalar.MarshalVersion(
+				src)
+			if err != nil {
+				return nil, fmt.Errorf(
+					"unable to marshal EdgeSiteInfoResultConnectorsSyncConnectionInfo.ConnectorVersion: %w", err)
+			}
+		}
+	}
+	return &retval, nil
+}
 
 // EdgeSiteUpdateResponse includes the GraphQL fields of EdgeSiteUpdateResponse requested by the fragment EdgeSiteUpdateResponse.
 type EdgeSiteUpdateResponse struct {
@@ -38978,6 +39501,14 @@ type __DeleteGrantCategoryInput struct {
 // GetId returns __DeleteGrantCategoryInput.Id, and is useful for accessing the field via an interface.
 func (v *__DeleteGrantCategoryInput) GetId() string { return v.Id }
 
+// __EdgeSiteInfoInput is used internally by genqlient
+type __EdgeSiteInfoInput struct {
+	Site string `json:"site"`
+}
+
+// GetSite returns __EdgeSiteInfoInput.Site, and is useful for accessing the field via an interface.
+func (v *__EdgeSiteInfoInput) GetSite() string { return v.Site }
+
 // __EndOfTargetsSyncInput is used internally by genqlient
 type __EndOfTargetsSyncInput struct {
 	Input EndOfTargetsSyncInput `json:"input"`
@@ -40751,6 +41282,57 @@ func DeleteGrantCategory(
 	}
 
 	data_ = &DeleteGrantCategoryResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
+// The query executed by EdgeSiteInfo.
+const EdgeSiteInfo_Operation = `
+query EdgeSiteInfo ($site: String!) {
+	edgeSiteInfo(edgeSite: $site) {
+		__typename
+		... EdgeSiteInfoResult
+		... PermissionDeniedError
+		... NotFoundError
+	}
+}
+fragment EdgeSiteInfoResult on EdgeSiteInfoResponse {
+	edgeSite
+	connectors {
+		dataSourceType
+		agentVersion
+		connectorVersion
+	}
+}
+fragment PermissionDeniedError on PermissionDeniedError {
+	message
+}
+fragment NotFoundError on NotFoundError {
+	message
+}
+`
+
+func EdgeSiteInfo(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	site string,
+) (data_ *EdgeSiteInfoResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "EdgeSiteInfo",
+		Query:  EdgeSiteInfo_Operation,
+		Variables: &__EdgeSiteInfoInput{
+			Site: site,
+		},
+	}
+
+	data_ = &EdgeSiteInfoResponse{}
 	resp_ := &graphql.Response{Data: data_}
 
 	err_ = client_.MakeRequest(
