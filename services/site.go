@@ -54,3 +54,21 @@ func (s *SiteService) NextSyncJobForSite(ctx context.Context, siteId string) (*t
 		return nil, fmt.Errorf("unexpected response type: %T", v)
 	}
 }
+
+func (s *SiteService) SiteInfo(ctx context.Context, siteId string) (*types.EdgeSiteInfoResult, error) {
+	response, err := schema.EdgeSiteInfo(ctx, s.client, siteId)
+	if err != nil {
+		return nil, types.NewErrClient(err)
+	}
+
+	switch v := response.EdgeSiteInfo.(type) {
+	case *schema.EdgeSiteInfoEdgeSiteInfoEdgeSiteInfoResponse:
+		return &v.EdgeSiteInfoResult, nil
+	case *schema.EdgeSiteInfoEdgeSiteInfoPermissionDeniedError:
+		return nil, types.NewErrPermissionDenied("edgeSiteInfo", v.Message)
+	case *schema.EdgeSiteInfoEdgeSiteInfoNotFoundError:
+		return nil, types.NewErrNotFound(siteId, nil, v.Message)
+	default:
+		return nil, fmt.Errorf("unexpected response type: %T", v)
+	}
+}

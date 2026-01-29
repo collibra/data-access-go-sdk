@@ -38,3 +38,20 @@ mutation UpdateSiteSettings($input: EdgeSiteInfoInput!) {
         ... PermissionDeniedError
     }
 }
+
+fragment EdgeSiteInfoResult on EdgeSiteInfoResponse {
+    edgeSite
+    connectors {
+        dataSourceType
+        agentVersion
+        connectorVersion
+    }
+}
+
+query EdgeSiteInfo($site: String!) {
+    edgeSiteInfo(edgeSite: $site) {
+        ... EdgeSiteInfoResult
+        ... PermissionDeniedError
+        ... NotFoundError
+    }
+}
