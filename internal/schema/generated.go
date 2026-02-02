@@ -15,15 +15,10 @@ import (
 
 // Input object to create an aggregator expression (e.g. `X OR Y OR Z`).
 type AbacComparisonExpressionAggregatorInput struct {
-	// The operator to use.
-	Operator BinaryExpressionAggregatorOperator `json:"operator"`
 	// The operands which will be combined with the operator.
 	Operands []AbacComparisonExpressionInput `json:"operands"`
-}
-
-// GetOperator returns AbacComparisonExpressionAggregatorInput.Operator, and is useful for accessing the field via an interface.
-func (v *AbacComparisonExpressionAggregatorInput) GetOperator() BinaryExpressionAggregatorOperator {
-	return v.Operator
+	// The operator to use.
+	Operator BinaryExpressionAggregatorOperator `json:"operator"`
 }
 
 // GetOperands returns AbacComparisonExpressionAggregatorInput.Operands, and is useful for accessing the field via an interface.
@@ -31,23 +26,28 @@ func (v *AbacComparisonExpressionAggregatorInput) GetOperands() []AbacComparison
 	return v.Operands
 }
 
+// GetOperator returns AbacComparisonExpressionAggregatorInput.Operator, and is useful for accessing the field via an interface.
+func (v *AbacComparisonExpressionAggregatorInput) GetOperator() BinaryExpressionAggregatorOperator {
+	return v.Operator
+}
+
 // Input object to create a comparison expression (i.e. `field < value`).
 type AbacComparisonExpressionComparisonInput struct {
-	// The operator for the expression.
-	Operator AbacComparisonExpressionComparisonOperator `json:"operator"`
 	// The field to compare the value against.
 	LeftOperand string `json:"leftOperand"`
+	// The operator for the expression.
+	Operator AbacComparisonExpressionComparisonOperator `json:"operator"`
 	// The value operand.
 	RightOperand AbacComparisonExpressionOperandInput `json:"rightOperand"`
 }
+
+// GetLeftOperand returns AbacComparisonExpressionComparisonInput.LeftOperand, and is useful for accessing the field via an interface.
+func (v *AbacComparisonExpressionComparisonInput) GetLeftOperand() string { return v.LeftOperand }
 
 // GetOperator returns AbacComparisonExpressionComparisonInput.Operator, and is useful for accessing the field via an interface.
 func (v *AbacComparisonExpressionComparisonInput) GetOperator() AbacComparisonExpressionComparisonOperator {
 	return v.Operator
 }
-
-// GetLeftOperand returns AbacComparisonExpressionComparisonInput.LeftOperand, and is useful for accessing the field via an interface.
-func (v *AbacComparisonExpressionComparisonInput) GetLeftOperand() string { return v.LeftOperand }
 
 // GetRightOperand returns AbacComparisonExpressionComparisonInput.RightOperand, and is useful for accessing the field via an interface.
 func (v *AbacComparisonExpressionComparisonInput) GetRightOperand() AbacComparisonExpressionOperandInput {
@@ -58,56 +58,56 @@ func (v *AbacComparisonExpressionComparisonInput) GetRightOperand() AbacComparis
 type AbacComparisonExpressionComparisonOperator string
 
 const (
+	// To check if the object, or any of its descendants, has a certain tag.
+	AbacComparisonExpressionComparisonOperatorContainstag AbacComparisonExpressionComparisonOperator = "ContainsTag"
+	// To check if the object, or any of its ancestors, has a certain tag.
+	AbacComparisonExpressionComparisonOperatorHastag AbacComparisonExpressionComparisonOperator = "HasTag"
+	// To check if the value contains a certain string.
+	AbacComparisonExpressionComparisonOperatorPropertycontains AbacComparisonExpressionComparisonOperator = "PropertyContains"
+	// To check if the value ends with a certain string.
+	AbacComparisonExpressionComparisonOperatorPropertyendswith AbacComparisonExpressionComparisonOperator = "PropertyEndsWith"
 	// To compare the operands with the equals (=) operator.
 	AbacComparisonExpressionComparisonOperatorPropertyequals AbacComparisonExpressionComparisonOperator = "PropertyEquals"
 	// To check if the given value is in a list of values.
 	AbacComparisonExpressionComparisonOperatorPropertyin AbacComparisonExpressionComparisonOperator = "PropertyIn"
-	// To check if the object, or any of its ancestors, has a certain tag.
-	AbacComparisonExpressionComparisonOperatorHastag AbacComparisonExpressionComparisonOperator = "HasTag"
-	// To check if the object, or any of its descendants, has a certain tag.
-	AbacComparisonExpressionComparisonOperatorContainstag AbacComparisonExpressionComparisonOperator = "ContainsTag"
 	// To check if the value start with a certain string.
 	AbacComparisonExpressionComparisonOperatorPropertystartswith AbacComparisonExpressionComparisonOperator = "PropertyStartsWith"
-	// To check if the value ends with a certain string.
-	AbacComparisonExpressionComparisonOperatorPropertyendswith AbacComparisonExpressionComparisonOperator = "PropertyEndsWith"
-	// To check if the value contains a certain string.
-	AbacComparisonExpressionComparisonOperatorPropertycontains AbacComparisonExpressionComparisonOperator = "PropertyContains"
 )
 
 var AllAbacComparisonExpressionComparisonOperator = []AbacComparisonExpressionComparisonOperator{
+	AbacComparisonExpressionComparisonOperatorContainstag,
+	AbacComparisonExpressionComparisonOperatorHastag,
+	AbacComparisonExpressionComparisonOperatorPropertycontains,
+	AbacComparisonExpressionComparisonOperatorPropertyendswith,
 	AbacComparisonExpressionComparisonOperatorPropertyequals,
 	AbacComparisonExpressionComparisonOperatorPropertyin,
-	AbacComparisonExpressionComparisonOperatorHastag,
-	AbacComparisonExpressionComparisonOperatorContainstag,
 	AbacComparisonExpressionComparisonOperatorPropertystartswith,
-	AbacComparisonExpressionComparisonOperatorPropertyendswith,
-	AbacComparisonExpressionComparisonOperatorPropertycontains,
 }
 
 // Input object to create an ABAC expression. Exactly one of the fields should be specified, depending on the type.
 type AbacComparisonExpressionInput struct {
-	// In case you want to simply have a boolean literal to determine the outcome.
-	Literal *bool `json:"literal,omitempty"`
-	// To specify a single comparison (e.g. `field < value`).
-	Comparison *AbacComparisonExpressionComparisonInput `json:"comparison,omitempty"`
 	// To specify an aggregator expression (e.g. `X OR Y OR Z`).
 	Aggregator *AbacComparisonExpressionAggregatorInput `json:"aggregator,omitempty"`
+	// To specify a single comparison (e.g. `field < value`).
+	Comparison *AbacComparisonExpressionComparisonInput `json:"comparison,omitempty"`
+	// In case you want to simply have a boolean literal to determine the outcome.
+	Literal *bool `json:"literal,omitempty"`
 	// To specify a unary expression (e.g. `NOT X`).
 	UnaryExpression *AbacComparisonExpressionUnaryExpressionInput `json:"unaryExpression,omitempty"`
-}
-
-// GetLiteral returns AbacComparisonExpressionInput.Literal, and is useful for accessing the field via an interface.
-func (v *AbacComparisonExpressionInput) GetLiteral() *bool { return v.Literal }
-
-// GetComparison returns AbacComparisonExpressionInput.Comparison, and is useful for accessing the field via an interface.
-func (v *AbacComparisonExpressionInput) GetComparison() *AbacComparisonExpressionComparisonInput {
-	return v.Comparison
 }
 
 // GetAggregator returns AbacComparisonExpressionInput.Aggregator, and is useful for accessing the field via an interface.
 func (v *AbacComparisonExpressionInput) GetAggregator() *AbacComparisonExpressionAggregatorInput {
 	return v.Aggregator
 }
+
+// GetComparison returns AbacComparisonExpressionInput.Comparison, and is useful for accessing the field via an interface.
+func (v *AbacComparisonExpressionInput) GetComparison() *AbacComparisonExpressionComparisonInput {
+	return v.Comparison
+}
+
+// GetLiteral returns AbacComparisonExpressionInput.Literal, and is useful for accessing the field via an interface.
+func (v *AbacComparisonExpressionInput) GetLiteral() *bool { return v.Literal }
 
 // GetUnaryExpression returns AbacComparisonExpressionInput.UnaryExpression, and is useful for accessing the field via an interface.
 func (v *AbacComparisonExpressionInput) GetUnaryExpression() *AbacComparisonExpressionUnaryExpressionInput {
@@ -146,20 +146,20 @@ func (v *AbacComparisonExpressionOperandInput) GetLiteral() *AbacComparisonExpre
 
 // Input object to create a unary expression (e.g. `NOT X`).
 type AbacComparisonExpressionUnaryExpressionInput struct {
-	// The operator to use.
-	Operator BinaryExpressionUnaryExpressionOperator `json:"operator"`
 	// The operand to use with the operator.
 	Operand AbacComparisonExpressionInput `json:"operand"`
-}
-
-// GetOperator returns AbacComparisonExpressionUnaryExpressionInput.Operator, and is useful for accessing the field via an interface.
-func (v *AbacComparisonExpressionUnaryExpressionInput) GetOperator() BinaryExpressionUnaryExpressionOperator {
-	return v.Operator
+	// The operator to use.
+	Operator BinaryExpressionUnaryExpressionOperator `json:"operator"`
 }
 
 // GetOperand returns AbacComparisonExpressionUnaryExpressionInput.Operand, and is useful for accessing the field via an interface.
 func (v *AbacComparisonExpressionUnaryExpressionInput) GetOperand() AbacComparisonExpressionInput {
 	return v.Operand
+}
+
+// GetOperator returns AbacComparisonExpressionUnaryExpressionInput.Operator, and is useful for accessing the field via an interface.
+func (v *AbacComparisonExpressionUnaryExpressionInput) GetOperator() BinaryExpressionUnaryExpressionOperator {
+	return v.Operator
 }
 
 // AccessControl includes the GraphQL fields of AccessControl requested by the fragment AccessControl.
@@ -262,25 +262,25 @@ func (v *AccessControl) GetSyncData() []AccessControlSyncData { return v.SyncDat
 type AccessControlAction string
 
 const (
+	// For filtering rows in a table or view.
+	AccessControlActionFilter     AccessControlAction = "Filter"
+	AccessControlActionFilterrule AccessControlAction = "FilterRule"
 	// For granting users access to data.
 	AccessControlActionGrant AccessControlAction = "Grant"
-	// For masking data in columns.
-	AccessControlActionMask AccessControlAction = "Mask"
-	// For filtering rows in a table or view.
-	AccessControlActionFilter AccessControlAction = "Filter"
-	AccessControlActionShare  AccessControlAction = "Share"
 	// For grouping users or other groups. The access control doesn't have WHAT items in this case.
-	AccessControlActionGroup      AccessControlAction = "Group"
-	AccessControlActionFilterrule AccessControlAction = "FilterRule"
+	AccessControlActionGroup AccessControlAction = "Group"
+	// For masking data in columns.
+	AccessControlActionMask  AccessControlAction = "Mask"
+	AccessControlActionShare AccessControlAction = "Share"
 )
 
 var AllAccessControlAction = []AccessControlAction{
-	AccessControlActionGrant,
-	AccessControlActionMask,
 	AccessControlActionFilter,
-	AccessControlActionShare,
-	AccessControlActionGroup,
 	AccessControlActionFilterrule,
+	AccessControlActionGrant,
+	AccessControlActionGroup,
+	AccessControlActionMask,
+	AccessControlActionShare,
 }
 
 // AccessControlCategoryGrantCategory includes the requested fields of the GraphQL type GrantCategory.
@@ -993,12 +993,12 @@ func (v *AccessControlDataSourceInput) GetType() *string { return v.Type }
 type AccessControlFeedbackImport struct {
 	AccessControlId    string                      `json:"accessControlId"`
 	ActualName         string                      `json:"actualName"`
-	ExternalId         *string                     `json:"externalId,omitempty"`
-	Type               *string                     `json:"type,omitempty"`
 	Errors             []string                    `json:"errors"`
-	Warnings           []string                    `json:"warnings"`
-	State              *AccessControlFeedbackState `json:"state,omitempty"`
+	ExternalId         *string                     `json:"externalId,omitempty"`
 	FilterRuleFeedback []FilterRuleFeedbackImport  `json:"filterRuleFeedback"`
+	State              *AccessControlFeedbackState `json:"state,omitempty"`
+	Type               *string                     `json:"type,omitempty"`
+	Warnings           []string                    `json:"warnings"`
 }
 
 // GetAccessControlId returns AccessControlFeedbackImport.AccessControlId, and is useful for accessing the field via an interface.
@@ -1007,25 +1007,25 @@ func (v *AccessControlFeedbackImport) GetAccessControlId() string { return v.Acc
 // GetActualName returns AccessControlFeedbackImport.ActualName, and is useful for accessing the field via an interface.
 func (v *AccessControlFeedbackImport) GetActualName() string { return v.ActualName }
 
-// GetExternalId returns AccessControlFeedbackImport.ExternalId, and is useful for accessing the field via an interface.
-func (v *AccessControlFeedbackImport) GetExternalId() *string { return v.ExternalId }
-
-// GetType returns AccessControlFeedbackImport.Type, and is useful for accessing the field via an interface.
-func (v *AccessControlFeedbackImport) GetType() *string { return v.Type }
-
 // GetErrors returns AccessControlFeedbackImport.Errors, and is useful for accessing the field via an interface.
 func (v *AccessControlFeedbackImport) GetErrors() []string { return v.Errors }
 
-// GetWarnings returns AccessControlFeedbackImport.Warnings, and is useful for accessing the field via an interface.
-func (v *AccessControlFeedbackImport) GetWarnings() []string { return v.Warnings }
-
-// GetState returns AccessControlFeedbackImport.State, and is useful for accessing the field via an interface.
-func (v *AccessControlFeedbackImport) GetState() *AccessControlFeedbackState { return v.State }
+// GetExternalId returns AccessControlFeedbackImport.ExternalId, and is useful for accessing the field via an interface.
+func (v *AccessControlFeedbackImport) GetExternalId() *string { return v.ExternalId }
 
 // GetFilterRuleFeedback returns AccessControlFeedbackImport.FilterRuleFeedback, and is useful for accessing the field via an interface.
 func (v *AccessControlFeedbackImport) GetFilterRuleFeedback() []FilterRuleFeedbackImport {
 	return v.FilterRuleFeedback
 }
+
+// GetState returns AccessControlFeedbackImport.State, and is useful for accessing the field via an interface.
+func (v *AccessControlFeedbackImport) GetState() *AccessControlFeedbackState { return v.State }
+
+// GetType returns AccessControlFeedbackImport.Type, and is useful for accessing the field via an interface.
+func (v *AccessControlFeedbackImport) GetType() *string { return v.Type }
+
+// GetWarnings returns AccessControlFeedbackImport.Warnings, and is useful for accessing the field via an interface.
+func (v *AccessControlFeedbackImport) GetWarnings() []string { return v.Warnings }
 
 type AccessControlFeedbackState struct {
 	Who *AccessControlWhoFeedbackState `json:"who,omitempty"`
@@ -1038,57 +1038,39 @@ func (v *AccessControlFeedbackState) GetWho() *AccessControlWhoFeedbackState { r
 type AccessControlFilterInput struct {
 	// The actions the access controls should have.
 	Actions []AccessControlAction `json:"actions"`
-	// The states the access controls should be in.
-	States []AccessControlState `json:"states"`
-	// The grant categories the access control should be in.
-	Categories []string `json:"categories"`
-	// To filter on only internal or external access controls.
-	External *bool `json:"external,omitempty"`
-	// The search string to use (will do a case-insensitive 'contains').
-	Search *string `json:"search,omitempty"`
-	// To filter access controls which are linked to a specific data source.
-	DataSource *string `json:"dataSource,omitempty"`
-	// Only return access controls where the WHO is editable.
-	CanEditWho *bool `json:"canEditWho,omitempty"`
 	// Only return access controls where the inheritance (= linking to other access controls) is editable.
 	CanEditInheritance *bool `json:"canEditInheritance,omitempty"`
 	// Only return access controls where the WHAT is editable.
-	CanEditWhat *bool          `json:"canEditWhat,omitempty"`
+	CanEditWhat *bool `json:"canEditWhat,omitempty"`
+	// Only return access controls where the WHO is editable.
+	CanEditWho  *bool          `json:"canEditWho,omitempty"`
 	CanLinkFrom *CanLinkFilter `json:"canLinkFrom,omitempty"`
 	CanLinkTo   *CanLinkFilter `json:"canLinkTo,omitempty"`
+	// The grant categories the access control should be in.
+	Categories []string `json:"categories"`
+	// Only return the access controls that have the given data object in its WHAT list.
+	DataObjectInWhat *string `json:"dataObjectInWhat,omitempty"`
+	// To filter access controls which are linked to a specific data source.
+	DataSource *string `json:"dataSource,omitempty"`
 	// Exclude this explicit list of access controls.
 	Exclude []string `json:"exclude"`
-	// The source of the access control
-	Source *string `json:"source,omitempty"`
+	// To filter on only internal or external access controls.
+	External *bool `json:"external,omitempty"`
+	// Filter by which tags the access control needs to have.
+	HasTags              []TagFilter `json:"hasTags"`
+	IsRoleAssignableOnly bool        `json:"isRoleAssignableOnly"`
 	// The access control must have any of the given owners (by user ID).
 	Owners []string `json:"owners"`
-	// Filter by which tags the access control needs to have.
-	HasTags []TagFilter `json:"hasTags"`
-	// Only return the access controls that have the given data object in its WHAT list.
-	DataObjectInWhat     *string `json:"dataObjectInWhat,omitempty"`
-	IsRoleAssignableOnly bool    `json:"isRoleAssignableOnly"`
+	// The search string to use (will do a case-insensitive 'contains').
+	Search *string `json:"search,omitempty"`
+	// The source of the access control
+	Source *string `json:"source,omitempty"`
+	// The states the access controls should be in.
+	States []AccessControlState `json:"states"`
 }
 
 // GetActions returns AccessControlFilterInput.Actions, and is useful for accessing the field via an interface.
 func (v *AccessControlFilterInput) GetActions() []AccessControlAction { return v.Actions }
-
-// GetStates returns AccessControlFilterInput.States, and is useful for accessing the field via an interface.
-func (v *AccessControlFilterInput) GetStates() []AccessControlState { return v.States }
-
-// GetCategories returns AccessControlFilterInput.Categories, and is useful for accessing the field via an interface.
-func (v *AccessControlFilterInput) GetCategories() []string { return v.Categories }
-
-// GetExternal returns AccessControlFilterInput.External, and is useful for accessing the field via an interface.
-func (v *AccessControlFilterInput) GetExternal() *bool { return v.External }
-
-// GetSearch returns AccessControlFilterInput.Search, and is useful for accessing the field via an interface.
-func (v *AccessControlFilterInput) GetSearch() *string { return v.Search }
-
-// GetDataSource returns AccessControlFilterInput.DataSource, and is useful for accessing the field via an interface.
-func (v *AccessControlFilterInput) GetDataSource() *string { return v.DataSource }
-
-// GetCanEditWho returns AccessControlFilterInput.CanEditWho, and is useful for accessing the field via an interface.
-func (v *AccessControlFilterInput) GetCanEditWho() *bool { return v.CanEditWho }
 
 // GetCanEditInheritance returns AccessControlFilterInput.CanEditInheritance, and is useful for accessing the field via an interface.
 func (v *AccessControlFilterInput) GetCanEditInheritance() *bool { return v.CanEditInheritance }
@@ -1096,104 +1078,83 @@ func (v *AccessControlFilterInput) GetCanEditInheritance() *bool { return v.CanE
 // GetCanEditWhat returns AccessControlFilterInput.CanEditWhat, and is useful for accessing the field via an interface.
 func (v *AccessControlFilterInput) GetCanEditWhat() *bool { return v.CanEditWhat }
 
+// GetCanEditWho returns AccessControlFilterInput.CanEditWho, and is useful for accessing the field via an interface.
+func (v *AccessControlFilterInput) GetCanEditWho() *bool { return v.CanEditWho }
+
 // GetCanLinkFrom returns AccessControlFilterInput.CanLinkFrom, and is useful for accessing the field via an interface.
 func (v *AccessControlFilterInput) GetCanLinkFrom() *CanLinkFilter { return v.CanLinkFrom }
 
 // GetCanLinkTo returns AccessControlFilterInput.CanLinkTo, and is useful for accessing the field via an interface.
 func (v *AccessControlFilterInput) GetCanLinkTo() *CanLinkFilter { return v.CanLinkTo }
 
-// GetExclude returns AccessControlFilterInput.Exclude, and is useful for accessing the field via an interface.
-func (v *AccessControlFilterInput) GetExclude() []string { return v.Exclude }
-
-// GetSource returns AccessControlFilterInput.Source, and is useful for accessing the field via an interface.
-func (v *AccessControlFilterInput) GetSource() *string { return v.Source }
-
-// GetOwners returns AccessControlFilterInput.Owners, and is useful for accessing the field via an interface.
-func (v *AccessControlFilterInput) GetOwners() []string { return v.Owners }
-
-// GetHasTags returns AccessControlFilterInput.HasTags, and is useful for accessing the field via an interface.
-func (v *AccessControlFilterInput) GetHasTags() []TagFilter { return v.HasTags }
+// GetCategories returns AccessControlFilterInput.Categories, and is useful for accessing the field via an interface.
+func (v *AccessControlFilterInput) GetCategories() []string { return v.Categories }
 
 // GetDataObjectInWhat returns AccessControlFilterInput.DataObjectInWhat, and is useful for accessing the field via an interface.
 func (v *AccessControlFilterInput) GetDataObjectInWhat() *string { return v.DataObjectInWhat }
 
+// GetDataSource returns AccessControlFilterInput.DataSource, and is useful for accessing the field via an interface.
+func (v *AccessControlFilterInput) GetDataSource() *string { return v.DataSource }
+
+// GetExclude returns AccessControlFilterInput.Exclude, and is useful for accessing the field via an interface.
+func (v *AccessControlFilterInput) GetExclude() []string { return v.Exclude }
+
+// GetExternal returns AccessControlFilterInput.External, and is useful for accessing the field via an interface.
+func (v *AccessControlFilterInput) GetExternal() *bool { return v.External }
+
+// GetHasTags returns AccessControlFilterInput.HasTags, and is useful for accessing the field via an interface.
+func (v *AccessControlFilterInput) GetHasTags() []TagFilter { return v.HasTags }
+
 // GetIsRoleAssignableOnly returns AccessControlFilterInput.IsRoleAssignableOnly, and is useful for accessing the field via an interface.
 func (v *AccessControlFilterInput) GetIsRoleAssignableOnly() bool { return v.IsRoleAssignableOnly }
 
+// GetOwners returns AccessControlFilterInput.Owners, and is useful for accessing the field via an interface.
+func (v *AccessControlFilterInput) GetOwners() []string { return v.Owners }
+
+// GetSearch returns AccessControlFilterInput.Search, and is useful for accessing the field via an interface.
+func (v *AccessControlFilterInput) GetSearch() *string { return v.Search }
+
+// GetSource returns AccessControlFilterInput.Source, and is useful for accessing the field via an interface.
+func (v *AccessControlFilterInput) GetSource() *string { return v.Source }
+
+// GetStates returns AccessControlFilterInput.States, and is useful for accessing the field via an interface.
+func (v *AccessControlFilterInput) GetStates() []AccessControlState { return v.States }
+
 type AccessControlImport struct {
-	ExternalId              string              `json:"externalId"`
-	Name                    string              `json:"name"`
-	NamingHint              string              `json:"namingHint"`
-	Type                    *string             `json:"type,omitempty"`
 	Action                  AccessControlAction `json:"action"`
-	Policy                  *string             `json:"policy,omitempty"`
-	Who                     WhoItemImport       `json:"who"`
-	NotInternalizable       bool                `json:"notInternalizable"`
-	WhoLocked               bool                `json:"whoLocked"`
-	WhoLockedReason         *string             `json:"whoLockedReason,omitempty"`
-	InheritanceLocked       bool                `json:"inheritanceLocked"`
-	InheritanceLockedReason *string             `json:"inheritanceLockedReason,omitempty"`
-	WhatLocked              bool                `json:"whatLocked"`
-	WhatLockedReason        *string             `json:"whatLockedReason,omitempty"`
-	NameLocked              bool                `json:"nameLocked"`
-	NameLockedReason        *string             `json:"nameLockedReason,omitempty"`
+	ActualName              string              `json:"actualName"`
+	CommonWhatDataObject    *string             `json:"commonWhatDataObject,omitempty"`
 	DeleteLocked            bool                `json:"deleteLocked"`
 	DeleteLockedReason      *string             `json:"deleteLockedReason,omitempty"`
+	ExternalId              string              `json:"externalId"`
+	Incomplete              bool                `json:"incomplete"`
+	InheritanceLocked       bool                `json:"inheritanceLocked"`
+	InheritanceLockedReason *string             `json:"inheritanceLockedReason,omitempty"`
+	Name                    string              `json:"name"`
+	NameLocked              bool                `json:"nameLocked"`
+	NameLockedReason        *string             `json:"nameLockedReason,omitempty"`
+	NamingHint              string              `json:"namingHint"`
+	NotInternalizable       bool                `json:"notInternalizable"`
 	OwnersLocked            bool                `json:"ownersLocked"`
 	OwnersLockedReason      *string             `json:"ownersLockedReason,omitempty"`
-	ActualName              string              `json:"actualName"`
-	Incomplete              bool                `json:"incomplete"`
+	Policy                  *string             `json:"policy,omitempty"`
 	Tags                    []TagImport         `json:"tags"`
-	CommonWhatDataObject    *string             `json:"commonWhatDataObject,omitempty"`
+	Type                    *string             `json:"type,omitempty"`
+	WhatLocked              bool                `json:"whatLocked"`
+	WhatLockedReason        *string             `json:"whatLockedReason,omitempty"`
+	Who                     WhoItemImport       `json:"who"`
+	WhoLocked               bool                `json:"whoLocked"`
+	WhoLockedReason         *string             `json:"whoLockedReason,omitempty"`
 }
-
-// GetExternalId returns AccessControlImport.ExternalId, and is useful for accessing the field via an interface.
-func (v *AccessControlImport) GetExternalId() string { return v.ExternalId }
-
-// GetName returns AccessControlImport.Name, and is useful for accessing the field via an interface.
-func (v *AccessControlImport) GetName() string { return v.Name }
-
-// GetNamingHint returns AccessControlImport.NamingHint, and is useful for accessing the field via an interface.
-func (v *AccessControlImport) GetNamingHint() string { return v.NamingHint }
-
-// GetType returns AccessControlImport.Type, and is useful for accessing the field via an interface.
-func (v *AccessControlImport) GetType() *string { return v.Type }
 
 // GetAction returns AccessControlImport.Action, and is useful for accessing the field via an interface.
 func (v *AccessControlImport) GetAction() AccessControlAction { return v.Action }
 
-// GetPolicy returns AccessControlImport.Policy, and is useful for accessing the field via an interface.
-func (v *AccessControlImport) GetPolicy() *string { return v.Policy }
+// GetActualName returns AccessControlImport.ActualName, and is useful for accessing the field via an interface.
+func (v *AccessControlImport) GetActualName() string { return v.ActualName }
 
-// GetWho returns AccessControlImport.Who, and is useful for accessing the field via an interface.
-func (v *AccessControlImport) GetWho() WhoItemImport { return v.Who }
-
-// GetNotInternalizable returns AccessControlImport.NotInternalizable, and is useful for accessing the field via an interface.
-func (v *AccessControlImport) GetNotInternalizable() bool { return v.NotInternalizable }
-
-// GetWhoLocked returns AccessControlImport.WhoLocked, and is useful for accessing the field via an interface.
-func (v *AccessControlImport) GetWhoLocked() bool { return v.WhoLocked }
-
-// GetWhoLockedReason returns AccessControlImport.WhoLockedReason, and is useful for accessing the field via an interface.
-func (v *AccessControlImport) GetWhoLockedReason() *string { return v.WhoLockedReason }
-
-// GetInheritanceLocked returns AccessControlImport.InheritanceLocked, and is useful for accessing the field via an interface.
-func (v *AccessControlImport) GetInheritanceLocked() bool { return v.InheritanceLocked }
-
-// GetInheritanceLockedReason returns AccessControlImport.InheritanceLockedReason, and is useful for accessing the field via an interface.
-func (v *AccessControlImport) GetInheritanceLockedReason() *string { return v.InheritanceLockedReason }
-
-// GetWhatLocked returns AccessControlImport.WhatLocked, and is useful for accessing the field via an interface.
-func (v *AccessControlImport) GetWhatLocked() bool { return v.WhatLocked }
-
-// GetWhatLockedReason returns AccessControlImport.WhatLockedReason, and is useful for accessing the field via an interface.
-func (v *AccessControlImport) GetWhatLockedReason() *string { return v.WhatLockedReason }
-
-// GetNameLocked returns AccessControlImport.NameLocked, and is useful for accessing the field via an interface.
-func (v *AccessControlImport) GetNameLocked() bool { return v.NameLocked }
-
-// GetNameLockedReason returns AccessControlImport.NameLockedReason, and is useful for accessing the field via an interface.
-func (v *AccessControlImport) GetNameLockedReason() *string { return v.NameLockedReason }
+// GetCommonWhatDataObject returns AccessControlImport.CommonWhatDataObject, and is useful for accessing the field via an interface.
+func (v *AccessControlImport) GetCommonWhatDataObject() *string { return v.CommonWhatDataObject }
 
 // GetDeleteLocked returns AccessControlImport.DeleteLocked, and is useful for accessing the field via an interface.
 func (v *AccessControlImport) GetDeleteLocked() bool { return v.DeleteLocked }
@@ -1201,60 +1162,125 @@ func (v *AccessControlImport) GetDeleteLocked() bool { return v.DeleteLocked }
 // GetDeleteLockedReason returns AccessControlImport.DeleteLockedReason, and is useful for accessing the field via an interface.
 func (v *AccessControlImport) GetDeleteLockedReason() *string { return v.DeleteLockedReason }
 
+// GetExternalId returns AccessControlImport.ExternalId, and is useful for accessing the field via an interface.
+func (v *AccessControlImport) GetExternalId() string { return v.ExternalId }
+
+// GetIncomplete returns AccessControlImport.Incomplete, and is useful for accessing the field via an interface.
+func (v *AccessControlImport) GetIncomplete() bool { return v.Incomplete }
+
+// GetInheritanceLocked returns AccessControlImport.InheritanceLocked, and is useful for accessing the field via an interface.
+func (v *AccessControlImport) GetInheritanceLocked() bool { return v.InheritanceLocked }
+
+// GetInheritanceLockedReason returns AccessControlImport.InheritanceLockedReason, and is useful for accessing the field via an interface.
+func (v *AccessControlImport) GetInheritanceLockedReason() *string { return v.InheritanceLockedReason }
+
+// GetName returns AccessControlImport.Name, and is useful for accessing the field via an interface.
+func (v *AccessControlImport) GetName() string { return v.Name }
+
+// GetNameLocked returns AccessControlImport.NameLocked, and is useful for accessing the field via an interface.
+func (v *AccessControlImport) GetNameLocked() bool { return v.NameLocked }
+
+// GetNameLockedReason returns AccessControlImport.NameLockedReason, and is useful for accessing the field via an interface.
+func (v *AccessControlImport) GetNameLockedReason() *string { return v.NameLockedReason }
+
+// GetNamingHint returns AccessControlImport.NamingHint, and is useful for accessing the field via an interface.
+func (v *AccessControlImport) GetNamingHint() string { return v.NamingHint }
+
+// GetNotInternalizable returns AccessControlImport.NotInternalizable, and is useful for accessing the field via an interface.
+func (v *AccessControlImport) GetNotInternalizable() bool { return v.NotInternalizable }
+
 // GetOwnersLocked returns AccessControlImport.OwnersLocked, and is useful for accessing the field via an interface.
 func (v *AccessControlImport) GetOwnersLocked() bool { return v.OwnersLocked }
 
 // GetOwnersLockedReason returns AccessControlImport.OwnersLockedReason, and is useful for accessing the field via an interface.
 func (v *AccessControlImport) GetOwnersLockedReason() *string { return v.OwnersLockedReason }
 
-// GetActualName returns AccessControlImport.ActualName, and is useful for accessing the field via an interface.
-func (v *AccessControlImport) GetActualName() string { return v.ActualName }
-
-// GetIncomplete returns AccessControlImport.Incomplete, and is useful for accessing the field via an interface.
-func (v *AccessControlImport) GetIncomplete() bool { return v.Incomplete }
+// GetPolicy returns AccessControlImport.Policy, and is useful for accessing the field via an interface.
+func (v *AccessControlImport) GetPolicy() *string { return v.Policy }
 
 // GetTags returns AccessControlImport.Tags, and is useful for accessing the field via an interface.
 func (v *AccessControlImport) GetTags() []TagImport { return v.Tags }
 
-// GetCommonWhatDataObject returns AccessControlImport.CommonWhatDataObject, and is useful for accessing the field via an interface.
-func (v *AccessControlImport) GetCommonWhatDataObject() *string { return v.CommonWhatDataObject }
+// GetType returns AccessControlImport.Type, and is useful for accessing the field via an interface.
+func (v *AccessControlImport) GetType() *string { return v.Type }
+
+// GetWhatLocked returns AccessControlImport.WhatLocked, and is useful for accessing the field via an interface.
+func (v *AccessControlImport) GetWhatLocked() bool { return v.WhatLocked }
+
+// GetWhatLockedReason returns AccessControlImport.WhatLockedReason, and is useful for accessing the field via an interface.
+func (v *AccessControlImport) GetWhatLockedReason() *string { return v.WhatLockedReason }
+
+// GetWho returns AccessControlImport.Who, and is useful for accessing the field via an interface.
+func (v *AccessControlImport) GetWho() WhoItemImport { return v.Who }
+
+// GetWhoLocked returns AccessControlImport.WhoLocked, and is useful for accessing the field via an interface.
+func (v *AccessControlImport) GetWhoLocked() bool { return v.WhoLocked }
+
+// GetWhoLockedReason returns AccessControlImport.WhoLockedReason, and is useful for accessing the field via an interface.
+func (v *AccessControlImport) GetWhoLockedReason() *string { return v.WhoLockedReason }
 
 // Input object for creating and updating access controls.
 type AccessControlInput struct {
+	// Action of the access control to determine if it is a grant, mask, filter or group.
+	Action *AccessControlAction `json:"action,omitempty"`
+	// In case the access control is a grant (action), this contains the grant category (determining the behavior of the grant).
+	Category               *string `json:"category,omitempty"`
+	CommonWhatDataObjectId *string `json:"commonWhatDataObjectId,omitempty"`
+	// The data sources that this access control will get deployed to.
+	DataSources []AccessControlDataSourceInput `json:"dataSources"`
+	// Detailed description of the access control.
+	Description *string `json:"description,omitempty"`
+	// Indicates whether the access control is managed externally (in the Data Source) or internally (in the Collibra Data Access application).
+	External *bool `json:"external,omitempty"`
+	// For access controls with `action=Filter`, this contains the boolean expression determining the filter criteria.
+	FilterCriteria *DataComparisonExpressionInput `json:"filterCriteria,omitempty"`
+	// The locks that should apply to this access control.
+	Locks []AccessControlLockDataInput `json:"locks"`
 	// Name of the access control.
 	Name *string `json:"name,omitempty"`
 	// Naming hint for the access control, used for generating the actual names in target systems.
 	NamingHint *string `json:"namingHint,omitempty"`
-	// Action of the access control to determine if it is a grant, mask, filter or group.
-	Action *AccessControlAction `json:"action,omitempty"`
-	// Detailed description of the access control.
-	Description *string `json:"description,omitempty"`
-	// In case the access control is a grant (action), this contains the grant category (determining the behavior of the grant).
-	Category *string `json:"category,omitempty"`
+	// The policy rule as a string. This is used only for certain cases, like imported row-level filters and column masks or for row-level filters that are implemented like this.
+	PolicyRule *string `json:"policyRule,omitempty"`
 	// Source defines the source of the access control, if managed by third party tool.
 	Source *string `json:"source,omitempty"`
+	// The list of ABAC rules for calculating the WHAT items dynamically.
+	WhatAbacRules []*WhatAbacRuleInput `json:"whatAbacRules,omitempty"`
+	// The list of static WHAT access controls for this access control.
+	WhatAccessControls []AccessControlWhatInputAP `json:"whatAccessControls"`
+	// The list of static WHAT data object items for this access control.
+	WhatDataObjects []AccessControlWhatInputDO `json:"whatDataObjects"`
 	// The list of ABAC rules for calculating the WHO items dynamically.
 	WhoAbacRules []*WhoAbacRuleInput `json:"whoAbacRules,omitempty"`
 	// The list of static WHO items for this access control.
 	WhoItems []WhoItemInput `json:"whoItems"`
-	// The list of ABAC rules for calculating the WHAT items dynamically.
-	WhatAbacRules []*WhatAbacRuleInput `json:"whatAbacRules,omitempty"`
-	// The list of static WHAT data object items for this access control.
-	WhatDataObjects []AccessControlWhatInputDO `json:"whatDataObjects"`
-	// The list of static WHAT access controls for this access control.
-	WhatAccessControls []AccessControlWhatInputAP `json:"whatAccessControls"`
-	// The policy rule as a string. This is used only for certain cases, like imported row-level filters and column masks or for row-level filters that are implemented like this.
-	PolicyRule *string `json:"policyRule,omitempty"`
-	// For access controls with `action=Filter`, this contains the boolean expression determining the filter criteria.
-	FilterCriteria *DataComparisonExpressionInput `json:"filterCriteria,omitempty"`
-	// The data sources that this access control will get deployed to.
-	DataSources            []AccessControlDataSourceInput `json:"dataSources"`
-	CommonWhatDataObjectId *string                        `json:"commonWhatDataObjectId,omitempty"`
-	// The locks that should apply to this access control.
-	Locks []AccessControlLockDataInput `json:"locks"`
-	// Indicates whether the access control is managed externally (in the Data Source) or internally (in the Collibra Data Access application).
-	External *bool `json:"external,omitempty"`
 }
+
+// GetAction returns AccessControlInput.Action, and is useful for accessing the field via an interface.
+func (v *AccessControlInput) GetAction() *AccessControlAction { return v.Action }
+
+// GetCategory returns AccessControlInput.Category, and is useful for accessing the field via an interface.
+func (v *AccessControlInput) GetCategory() *string { return v.Category }
+
+// GetCommonWhatDataObjectId returns AccessControlInput.CommonWhatDataObjectId, and is useful for accessing the field via an interface.
+func (v *AccessControlInput) GetCommonWhatDataObjectId() *string { return v.CommonWhatDataObjectId }
+
+// GetDataSources returns AccessControlInput.DataSources, and is useful for accessing the field via an interface.
+func (v *AccessControlInput) GetDataSources() []AccessControlDataSourceInput { return v.DataSources }
+
+// GetDescription returns AccessControlInput.Description, and is useful for accessing the field via an interface.
+func (v *AccessControlInput) GetDescription() *string { return v.Description }
+
+// GetExternal returns AccessControlInput.External, and is useful for accessing the field via an interface.
+func (v *AccessControlInput) GetExternal() *bool { return v.External }
+
+// GetFilterCriteria returns AccessControlInput.FilterCriteria, and is useful for accessing the field via an interface.
+func (v *AccessControlInput) GetFilterCriteria() *DataComparisonExpressionInput {
+	return v.FilterCriteria
+}
+
+// GetLocks returns AccessControlInput.Locks, and is useful for accessing the field via an interface.
+func (v *AccessControlInput) GetLocks() []AccessControlLockDataInput { return v.Locks }
 
 // GetName returns AccessControlInput.Name, and is useful for accessing the field via an interface.
 func (v *AccessControlInput) GetName() *string { return v.Name }
@@ -1262,17 +1288,24 @@ func (v *AccessControlInput) GetName() *string { return v.Name }
 // GetNamingHint returns AccessControlInput.NamingHint, and is useful for accessing the field via an interface.
 func (v *AccessControlInput) GetNamingHint() *string { return v.NamingHint }
 
-// GetAction returns AccessControlInput.Action, and is useful for accessing the field via an interface.
-func (v *AccessControlInput) GetAction() *AccessControlAction { return v.Action }
-
-// GetDescription returns AccessControlInput.Description, and is useful for accessing the field via an interface.
-func (v *AccessControlInput) GetDescription() *string { return v.Description }
-
-// GetCategory returns AccessControlInput.Category, and is useful for accessing the field via an interface.
-func (v *AccessControlInput) GetCategory() *string { return v.Category }
+// GetPolicyRule returns AccessControlInput.PolicyRule, and is useful for accessing the field via an interface.
+func (v *AccessControlInput) GetPolicyRule() *string { return v.PolicyRule }
 
 // GetSource returns AccessControlInput.Source, and is useful for accessing the field via an interface.
 func (v *AccessControlInput) GetSource() *string { return v.Source }
+
+// GetWhatAbacRules returns AccessControlInput.WhatAbacRules, and is useful for accessing the field via an interface.
+func (v *AccessControlInput) GetWhatAbacRules() []*WhatAbacRuleInput { return v.WhatAbacRules }
+
+// GetWhatAccessControls returns AccessControlInput.WhatAccessControls, and is useful for accessing the field via an interface.
+func (v *AccessControlInput) GetWhatAccessControls() []AccessControlWhatInputAP {
+	return v.WhatAccessControls
+}
+
+// GetWhatDataObjects returns AccessControlInput.WhatDataObjects, and is useful for accessing the field via an interface.
+func (v *AccessControlInput) GetWhatDataObjects() []AccessControlWhatInputDO {
+	return v.WhatDataObjects
+}
 
 // GetWhoAbacRules returns AccessControlInput.WhoAbacRules, and is useful for accessing the field via an interface.
 func (v *AccessControlInput) GetWhoAbacRules() []*WhoAbacRuleInput { return v.WhoAbacRules }
@@ -1280,64 +1313,31 @@ func (v *AccessControlInput) GetWhoAbacRules() []*WhoAbacRuleInput { return v.Wh
 // GetWhoItems returns AccessControlInput.WhoItems, and is useful for accessing the field via an interface.
 func (v *AccessControlInput) GetWhoItems() []WhoItemInput { return v.WhoItems }
 
-// GetWhatAbacRules returns AccessControlInput.WhatAbacRules, and is useful for accessing the field via an interface.
-func (v *AccessControlInput) GetWhatAbacRules() []*WhatAbacRuleInput { return v.WhatAbacRules }
-
-// GetWhatDataObjects returns AccessControlInput.WhatDataObjects, and is useful for accessing the field via an interface.
-func (v *AccessControlInput) GetWhatDataObjects() []AccessControlWhatInputDO {
-	return v.WhatDataObjects
-}
-
-// GetWhatAccessControls returns AccessControlInput.WhatAccessControls, and is useful for accessing the field via an interface.
-func (v *AccessControlInput) GetWhatAccessControls() []AccessControlWhatInputAP {
-	return v.WhatAccessControls
-}
-
-// GetPolicyRule returns AccessControlInput.PolicyRule, and is useful for accessing the field via an interface.
-func (v *AccessControlInput) GetPolicyRule() *string { return v.PolicyRule }
-
-// GetFilterCriteria returns AccessControlInput.FilterCriteria, and is useful for accessing the field via an interface.
-func (v *AccessControlInput) GetFilterCriteria() *DataComparisonExpressionInput {
-	return v.FilterCriteria
-}
-
-// GetDataSources returns AccessControlInput.DataSources, and is useful for accessing the field via an interface.
-func (v *AccessControlInput) GetDataSources() []AccessControlDataSourceInput { return v.DataSources }
-
-// GetCommonWhatDataObjectId returns AccessControlInput.CommonWhatDataObjectId, and is useful for accessing the field via an interface.
-func (v *AccessControlInput) GetCommonWhatDataObjectId() *string { return v.CommonWhatDataObjectId }
-
-// GetLocks returns AccessControlInput.Locks, and is useful for accessing the field via an interface.
-func (v *AccessControlInput) GetLocks() []AccessControlLockDataInput { return v.Locks }
-
-// GetExternal returns AccessControlInput.External, and is useful for accessing the field via an interface.
-func (v *AccessControlInput) GetExternal() *bool { return v.External }
-
 // The parts that can possibly be locked on an access control.
 type AccessControlLock string
 
 const (
-	// The users in the WHO list of the access control cannot be edited.
-	AccessControlLockWholock AccessControlLock = "WhoLock"
-	// The access controls in the WHO list of the access control cannot be edited.
-	AccessControlLockInheritancelock AccessControlLock = "InheritanceLock"
-	// The WHAT list of the access control cannot be edited.
-	AccessControlLockWhatlock AccessControlLock = "WhatLock"
-	// The name of the access control cannot be edited.
-	AccessControlLockNamelock AccessControlLock = "NameLock"
 	// The access control cannot be deleted. This also has the impact that, when the access control is edited, after the synchronization, the access control will be made external again.
 	AccessControlLockDeletelock AccessControlLock = "DeleteLock"
+	// The access controls in the WHO list of the access control cannot be edited.
+	AccessControlLockInheritancelock AccessControlLock = "InheritanceLock"
+	// The name of the access control cannot be edited.
+	AccessControlLockNamelock AccessControlLock = "NameLock"
 	// The owners of the access control cannot be edited.
 	AccessControlLockOwnerlock AccessControlLock = "OwnerLock"
+	// The WHAT list of the access control cannot be edited.
+	AccessControlLockWhatlock AccessControlLock = "WhatLock"
+	// The users in the WHO list of the access control cannot be edited.
+	AccessControlLockWholock AccessControlLock = "WhoLock"
 )
 
 var AllAccessControlLock = []AccessControlLock{
-	AccessControlLockWholock,
-	AccessControlLockInheritancelock,
-	AccessControlLockWhatlock,
-	AccessControlLockNamelock,
 	AccessControlLockDeletelock,
+	AccessControlLockInheritancelock,
+	AccessControlLockNamelock,
 	AccessControlLockOwnerlock,
+	AccessControlLockWhatlock,
+	AccessControlLockWholock,
 }
 
 // AccessControlLockData includes the GraphQL fields of AccessControlLockData requested by the fragment AccessControlLockData.
@@ -1418,17 +1418,17 @@ func (v *AccessControlLockDataDetailsAccessControlLockDetails) __premarshalJSON(
 
 // Input for defining the lock settings
 type AccessControlLockDataInput struct {
-	// The part of the access control to lock.
-	LockKey AccessControlLock `json:"lockKey"`
 	// The lock details.
 	Details *AccessControlLockDetailsInput `json:"details,omitempty"`
+	// The part of the access control to lock.
+	LockKey AccessControlLock `json:"lockKey"`
 }
-
-// GetLockKey returns AccessControlLockDataInput.LockKey, and is useful for accessing the field via an interface.
-func (v *AccessControlLockDataInput) GetLockKey() AccessControlLock { return v.LockKey }
 
 // GetDetails returns AccessControlLockDataInput.Details, and is useful for accessing the field via an interface.
 func (v *AccessControlLockDataInput) GetDetails() *AccessControlLockDetailsInput { return v.Details }
+
+// GetLockKey returns AccessControlLockDataInput.LockKey, and is useful for accessing the field via an interface.
+func (v *AccessControlLockDataInput) GetLockKey() AccessControlLock { return v.LockKey }
 
 // AccessControlLockDetails includes the GraphQL fields of AccessControlLockDetails requested by the fragment AccessControlLockDetails.
 // The GraphQL type's documentation follows.
@@ -1444,17 +1444,17 @@ func (v *AccessControlLockDetails) GetReason() *string { return v.Reason }
 
 // Input for defining the lock details.
 type AccessControlLockDetailsInput struct {
-	// The reason for locking this part of the access control.
-	Reason *string `json:"reason,omitempty"`
 	// The lock type.
 	LockType *AccessControlLockType `json:"lockType,omitempty"`
+	// The reason for locking this part of the access control.
+	Reason *string `json:"reason,omitempty"`
 }
-
-// GetReason returns AccessControlLockDetailsInput.Reason, and is useful for accessing the field via an interface.
-func (v *AccessControlLockDetailsInput) GetReason() *string { return v.Reason }
 
 // GetLockType returns AccessControlLockDetailsInput.LockType, and is useful for accessing the field via an interface.
 func (v *AccessControlLockDetailsInput) GetLockType() *AccessControlLockType { return v.LockType }
+
+// GetReason returns AccessControlLockDetailsInput.Reason, and is useful for accessing the field via an interface.
+func (v *AccessControlLockDetailsInput) GetReason() *string { return v.Reason }
 
 // The types of lock.
 type AccessControlLockType string
@@ -1538,16 +1538,16 @@ func (v *AccessControlLocksAccessControlLockData) __premarshalJSON() (*__premars
 
 // Defines the sorting configuration for access control lists.
 type AccessControlOrderByInput struct {
-	Name       *Sort `json:"name,omitempty"`
+	Action     *Sort `json:"action,omitempty"`
 	CreatedAt  *Sort `json:"createdAt,omitempty"`
 	ModifiedAt *Sort `json:"modifiedAt,omitempty"`
-	Action     *Sort `json:"action,omitempty"`
+	Name       *Sort `json:"name,omitempty"`
 	State      *Sort `json:"state,omitempty"`
 	Sync       *Sort `json:"sync,omitempty"`
 }
 
-// GetName returns AccessControlOrderByInput.Name, and is useful for accessing the field via an interface.
-func (v *AccessControlOrderByInput) GetName() *Sort { return v.Name }
+// GetAction returns AccessControlOrderByInput.Action, and is useful for accessing the field via an interface.
+func (v *AccessControlOrderByInput) GetAction() *Sort { return v.Action }
 
 // GetCreatedAt returns AccessControlOrderByInput.CreatedAt, and is useful for accessing the field via an interface.
 func (v *AccessControlOrderByInput) GetCreatedAt() *Sort { return v.CreatedAt }
@@ -1555,8 +1555,8 @@ func (v *AccessControlOrderByInput) GetCreatedAt() *Sort { return v.CreatedAt }
 // GetModifiedAt returns AccessControlOrderByInput.ModifiedAt, and is useful for accessing the field via an interface.
 func (v *AccessControlOrderByInput) GetModifiedAt() *Sort { return v.ModifiedAt }
 
-// GetAction returns AccessControlOrderByInput.Action, and is useful for accessing the field via an interface.
-func (v *AccessControlOrderByInput) GetAction() *Sort { return v.Action }
+// GetName returns AccessControlOrderByInput.Name, and is useful for accessing the field via an interface.
+func (v *AccessControlOrderByInput) GetName() *Sort { return v.Name }
 
 // GetState returns AccessControlOrderByInput.State, and is useful for accessing the field via an interface.
 func (v *AccessControlOrderByInput) GetState() *Sort { return v.State }
@@ -1570,16 +1570,16 @@ type AccessControlState string
 const (
 	// This access control is active and so will be synced to or from the underlying system.
 	AccessControlStateActive AccessControlState = "Active"
-	// This access control is not active and so will not be synced to the underlying system (removed if it was synced before).
-	AccessControlStateInactive AccessControlState = "Inactive"
 	// This access control is deleted and, once synced to the underlying system, it will be automatically deleted with a 48 hour delay.
 	AccessControlStateDeleted AccessControlState = "Deleted"
+	// This access control is not active and so will not be synced to the underlying system (removed if it was synced before).
+	AccessControlStateInactive AccessControlState = "Inactive"
 )
 
 var AllAccessControlState = []AccessControlState{
 	AccessControlStateActive,
-	AccessControlStateInactive,
 	AccessControlStateDeleted,
+	AccessControlStateInactive,
 }
 
 // AccessControlSyncData includes the requested fields of the GraphQL type SyncData.
@@ -1664,61 +1664,61 @@ func (v *AccessControlSyncData) __premarshalJSON() (*__premarshalAccessControlSy
 }
 
 type AccessControlTypeInput struct {
-	// Boolean to specify that this is the default access control type to create for the data source
-	IsDefault *bool `json:"isDefault,omitempty"`
-	// The (internal) name of the type
-	Type *string `json:"type,omitempty"`
-	// A human readable name for the access control
-	Label *string `json:"label,omitempty"`
-	// the name or base64 encoded version of the icon to use for this access control
-	Icon *string `json:"icon,omitempty"`
-	// Boolean to indicate if the access control represents a named entity (like a role or a policy) in the data source. False, typically means some kind of ACL system (nameless bindings).
-	IsNamedEntity *bool `json:"isNamedEntity,omitempty"`
-	// Boolean to indicate whether the access control can be created from the web application or not
-	CanBeCreated *bool `json:"canBeCreated,omitempty"`
-	// Boolean to indicate that this (named entity) is something the user has to ‘assume’ to get these permissions. Typically, a role.
-	CanBeAssumed *bool `json:"canBeAssumed,omitempty"`
-	// Boolean to indicate that the user can assume multiple (roles).
-	CanAssumeMultiple *bool `json:"canAssumeMultiple,omitempty"`
 	// List of access control types that could be in the who list of this access control type
 	// Nil indicates that all access control types are allowed. Otherwise only defined access control types are allowed to be part of the who list of this access control type.
 	AllowedWhoAccessControlTypes []string `json:"allowedWhoAccessControlTypes"`
+	// Boolean to indicate that the user can assume multiple (roles).
+	CanAssumeMultiple *bool `json:"canAssumeMultiple,omitempty"`
+	// Boolean to indicate that this (named entity) is something the user has to ‘assume’ to get these permissions. Typically, a role.
+	CanBeAssumed *bool `json:"canBeAssumed,omitempty"`
+	// Boolean to indicate whether the access control can be created from the web application or not
+	CanBeCreated *bool `json:"canBeCreated,omitempty"`
 	// If set, this access control lives in a subset of the data source.
 	// This can be used to define database roles, application roles, etc.
 	CommonParentType *string `json:"commonParentType,omitempty"`
+	// the name or base64 encoded version of the icon to use for this access control
+	Icon *string `json:"icon,omitempty"`
+	// Boolean to specify that this is the default access control type to create for the data source
+	IsDefault *bool `json:"isDefault,omitempty"`
+	// Boolean to indicate if the access control represents a named entity (like a role or a policy) in the data source. False, typically means some kind of ACL system (nameless bindings).
+	IsNamedEntity *bool `json:"isNamedEntity,omitempty"`
+	// A human readable name for the access control
+	Label *string `json:"label,omitempty"`
+	// The (internal) name of the type
+	Type *string `json:"type,omitempty"`
 }
-
-// GetIsDefault returns AccessControlTypeInput.IsDefault, and is useful for accessing the field via an interface.
-func (v *AccessControlTypeInput) GetIsDefault() *bool { return v.IsDefault }
-
-// GetType returns AccessControlTypeInput.Type, and is useful for accessing the field via an interface.
-func (v *AccessControlTypeInput) GetType() *string { return v.Type }
-
-// GetLabel returns AccessControlTypeInput.Label, and is useful for accessing the field via an interface.
-func (v *AccessControlTypeInput) GetLabel() *string { return v.Label }
-
-// GetIcon returns AccessControlTypeInput.Icon, and is useful for accessing the field via an interface.
-func (v *AccessControlTypeInput) GetIcon() *string { return v.Icon }
-
-// GetIsNamedEntity returns AccessControlTypeInput.IsNamedEntity, and is useful for accessing the field via an interface.
-func (v *AccessControlTypeInput) GetIsNamedEntity() *bool { return v.IsNamedEntity }
-
-// GetCanBeCreated returns AccessControlTypeInput.CanBeCreated, and is useful for accessing the field via an interface.
-func (v *AccessControlTypeInput) GetCanBeCreated() *bool { return v.CanBeCreated }
-
-// GetCanBeAssumed returns AccessControlTypeInput.CanBeAssumed, and is useful for accessing the field via an interface.
-func (v *AccessControlTypeInput) GetCanBeAssumed() *bool { return v.CanBeAssumed }
-
-// GetCanAssumeMultiple returns AccessControlTypeInput.CanAssumeMultiple, and is useful for accessing the field via an interface.
-func (v *AccessControlTypeInput) GetCanAssumeMultiple() *bool { return v.CanAssumeMultiple }
 
 // GetAllowedWhoAccessControlTypes returns AccessControlTypeInput.AllowedWhoAccessControlTypes, and is useful for accessing the field via an interface.
 func (v *AccessControlTypeInput) GetAllowedWhoAccessControlTypes() []string {
 	return v.AllowedWhoAccessControlTypes
 }
 
+// GetCanAssumeMultiple returns AccessControlTypeInput.CanAssumeMultiple, and is useful for accessing the field via an interface.
+func (v *AccessControlTypeInput) GetCanAssumeMultiple() *bool { return v.CanAssumeMultiple }
+
+// GetCanBeAssumed returns AccessControlTypeInput.CanBeAssumed, and is useful for accessing the field via an interface.
+func (v *AccessControlTypeInput) GetCanBeAssumed() *bool { return v.CanBeAssumed }
+
+// GetCanBeCreated returns AccessControlTypeInput.CanBeCreated, and is useful for accessing the field via an interface.
+func (v *AccessControlTypeInput) GetCanBeCreated() *bool { return v.CanBeCreated }
+
 // GetCommonParentType returns AccessControlTypeInput.CommonParentType, and is useful for accessing the field via an interface.
 func (v *AccessControlTypeInput) GetCommonParentType() *string { return v.CommonParentType }
+
+// GetIcon returns AccessControlTypeInput.Icon, and is useful for accessing the field via an interface.
+func (v *AccessControlTypeInput) GetIcon() *string { return v.Icon }
+
+// GetIsDefault returns AccessControlTypeInput.IsDefault, and is useful for accessing the field via an interface.
+func (v *AccessControlTypeInput) GetIsDefault() *bool { return v.IsDefault }
+
+// GetIsNamedEntity returns AccessControlTypeInput.IsNamedEntity, and is useful for accessing the field via an interface.
+func (v *AccessControlTypeInput) GetIsNamedEntity() *bool { return v.IsNamedEntity }
+
+// GetLabel returns AccessControlTypeInput.Label, and is useful for accessing the field via an interface.
+func (v *AccessControlTypeInput) GetLabel() *string { return v.Label }
+
+// GetType returns AccessControlTypeInput.Type, and is useful for accessing the field via an interface.
+func (v *AccessControlTypeInput) GetType() *string { return v.Type }
 
 // AccessControlWhatAbacRulesWhatAbacRule includes the requested fields of the GraphQL type WhatAbacRule.
 // The GraphQL type's documentation follows.
@@ -1809,8 +1809,8 @@ func (v *AccessControlWhatAbacRulesWhatAbacRule) __premarshalJSON() (*__premarsh
 type AccessControlWhatAccessControlFilterInput struct {
 	Actions    []AccessControlAction `json:"actions"`
 	Categories []string              `json:"categories"`
-	Owners     []string              `json:"owners"`
 	HasTags    []TagFilter           `json:"hasTags"`
+	Owners     []string              `json:"owners"`
 	Search     *string               `json:"search,omitempty"`
 }
 
@@ -1822,28 +1822,28 @@ func (v *AccessControlWhatAccessControlFilterInput) GetActions() []AccessControl
 // GetCategories returns AccessControlWhatAccessControlFilterInput.Categories, and is useful for accessing the field via an interface.
 func (v *AccessControlWhatAccessControlFilterInput) GetCategories() []string { return v.Categories }
 
-// GetOwners returns AccessControlWhatAccessControlFilterInput.Owners, and is useful for accessing the field via an interface.
-func (v *AccessControlWhatAccessControlFilterInput) GetOwners() []string { return v.Owners }
-
 // GetHasTags returns AccessControlWhatAccessControlFilterInput.HasTags, and is useful for accessing the field via an interface.
 func (v *AccessControlWhatAccessControlFilterInput) GetHasTags() []TagFilter { return v.HasTags }
+
+// GetOwners returns AccessControlWhatAccessControlFilterInput.Owners, and is useful for accessing the field via an interface.
+func (v *AccessControlWhatAccessControlFilterInput) GetOwners() []string { return v.Owners }
 
 // GetSearch returns AccessControlWhatAccessControlFilterInput.Search, and is useful for accessing the field via an interface.
 func (v *AccessControlWhatAccessControlFilterInput) GetSearch() *string { return v.Search }
 
 // Input object to reference a data object by its `fullName`.
 type AccessControlWhatDoByNameInput struct {
-	// The full name of the data object.
-	FullName string `json:"fullName"`
 	// The data source ID of the data object.
 	DataSource string `json:"dataSource"`
+	// The full name of the data object.
+	FullName string `json:"fullName"`
 }
-
-// GetFullName returns AccessControlWhatDoByNameInput.FullName, and is useful for accessing the field via an interface.
-func (v *AccessControlWhatDoByNameInput) GetFullName() string { return v.FullName }
 
 // GetDataSource returns AccessControlWhatDoByNameInput.DataSource, and is useful for accessing the field via an interface.
 func (v *AccessControlWhatDoByNameInput) GetDataSource() string { return v.DataSource }
+
+// GetFullName returns AccessControlWhatDoByNameInput.FullName, and is useful for accessing the field via an interface.
+func (v *AccessControlWhatDoByNameInput) GetFullName() string { return v.FullName }
 
 // Input object to represent an access control WHAT item for the access control.
 type AccessControlWhatInputAP struct {
@@ -1860,34 +1860,34 @@ func (v *AccessControlWhatInputAP) GetExpiresAt() *time.Time { return v.ExpiresA
 
 // Input object to represent a data object WHAT item for the access control.
 type AccessControlWhatInputDO struct {
-	// The permissions to grant on the data object.
-	Permissions []*string `json:"permissions,omitempty"`
-	// The global permissions to grant on the data object.
-	GlobalPermissions []*string `json:"globalPermissions,omitempty"`
-	// The list of data object IDs to provide the access to.  Either this or `dataObjectByName` needs to be specified.
-	DataObjects []*string `json:"dataObjects,omitempty"`
 	// The reference by name to indicate the data object to provide access to. Either this or `dataObjects` needs to be specified.
 	DataObjectByName []AccessControlWhatDoByNameInput `json:"dataObjectByName"`
+	// The list of data object IDs to provide the access to.  Either this or `dataObjectByName` needs to be specified.
+	DataObjects []*string `json:"dataObjects,omitempty"`
 	// The time at which this WHAT item will expire. Only used for Direct Access grants.
 	ExpiresAt *time.Time `json:"expiresAt,omitempty"`
+	// The global permissions to grant on the data object.
+	GlobalPermissions []*string `json:"globalPermissions,omitempty"`
+	// The permissions to grant on the data object.
+	Permissions []*string `json:"permissions,omitempty"`
 }
-
-// GetPermissions returns AccessControlWhatInputDO.Permissions, and is useful for accessing the field via an interface.
-func (v *AccessControlWhatInputDO) GetPermissions() []*string { return v.Permissions }
-
-// GetGlobalPermissions returns AccessControlWhatInputDO.GlobalPermissions, and is useful for accessing the field via an interface.
-func (v *AccessControlWhatInputDO) GetGlobalPermissions() []*string { return v.GlobalPermissions }
-
-// GetDataObjects returns AccessControlWhatInputDO.DataObjects, and is useful for accessing the field via an interface.
-func (v *AccessControlWhatInputDO) GetDataObjects() []*string { return v.DataObjects }
 
 // GetDataObjectByName returns AccessControlWhatInputDO.DataObjectByName, and is useful for accessing the field via an interface.
 func (v *AccessControlWhatInputDO) GetDataObjectByName() []AccessControlWhatDoByNameInput {
 	return v.DataObjectByName
 }
 
+// GetDataObjects returns AccessControlWhatInputDO.DataObjects, and is useful for accessing the field via an interface.
+func (v *AccessControlWhatInputDO) GetDataObjects() []*string { return v.DataObjects }
+
 // GetExpiresAt returns AccessControlWhatInputDO.ExpiresAt, and is useful for accessing the field via an interface.
 func (v *AccessControlWhatInputDO) GetExpiresAt() *time.Time { return v.ExpiresAt }
+
+// GetGlobalPermissions returns AccessControlWhatInputDO.GlobalPermissions, and is useful for accessing the field via an interface.
+func (v *AccessControlWhatInputDO) GetGlobalPermissions() []*string { return v.GlobalPermissions }
+
+// GetPermissions returns AccessControlWhatInputDO.Permissions, and is useful for accessing the field via an interface.
+func (v *AccessControlWhatInputDO) GetPermissions() []*string { return v.Permissions }
 
 // AccessControlWhoAbacRulesWhoAbacRule includes the requested fields of the GraphQL type WhoAbacRule.
 // The GraphQL type's documentation follows.
@@ -1965,13 +1965,10 @@ func (v *AccessControlWhoAbacRulesWhoAbacRule) __premarshalJSON() (*__premarshal
 }
 
 type AccessControlWhoFeedbackState struct {
-	Users       []string `json:"users"`
 	InheritFrom []string `json:"inheritFrom"`
 	Recipients  []string `json:"recipients"`
+	Users       []string `json:"users"`
 }
-
-// GetUsers returns AccessControlWhoFeedbackState.Users, and is useful for accessing the field via an interface.
-func (v *AccessControlWhoFeedbackState) GetUsers() []string { return v.Users }
 
 // GetInheritFrom returns AccessControlWhoFeedbackState.InheritFrom, and is useful for accessing the field via an interface.
 func (v *AccessControlWhoFeedbackState) GetInheritFrom() []string { return v.InheritFrom }
@@ -1979,30 +1976,27 @@ func (v *AccessControlWhoFeedbackState) GetInheritFrom() []string { return v.Inh
 // GetRecipients returns AccessControlWhoFeedbackState.Recipients, and is useful for accessing the field via an interface.
 func (v *AccessControlWhoFeedbackState) GetRecipients() []string { return v.Recipients }
 
+// GetUsers returns AccessControlWhoFeedbackState.Users, and is useful for accessing the field via an interface.
+func (v *AccessControlWhoFeedbackState) GetUsers() []string { return v.Users }
+
 // For filtering the WHO items of an access control. When using multiple filter options, all these options need to apply to return the item.
 type AccessControlWhoListFilter struct {
-	// To only filter on either grants or promises.
-	WhoType *AccessWhoItemType `json:"whoType,omitempty"`
-	// Only get the WHO item for a specific user.
-	TargetUser *string `json:"targetUser,omitempty"`
-	// Only get the WHO item for a specific access control.
-	TargetAccessControl *string `json:"targetAccessControl,omitempty"`
+	// Optional ABAC rule to filter the who-list on. Only applicable when requesting users who-list without unpacking
+	AbacRule *string `json:"abacRule,omitempty"`
 	// Only get WHO items with a specific type (User or AccessControl)
 	EntityType *EntityType `json:"entityType,omitempty"`
 	// The search string to use (will do a case-insensitive 'contains').
 	Search *string `json:"search,omitempty"`
-	// Optional ABAC rule to filter the who-list on. Only applicable when requesting users who-list without unpacking
-	AbacRule *string `json:"abacRule,omitempty"`
+	// Only get the WHO item for a specific access control.
+	TargetAccessControl *string `json:"targetAccessControl,omitempty"`
+	// Only get the WHO item for a specific user.
+	TargetUser *string `json:"targetUser,omitempty"`
+	// To only filter on either grants or promises.
+	WhoType *AccessWhoItemType `json:"whoType,omitempty"`
 }
 
-// GetWhoType returns AccessControlWhoListFilter.WhoType, and is useful for accessing the field via an interface.
-func (v *AccessControlWhoListFilter) GetWhoType() *AccessWhoItemType { return v.WhoType }
-
-// GetTargetUser returns AccessControlWhoListFilter.TargetUser, and is useful for accessing the field via an interface.
-func (v *AccessControlWhoListFilter) GetTargetUser() *string { return v.TargetUser }
-
-// GetTargetAccessControl returns AccessControlWhoListFilter.TargetAccessControl, and is useful for accessing the field via an interface.
-func (v *AccessControlWhoListFilter) GetTargetAccessControl() *string { return v.TargetAccessControl }
+// GetAbacRule returns AccessControlWhoListFilter.AbacRule, and is useful for accessing the field via an interface.
+func (v *AccessControlWhoListFilter) GetAbacRule() *string { return v.AbacRule }
 
 // GetEntityType returns AccessControlWhoListFilter.EntityType, and is useful for accessing the field via an interface.
 func (v *AccessControlWhoListFilter) GetEntityType() *EntityType { return v.EntityType }
@@ -2010,8 +2004,14 @@ func (v *AccessControlWhoListFilter) GetEntityType() *EntityType { return v.Enti
 // GetSearch returns AccessControlWhoListFilter.Search, and is useful for accessing the field via an interface.
 func (v *AccessControlWhoListFilter) GetSearch() *string { return v.Search }
 
-// GetAbacRule returns AccessControlWhoListFilter.AbacRule, and is useful for accessing the field via an interface.
-func (v *AccessControlWhoListFilter) GetAbacRule() *string { return v.AbacRule }
+// GetTargetAccessControl returns AccessControlWhoListFilter.TargetAccessControl, and is useful for accessing the field via an interface.
+func (v *AccessControlWhoListFilter) GetTargetAccessControl() *string { return v.TargetAccessControl }
+
+// GetTargetUser returns AccessControlWhoListFilter.TargetUser, and is useful for accessing the field via an interface.
+func (v *AccessControlWhoListFilter) GetTargetUser() *string { return v.TargetUser }
+
+// GetWhoType returns AccessControlWhoListFilter.WhoType, and is useful for accessing the field via an interface.
+func (v *AccessControlWhoListFilter) GetWhoType() *AccessWhoItemType { return v.WhoType }
 
 // Defines the sorting configuration for the access control WHO list.
 type AccessControlWhoOrderByInput struct {
@@ -3031,21 +3031,24 @@ func (v *AccessWhatDataObjectItemDataObject) __premarshalJSON() (*__premarshalAc
 
 // Defines the filter options for listing the WHAT items of an access control. When using multiple filter options, all these options need to apply to return the item.
 type AccessWhatFilterInput struct {
-	// The search string to use (will do a case-insensitive 'contains').
-	Search *string `json:"search,omitempty"`
+	// Optional ABAC rule to filter the what-list on. Only applicable when requesting data objects WHAT list without unpacking
+	AbacRule *string `json:"abacRule,omitempty"`
+	// Filter by which tags the WHAT item needs to have.
+	HasTags []TagFilter `json:"hasTags"`
 	// If true, also deleted WHAT items are returned.
 	IncludeDeleted *bool `json:"includeDeleted,omitempty"`
 	// List of user IDs to filter on who owns the WHAT items.
 	Owners []string `json:"owners"`
-	// Filter by which tags the WHAT item needs to have.
-	HasTags          []TagFilter `json:"hasTags"`
-	TargetDataObject *string     `json:"targetDataObject,omitempty"`
-	// Optional ABAC rule to filter the what-list on. Only applicable when requesting data objects WHAT list without unpacking
-	AbacRule *string `json:"abacRule,omitempty"`
+	// The search string to use (will do a case-insensitive 'contains').
+	Search           *string `json:"search,omitempty"`
+	TargetDataObject *string `json:"targetDataObject,omitempty"`
 }
 
-// GetSearch returns AccessWhatFilterInput.Search, and is useful for accessing the field via an interface.
-func (v *AccessWhatFilterInput) GetSearch() *string { return v.Search }
+// GetAbacRule returns AccessWhatFilterInput.AbacRule, and is useful for accessing the field via an interface.
+func (v *AccessWhatFilterInput) GetAbacRule() *string { return v.AbacRule }
+
+// GetHasTags returns AccessWhatFilterInput.HasTags, and is useful for accessing the field via an interface.
+func (v *AccessWhatFilterInput) GetHasTags() []TagFilter { return v.HasTags }
 
 // GetIncludeDeleted returns AccessWhatFilterInput.IncludeDeleted, and is useful for accessing the field via an interface.
 func (v *AccessWhatFilterInput) GetIncludeDeleted() *bool { return v.IncludeDeleted }
@@ -3053,14 +3056,11 @@ func (v *AccessWhatFilterInput) GetIncludeDeleted() *bool { return v.IncludeDele
 // GetOwners returns AccessWhatFilterInput.Owners, and is useful for accessing the field via an interface.
 func (v *AccessWhatFilterInput) GetOwners() []string { return v.Owners }
 
-// GetHasTags returns AccessWhatFilterInput.HasTags, and is useful for accessing the field via an interface.
-func (v *AccessWhatFilterInput) GetHasTags() []TagFilter { return v.HasTags }
+// GetSearch returns AccessWhatFilterInput.Search, and is useful for accessing the field via an interface.
+func (v *AccessWhatFilterInput) GetSearch() *string { return v.Search }
 
 // GetTargetDataObject returns AccessWhatFilterInput.TargetDataObject, and is useful for accessing the field via an interface.
 func (v *AccessWhatFilterInput) GetTargetDataObject() *string { return v.TargetDataObject }
-
-// GetAbacRule returns AccessWhatFilterInput.AbacRule, and is useful for accessing the field via an interface.
-func (v *AccessWhatFilterInput) GetAbacRule() *string { return v.AbacRule }
 
 // Defines the sorting configuration for the access control WHAT list.
 type AccessWhatOrderByInput struct {
@@ -3644,15 +3644,15 @@ var AllAccessWhoItemType = []AccessWhoItemType{
 type ActionType string
 
 const (
+	ActionTypeAdmin ActionType = "Admin"
 	ActionTypeRead  ActionType = "Read"
 	ActionTypeWrite ActionType = "Write"
-	ActionTypeAdmin ActionType = "Admin"
 )
 
 var AllActionType = []ActionType{
+	ActionTypeAdmin,
 	ActionTypeRead,
 	ActionTypeWrite,
-	ActionTypeAdmin,
 }
 
 // ActivateAccessControlActivateAccessControl includes the requested fields of the GraphQL type AccessControl.
@@ -4509,13 +4509,16 @@ var AllBinaryExpressionUnaryExpressionOperator = []BinaryExpressionUnaryExpressi
 }
 
 type CanLinkFilter struct {
+	AccessControlId    *string               `json:"accessControlId,omitempty"`
 	Action             AccessControlAction   `json:"action"`
 	Category           *string               `json:"category,omitempty"`
 	DataSources        []*DataSourceTypeInfo `json:"dataSources,omitempty"`
-	AccessControlId    *string               `json:"accessControlId,omitempty"`
-	WhoAccessControls  []string              `json:"whoAccessControls"`
 	WhatAccessControls []string              `json:"whatAccessControls"`
+	WhoAccessControls  []string              `json:"whoAccessControls"`
 }
+
+// GetAccessControlId returns CanLinkFilter.AccessControlId, and is useful for accessing the field via an interface.
+func (v *CanLinkFilter) GetAccessControlId() *string { return v.AccessControlId }
 
 // GetAction returns CanLinkFilter.Action, and is useful for accessing the field via an interface.
 func (v *CanLinkFilter) GetAction() AccessControlAction { return v.Action }
@@ -4526,14 +4529,11 @@ func (v *CanLinkFilter) GetCategory() *string { return v.Category }
 // GetDataSources returns CanLinkFilter.DataSources, and is useful for accessing the field via an interface.
 func (v *CanLinkFilter) GetDataSources() []*DataSourceTypeInfo { return v.DataSources }
 
-// GetAccessControlId returns CanLinkFilter.AccessControlId, and is useful for accessing the field via an interface.
-func (v *CanLinkFilter) GetAccessControlId() *string { return v.AccessControlId }
+// GetWhatAccessControls returns CanLinkFilter.WhatAccessControls, and is useful for accessing the field via an interface.
+func (v *CanLinkFilter) GetWhatAccessControls() []string { return v.WhatAccessControls }
 
 // GetWhoAccessControls returns CanLinkFilter.WhoAccessControls, and is useful for accessing the field via an interface.
 func (v *CanLinkFilter) GetWhoAccessControls() []string { return v.WhoAccessControls }
-
-// GetWhatAccessControls returns CanLinkFilter.WhatAccessControls, and is useful for accessing the field via an interface.
-func (v *CanLinkFilter) GetWhatAccessControls() []string { return v.WhatAccessControls }
 
 // CreateAccessControlCreateAccessControl includes the requested fields of the GraphQL type AccessControl.
 // The GraphQL type's documentation follows.
@@ -6843,15 +6843,10 @@ func (v *CurrentUserResponse) GetCurrentUser() *CurrentUserCurrentUser { return 
 
 // Input object to create an aggregator expression (e.g. `X OR Y OR Z`).
 type DataComparisonExpressionAggregatorInput struct {
-	// The operator to use.
-	Operator BinaryExpressionAggregatorOperator `json:"operator"`
 	// The operands which will be combined with the operator.
 	Operands []DataComparisonExpressionInput `json:"operands"`
-}
-
-// GetOperator returns DataComparisonExpressionAggregatorInput.Operator, and is useful for accessing the field via an interface.
-func (v *DataComparisonExpressionAggregatorInput) GetOperator() BinaryExpressionAggregatorOperator {
-	return v.Operator
+	// The operator to use.
+	Operator BinaryExpressionAggregatorOperator `json:"operator"`
 }
 
 // GetOperands returns DataComparisonExpressionAggregatorInput.Operands, and is useful for accessing the field via an interface.
@@ -6859,24 +6854,29 @@ func (v *DataComparisonExpressionAggregatorInput) GetOperands() []DataComparison
 	return v.Operands
 }
 
-// Input object to create a comparison expression (i.e. `field < value`).
-type DataComparisonExpressionComparisonInput struct {
-	// The operator for the expression.
-	Operator DataComparisonExpressionComparisonOperator `json:"operator"`
-	// The left operand.
-	LeftOperand DataComparisonExpressionOperandInput `json:"leftOperand"`
-	// The right operand.
-	RightOperand DataComparisonExpressionOperandInput `json:"rightOperand"`
+// GetOperator returns DataComparisonExpressionAggregatorInput.Operator, and is useful for accessing the field via an interface.
+func (v *DataComparisonExpressionAggregatorInput) GetOperator() BinaryExpressionAggregatorOperator {
+	return v.Operator
 }
 
-// GetOperator returns DataComparisonExpressionComparisonInput.Operator, and is useful for accessing the field via an interface.
-func (v *DataComparisonExpressionComparisonInput) GetOperator() DataComparisonExpressionComparisonOperator {
-	return v.Operator
+// Input object to create a comparison expression (i.e. `field < value`).
+type DataComparisonExpressionComparisonInput struct {
+	// The left operand.
+	LeftOperand DataComparisonExpressionOperandInput `json:"leftOperand"`
+	// The operator for the expression.
+	Operator DataComparisonExpressionComparisonOperator `json:"operator"`
+	// The right operand.
+	RightOperand DataComparisonExpressionOperandInput `json:"rightOperand"`
 }
 
 // GetLeftOperand returns DataComparisonExpressionComparisonInput.LeftOperand, and is useful for accessing the field via an interface.
 func (v *DataComparisonExpressionComparisonInput) GetLeftOperand() DataComparisonExpressionOperandInput {
 	return v.LeftOperand
+}
+
+// GetOperator returns DataComparisonExpressionComparisonInput.Operator, and is useful for accessing the field via an interface.
+func (v *DataComparisonExpressionComparisonInput) GetOperator() DataComparisonExpressionComparisonOperator {
+	return v.Operator
 }
 
 // GetRightOperand returns DataComparisonExpressionComparisonInput.RightOperand, and is useful for accessing the field via an interface.
@@ -6889,61 +6889,61 @@ type DataComparisonExpressionComparisonOperator string
 
 const (
 	DataComparisonExpressionComparisonOperatorEqual              DataComparisonExpressionComparisonOperator = "Equal"
-	DataComparisonExpressionComparisonOperatorNotequal           DataComparisonExpressionComparisonOperator = "NotEqual"
-	DataComparisonExpressionComparisonOperatorLessthan           DataComparisonExpressionComparisonOperator = "LessThan"
-	DataComparisonExpressionComparisonOperatorLessthanorequal    DataComparisonExpressionComparisonOperator = "LessThanOrEqual"
 	DataComparisonExpressionComparisonOperatorGreaterthan        DataComparisonExpressionComparisonOperator = "GreaterThan"
 	DataComparisonExpressionComparisonOperatorGreaterthanorequal DataComparisonExpressionComparisonOperator = "GreaterThanOrEqual"
+	DataComparisonExpressionComparisonOperatorLessthan           DataComparisonExpressionComparisonOperator = "LessThan"
+	DataComparisonExpressionComparisonOperatorLessthanorequal    DataComparisonExpressionComparisonOperator = "LessThanOrEqual"
+	DataComparisonExpressionComparisonOperatorNotequal           DataComparisonExpressionComparisonOperator = "NotEqual"
 )
 
 var AllDataComparisonExpressionComparisonOperator = []DataComparisonExpressionComparisonOperator{
 	DataComparisonExpressionComparisonOperatorEqual,
-	DataComparisonExpressionComparisonOperatorNotequal,
-	DataComparisonExpressionComparisonOperatorLessthan,
-	DataComparisonExpressionComparisonOperatorLessthanorequal,
 	DataComparisonExpressionComparisonOperatorGreaterthan,
 	DataComparisonExpressionComparisonOperatorGreaterthanorequal,
+	DataComparisonExpressionComparisonOperatorLessthan,
+	DataComparisonExpressionComparisonOperatorLessthanorequal,
+	DataComparisonExpressionComparisonOperatorNotequal,
 }
 
 // The possible ways to reference a data object.
 type DataComparisonExpressionEntityType string
 
 const (
-	// Reference will happen through data object ID.
-	DataComparisonExpressionEntityTypeDataobject DataComparisonExpressionEntityType = "DataObject"
 	// Reference will happen through the column name.
 	DataComparisonExpressionEntityTypeColumnreferencebyname DataComparisonExpressionEntityType = "ColumnReferenceByName"
+	// Reference will happen through data object ID.
+	DataComparisonExpressionEntityTypeDataobject DataComparisonExpressionEntityType = "DataObject"
 )
 
 var AllDataComparisonExpressionEntityType = []DataComparisonExpressionEntityType{
-	DataComparisonExpressionEntityTypeDataobject,
 	DataComparisonExpressionEntityTypeColumnreferencebyname,
+	DataComparisonExpressionEntityTypeDataobject,
 }
 
 // Input object to create a comparison expression. Exactly one of the fields should be specific, depending on the type.
 type DataComparisonExpressionInput struct {
-	// In case you want to simply have a boolean literal to determine the outcome.
-	Literal *bool `json:"literal,omitempty"`
-	// To specify a single comparison (e.g. `field < value`).
-	Comparison *DataComparisonExpressionComparisonInput `json:"comparison,omitempty"`
 	// To specify an aggregator expression (e.g. `X OR Y OR Z`).
 	Aggregator *DataComparisonExpressionAggregatorInput `json:"aggregator,omitempty"`
+	// To specify a single comparison (e.g. `field < value`).
+	Comparison *DataComparisonExpressionComparisonInput `json:"comparison,omitempty"`
+	// In case you want to simply have a boolean literal to determine the outcome.
+	Literal *bool `json:"literal,omitempty"`
 	// To specify a unary expression (e.g. `NOT X`).
 	UnaryExpression *DataComparisonExpressionUnaryExpressionInput `json:"unaryExpression,omitempty"`
-}
-
-// GetLiteral returns DataComparisonExpressionInput.Literal, and is useful for accessing the field via an interface.
-func (v *DataComparisonExpressionInput) GetLiteral() *bool { return v.Literal }
-
-// GetComparison returns DataComparisonExpressionInput.Comparison, and is useful for accessing the field via an interface.
-func (v *DataComparisonExpressionInput) GetComparison() *DataComparisonExpressionComparisonInput {
-	return v.Comparison
 }
 
 // GetAggregator returns DataComparisonExpressionInput.Aggregator, and is useful for accessing the field via an interface.
 func (v *DataComparisonExpressionInput) GetAggregator() *DataComparisonExpressionAggregatorInput {
 	return v.Aggregator
 }
+
+// GetComparison returns DataComparisonExpressionInput.Comparison, and is useful for accessing the field via an interface.
+func (v *DataComparisonExpressionInput) GetComparison() *DataComparisonExpressionComparisonInput {
+	return v.Comparison
+}
+
+// GetLiteral returns DataComparisonExpressionInput.Literal, and is useful for accessing the field via an interface.
+func (v *DataComparisonExpressionInput) GetLiteral() *bool { return v.Literal }
 
 // GetUnaryExpression returns DataComparisonExpressionInput.UnaryExpression, and is useful for accessing the field via an interface.
 func (v *DataComparisonExpressionInput) GetUnaryExpression() *DataComparisonExpressionUnaryExpressionInput {
@@ -6954,10 +6954,10 @@ func (v *DataComparisonExpressionInput) GetUnaryExpression() *DataComparisonExpr
 type DataComparisonExpressionLiteral struct {
 	// A boolean value.
 	Bool *bool `json:"bool,omitempty"`
-	// An integer value.
-	Int *int `json:"int,omitempty"`
 	// A float value
 	Float *float64 `json:"float,omitempty"`
+	// An integer value.
+	Int *int `json:"int,omitempty"`
 	// A string value.
 	Str *string `json:"str,omitempty"`
 	// A timestamp value.
@@ -6967,11 +6967,11 @@ type DataComparisonExpressionLiteral struct {
 // GetBool returns DataComparisonExpressionLiteral.Bool, and is useful for accessing the field via an interface.
 func (v *DataComparisonExpressionLiteral) GetBool() *bool { return v.Bool }
 
-// GetInt returns DataComparisonExpressionLiteral.Int, and is useful for accessing the field via an interface.
-func (v *DataComparisonExpressionLiteral) GetInt() *int { return v.Int }
-
 // GetFloat returns DataComparisonExpressionLiteral.Float, and is useful for accessing the field via an interface.
 func (v *DataComparisonExpressionLiteral) GetFloat() *float64 { return v.Float }
+
+// GetInt returns DataComparisonExpressionLiteral.Int, and is useful for accessing the field via an interface.
+func (v *DataComparisonExpressionLiteral) GetInt() *int { return v.Int }
 
 // GetStr returns DataComparisonExpressionLiteral.Str, and is useful for accessing the field via an interface.
 func (v *DataComparisonExpressionLiteral) GetStr() *string { return v.Str }
@@ -6981,15 +6981,10 @@ func (v *DataComparisonExpressionLiteral) GetTimestamp() *time.Time { return v.T
 
 // Input object to represent an operand. Exactly one of the fields should be specified.
 type DataComparisonExpressionOperandInput struct {
-	// A reference to a data object.
-	Reference *DataComparisonExpressionReferenceInput `json:"reference,omitempty"`
 	// A literal.
 	Literal *DataComparisonExpressionLiteral `json:"literal,omitempty"`
-}
-
-// GetReference returns DataComparisonExpressionOperandInput.Reference, and is useful for accessing the field via an interface.
-func (v *DataComparisonExpressionOperandInput) GetReference() *DataComparisonExpressionReferenceInput {
-	return v.Reference
+	// A reference to a data object.
+	Reference *DataComparisonExpressionReferenceInput `json:"reference,omitempty"`
 }
 
 // GetLiteral returns DataComparisonExpressionOperandInput.Literal, and is useful for accessing the field via an interface.
@@ -6997,38 +6992,43 @@ func (v *DataComparisonExpressionOperandInput) GetLiteral() *DataComparisonExpre
 	return v.Literal
 }
 
+// GetReference returns DataComparisonExpressionOperandInput.Reference, and is useful for accessing the field via an interface.
+func (v *DataComparisonExpressionOperandInput) GetReference() *DataComparisonExpressionReferenceInput {
+	return v.Reference
+}
+
 // Input object to reference a data object.
 type DataComparisonExpressionReferenceInput struct {
-	// The way you want to reference the data object.
-	EntityType DataComparisonExpressionEntityType `json:"entityType"`
 	// The data object ID or column name.
 	EntityId string `json:"entityId"`
+	// The way you want to reference the data object.
+	EntityType DataComparisonExpressionEntityType `json:"entityType"`
 }
+
+// GetEntityId returns DataComparisonExpressionReferenceInput.EntityId, and is useful for accessing the field via an interface.
+func (v *DataComparisonExpressionReferenceInput) GetEntityId() string { return v.EntityId }
 
 // GetEntityType returns DataComparisonExpressionReferenceInput.EntityType, and is useful for accessing the field via an interface.
 func (v *DataComparisonExpressionReferenceInput) GetEntityType() DataComparisonExpressionEntityType {
 	return v.EntityType
 }
 
-// GetEntityId returns DataComparisonExpressionReferenceInput.EntityId, and is useful for accessing the field via an interface.
-func (v *DataComparisonExpressionReferenceInput) GetEntityId() string { return v.EntityId }
-
 // Input object to create a unary expression (e.g. `NOT X`).
 type DataComparisonExpressionUnaryExpressionInput struct {
-	// The operator to use.
-	Operator BinaryExpressionUnaryExpressionOperator `json:"operator"`
 	// The operand to use with the operator.
 	Operand DataComparisonExpressionInput `json:"operand"`
-}
-
-// GetOperator returns DataComparisonExpressionUnaryExpressionInput.Operator, and is useful for accessing the field via an interface.
-func (v *DataComparisonExpressionUnaryExpressionInput) GetOperator() BinaryExpressionUnaryExpressionOperator {
-	return v.Operator
+	// The operator to use.
+	Operator BinaryExpressionUnaryExpressionOperator `json:"operator"`
 }
 
 // GetOperand returns DataComparisonExpressionUnaryExpressionInput.Operand, and is useful for accessing the field via an interface.
 func (v *DataComparisonExpressionUnaryExpressionInput) GetOperand() DataComparisonExpressionInput {
 	return v.Operand
+}
+
+// GetOperator returns DataComparisonExpressionUnaryExpressionInput.Operator, and is useful for accessing the field via an interface.
+func (v *DataComparisonExpressionUnaryExpressionInput) GetOperator() BinaryExpressionUnaryExpressionOperator {
+	return v.Operator
 }
 
 // DataObject includes the GraphQL fields of DataObject requested by the fragment DataObject.
@@ -8164,78 +8164,57 @@ func (v *DataObjectDataSource) GetId() string { return v.Id }
 
 // Input object for filtering a list of data objects.
 type DataObjectFilterInput struct {
-	// Limit only to data objects in specific data sources.
-	DataSources []string `json:"dataSources"`
-	// Limit only to data objects with given (direct) parents.
-	Parents []string `json:"parents"`
 	// Limit only to data objects with given ancestors.
 	Ancestors []string `json:"ancestors"`
-	// Limit only to data object with given types. Cannot be used together with the `excludedTypes` filter.
-	Types []string `json:"types"`
-	// Do not returns data objects with the given types. Cannot be used together with the `types` filter.
-	ExcludedTypes []string `json:"excludedTypes"`
+	AsOwner   *bool    `json:"asOwner,omitempty"`
 	// Only returns data objects of types that can have permissions assigned to them (e.g. this will exclude columns). This is false by default.
 	CanHavePermissions *bool `json:"canHavePermissions,omitempty"`
-	// Filter on the full names of the data object.
-	FullNames []string `json:"fullNames"`
-	// The search string to use (will do a case-insensitive 'contains').
-	Search *string `json:"search,omitempty"`
-	// If true, also data top-level data object of type `datasource` is included.
-	IncludeDataSource *bool `json:"includeDataSource,omitempty"`
-	AsOwner           *bool `json:"asOwner,omitempty"`
-	CanUse            *bool `json:"canUse,omitempty"`
-	// Limit the data objects for which any of the given users is an owner.
-	Owners []string `json:"owners"`
-	// If true, also deleted (unknown) data objects are included.
-	IncludeDeleted *bool `json:"includeDeleted,omitempty"`
+	CanRequestAccess   *bool `json:"canRequestAccess,omitempty"`
+	CanUse             *bool `json:"canUse,omitempty"`
+	// Limit only to data objects in specific data sources.
+	DataSources []string `json:"dataSources"`
 	// Limit to certain data types (typically for columns).
 	DataTypes []string `json:"dataTypes"`
 	// Excluded a fixed list of data objects.
 	Exclude []string `json:"exclude"`
+	// Do not returns data objects with the given types. Cannot be used together with the `types` filter.
+	ExcludedTypes []string `json:"excludedTypes"`
+	// Filter on the full names of the data object.
+	FullNames []string `json:"fullNames"`
 	// Filters by the tags that the data object has.
-	HasTags                     []TagFilter          `json:"hasTags"`
+	HasTags []TagFilter `json:"hasTags"`
+	// If true, also data top-level data object of type `datasource` is included.
+	IncludeDataSource *bool `json:"includeDataSource,omitempty"`
+	// If true, also deleted (unknown) data objects are included.
+	IncludeDeleted *bool `json:"includeDeleted,omitempty"`
+	// Limit the data objects for which any of the given users is an owner.
+	Owners []string `json:"owners"`
+	// Limit only to data objects with given (direct) parents.
+	Parents []string `json:"parents"`
+	// The search string to use (will do a case-insensitive 'contains').
+	Search                      *string              `json:"search,omitempty"`
 	SupportedDataSourceFeatures []DataSourceFeatures `json:"supportedDataSourceFeatures"`
-	CanRequestAccess            *bool                `json:"canRequestAccess,omitempty"`
+	// Limit only to data object with given types. Cannot be used together with the `excludedTypes` filter.
+	Types []string `json:"types"`
 }
-
-// GetDataSources returns DataObjectFilterInput.DataSources, and is useful for accessing the field via an interface.
-func (v *DataObjectFilterInput) GetDataSources() []string { return v.DataSources }
-
-// GetParents returns DataObjectFilterInput.Parents, and is useful for accessing the field via an interface.
-func (v *DataObjectFilterInput) GetParents() []string { return v.Parents }
 
 // GetAncestors returns DataObjectFilterInput.Ancestors, and is useful for accessing the field via an interface.
 func (v *DataObjectFilterInput) GetAncestors() []string { return v.Ancestors }
 
-// GetTypes returns DataObjectFilterInput.Types, and is useful for accessing the field via an interface.
-func (v *DataObjectFilterInput) GetTypes() []string { return v.Types }
-
-// GetExcludedTypes returns DataObjectFilterInput.ExcludedTypes, and is useful for accessing the field via an interface.
-func (v *DataObjectFilterInput) GetExcludedTypes() []string { return v.ExcludedTypes }
+// GetAsOwner returns DataObjectFilterInput.AsOwner, and is useful for accessing the field via an interface.
+func (v *DataObjectFilterInput) GetAsOwner() *bool { return v.AsOwner }
 
 // GetCanHavePermissions returns DataObjectFilterInput.CanHavePermissions, and is useful for accessing the field via an interface.
 func (v *DataObjectFilterInput) GetCanHavePermissions() *bool { return v.CanHavePermissions }
 
-// GetFullNames returns DataObjectFilterInput.FullNames, and is useful for accessing the field via an interface.
-func (v *DataObjectFilterInput) GetFullNames() []string { return v.FullNames }
-
-// GetSearch returns DataObjectFilterInput.Search, and is useful for accessing the field via an interface.
-func (v *DataObjectFilterInput) GetSearch() *string { return v.Search }
-
-// GetIncludeDataSource returns DataObjectFilterInput.IncludeDataSource, and is useful for accessing the field via an interface.
-func (v *DataObjectFilterInput) GetIncludeDataSource() *bool { return v.IncludeDataSource }
-
-// GetAsOwner returns DataObjectFilterInput.AsOwner, and is useful for accessing the field via an interface.
-func (v *DataObjectFilterInput) GetAsOwner() *bool { return v.AsOwner }
+// GetCanRequestAccess returns DataObjectFilterInput.CanRequestAccess, and is useful for accessing the field via an interface.
+func (v *DataObjectFilterInput) GetCanRequestAccess() *bool { return v.CanRequestAccess }
 
 // GetCanUse returns DataObjectFilterInput.CanUse, and is useful for accessing the field via an interface.
 func (v *DataObjectFilterInput) GetCanUse() *bool { return v.CanUse }
 
-// GetOwners returns DataObjectFilterInput.Owners, and is useful for accessing the field via an interface.
-func (v *DataObjectFilterInput) GetOwners() []string { return v.Owners }
-
-// GetIncludeDeleted returns DataObjectFilterInput.IncludeDeleted, and is useful for accessing the field via an interface.
-func (v *DataObjectFilterInput) GetIncludeDeleted() *bool { return v.IncludeDeleted }
+// GetDataSources returns DataObjectFilterInput.DataSources, and is useful for accessing the field via an interface.
+func (v *DataObjectFilterInput) GetDataSources() []string { return v.DataSources }
 
 // GetDataTypes returns DataObjectFilterInput.DataTypes, and is useful for accessing the field via an interface.
 func (v *DataObjectFilterInput) GetDataTypes() []string { return v.DataTypes }
@@ -8243,72 +8222,93 @@ func (v *DataObjectFilterInput) GetDataTypes() []string { return v.DataTypes }
 // GetExclude returns DataObjectFilterInput.Exclude, and is useful for accessing the field via an interface.
 func (v *DataObjectFilterInput) GetExclude() []string { return v.Exclude }
 
+// GetExcludedTypes returns DataObjectFilterInput.ExcludedTypes, and is useful for accessing the field via an interface.
+func (v *DataObjectFilterInput) GetExcludedTypes() []string { return v.ExcludedTypes }
+
+// GetFullNames returns DataObjectFilterInput.FullNames, and is useful for accessing the field via an interface.
+func (v *DataObjectFilterInput) GetFullNames() []string { return v.FullNames }
+
 // GetHasTags returns DataObjectFilterInput.HasTags, and is useful for accessing the field via an interface.
 func (v *DataObjectFilterInput) GetHasTags() []TagFilter { return v.HasTags }
+
+// GetIncludeDataSource returns DataObjectFilterInput.IncludeDataSource, and is useful for accessing the field via an interface.
+func (v *DataObjectFilterInput) GetIncludeDataSource() *bool { return v.IncludeDataSource }
+
+// GetIncludeDeleted returns DataObjectFilterInput.IncludeDeleted, and is useful for accessing the field via an interface.
+func (v *DataObjectFilterInput) GetIncludeDeleted() *bool { return v.IncludeDeleted }
+
+// GetOwners returns DataObjectFilterInput.Owners, and is useful for accessing the field via an interface.
+func (v *DataObjectFilterInput) GetOwners() []string { return v.Owners }
+
+// GetParents returns DataObjectFilterInput.Parents, and is useful for accessing the field via an interface.
+func (v *DataObjectFilterInput) GetParents() []string { return v.Parents }
+
+// GetSearch returns DataObjectFilterInput.Search, and is useful for accessing the field via an interface.
+func (v *DataObjectFilterInput) GetSearch() *string { return v.Search }
 
 // GetSupportedDataSourceFeatures returns DataObjectFilterInput.SupportedDataSourceFeatures, and is useful for accessing the field via an interface.
 func (v *DataObjectFilterInput) GetSupportedDataSourceFeatures() []DataSourceFeatures {
 	return v.SupportedDataSourceFeatures
 }
 
-// GetCanRequestAccess returns DataObjectFilterInput.CanRequestAccess, and is useful for accessing the field via an interface.
-func (v *DataObjectFilterInput) GetCanRequestAccess() *bool { return v.CanRequestAccess }
+// GetTypes returns DataObjectFilterInput.Types, and is useful for accessing the field via an interface.
+func (v *DataObjectFilterInput) GetTypes() []string { return v.Types }
 
 type DataObjectImport struct {
-	ExternalId              string      `json:"externalId"`
-	Name                    string      `json:"name"`
-	FullName                string      `json:"fullName"`
-	Type                    string      `json:"type"`
-	Description             string      `json:"description"`
-	ParentExternalId        *string     `json:"parentExternalId,omitempty"`
-	Tags                    []TagImport `json:"tags"`
 	DataType                *string     `json:"dataType,omitempty"`
-	ShareProviderIdentifier *string     `json:"shareProviderIdentifier,omitempty"`
+	Description             string      `json:"description"`
+	ExternalId              string      `json:"externalId"`
+	FullName                string      `json:"fullName"`
+	Name                    string      `json:"name"`
+	ParentExternalId        *string     `json:"parentExternalId,omitempty"`
 	ShareIdentifier         *string     `json:"shareIdentifier,omitempty"`
+	ShareProviderIdentifier *string     `json:"shareProviderIdentifier,omitempty"`
+	Tags                    []TagImport `json:"tags"`
+	Type                    string      `json:"type"`
 }
-
-// GetExternalId returns DataObjectImport.ExternalId, and is useful for accessing the field via an interface.
-func (v *DataObjectImport) GetExternalId() string { return v.ExternalId }
-
-// GetName returns DataObjectImport.Name, and is useful for accessing the field via an interface.
-func (v *DataObjectImport) GetName() string { return v.Name }
-
-// GetFullName returns DataObjectImport.FullName, and is useful for accessing the field via an interface.
-func (v *DataObjectImport) GetFullName() string { return v.FullName }
-
-// GetType returns DataObjectImport.Type, and is useful for accessing the field via an interface.
-func (v *DataObjectImport) GetType() string { return v.Type }
-
-// GetDescription returns DataObjectImport.Description, and is useful for accessing the field via an interface.
-func (v *DataObjectImport) GetDescription() string { return v.Description }
-
-// GetParentExternalId returns DataObjectImport.ParentExternalId, and is useful for accessing the field via an interface.
-func (v *DataObjectImport) GetParentExternalId() *string { return v.ParentExternalId }
-
-// GetTags returns DataObjectImport.Tags, and is useful for accessing the field via an interface.
-func (v *DataObjectImport) GetTags() []TagImport { return v.Tags }
 
 // GetDataType returns DataObjectImport.DataType, and is useful for accessing the field via an interface.
 func (v *DataObjectImport) GetDataType() *string { return v.DataType }
 
-// GetShareProviderIdentifier returns DataObjectImport.ShareProviderIdentifier, and is useful for accessing the field via an interface.
-func (v *DataObjectImport) GetShareProviderIdentifier() *string { return v.ShareProviderIdentifier }
+// GetDescription returns DataObjectImport.Description, and is useful for accessing the field via an interface.
+func (v *DataObjectImport) GetDescription() string { return v.Description }
+
+// GetExternalId returns DataObjectImport.ExternalId, and is useful for accessing the field via an interface.
+func (v *DataObjectImport) GetExternalId() string { return v.ExternalId }
+
+// GetFullName returns DataObjectImport.FullName, and is useful for accessing the field via an interface.
+func (v *DataObjectImport) GetFullName() string { return v.FullName }
+
+// GetName returns DataObjectImport.Name, and is useful for accessing the field via an interface.
+func (v *DataObjectImport) GetName() string { return v.Name }
+
+// GetParentExternalId returns DataObjectImport.ParentExternalId, and is useful for accessing the field via an interface.
+func (v *DataObjectImport) GetParentExternalId() *string { return v.ParentExternalId }
 
 // GetShareIdentifier returns DataObjectImport.ShareIdentifier, and is useful for accessing the field via an interface.
 func (v *DataObjectImport) GetShareIdentifier() *string { return v.ShareIdentifier }
 
+// GetShareProviderIdentifier returns DataObjectImport.ShareProviderIdentifier, and is useful for accessing the field via an interface.
+func (v *DataObjectImport) GetShareProviderIdentifier() *string { return v.ShareProviderIdentifier }
+
+// GetTags returns DataObjectImport.Tags, and is useful for accessing the field via an interface.
+func (v *DataObjectImport) GetTags() []TagImport { return v.Tags }
+
+// GetType returns DataObjectImport.Type, and is useful for accessing the field via an interface.
+func (v *DataObjectImport) GetType() string { return v.Type }
+
 // Specifies the sorting options for a list of data objects.
 type DataObjectOrderByInput struct {
-	Name     *Sort `json:"name,omitempty"`
 	FullName *Sort `json:"fullName,omitempty"`
+	Name     *Sort `json:"name,omitempty"`
 	Type     *Sort `json:"type,omitempty"`
 }
 
-// GetName returns DataObjectOrderByInput.Name, and is useful for accessing the field via an interface.
-func (v *DataObjectOrderByInput) GetName() *Sort { return v.Name }
-
 // GetFullName returns DataObjectOrderByInput.FullName, and is useful for accessing the field via an interface.
 func (v *DataObjectOrderByInput) GetFullName() *Sort { return v.FullName }
+
+// GetName returns DataObjectOrderByInput.Name, and is useful for accessing the field via an interface.
+func (v *DataObjectOrderByInput) GetName() *Sort { return v.Name }
 
 // GetType returns DataObjectOrderByInput.Type, and is useful for accessing the field via an interface.
 func (v *DataObjectOrderByInput) GetType() *Sort { return v.Type }
@@ -8325,18 +8325,18 @@ func (v *DataObjectReferenceImport) GetFullName() string { return v.FullName }
 func (v *DataObjectReferenceImport) GetType() string { return v.Type }
 
 type DataObjectSharePropertiesInput struct {
-	ShareablePermissions     []string `json:"shareablePermissions"`
 	CorrespondingSharedTypes []string `json:"correspondingSharedTypes"`
-}
-
-// GetShareablePermissions returns DataObjectSharePropertiesInput.ShareablePermissions, and is useful for accessing the field via an interface.
-func (v *DataObjectSharePropertiesInput) GetShareablePermissions() []string {
-	return v.ShareablePermissions
+	ShareablePermissions     []string `json:"shareablePermissions"`
 }
 
 // GetCorrespondingSharedTypes returns DataObjectSharePropertiesInput.CorrespondingSharedTypes, and is useful for accessing the field via an interface.
 func (v *DataObjectSharePropertiesInput) GetCorrespondingSharedTypes() []string {
 	return v.CorrespondingSharedTypes
+}
+
+// GetShareablePermissions returns DataObjectSharePropertiesInput.ShareablePermissions, and is useful for accessing the field via an interface.
+func (v *DataObjectSharePropertiesInput) GetShareablePermissions() []string {
+	return v.ShareablePermissions
 }
 
 type DataObjectTypeActionInput struct {
@@ -8354,85 +8354,85 @@ func (v *DataObjectTypeActionInput) GetGlobalActions() []string { return v.Globa
 
 // Input object to specify a data object type.
 type DataObjectTypeInput struct {
-	// The unique name of the data object type within the data source.
-	Name *string `json:"name,omitempty"`
-	// The name of the type of the data object type. This is used to group similar data object types in the same table in the user interface. For example, `external-table`, `table` and `special-table` could all have type `table`.
-	Type *string `json:"type,omitempty"`
-	// The display label for this data object type.
-	Label *string `json:"label,omitempty"`
-	Icon  *string `json:"icon,omitempty"`
-	// The data object types that can be a child of this data object type (referenced by the `name` field).
-	Children []string `json:"children"`
-	// The permissions which are applicable on this data object type.
-	Permissions     []DataObjectTypePermissionInput `json:"permissions"`
-	Actions         []DataObjectTypeActionInput     `json:"actions"`
-	DataOrigin      *DataTypeOrigin                 `json:"dataOrigin,omitempty"`
-	ShareProperties *DataObjectSharePropertiesInput `json:"shareProperties,omitempty"`
+	Actions []DataObjectTypeActionInput `json:"actions"`
 	// Used to map the data object type to a catalog type in Collibra. For example, a data object type 'project' for Google BigQuery could map to catalog type 'database' in Collibra.
 	CatalogType *string `json:"catalogType,omitempty"`
+	// The data object types that can be a child of this data object type (referenced by the `name` field).
+	Children   []string        `json:"children"`
+	DataOrigin *DataTypeOrigin `json:"dataOrigin,omitempty"`
+	Icon       *string         `json:"icon,omitempty"`
+	// The display label for this data object type.
+	Label *string `json:"label,omitempty"`
+	// The unique name of the data object type within the data source.
+	Name *string `json:"name,omitempty"`
+	// The permissions which are applicable on this data object type.
+	Permissions     []DataObjectTypePermissionInput `json:"permissions"`
+	ShareProperties *DataObjectSharePropertiesInput `json:"shareProperties,omitempty"`
+	// The name of the type of the data object type. This is used to group similar data object types in the same table in the user interface. For example, `external-table`, `table` and `special-table` could all have type `table`.
+	Type *string `json:"type,omitempty"`
 }
-
-// GetName returns DataObjectTypeInput.Name, and is useful for accessing the field via an interface.
-func (v *DataObjectTypeInput) GetName() *string { return v.Name }
-
-// GetType returns DataObjectTypeInput.Type, and is useful for accessing the field via an interface.
-func (v *DataObjectTypeInput) GetType() *string { return v.Type }
-
-// GetLabel returns DataObjectTypeInput.Label, and is useful for accessing the field via an interface.
-func (v *DataObjectTypeInput) GetLabel() *string { return v.Label }
-
-// GetIcon returns DataObjectTypeInput.Icon, and is useful for accessing the field via an interface.
-func (v *DataObjectTypeInput) GetIcon() *string { return v.Icon }
-
-// GetChildren returns DataObjectTypeInput.Children, and is useful for accessing the field via an interface.
-func (v *DataObjectTypeInput) GetChildren() []string { return v.Children }
-
-// GetPermissions returns DataObjectTypeInput.Permissions, and is useful for accessing the field via an interface.
-func (v *DataObjectTypeInput) GetPermissions() []DataObjectTypePermissionInput { return v.Permissions }
 
 // GetActions returns DataObjectTypeInput.Actions, and is useful for accessing the field via an interface.
 func (v *DataObjectTypeInput) GetActions() []DataObjectTypeActionInput { return v.Actions }
 
+// GetCatalogType returns DataObjectTypeInput.CatalogType, and is useful for accessing the field via an interface.
+func (v *DataObjectTypeInput) GetCatalogType() *string { return v.CatalogType }
+
+// GetChildren returns DataObjectTypeInput.Children, and is useful for accessing the field via an interface.
+func (v *DataObjectTypeInput) GetChildren() []string { return v.Children }
+
 // GetDataOrigin returns DataObjectTypeInput.DataOrigin, and is useful for accessing the field via an interface.
 func (v *DataObjectTypeInput) GetDataOrigin() *DataTypeOrigin { return v.DataOrigin }
+
+// GetIcon returns DataObjectTypeInput.Icon, and is useful for accessing the field via an interface.
+func (v *DataObjectTypeInput) GetIcon() *string { return v.Icon }
+
+// GetLabel returns DataObjectTypeInput.Label, and is useful for accessing the field via an interface.
+func (v *DataObjectTypeInput) GetLabel() *string { return v.Label }
+
+// GetName returns DataObjectTypeInput.Name, and is useful for accessing the field via an interface.
+func (v *DataObjectTypeInput) GetName() *string { return v.Name }
+
+// GetPermissions returns DataObjectTypeInput.Permissions, and is useful for accessing the field via an interface.
+func (v *DataObjectTypeInput) GetPermissions() []DataObjectTypePermissionInput { return v.Permissions }
 
 // GetShareProperties returns DataObjectTypeInput.ShareProperties, and is useful for accessing the field via an interface.
 func (v *DataObjectTypeInput) GetShareProperties() *DataObjectSharePropertiesInput {
 	return v.ShareProperties
 }
 
-// GetCatalogType returns DataObjectTypeInput.CatalogType, and is useful for accessing the field via an interface.
-func (v *DataObjectTypeInput) GetCatalogType() *string { return v.CatalogType }
+// GetType returns DataObjectTypeInput.Type, and is useful for accessing the field via an interface.
+func (v *DataObjectTypeInput) GetType() *string { return v.Type }
 
 // Input object for a permission on a data object type.
 type DataObjectTypePermissionInput struct {
-	// The permission itself, specific to the data source (e.g. SELECT, INSERT, roles/bigquery.dataViewer...).
-	Permission *string `json:"permission,omitempty"`
-	// The global permissions under which this permission can be categorized.
-	GlobalPermissions      []string `json:"globalPermissions"`
-	UsageGlobalPermissions []string `json:"usageGlobalPermissions"`
-	// The description of the permissions.
-	Description *string `json:"description,omitempty"`
 	// If true, this permission cannot be set by the user in the user interface.
 	CannotBeGranted *bool `json:"cannotBeGranted,omitempty"`
+	// The description of the permissions.
+	Description *string `json:"description,omitempty"`
+	// The global permissions under which this permission can be categorized.
+	GlobalPermissions []string `json:"globalPermissions"`
+	// The permission itself, specific to the data source (e.g. SELECT, INSERT, roles/bigquery.dataViewer...).
+	Permission             *string  `json:"permission,omitempty"`
+	UsageGlobalPermissions []string `json:"usageGlobalPermissions"`
 }
 
-// GetPermission returns DataObjectTypePermissionInput.Permission, and is useful for accessing the field via an interface.
-func (v *DataObjectTypePermissionInput) GetPermission() *string { return v.Permission }
+// GetCannotBeGranted returns DataObjectTypePermissionInput.CannotBeGranted, and is useful for accessing the field via an interface.
+func (v *DataObjectTypePermissionInput) GetCannotBeGranted() *bool { return v.CannotBeGranted }
+
+// GetDescription returns DataObjectTypePermissionInput.Description, and is useful for accessing the field via an interface.
+func (v *DataObjectTypePermissionInput) GetDescription() *string { return v.Description }
 
 // GetGlobalPermissions returns DataObjectTypePermissionInput.GlobalPermissions, and is useful for accessing the field via an interface.
 func (v *DataObjectTypePermissionInput) GetGlobalPermissions() []string { return v.GlobalPermissions }
+
+// GetPermission returns DataObjectTypePermissionInput.Permission, and is useful for accessing the field via an interface.
+func (v *DataObjectTypePermissionInput) GetPermission() *string { return v.Permission }
 
 // GetUsageGlobalPermissions returns DataObjectTypePermissionInput.UsageGlobalPermissions, and is useful for accessing the field via an interface.
 func (v *DataObjectTypePermissionInput) GetUsageGlobalPermissions() []string {
 	return v.UsageGlobalPermissions
 }
-
-// GetDescription returns DataObjectTypePermissionInput.Description, and is useful for accessing the field via an interface.
-func (v *DataObjectTypePermissionInput) GetDescription() *string { return v.Description }
-
-// GetCannotBeGranted returns DataObjectTypePermissionInput.CannotBeGranted, and is useful for accessing the field via an interface.
-func (v *DataObjectTypePermissionInput) GetCannotBeGranted() *bool { return v.CannotBeGranted }
 
 // DataSource includes the GraphQL fields of DataSource requested by the fragment DataSource.
 // The GraphQL type's documentation follows.
@@ -9016,77 +9016,68 @@ type DataSourceFeatures string
 
 const (
 	DataSourceFeaturesColumnmasking DataSourceFeatures = "ColumnMasking"
-	DataSourceFeaturesRowfiltering  DataSourceFeatures = "RowFiltering"
 	DataSourceFeaturesDatasharing   DataSourceFeatures = "DataSharing"
+	DataSourceFeaturesRowfiltering  DataSourceFeatures = "RowFiltering"
 )
 
 var AllDataSourceFeatures = []DataSourceFeatures{
 	DataSourceFeaturesColumnmasking,
-	DataSourceFeaturesRowfiltering,
 	DataSourceFeaturesDatasharing,
+	DataSourceFeaturesRowfiltering,
 }
 
 // Represents the filter options for listing data sources.
 type DataSourceFilterInput struct {
-	Types []string `json:"types"`
-	// The search string to use (will do a case-insensitive 'contains').
-	Search *string `json:"search,omitempty"`
+	IncompleteDataWarning *bool `json:"incompleteDataWarning,omitempty"`
+	// List of user IDs to filter on who owns the data source.
+	Owners []string `json:"owners"`
 	// Only show data sources with a specific parent data source.
 	Parent *string `json:"parent,omitempty"`
-	// List of user IDs to filter on who owns the data source.
-	Owners                []string              `json:"owners"`
-	IncompleteDataWarning *bool                 `json:"incompleteDataWarning,omitempty"`
-	SupportedFeatures     []*DataSourceFeatures `json:"supportedFeatures,omitempty"`
+	// The search string to use (will do a case-insensitive 'contains').
+	Search            *string               `json:"search,omitempty"`
+	SupportedFeatures []*DataSourceFeatures `json:"supportedFeatures,omitempty"`
+	Types             []string              `json:"types"`
 }
 
-// GetTypes returns DataSourceFilterInput.Types, and is useful for accessing the field via an interface.
-func (v *DataSourceFilterInput) GetTypes() []string { return v.Types }
-
-// GetSearch returns DataSourceFilterInput.Search, and is useful for accessing the field via an interface.
-func (v *DataSourceFilterInput) GetSearch() *string { return v.Search }
-
-// GetParent returns DataSourceFilterInput.Parent, and is useful for accessing the field via an interface.
-func (v *DataSourceFilterInput) GetParent() *string { return v.Parent }
+// GetIncompleteDataWarning returns DataSourceFilterInput.IncompleteDataWarning, and is useful for accessing the field via an interface.
+func (v *DataSourceFilterInput) GetIncompleteDataWarning() *bool { return v.IncompleteDataWarning }
 
 // GetOwners returns DataSourceFilterInput.Owners, and is useful for accessing the field via an interface.
 func (v *DataSourceFilterInput) GetOwners() []string { return v.Owners }
 
-// GetIncompleteDataWarning returns DataSourceFilterInput.IncompleteDataWarning, and is useful for accessing the field via an interface.
-func (v *DataSourceFilterInput) GetIncompleteDataWarning() *bool { return v.IncompleteDataWarning }
+// GetParent returns DataSourceFilterInput.Parent, and is useful for accessing the field via an interface.
+func (v *DataSourceFilterInput) GetParent() *string { return v.Parent }
+
+// GetSearch returns DataSourceFilterInput.Search, and is useful for accessing the field via an interface.
+func (v *DataSourceFilterInput) GetSearch() *string { return v.Search }
 
 // GetSupportedFeatures returns DataSourceFilterInput.SupportedFeatures, and is useful for accessing the field via an interface.
 func (v *DataSourceFilterInput) GetSupportedFeatures() []*DataSourceFeatures {
 	return v.SupportedFeatures
 }
 
+// GetTypes returns DataSourceFilterInput.Types, and is useful for accessing the field via an interface.
+func (v *DataSourceFilterInput) GetTypes() []string { return v.Types }
+
 // Input object for creating or updating a data source.
 type DataSourceInput struct {
-	// The display name of the data source.
-	Name *string `json:"name,omitempty"`
-	// The description of the data source.
-	Description *string `json:"description,omitempty"`
-	// The optional parent data source.
-	Parent                  *string  `json:"parent,omitempty"`
 	CanRequestAccess        *bool    `json:"canRequestAccess,omitempty"`
 	CanRequestAccessToTypes []string `json:"canRequestAccessToTypes"`
-	// The synchronization schedule configuration.
-	SyncSchedule *DataSourceSyncScheduleInput `json:"syncSchedule,omitempty"`
 	// The optional UUID of the system asset from Collibra Catalog this data source corresponds with. Pass 00000000-0000-0000-0000-000000000000 to clear.
 	CatalogSystemId *uuid.UUID `json:"catalogSystemId,omitempty"`
-	// The UUID of the Edge Site associated with this data source.
-	EdgeSiteId *uuid.UUID `json:"edgeSiteId,omitempty"`
-	// The UUID of the Edge Connection associated with this data source.
-	EdgeConnectionId *uuid.UUID `json:"edgeConnectionId,omitempty"`
+	// The description of the data source.
+	Description *string `json:"description,omitempty"`
+	// The ID of the Edge Connection associated with this data source.
+	EdgeConnectionId *string `json:"edgeConnectionId,omitempty"`
+	// The ID of the Edge Site associated with this data source.
+	EdgeSiteId *string `json:"edgeSiteId,omitempty"`
+	// The display name of the data source.
+	Name *string `json:"name,omitempty"`
+	// The optional parent data source.
+	Parent *string `json:"parent,omitempty"`
+	// The synchronization schedule configuration.
+	SyncSchedule *DataSourceSyncScheduleInput `json:"syncSchedule,omitempty"`
 }
-
-// GetName returns DataSourceInput.Name, and is useful for accessing the field via an interface.
-func (v *DataSourceInput) GetName() *string { return v.Name }
-
-// GetDescription returns DataSourceInput.Description, and is useful for accessing the field via an interface.
-func (v *DataSourceInput) GetDescription() *string { return v.Description }
-
-// GetParent returns DataSourceInput.Parent, and is useful for accessing the field via an interface.
-func (v *DataSourceInput) GetParent() *string { return v.Parent }
 
 // GetCanRequestAccess returns DataSourceInput.CanRequestAccess, and is useful for accessing the field via an interface.
 func (v *DataSourceInput) GetCanRequestAccess() *bool { return v.CanRequestAccess }
@@ -9094,17 +9085,26 @@ func (v *DataSourceInput) GetCanRequestAccess() *bool { return v.CanRequestAcces
 // GetCanRequestAccessToTypes returns DataSourceInput.CanRequestAccessToTypes, and is useful for accessing the field via an interface.
 func (v *DataSourceInput) GetCanRequestAccessToTypes() []string { return v.CanRequestAccessToTypes }
 
-// GetSyncSchedule returns DataSourceInput.SyncSchedule, and is useful for accessing the field via an interface.
-func (v *DataSourceInput) GetSyncSchedule() *DataSourceSyncScheduleInput { return v.SyncSchedule }
-
 // GetCatalogSystemId returns DataSourceInput.CatalogSystemId, and is useful for accessing the field via an interface.
 func (v *DataSourceInput) GetCatalogSystemId() *uuid.UUID { return v.CatalogSystemId }
 
-// GetEdgeSiteId returns DataSourceInput.EdgeSiteId, and is useful for accessing the field via an interface.
-func (v *DataSourceInput) GetEdgeSiteId() *uuid.UUID { return v.EdgeSiteId }
+// GetDescription returns DataSourceInput.Description, and is useful for accessing the field via an interface.
+func (v *DataSourceInput) GetDescription() *string { return v.Description }
 
 // GetEdgeConnectionId returns DataSourceInput.EdgeConnectionId, and is useful for accessing the field via an interface.
-func (v *DataSourceInput) GetEdgeConnectionId() *uuid.UUID { return v.EdgeConnectionId }
+func (v *DataSourceInput) GetEdgeConnectionId() *string { return v.EdgeConnectionId }
+
+// GetEdgeSiteId returns DataSourceInput.EdgeSiteId, and is useful for accessing the field via an interface.
+func (v *DataSourceInput) GetEdgeSiteId() *string { return v.EdgeSiteId }
+
+// GetName returns DataSourceInput.Name, and is useful for accessing the field via an interface.
+func (v *DataSourceInput) GetName() *string { return v.Name }
+
+// GetParent returns DataSourceInput.Parent, and is useful for accessing the field via an interface.
+func (v *DataSourceInput) GetParent() *string { return v.Parent }
+
+// GetSyncSchedule returns DataSourceInput.SyncSchedule, and is useful for accessing the field via an interface.
+func (v *DataSourceInput) GetSyncSchedule() *DataSourceSyncScheduleInput { return v.SyncSchedule }
 
 // DataSourceMaskInformationDataSource includes the requested fields of the GraphQL type DataSource.
 // The GraphQL type's documentation follows.
@@ -9516,29 +9516,24 @@ func (v *DataSourceMaskInformationResponse) __premarshalJSON() (*__premarshalDat
 }
 
 type DataSourceMetaDataInput struct {
-	// The list of data object types that are available in this data source.
-	DataObjectTypes []DataObjectTypeInput `json:"dataObjectTypes"`
 	// The list of access control types that are available in this data source.
 	AccessControlTypes []AccessControlTypeInput `json:"accessControlTypes"`
+	// The list of data object types that are available in this data source.
+	DataObjectTypes []DataObjectTypeInput `json:"dataObjectTypes"`
+	FilterMetadata  *FilterMetadataInput  `json:"filterMetadata,omitempty"`
+	// Icon the name or base64 encoded version of the icon to use for this data source.
+	Icon            *string               `json:"icon,omitempty"`
+	MaskingMetadata *MaskingMetadataInput `json:"maskingMetadata,omitempty"`
+	ShareMetadata   *ShareMetadataInput   `json:"shareMetadata,omitempty"`
 	// SupportedFeatures is a list of features supported by the data source
 	// Currently supported features: columnMasking, rowFiltering, columnFiltering, dataSharing
 	SupportedFeatures []string `json:"supportedFeatures"`
+	// If true, access controls will not be unpacked at export time. Otherwise, access controls will be unpacked into native groups and users.
+	SupportsAccessControlInheritance *bool `json:"supportsAccessControlInheritance,omitempty"`
 	// type indicates the type of data source (Snowflake, BigQuery, etc.).
 	Type *string `json:"type,omitempty"`
-	// Icon the name or base64 encoded version of the icon to use for this data source.
-	Icon *string `json:"icon,omitempty"`
 	// UsageMetaInfo describes the usage metadata for this data source.
 	UsageMetaInfo *UsageMetaInput `json:"usageMetaInfo,omitempty"`
-	// If true, access controls will not be unpacked at export time. Otherwise, access controls will be unpacked into native groups and users.
-	SupportsAccessControlInheritance *bool                 `json:"supportsAccessControlInheritance,omitempty"`
-	MaskingMetadata                  *MaskingMetadataInput `json:"maskingMetadata,omitempty"`
-	FilterMetadata                   *FilterMetadataInput  `json:"filterMetadata,omitempty"`
-	ShareMetadata                    *ShareMetadataInput   `json:"shareMetadata,omitempty"`
-}
-
-// GetDataObjectTypes returns DataSourceMetaDataInput.DataObjectTypes, and is useful for accessing the field via an interface.
-func (v *DataSourceMetaDataInput) GetDataObjectTypes() []DataObjectTypeInput {
-	return v.DataObjectTypes
 }
 
 // GetAccessControlTypes returns DataSourceMetaDataInput.AccessControlTypes, and is useful for accessing the field via an interface.
@@ -9546,33 +9541,38 @@ func (v *DataSourceMetaDataInput) GetAccessControlTypes() []AccessControlTypeInp
 	return v.AccessControlTypes
 }
 
-// GetSupportedFeatures returns DataSourceMetaDataInput.SupportedFeatures, and is useful for accessing the field via an interface.
-func (v *DataSourceMetaDataInput) GetSupportedFeatures() []string { return v.SupportedFeatures }
+// GetDataObjectTypes returns DataSourceMetaDataInput.DataObjectTypes, and is useful for accessing the field via an interface.
+func (v *DataSourceMetaDataInput) GetDataObjectTypes() []DataObjectTypeInput {
+	return v.DataObjectTypes
+}
 
-// GetType returns DataSourceMetaDataInput.Type, and is useful for accessing the field via an interface.
-func (v *DataSourceMetaDataInput) GetType() *string { return v.Type }
+// GetFilterMetadata returns DataSourceMetaDataInput.FilterMetadata, and is useful for accessing the field via an interface.
+func (v *DataSourceMetaDataInput) GetFilterMetadata() *FilterMetadataInput { return v.FilterMetadata }
 
 // GetIcon returns DataSourceMetaDataInput.Icon, and is useful for accessing the field via an interface.
 func (v *DataSourceMetaDataInput) GetIcon() *string { return v.Icon }
-
-// GetUsageMetaInfo returns DataSourceMetaDataInput.UsageMetaInfo, and is useful for accessing the field via an interface.
-func (v *DataSourceMetaDataInput) GetUsageMetaInfo() *UsageMetaInput { return v.UsageMetaInfo }
-
-// GetSupportsAccessControlInheritance returns DataSourceMetaDataInput.SupportsAccessControlInheritance, and is useful for accessing the field via an interface.
-func (v *DataSourceMetaDataInput) GetSupportsAccessControlInheritance() *bool {
-	return v.SupportsAccessControlInheritance
-}
 
 // GetMaskingMetadata returns DataSourceMetaDataInput.MaskingMetadata, and is useful for accessing the field via an interface.
 func (v *DataSourceMetaDataInput) GetMaskingMetadata() *MaskingMetadataInput {
 	return v.MaskingMetadata
 }
 
-// GetFilterMetadata returns DataSourceMetaDataInput.FilterMetadata, and is useful for accessing the field via an interface.
-func (v *DataSourceMetaDataInput) GetFilterMetadata() *FilterMetadataInput { return v.FilterMetadata }
-
 // GetShareMetadata returns DataSourceMetaDataInput.ShareMetadata, and is useful for accessing the field via an interface.
 func (v *DataSourceMetaDataInput) GetShareMetadata() *ShareMetadataInput { return v.ShareMetadata }
+
+// GetSupportedFeatures returns DataSourceMetaDataInput.SupportedFeatures, and is useful for accessing the field via an interface.
+func (v *DataSourceMetaDataInput) GetSupportedFeatures() []string { return v.SupportedFeatures }
+
+// GetSupportsAccessControlInheritance returns DataSourceMetaDataInput.SupportsAccessControlInheritance, and is useful for accessing the field via an interface.
+func (v *DataSourceMetaDataInput) GetSupportsAccessControlInheritance() *bool {
+	return v.SupportsAccessControlInheritance
+}
+
+// GetType returns DataSourceMetaDataInput.Type, and is useful for accessing the field via an interface.
+func (v *DataSourceMetaDataInput) GetType() *string { return v.Type }
+
+// GetUsageMetaInfo returns DataSourceMetaDataInput.UsageMetaInfo, and is useful for accessing the field via an interface.
+func (v *DataSourceMetaDataInput) GetUsageMetaInfo() *UsageMetaInput { return v.UsageMetaInfo }
 
 // Defines the sorting options when listing data sources.
 type DataSourceOrderByInput struct {
@@ -9596,63 +9596,63 @@ func (v *DataSourceParentDataSource) GetId() string { return v.Id }
 
 // Input object to set the sync scheduling for a data source.
 type DataSourceSyncScheduleInput struct {
-	// The cron expression for the global synchronization. Null will not update the global cron expression. Empty string will remove the global cron expression.
-	Global *string `json:"global,omitempty"`
-	// If set, this overrides the global cron expression for the data object sync specifically. Null will not update the global cron expression. Empty string will remove the global cron expression.
-	DataObjectSync *string `json:"dataObjectSync,omitempty"`
-	// If set, this overrides the global cron expression for the identity sync specifically. Null will not update the global cron expression. Empty string will remove the global cron expression.
-	IdentitySync *string `json:"identitySync,omitempty"`
-	// If set, this overrides the global cron expression for the access control to target sync specifically. Null will not update the global cron expression. Empty string will remove the global cron expression.
-	AccessToTargetSync *string `json:"accessToTargetSync,omitempty"`
 	// If set, this overrides the global cron expression for the access control from target sync specifically. Null will not update the global cron expression. Empty string will remove the global cron expression.
 	AccessFromTargetSync *string `json:"accessFromTargetSync,omitempty"`
-	UsageSync            *string `json:"usageSync,omitempty"`
+	// If set, this overrides the global cron expression for the access control to target sync specifically. Null will not update the global cron expression. Empty string will remove the global cron expression.
+	AccessToTargetSync *string `json:"accessToTargetSync,omitempty"`
+	// If set, this overrides the global cron expression for the data object sync specifically. Null will not update the global cron expression. Empty string will remove the global cron expression.
+	DataObjectSync *string `json:"dataObjectSync,omitempty"`
+	// The cron expression for the global synchronization. Null will not update the global cron expression. Empty string will remove the global cron expression.
+	Global *string `json:"global,omitempty"`
+	// If set, this overrides the global cron expression for the identity sync specifically. Null will not update the global cron expression. Empty string will remove the global cron expression.
+	IdentitySync *string `json:"identitySync,omitempty"`
+	UsageSync    *string `json:"usageSync,omitempty"`
 }
-
-// GetGlobal returns DataSourceSyncScheduleInput.Global, and is useful for accessing the field via an interface.
-func (v *DataSourceSyncScheduleInput) GetGlobal() *string { return v.Global }
-
-// GetDataObjectSync returns DataSourceSyncScheduleInput.DataObjectSync, and is useful for accessing the field via an interface.
-func (v *DataSourceSyncScheduleInput) GetDataObjectSync() *string { return v.DataObjectSync }
-
-// GetIdentitySync returns DataSourceSyncScheduleInput.IdentitySync, and is useful for accessing the field via an interface.
-func (v *DataSourceSyncScheduleInput) GetIdentitySync() *string { return v.IdentitySync }
-
-// GetAccessToTargetSync returns DataSourceSyncScheduleInput.AccessToTargetSync, and is useful for accessing the field via an interface.
-func (v *DataSourceSyncScheduleInput) GetAccessToTargetSync() *string { return v.AccessToTargetSync }
 
 // GetAccessFromTargetSync returns DataSourceSyncScheduleInput.AccessFromTargetSync, and is useful for accessing the field via an interface.
 func (v *DataSourceSyncScheduleInput) GetAccessFromTargetSync() *string {
 	return v.AccessFromTargetSync
 }
 
+// GetAccessToTargetSync returns DataSourceSyncScheduleInput.AccessToTargetSync, and is useful for accessing the field via an interface.
+func (v *DataSourceSyncScheduleInput) GetAccessToTargetSync() *string { return v.AccessToTargetSync }
+
+// GetDataObjectSync returns DataSourceSyncScheduleInput.DataObjectSync, and is useful for accessing the field via an interface.
+func (v *DataSourceSyncScheduleInput) GetDataObjectSync() *string { return v.DataObjectSync }
+
+// GetGlobal returns DataSourceSyncScheduleInput.Global, and is useful for accessing the field via an interface.
+func (v *DataSourceSyncScheduleInput) GetGlobal() *string { return v.Global }
+
+// GetIdentitySync returns DataSourceSyncScheduleInput.IdentitySync, and is useful for accessing the field via an interface.
+func (v *DataSourceSyncScheduleInput) GetIdentitySync() *string { return v.IdentitySync }
+
 // GetUsageSync returns DataSourceSyncScheduleInput.UsageSync, and is useful for accessing the field via an interface.
 func (v *DataSourceSyncScheduleInput) GetUsageSync() *string { return v.UsageSync }
 
 type DataSourceTypeInfo struct {
-	// The ID of the data source
-	DataSource string `json:"dataSource"`
 	// The technical type of how this access control is represented in the underlying system. For masks this represents the masking method to use.
 	AccessControlType *string `json:"accessControlType,omitempty"`
+	// The ID of the data source
+	DataSource string `json:"dataSource"`
 }
-
-// GetDataSource returns DataSourceTypeInfo.DataSource, and is useful for accessing the field via an interface.
-func (v *DataSourceTypeInfo) GetDataSource() string { return v.DataSource }
 
 // GetAccessControlType returns DataSourceTypeInfo.AccessControlType, and is useful for accessing the field via an interface.
 func (v *DataSourceTypeInfo) GetAccessControlType() *string { return v.AccessControlType }
 
+// GetDataSource returns DataSourceTypeInfo.DataSource, and is useful for accessing the field via an interface.
+func (v *DataSourceTypeInfo) GetDataSource() string { return v.DataSource }
+
 type DataTypeOrigin string
 
 const (
-	DataTypeOriginInternal DataTypeOrigin = "Internal"
 	DataTypeOriginExternal DataTypeOrigin = "External"
+	DataTypeOriginInternal DataTypeOrigin = "Internal"
 	DataTypeOriginShared   DataTypeOrigin = "Shared"
 )
 
 var AllDataTypeOrigin = []DataTypeOrigin{
-	DataTypeOriginInternal,
 	DataTypeOriginExternal,
+	DataTypeOriginInternal,
 	DataTypeOriginShared,
 }
 
@@ -11554,15 +11554,12 @@ type DeleteGrantCategoryResult struct {
 func (v *DeleteGrantCategoryResult) GetSuccess() bool { return v.Success }
 
 type EdgeSiteConnectorInfoInput struct {
-	DataSourceType       string                       `json:"dataSourceType"`
 	AgentVersion         *scalar.Version              `json:"-"`
 	ConnectorVersion     *scalar.Version              `json:"-"`
-	SupportedSyncMethods []string                     `json:"supportedSyncMethods"`
+	DataSourceType       string                       `json:"dataSourceType"`
 	ParameterDefinition  RootParameterDefinitionInput `json:"parameterDefinition"`
+	SupportedSyncMethods []string                     `json:"supportedSyncMethods"`
 }
-
-// GetDataSourceType returns EdgeSiteConnectorInfoInput.DataSourceType, and is useful for accessing the field via an interface.
-func (v *EdgeSiteConnectorInfoInput) GetDataSourceType() string { return v.DataSourceType }
 
 // GetAgentVersion returns EdgeSiteConnectorInfoInput.AgentVersion, and is useful for accessing the field via an interface.
 func (v *EdgeSiteConnectorInfoInput) GetAgentVersion() *scalar.Version { return v.AgentVersion }
@@ -11570,14 +11567,17 @@ func (v *EdgeSiteConnectorInfoInput) GetAgentVersion() *scalar.Version { return 
 // GetConnectorVersion returns EdgeSiteConnectorInfoInput.ConnectorVersion, and is useful for accessing the field via an interface.
 func (v *EdgeSiteConnectorInfoInput) GetConnectorVersion() *scalar.Version { return v.ConnectorVersion }
 
-// GetSupportedSyncMethods returns EdgeSiteConnectorInfoInput.SupportedSyncMethods, and is useful for accessing the field via an interface.
-func (v *EdgeSiteConnectorInfoInput) GetSupportedSyncMethods() []string {
-	return v.SupportedSyncMethods
-}
+// GetDataSourceType returns EdgeSiteConnectorInfoInput.DataSourceType, and is useful for accessing the field via an interface.
+func (v *EdgeSiteConnectorInfoInput) GetDataSourceType() string { return v.DataSourceType }
 
 // GetParameterDefinition returns EdgeSiteConnectorInfoInput.ParameterDefinition, and is useful for accessing the field via an interface.
 func (v *EdgeSiteConnectorInfoInput) GetParameterDefinition() RootParameterDefinitionInput {
 	return v.ParameterDefinition
+}
+
+// GetSupportedSyncMethods returns EdgeSiteConnectorInfoInput.SupportedSyncMethods, and is useful for accessing the field via an interface.
+func (v *EdgeSiteConnectorInfoInput) GetSupportedSyncMethods() []string {
+	return v.SupportedSyncMethods
 }
 
 func (v *EdgeSiteConnectorInfoInput) UnmarshalJSON(b []byte) error {
@@ -11630,15 +11630,15 @@ func (v *EdgeSiteConnectorInfoInput) UnmarshalJSON(b []byte) error {
 }
 
 type __premarshalEdgeSiteConnectorInfoInput struct {
-	DataSourceType string `json:"dataSourceType"`
-
 	AgentVersion json.RawMessage `json:"agentVersion,omitempty"`
 
 	ConnectorVersion json.RawMessage `json:"connectorVersion,omitempty"`
 
-	SupportedSyncMethods []string `json:"supportedSyncMethods"`
+	DataSourceType string `json:"dataSourceType"`
 
 	ParameterDefinition RootParameterDefinitionInput `json:"parameterDefinition"`
+
+	SupportedSyncMethods []string `json:"supportedSyncMethods"`
 }
 
 func (v *EdgeSiteConnectorInfoInput) MarshalJSON() ([]byte, error) {
@@ -11652,7 +11652,6 @@ func (v *EdgeSiteConnectorInfoInput) MarshalJSON() ([]byte, error) {
 func (v *EdgeSiteConnectorInfoInput) __premarshalJSON() (*__premarshalEdgeSiteConnectorInfoInput, error) {
 	var retval __premarshalEdgeSiteConnectorInfoInput
 
-	retval.DataSourceType = v.DataSourceType
 	{
 
 		dst := &retval.AgentVersion
@@ -11681,8 +11680,9 @@ func (v *EdgeSiteConnectorInfoInput) __premarshalJSON() (*__premarshalEdgeSiteCo
 			}
 		}
 	}
-	retval.SupportedSyncMethods = v.SupportedSyncMethods
+	retval.DataSourceType = v.DataSourceType
 	retval.ParameterDefinition = v.ParameterDefinition
+	retval.SupportedSyncMethods = v.SupportedSyncMethods
 	return &retval, nil
 }
 
@@ -11695,9 +11695,9 @@ type EdgeSiteInfoEdgeSiteInfoEdgeSiteInfoResponse struct {
 // GetTypename returns EdgeSiteInfoEdgeSiteInfoEdgeSiteInfoResponse.Typename, and is useful for accessing the field via an interface.
 func (v *EdgeSiteInfoEdgeSiteInfoEdgeSiteInfoResponse) GetTypename() *string { return v.Typename }
 
-// GetEdgeSite returns EdgeSiteInfoEdgeSiteInfoEdgeSiteInfoResponse.EdgeSite, and is useful for accessing the field via an interface.
-func (v *EdgeSiteInfoEdgeSiteInfoEdgeSiteInfoResponse) GetEdgeSite() string {
-	return v.EdgeSiteInfoResult.EdgeSite
+// GetEdgeSiteId returns EdgeSiteInfoEdgeSiteInfoEdgeSiteInfoResponse.EdgeSiteId, and is useful for accessing the field via an interface.
+func (v *EdgeSiteInfoEdgeSiteInfoEdgeSiteInfoResponse) GetEdgeSiteId() string {
+	return v.EdgeSiteInfoResult.EdgeSiteId
 }
 
 // GetConnectors returns EdgeSiteInfoEdgeSiteInfoEdgeSiteInfoResponse.Connectors, and is useful for accessing the field via an interface.
@@ -11733,7 +11733,7 @@ func (v *EdgeSiteInfoEdgeSiteInfoEdgeSiteInfoResponse) UnmarshalJSON(b []byte) e
 type __premarshalEdgeSiteInfoEdgeSiteInfoEdgeSiteInfoResponse struct {
 	Typename *string `json:"__typename"`
 
-	EdgeSite string `json:"edgeSite"`
+	EdgeSiteId string `json:"edgeSiteId"`
 
 	Connectors []*EdgeSiteInfoResultConnectorsSyncConnectionInfo `json:"connectors"`
 }
@@ -11750,7 +11750,7 @@ func (v *EdgeSiteInfoEdgeSiteInfoEdgeSiteInfoResponse) __premarshalJSON() (*__pr
 	var retval __premarshalEdgeSiteInfoEdgeSiteInfoEdgeSiteInfoResponse
 
 	retval.Typename = v.Typename
-	retval.EdgeSite = v.EdgeSiteInfoResult.EdgeSite
+	retval.EdgeSiteId = v.EdgeSiteInfoResult.EdgeSiteId
 	retval.Connectors = v.EdgeSiteInfoResult.Connectors
 	return &retval, nil
 }
@@ -11981,19 +11981,19 @@ func (v *EdgeSiteInfoEdgeSiteInfoPermissionDeniedError) __premarshalJSON() (*__p
 }
 
 type EdgeSiteInfoInput struct {
-	EdgeSite   string                       `json:"edgeSite"`
-	External   bool                         `json:"external"`
 	Connectors []EdgeSiteConnectorInfoInput `json:"connectors"`
+	EdgeSiteId string                       `json:"edgeSiteId"`
+	External   bool                         `json:"external"`
 }
-
-// GetEdgeSite returns EdgeSiteInfoInput.EdgeSite, and is useful for accessing the field via an interface.
-func (v *EdgeSiteInfoInput) GetEdgeSite() string { return v.EdgeSite }
-
-// GetExternal returns EdgeSiteInfoInput.External, and is useful for accessing the field via an interface.
-func (v *EdgeSiteInfoInput) GetExternal() bool { return v.External }
 
 // GetConnectors returns EdgeSiteInfoInput.Connectors, and is useful for accessing the field via an interface.
 func (v *EdgeSiteInfoInput) GetConnectors() []EdgeSiteConnectorInfoInput { return v.Connectors }
+
+// GetEdgeSiteId returns EdgeSiteInfoInput.EdgeSiteId, and is useful for accessing the field via an interface.
+func (v *EdgeSiteInfoInput) GetEdgeSiteId() string { return v.EdgeSiteId }
+
+// GetExternal returns EdgeSiteInfoInput.External, and is useful for accessing the field via an interface.
+func (v *EdgeSiteInfoInput) GetExternal() bool { return v.External }
 
 // EdgeSiteInfoResponse is returned by EdgeSiteInfo on success.
 type EdgeSiteInfoResponse struct {
@@ -12070,12 +12070,12 @@ func (v *EdgeSiteInfoResponse) __premarshalJSON() (*__premarshalEdgeSiteInfoResp
 
 // EdgeSiteInfoResult includes the GraphQL fields of EdgeSiteInfoResponse requested by the fragment EdgeSiteInfoResult.
 type EdgeSiteInfoResult struct {
-	EdgeSite   string                                            `json:"edgeSite"`
+	EdgeSiteId string                                            `json:"edgeSiteId"`
 	Connectors []*EdgeSiteInfoResultConnectorsSyncConnectionInfo `json:"connectors"`
 }
 
-// GetEdgeSite returns EdgeSiteInfoResult.EdgeSite, and is useful for accessing the field via an interface.
-func (v *EdgeSiteInfoResult) GetEdgeSite() string { return v.EdgeSite }
+// GetEdgeSiteId returns EdgeSiteInfoResult.EdgeSiteId, and is useful for accessing the field via an interface.
+func (v *EdgeSiteInfoResult) GetEdgeSiteId() string { return v.EdgeSiteId }
 
 // GetConnectors returns EdgeSiteInfoResult.Connectors, and is useful for accessing the field via an interface.
 func (v *EdgeSiteInfoResult) GetConnectors() []*EdgeSiteInfoResultConnectorsSyncConnectionInfo {
@@ -12454,33 +12454,33 @@ func (v *EndOfTargetsSyncResponse) __premarshalJSON() (*__premarshalEndOfTargets
 type EntityType string
 
 const (
-	EntityTypeAccesscontrol      EntityType = "AccessControl"
 	EntityTypeAccess             EntityType = "Access"
+	EntityTypeAccesscontrol      EntityType = "AccessControl"
 	EntityTypeAccessrequest      EntityType = "AccessRequest"
-	EntityTypeUser               EntityType = "User"
+	EntityTypeAccount            EntityType = "Account"
 	EntityTypeDataobject         EntityType = "DataObject"
+	EntityTypeDatasharerecipient EntityType = "DataShareRecipient"
 	EntityTypeDatasource         EntityType = "DataSource"
 	EntityTypeDatausage          EntityType = "DataUsage"
-	EntityTypeTag                EntityType = "Tag"
 	EntityTypeRole               EntityType = "Role"
 	EntityTypeRoleassignment     EntityType = "RoleAssignment"
-	EntityTypeAccount            EntityType = "Account"
-	EntityTypeDatasharerecipient EntityType = "DataShareRecipient"
+	EntityTypeTag                EntityType = "Tag"
+	EntityTypeUser               EntityType = "User"
 )
 
 var AllEntityType = []EntityType{
-	EntityTypeAccesscontrol,
 	EntityTypeAccess,
+	EntityTypeAccesscontrol,
 	EntityTypeAccessrequest,
-	EntityTypeUser,
+	EntityTypeAccount,
 	EntityTypeDataobject,
+	EntityTypeDatasharerecipient,
 	EntityTypeDatasource,
 	EntityTypeDatausage,
-	EntityTypeTag,
 	EntityTypeRole,
 	EntityTypeRoleassignment,
-	EntityTypeAccount,
-	EntityTypeDatasharerecipient,
+	EntityTypeTag,
+	EntityTypeUser,
 }
 
 // ExportAccessControl includes the GraphQL fields of ExportAccessControl requested by the fragment ExportAccessControl.
@@ -15412,33 +15412,33 @@ func (v *FetchExportAccessControlsResponse) __premarshalJSON() (*__premarshalFet
 }
 
 type FilterMetadataInput struct {
-	FilterOverridePermissions []string `json:"filterOverridePermissions"`
 	ApplicableTypes           []string `json:"applicableTypes"`
+	FilterOverridePermissions []string `json:"filterOverridePermissions"`
 }
+
+// GetApplicableTypes returns FilterMetadataInput.ApplicableTypes, and is useful for accessing the field via an interface.
+func (v *FilterMetadataInput) GetApplicableTypes() []string { return v.ApplicableTypes }
 
 // GetFilterOverridePermissions returns FilterMetadataInput.FilterOverridePermissions, and is useful for accessing the field via an interface.
 func (v *FilterMetadataInput) GetFilterOverridePermissions() []string {
 	return v.FilterOverridePermissions
 }
 
-// GetApplicableTypes returns FilterMetadataInput.ApplicableTypes, and is useful for accessing the field via an interface.
-func (v *FilterMetadataInput) GetApplicableTypes() []string { return v.ApplicableTypes }
-
 type FilterRuleFeedbackImport struct {
-	RuleId     string                      `json:"ruleId"`
 	ActualName *string                     `json:"actualName,omitempty"`
 	ExternalId *string                     `json:"externalId,omitempty"`
+	RuleId     string                      `json:"ruleId"`
 	State      *AccessControlFeedbackState `json:"state,omitempty"`
 }
-
-// GetRuleId returns FilterRuleFeedbackImport.RuleId, and is useful for accessing the field via an interface.
-func (v *FilterRuleFeedbackImport) GetRuleId() string { return v.RuleId }
 
 // GetActualName returns FilterRuleFeedbackImport.ActualName, and is useful for accessing the field via an interface.
 func (v *FilterRuleFeedbackImport) GetActualName() *string { return v.ActualName }
 
 // GetExternalId returns FilterRuleFeedbackImport.ExternalId, and is useful for accessing the field via an interface.
 func (v *FilterRuleFeedbackImport) GetExternalId() *string { return v.ExternalId }
+
+// GetRuleId returns FilterRuleFeedbackImport.RuleId, and is useful for accessing the field via an interface.
+func (v *FilterRuleFeedbackImport) GetRuleId() string { return v.RuleId }
 
 // GetState returns FilterRuleFeedbackImport.State, and is useful for accessing the field via an interface.
 func (v *FilterRuleFeedbackImport) GetState() *AccessControlFeedbackState { return v.State }
@@ -20648,18 +20648,18 @@ func (v *GrantCategoryAllowedWhoItems) GetCategories() []string { return v.Categ
 
 // Input object to specify which WHO items are allowed for a grant category.
 type GrantCategoryAllowedWhoItemsInput struct {
-	// If true, users are allowed in the WHO list of the access control.
-	User bool `json:"user"`
+	// Access controls from the given categories are allowed in the WHO list of the access control.
+	Categories []string `json:"categories"`
 	// If true, other access controls from any category are allowed in the WHO list of the access control.
 	Inheritance bool `json:"inheritance"`
 	// If true, other access controls from the same category are allowed in the WHO list of the access control.
 	Self bool `json:"self"`
-	// Access controls from the given categories are allowed in the WHO list of the access control.
-	Categories []string `json:"categories"`
+	// If true, users are allowed in the WHO list of the access control.
+	User bool `json:"user"`
 }
 
-// GetUser returns GrantCategoryAllowedWhoItemsInput.User, and is useful for accessing the field via an interface.
-func (v *GrantCategoryAllowedWhoItemsInput) GetUser() bool { return v.User }
+// GetCategories returns GrantCategoryAllowedWhoItemsInput.Categories, and is useful for accessing the field via an interface.
+func (v *GrantCategoryAllowedWhoItemsInput) GetCategories() []string { return v.Categories }
 
 // GetInheritance returns GrantCategoryAllowedWhoItemsInput.Inheritance, and is useful for accessing the field via an interface.
 func (v *GrantCategoryAllowedWhoItemsInput) GetInheritance() bool { return v.Inheritance }
@@ -20667,8 +20667,8 @@ func (v *GrantCategoryAllowedWhoItemsInput) GetInheritance() bool { return v.Inh
 // GetSelf returns GrantCategoryAllowedWhoItemsInput.Self, and is useful for accessing the field via an interface.
 func (v *GrantCategoryAllowedWhoItemsInput) GetSelf() bool { return v.Self }
 
-// GetCategories returns GrantCategoryAllowedWhoItemsInput.Categories, and is useful for accessing the field via an interface.
-func (v *GrantCategoryAllowedWhoItemsInput) GetCategories() []string { return v.Categories }
+// GetUser returns GrantCategoryAllowedWhoItemsInput.User, and is useful for accessing the field via an interface.
+func (v *GrantCategoryAllowedWhoItemsInput) GetUser() bool { return v.User }
 
 // GrantCategoryDetails includes the GraphQL fields of GrantCategory requested by the fragment GrantCategoryDetails.
 // The GraphQL type's documentation follows.
@@ -20958,30 +20958,32 @@ func (v *GrantCategoryDetailsDefaultTypePerDataSourceGrantCategoryTypeForDataSou
 
 // Input object to create or update a grant category.
 type GrantCategoryInput struct {
-	// Display name for the grant category.
-	Name *string `json:"name,omitempty"`
-	// Description of the grant category.
-	Description *string `json:"description,omitempty"`
-	// The icon to use in the user interface to identify grants of this category.
-	Icon *string `json:"icon,omitempty"`
+	// If true, it is possible to create multiple access controls with the same name in this category. Otherwise, this will be blocked.
+	AllowDuplicateNames *bool `json:"allowDuplicateNames,omitempty"`
+	// Specifies which types can be put as WHAT items for access controls in this category.
+	AllowedWhatItems *GrantCategoryAllowedWhatItemsInput `json:"allowedWhatItems,omitempty"`
+	// Specifies which types can be put as WHO items for access controls in this category.
+	AllowedWhoItems *GrantCategoryAllowedWhoItemsInput `json:"allowedWhoItems,omitempty"`
 	// If true, access controls of this category can be created in the UI.
 	CanCreate *bool `json:"canCreate,omitempty"`
 	// Specifies if a user can request access to grants of this category or not. This is purely a frontend check.
 	CanRequestAccess *bool `json:"canRequestAccess,omitempty"`
-	// If true, providing a description for access controls in this category is mandatory.
-	DescriptionMandatory *bool `json:"descriptionMandatory,omitempty"`
-	// If true, it is possible to create multiple access controls with the same name in this category. Otherwise, this will be blocked.
-	AllowDuplicateNames *bool `json:"allowDuplicateNames,omitempty"`
-	// If true, access controls in this category can be linked to multiple data sources. Otherwise, they will be limited to a single data source.
-	MultiDataSource *bool `json:"multiDataSource,omitempty"`
 	// For each data source, a default access control type can be specified.
 	DefaultTypePerDataSource []GrantCategoryTypeForDataSourceInput `json:"defaultTypePerDataSource"`
+	// Description of the grant category.
+	Description *string `json:"description,omitempty"`
+	// If true, providing a description for access controls in this category is mandatory.
+	DescriptionMandatory *bool `json:"descriptionMandatory,omitempty"`
 	// If true, no local exceptions for masks and filters are calculated for corresponding access controls. Regular global exceptions will be used instead.
 	GlobalExceptions *bool `json:"globalExceptions,omitempty"`
-	// Specifies which types can be put as WHO items for access controls in this category.
-	AllowedWhoItems *GrantCategoryAllowedWhoItemsInput `json:"allowedWhoItems,omitempty"`
-	// Specifies which types can be put as WHAT items for access controls in this category.
-	AllowedWhatItems *GrantCategoryAllowedWhatItemsInput `json:"allowedWhatItems,omitempty"`
+	// The icon to use in the user interface to identify grants of this category.
+	Icon *string `json:"icon,omitempty"`
+	// The locks that need to be set when an access control in this category is created.
+	LocksOnCreate []AccessControlLock `json:"locksOnCreate"`
+	// If true, access controls in this category can be linked to multiple data sources. Otherwise, they will be limited to a single data source.
+	MultiDataSource *bool `json:"multiDataSource,omitempty"`
+	// Display name for the grant category.
+	Name *string `json:"name,omitempty"`
 	// If specified, the name of access controls in this category need to comply with the given regular expression.
 	NameRegEx *string `json:"nameRegEx,omitempty"`
 	// The message shown to the user when the name does not comply with the regular expression.
@@ -20990,18 +20992,20 @@ type GrantCategoryInput struct {
 	NamingHintRegEx *string `json:"namingHintRegEx,omitempty"`
 	// The message shown to the user when the name does not comply with the regular expression.
 	NamingHintRegExMsg *string `json:"namingHintRegExMsg,omitempty"`
-	// The locks that need to be set when an access control in this category is created.
-	LocksOnCreate []AccessControlLock `json:"locksOnCreate"`
 }
 
-// GetName returns GrantCategoryInput.Name, and is useful for accessing the field via an interface.
-func (v *GrantCategoryInput) GetName() *string { return v.Name }
+// GetAllowDuplicateNames returns GrantCategoryInput.AllowDuplicateNames, and is useful for accessing the field via an interface.
+func (v *GrantCategoryInput) GetAllowDuplicateNames() *bool { return v.AllowDuplicateNames }
 
-// GetDescription returns GrantCategoryInput.Description, and is useful for accessing the field via an interface.
-func (v *GrantCategoryInput) GetDescription() *string { return v.Description }
+// GetAllowedWhatItems returns GrantCategoryInput.AllowedWhatItems, and is useful for accessing the field via an interface.
+func (v *GrantCategoryInput) GetAllowedWhatItems() *GrantCategoryAllowedWhatItemsInput {
+	return v.AllowedWhatItems
+}
 
-// GetIcon returns GrantCategoryInput.Icon, and is useful for accessing the field via an interface.
-func (v *GrantCategoryInput) GetIcon() *string { return v.Icon }
+// GetAllowedWhoItems returns GrantCategoryInput.AllowedWhoItems, and is useful for accessing the field via an interface.
+func (v *GrantCategoryInput) GetAllowedWhoItems() *GrantCategoryAllowedWhoItemsInput {
+	return v.AllowedWhoItems
+}
 
 // GetCanCreate returns GrantCategoryInput.CanCreate, and is useful for accessing the field via an interface.
 func (v *GrantCategoryInput) GetCanCreate() *bool { return v.CanCreate }
@@ -21009,32 +21013,31 @@ func (v *GrantCategoryInput) GetCanCreate() *bool { return v.CanCreate }
 // GetCanRequestAccess returns GrantCategoryInput.CanRequestAccess, and is useful for accessing the field via an interface.
 func (v *GrantCategoryInput) GetCanRequestAccess() *bool { return v.CanRequestAccess }
 
-// GetDescriptionMandatory returns GrantCategoryInput.DescriptionMandatory, and is useful for accessing the field via an interface.
-func (v *GrantCategoryInput) GetDescriptionMandatory() *bool { return v.DescriptionMandatory }
-
-// GetAllowDuplicateNames returns GrantCategoryInput.AllowDuplicateNames, and is useful for accessing the field via an interface.
-func (v *GrantCategoryInput) GetAllowDuplicateNames() *bool { return v.AllowDuplicateNames }
-
-// GetMultiDataSource returns GrantCategoryInput.MultiDataSource, and is useful for accessing the field via an interface.
-func (v *GrantCategoryInput) GetMultiDataSource() *bool { return v.MultiDataSource }
-
 // GetDefaultTypePerDataSource returns GrantCategoryInput.DefaultTypePerDataSource, and is useful for accessing the field via an interface.
 func (v *GrantCategoryInput) GetDefaultTypePerDataSource() []GrantCategoryTypeForDataSourceInput {
 	return v.DefaultTypePerDataSource
 }
 
+// GetDescription returns GrantCategoryInput.Description, and is useful for accessing the field via an interface.
+func (v *GrantCategoryInput) GetDescription() *string { return v.Description }
+
+// GetDescriptionMandatory returns GrantCategoryInput.DescriptionMandatory, and is useful for accessing the field via an interface.
+func (v *GrantCategoryInput) GetDescriptionMandatory() *bool { return v.DescriptionMandatory }
+
 // GetGlobalExceptions returns GrantCategoryInput.GlobalExceptions, and is useful for accessing the field via an interface.
 func (v *GrantCategoryInput) GetGlobalExceptions() *bool { return v.GlobalExceptions }
 
-// GetAllowedWhoItems returns GrantCategoryInput.AllowedWhoItems, and is useful for accessing the field via an interface.
-func (v *GrantCategoryInput) GetAllowedWhoItems() *GrantCategoryAllowedWhoItemsInput {
-	return v.AllowedWhoItems
-}
+// GetIcon returns GrantCategoryInput.Icon, and is useful for accessing the field via an interface.
+func (v *GrantCategoryInput) GetIcon() *string { return v.Icon }
 
-// GetAllowedWhatItems returns GrantCategoryInput.AllowedWhatItems, and is useful for accessing the field via an interface.
-func (v *GrantCategoryInput) GetAllowedWhatItems() *GrantCategoryAllowedWhatItemsInput {
-	return v.AllowedWhatItems
-}
+// GetLocksOnCreate returns GrantCategoryInput.LocksOnCreate, and is useful for accessing the field via an interface.
+func (v *GrantCategoryInput) GetLocksOnCreate() []AccessControlLock { return v.LocksOnCreate }
+
+// GetMultiDataSource returns GrantCategoryInput.MultiDataSource, and is useful for accessing the field via an interface.
+func (v *GrantCategoryInput) GetMultiDataSource() *bool { return v.MultiDataSource }
+
+// GetName returns GrantCategoryInput.Name, and is useful for accessing the field via an interface.
+func (v *GrantCategoryInput) GetName() *string { return v.Name }
 
 // GetNameRegEx returns GrantCategoryInput.NameRegEx, and is useful for accessing the field via an interface.
 func (v *GrantCategoryInput) GetNameRegEx() *string { return v.NameRegEx }
@@ -21047,9 +21050,6 @@ func (v *GrantCategoryInput) GetNamingHintRegEx() *string { return v.NamingHintR
 
 // GetNamingHintRegExMsg returns GrantCategoryInput.NamingHintRegExMsg, and is useful for accessing the field via an interface.
 func (v *GrantCategoryInput) GetNamingHintRegExMsg() *string { return v.NamingHintRegExMsg }
-
-// GetLocksOnCreate returns GrantCategoryInput.LocksOnCreate, and is useful for accessing the field via an interface.
-func (v *GrantCategoryInput) GetLocksOnCreate() []AccessControlLock { return v.LocksOnCreate }
 
 // GrantCategoryTypeForDataSource includes the GraphQL fields of GrantCategoryTypeForDataSource requested by the fragment GrantCategoryTypeForDataSource.
 // The GraphQL type's documentation follows.
@@ -21083,13 +21083,32 @@ func (v *GrantCategoryTypeForDataSourceInput) GetDataSource() string { return v.
 func (v *GrantCategoryTypeForDataSourceInput) GetType() string { return v.Type }
 
 type ImportCommand struct {
+	AccessControlWhatFinished   *string                      `json:"accessControlWhatFinished,omitempty"`
+	QueryHistory                *QueryStatementImport        `json:"queryHistory,omitempty"`
+	UpsertAccessControl         *AccessControlImport         `json:"upsertAccessControl,omitempty"`
+	UpsertAccessControlFeedback *AccessControlFeedbackImport `json:"upsertAccessControlFeedback,omitempty"`
+	UpsertAccessControlWhatItem *WhatItemImport              `json:"upsertAccessControlWhatItem,omitempty"`
 	UpsertDataObject            *DataObjectImport            `json:"upsertDataObject,omitempty"`
 	UpsertUser                  *UserImport                  `json:"upsertUser,omitempty"`
-	UpsertAccessControl         *AccessControlImport         `json:"upsertAccessControl,omitempty"`
-	UpsertAccessControlWhatItem *WhatItemImport              `json:"upsertAccessControlWhatItem,omitempty"`
-	UpsertAccessControlFeedback *AccessControlFeedbackImport `json:"upsertAccessControlFeedback,omitempty"`
-	QueryHistory                *QueryStatementImport        `json:"queryHistory,omitempty"`
-	AccessControlWhatFinished   *string                      `json:"accessControlWhatFinished,omitempty"`
+}
+
+// GetAccessControlWhatFinished returns ImportCommand.AccessControlWhatFinished, and is useful for accessing the field via an interface.
+func (v *ImportCommand) GetAccessControlWhatFinished() *string { return v.AccessControlWhatFinished }
+
+// GetQueryHistory returns ImportCommand.QueryHistory, and is useful for accessing the field via an interface.
+func (v *ImportCommand) GetQueryHistory() *QueryStatementImport { return v.QueryHistory }
+
+// GetUpsertAccessControl returns ImportCommand.UpsertAccessControl, and is useful for accessing the field via an interface.
+func (v *ImportCommand) GetUpsertAccessControl() *AccessControlImport { return v.UpsertAccessControl }
+
+// GetUpsertAccessControlFeedback returns ImportCommand.UpsertAccessControlFeedback, and is useful for accessing the field via an interface.
+func (v *ImportCommand) GetUpsertAccessControlFeedback() *AccessControlFeedbackImport {
+	return v.UpsertAccessControlFeedback
+}
+
+// GetUpsertAccessControlWhatItem returns ImportCommand.UpsertAccessControlWhatItem, and is useful for accessing the field via an interface.
+func (v *ImportCommand) GetUpsertAccessControlWhatItem() *WhatItemImport {
+	return v.UpsertAccessControlWhatItem
 }
 
 // GetUpsertDataObject returns ImportCommand.UpsertDataObject, and is useful for accessing the field via an interface.
@@ -21098,35 +21117,16 @@ func (v *ImportCommand) GetUpsertDataObject() *DataObjectImport { return v.Upser
 // GetUpsertUser returns ImportCommand.UpsertUser, and is useful for accessing the field via an interface.
 func (v *ImportCommand) GetUpsertUser() *UserImport { return v.UpsertUser }
 
-// GetUpsertAccessControl returns ImportCommand.UpsertAccessControl, and is useful for accessing the field via an interface.
-func (v *ImportCommand) GetUpsertAccessControl() *AccessControlImport { return v.UpsertAccessControl }
-
-// GetUpsertAccessControlWhatItem returns ImportCommand.UpsertAccessControlWhatItem, and is useful for accessing the field via an interface.
-func (v *ImportCommand) GetUpsertAccessControlWhatItem() *WhatItemImport {
-	return v.UpsertAccessControlWhatItem
-}
-
-// GetUpsertAccessControlFeedback returns ImportCommand.UpsertAccessControlFeedback, and is useful for accessing the field via an interface.
-func (v *ImportCommand) GetUpsertAccessControlFeedback() *AccessControlFeedbackImport {
-	return v.UpsertAccessControlFeedback
-}
-
-// GetQueryHistory returns ImportCommand.QueryHistory, and is useful for accessing the field via an interface.
-func (v *ImportCommand) GetQueryHistory() *QueryStatementImport { return v.QueryHistory }
-
-// GetAccessControlWhatFinished returns ImportCommand.AccessControlWhatFinished, and is useful for accessing the field via an interface.
-func (v *ImportCommand) GetAccessControlWhatFinished() *string { return v.AccessControlWhatFinished }
-
 type ImportCommands struct {
-	FlowId   uuid.UUID       `json:"flowId"`
 	Commands []ImportCommand `json:"commands"`
+	FlowId   uuid.UUID       `json:"flowId"`
 }
-
-// GetFlowId returns ImportCommands.FlowId, and is useful for accessing the field via an interface.
-func (v *ImportCommands) GetFlowId() uuid.UUID { return v.FlowId }
 
 // GetCommands returns ImportCommands.Commands, and is useful for accessing the field via an interface.
 func (v *ImportCommands) GetCommands() []ImportCommand { return v.Commands }
+
+// GetFlowId returns ImportCommands.FlowId, and is useful for accessing the field via an interface.
+func (v *ImportCommands) GetFlowId() uuid.UUID { return v.FlowId }
 
 type ImportFlowOptions struct {
 	TagSourcesScope []string `json:"tagSourcesScope"`
@@ -22351,13 +22351,16 @@ func (v *JobDataSource) __premarshalJSON() (*__premarshalJobDataSource, error) {
 
 type JobInput struct {
 	DataSourceId *string    `json:"dataSourceId,omitempty"`
+	Errors       []string   `json:"errors"`
 	EventTime    time.Time  `json:"eventTime"`
 	Status       *JobStatus `json:"status,omitempty"`
-	Errors       []string   `json:"errors"`
 }
 
 // GetDataSourceId returns JobInput.DataSourceId, and is useful for accessing the field via an interface.
 func (v *JobInput) GetDataSourceId() *string { return v.DataSourceId }
+
+// GetErrors returns JobInput.Errors, and is useful for accessing the field via an interface.
+func (v *JobInput) GetErrors() []string { return v.Errors }
 
 // GetEventTime returns JobInput.EventTime, and is useful for accessing the field via an interface.
 func (v *JobInput) GetEventTime() time.Time { return v.EventTime }
@@ -22365,24 +22368,21 @@ func (v *JobInput) GetEventTime() time.Time { return v.EventTime }
 // GetStatus returns JobInput.Status, and is useful for accessing the field via an interface.
 func (v *JobInput) GetStatus() *JobStatus { return v.Status }
 
-// GetErrors returns JobInput.Errors, and is useful for accessing the field via an interface.
-func (v *JobInput) GetErrors() []string { return v.Errors }
-
 type JobStatus string
 
 const (
-	JobStatusStarted    JobStatus = "Started"
-	JobStatusInprogress JobStatus = "InProgress"
 	JobStatusCompleted  JobStatus = "Completed"
 	JobStatusFailed     JobStatus = "Failed"
+	JobStatusInprogress JobStatus = "InProgress"
+	JobStatusStarted    JobStatus = "Started"
 	JobStatusTimedout   JobStatus = "TimedOut"
 )
 
 var AllJobStatus = []JobStatus{
-	JobStatusStarted,
-	JobStatusInprogress,
 	JobStatusCompleted,
 	JobStatusFailed,
+	JobStatusInprogress,
+	JobStatusStarted,
 	JobStatusTimedout,
 }
 
@@ -28976,24 +28976,24 @@ func (v *MaskType) GetDescription() string { return v.Description }
 func (v *MaskType) GetDataTypes() []string { return v.DataTypes }
 
 type MaskTypeInput struct {
+	DataTypes   []string `json:"dataTypes"`
+	Description string   `json:"description"`
 	DisplayName string   `json:"displayName"`
 	ExternalId  string   `json:"externalId"`
-	Description string   `json:"description"`
-	DataTypes   []string `json:"dataTypes"`
 	Precedence  *int     `json:"precedence,omitempty"`
 }
+
+// GetDataTypes returns MaskTypeInput.DataTypes, and is useful for accessing the field via an interface.
+func (v *MaskTypeInput) GetDataTypes() []string { return v.DataTypes }
+
+// GetDescription returns MaskTypeInput.Description, and is useful for accessing the field via an interface.
+func (v *MaskTypeInput) GetDescription() string { return v.Description }
 
 // GetDisplayName returns MaskTypeInput.DisplayName, and is useful for accessing the field via an interface.
 func (v *MaskTypeInput) GetDisplayName() string { return v.DisplayName }
 
 // GetExternalId returns MaskTypeInput.ExternalId, and is useful for accessing the field via an interface.
 func (v *MaskTypeInput) GetExternalId() string { return v.ExternalId }
-
-// GetDescription returns MaskTypeInput.Description, and is useful for accessing the field via an interface.
-func (v *MaskTypeInput) GetDescription() string { return v.Description }
-
-// GetDataTypes returns MaskTypeInput.DataTypes, and is useful for accessing the field via an interface.
-func (v *MaskTypeInput) GetDataTypes() []string { return v.DataTypes }
 
 // GetPrecedence returns MaskTypeInput.Precedence, and is useful for accessing the field via an interface.
 func (v *MaskTypeInput) GetPrecedence() *int { return v.Precedence }
@@ -29016,14 +29016,14 @@ func (v *MaskingMetadata) GetDefaultMaskExternalName() *string { return v.Defaul
 func (v *MaskingMetadata) GetMaskTypes() []MaskingMetadataMaskTypesMaskType { return v.MaskTypes }
 
 type MaskingMetadataInput struct {
-	MaskTypes               []MaskTypeInput `json:"maskTypes"`
+	ApplicableTypes         []string        `json:"applicableTypes"`
 	DefaultMaskExternalName *string         `json:"defaultMaskExternalName,omitempty"`
 	MaskOverridePermissions []string        `json:"maskOverridePermissions"`
-	ApplicableTypes         []string        `json:"applicableTypes"`
+	MaskTypes               []MaskTypeInput `json:"maskTypes"`
 }
 
-// GetMaskTypes returns MaskingMetadataInput.MaskTypes, and is useful for accessing the field via an interface.
-func (v *MaskingMetadataInput) GetMaskTypes() []MaskTypeInput { return v.MaskTypes }
+// GetApplicableTypes returns MaskingMetadataInput.ApplicableTypes, and is useful for accessing the field via an interface.
+func (v *MaskingMetadataInput) GetApplicableTypes() []string { return v.ApplicableTypes }
 
 // GetDefaultMaskExternalName returns MaskingMetadataInput.DefaultMaskExternalName, and is useful for accessing the field via an interface.
 func (v *MaskingMetadataInput) GetDefaultMaskExternalName() *string { return v.DefaultMaskExternalName }
@@ -29033,8 +29033,8 @@ func (v *MaskingMetadataInput) GetMaskOverridePermissions() []string {
 	return v.MaskOverridePermissions
 }
 
-// GetApplicableTypes returns MaskingMetadataInput.ApplicableTypes, and is useful for accessing the field via an interface.
-func (v *MaskingMetadataInput) GetApplicableTypes() []string { return v.ApplicableTypes }
+// GetMaskTypes returns MaskingMetadataInput.MaskTypes, and is useful for accessing the field via an interface.
+func (v *MaskingMetadataInput) GetMaskTypes() []MaskTypeInput { return v.MaskTypes }
 
 // MaskingMetadataMaskTypesMaskType includes the requested fields of the GraphQL type MaskType.
 // The GraphQL type's documentation follows.
@@ -29692,57 +29692,60 @@ func (v *PageInfo) GetStartCursor() *string { return v.StartCursor }
 type ParameterDataType string
 
 const (
-	ParameterDataTypeString         ParameterDataType = "String"
-	ParameterDataTypeInteger        ParameterDataType = "Integer"
-	ParameterDataTypeFloat          ParameterDataType = "Float"
 	ParameterDataTypeBoolean        ParameterDataType = "Boolean"
-	ParameterDataTypeTimestamp      ParameterDataType = "Timestamp"
-	ParameterDataTypeStringarray    ParameterDataType = "StringArray"
-	ParameterDataTypeIntegerarray   ParameterDataType = "IntegerArray"
-	ParameterDataTypeFloatarray     ParameterDataType = "FloatArray"
 	ParameterDataTypeBooleanarray   ParameterDataType = "BooleanArray"
+	ParameterDataTypeFloat          ParameterDataType = "Float"
+	ParameterDataTypeFloatarray     ParameterDataType = "FloatArray"
+	ParameterDataTypeInteger        ParameterDataType = "Integer"
+	ParameterDataTypeIntegerarray   ParameterDataType = "IntegerArray"
+	ParameterDataTypeString         ParameterDataType = "String"
+	ParameterDataTypeStringarray    ParameterDataType = "StringArray"
+	ParameterDataTypeTimestamp      ParameterDataType = "Timestamp"
 	ParameterDataTypeTimestamparray ParameterDataType = "TimestampArray"
 )
 
 var AllParameterDataType = []ParameterDataType{
-	ParameterDataTypeString,
-	ParameterDataTypeInteger,
-	ParameterDataTypeFloat,
 	ParameterDataTypeBoolean,
-	ParameterDataTypeTimestamp,
-	ParameterDataTypeStringarray,
-	ParameterDataTypeIntegerarray,
-	ParameterDataTypeFloatarray,
 	ParameterDataTypeBooleanarray,
+	ParameterDataTypeFloat,
+	ParameterDataTypeFloatarray,
+	ParameterDataTypeInteger,
+	ParameterDataTypeIntegerarray,
+	ParameterDataTypeString,
+	ParameterDataTypeStringarray,
+	ParameterDataTypeTimestamp,
 	ParameterDataTypeTimestamparray,
 }
 
 type ParameterDefinitionInput struct {
-	Type         ParameterType              `json:"type"`
-	Key          string                     `json:"key"`
-	DisplayName  string                     `json:"displayName"`
-	Description  *string                    `json:"description,omitempty"`
 	DataType     *ParameterDataType         `json:"dataType,omitempty"`
+	DefaultValue *interface{}               `json:"defaultValue,omitempty"`
+	Description  *string                    `json:"description,omitempty"`
+	DisplayName  string                     `json:"displayName"`
+	Key          string                     `json:"key"`
+	Parameters   []ParameterDefinitionInput `json:"parameters"`
 	Required     *bool                      `json:"required,omitempty"`
 	Source       *ParameterSource           `json:"source,omitempty"`
-	DefaultValue *interface{}               `json:"defaultValue,omitempty"`
-	Parameters   []ParameterDefinitionInput `json:"parameters"`
+	Type         ParameterType              `json:"type"`
 }
 
-// GetType returns ParameterDefinitionInput.Type, and is useful for accessing the field via an interface.
-func (v *ParameterDefinitionInput) GetType() ParameterType { return v.Type }
+// GetDataType returns ParameterDefinitionInput.DataType, and is useful for accessing the field via an interface.
+func (v *ParameterDefinitionInput) GetDataType() *ParameterDataType { return v.DataType }
 
-// GetKey returns ParameterDefinitionInput.Key, and is useful for accessing the field via an interface.
-func (v *ParameterDefinitionInput) GetKey() string { return v.Key }
-
-// GetDisplayName returns ParameterDefinitionInput.DisplayName, and is useful for accessing the field via an interface.
-func (v *ParameterDefinitionInput) GetDisplayName() string { return v.DisplayName }
+// GetDefaultValue returns ParameterDefinitionInput.DefaultValue, and is useful for accessing the field via an interface.
+func (v *ParameterDefinitionInput) GetDefaultValue() *interface{} { return v.DefaultValue }
 
 // GetDescription returns ParameterDefinitionInput.Description, and is useful for accessing the field via an interface.
 func (v *ParameterDefinitionInput) GetDescription() *string { return v.Description }
 
-// GetDataType returns ParameterDefinitionInput.DataType, and is useful for accessing the field via an interface.
-func (v *ParameterDefinitionInput) GetDataType() *ParameterDataType { return v.DataType }
+// GetDisplayName returns ParameterDefinitionInput.DisplayName, and is useful for accessing the field via an interface.
+func (v *ParameterDefinitionInput) GetDisplayName() string { return v.DisplayName }
+
+// GetKey returns ParameterDefinitionInput.Key, and is useful for accessing the field via an interface.
+func (v *ParameterDefinitionInput) GetKey() string { return v.Key }
+
+// GetParameters returns ParameterDefinitionInput.Parameters, and is useful for accessing the field via an interface.
+func (v *ParameterDefinitionInput) GetParameters() []ParameterDefinitionInput { return v.Parameters }
 
 // GetRequired returns ParameterDefinitionInput.Required, and is useful for accessing the field via an interface.
 func (v *ParameterDefinitionInput) GetRequired() *bool { return v.Required }
@@ -29750,11 +29753,8 @@ func (v *ParameterDefinitionInput) GetRequired() *bool { return v.Required }
 // GetSource returns ParameterDefinitionInput.Source, and is useful for accessing the field via an interface.
 func (v *ParameterDefinitionInput) GetSource() *ParameterSource { return v.Source }
 
-// GetDefaultValue returns ParameterDefinitionInput.DefaultValue, and is useful for accessing the field via an interface.
-func (v *ParameterDefinitionInput) GetDefaultValue() *interface{} { return v.DefaultValue }
-
-// GetParameters returns ParameterDefinitionInput.Parameters, and is useful for accessing the field via an interface.
-func (v *ParameterDefinitionInput) GetParameters() []ParameterDefinitionInput { return v.Parameters }
+// GetType returns ParameterDefinitionInput.Type, and is useful for accessing the field via an interface.
+func (v *ParameterDefinitionInput) GetType() ParameterType { return v.Type }
 
 type ParameterSource string
 
@@ -29775,17 +29775,17 @@ var AllParameterSource = []ParameterSource{
 type ParameterType string
 
 const (
-	ParameterTypeParameter ParameterType = "Parameter"
-	ParameterTypeObject    ParameterType = "Object"
 	ParameterTypeAdvanced  ParameterType = "Advanced"
 	ParameterTypeArray     ParameterType = "Array"
+	ParameterTypeObject    ParameterType = "Object"
+	ParameterTypeParameter ParameterType = "Parameter"
 )
 
 var AllParameterType = []ParameterType{
-	ParameterTypeParameter,
-	ParameterTypeObject,
 	ParameterTypeAdvanced,
 	ParameterTypeArray,
+	ParameterTypeObject,
+	ParameterTypeParameter,
 }
 
 // PermissionDeniedError includes the GraphQL fields of PermissionDeniedError requested by the fragment PermissionDeniedError.
@@ -29800,57 +29800,57 @@ type PermissionDeniedError struct {
 func (v *PermissionDeniedError) GetMessage() string { return v.Message }
 
 type QueryStatementImport struct {
-	ExternalId          string                      `json:"externalId"`
 	AccessedDataObjects []StatementImportDataObject `json:"accessedDataObjects"`
-	Query               string                      `json:"query"`
-	Success             bool                        `json:"success"`
-	Status              *string                     `json:"status,omitempty"`
-	User                *string                     `json:"user,omitempty"`
-	Role                *string                     `json:"role,omitempty"`
-	StartTime           time.Time                   `json:"startTime"`
-	EndTime             *time.Time                  `json:"endTime,omitempty"`
 	Bytes               *int                        `json:"bytes,omitempty"`
-	Rows                *int                        `json:"rows,omitempty"`
 	Credits             *float64                    `json:"credits,omitempty"`
+	EndTime             *time.Time                  `json:"endTime,omitempty"`
+	ExternalId          string                      `json:"externalId"`
+	Query               string                      `json:"query"`
+	Role                *string                     `json:"role,omitempty"`
+	Rows                *int                        `json:"rows,omitempty"`
+	StartTime           time.Time                   `json:"startTime"`
+	Status              *string                     `json:"status,omitempty"`
+	Success             bool                        `json:"success"`
+	User                *string                     `json:"user,omitempty"`
 }
-
-// GetExternalId returns QueryStatementImport.ExternalId, and is useful for accessing the field via an interface.
-func (v *QueryStatementImport) GetExternalId() string { return v.ExternalId }
 
 // GetAccessedDataObjects returns QueryStatementImport.AccessedDataObjects, and is useful for accessing the field via an interface.
 func (v *QueryStatementImport) GetAccessedDataObjects() []StatementImportDataObject {
 	return v.AccessedDataObjects
 }
 
-// GetQuery returns QueryStatementImport.Query, and is useful for accessing the field via an interface.
-func (v *QueryStatementImport) GetQuery() string { return v.Query }
+// GetBytes returns QueryStatementImport.Bytes, and is useful for accessing the field via an interface.
+func (v *QueryStatementImport) GetBytes() *int { return v.Bytes }
 
-// GetSuccess returns QueryStatementImport.Success, and is useful for accessing the field via an interface.
-func (v *QueryStatementImport) GetSuccess() bool { return v.Success }
-
-// GetStatus returns QueryStatementImport.Status, and is useful for accessing the field via an interface.
-func (v *QueryStatementImport) GetStatus() *string { return v.Status }
-
-// GetUser returns QueryStatementImport.User, and is useful for accessing the field via an interface.
-func (v *QueryStatementImport) GetUser() *string { return v.User }
-
-// GetRole returns QueryStatementImport.Role, and is useful for accessing the field via an interface.
-func (v *QueryStatementImport) GetRole() *string { return v.Role }
-
-// GetStartTime returns QueryStatementImport.StartTime, and is useful for accessing the field via an interface.
-func (v *QueryStatementImport) GetStartTime() time.Time { return v.StartTime }
+// GetCredits returns QueryStatementImport.Credits, and is useful for accessing the field via an interface.
+func (v *QueryStatementImport) GetCredits() *float64 { return v.Credits }
 
 // GetEndTime returns QueryStatementImport.EndTime, and is useful for accessing the field via an interface.
 func (v *QueryStatementImport) GetEndTime() *time.Time { return v.EndTime }
 
-// GetBytes returns QueryStatementImport.Bytes, and is useful for accessing the field via an interface.
-func (v *QueryStatementImport) GetBytes() *int { return v.Bytes }
+// GetExternalId returns QueryStatementImport.ExternalId, and is useful for accessing the field via an interface.
+func (v *QueryStatementImport) GetExternalId() string { return v.ExternalId }
+
+// GetQuery returns QueryStatementImport.Query, and is useful for accessing the field via an interface.
+func (v *QueryStatementImport) GetQuery() string { return v.Query }
+
+// GetRole returns QueryStatementImport.Role, and is useful for accessing the field via an interface.
+func (v *QueryStatementImport) GetRole() *string { return v.Role }
 
 // GetRows returns QueryStatementImport.Rows, and is useful for accessing the field via an interface.
 func (v *QueryStatementImport) GetRows() *int { return v.Rows }
 
-// GetCredits returns QueryStatementImport.Credits, and is useful for accessing the field via an interface.
-func (v *QueryStatementImport) GetCredits() *float64 { return v.Credits }
+// GetStartTime returns QueryStatementImport.StartTime, and is useful for accessing the field via an interface.
+func (v *QueryStatementImport) GetStartTime() time.Time { return v.StartTime }
+
+// GetStatus returns QueryStatementImport.Status, and is useful for accessing the field via an interface.
+func (v *QueryStatementImport) GetStatus() *string { return v.Status }
+
+// GetSuccess returns QueryStatementImport.Success, and is useful for accessing the field via an interface.
+func (v *QueryStatementImport) GetSuccess() bool { return v.Success }
+
+// GetUser returns QueryStatementImport.User, and is useful for accessing the field via an interface.
+func (v *QueryStatementImport) GetUser() *string { return v.User }
 
 // Role includes the GraphQL fields of Role requested by the fragment Role.
 // The GraphQL type's documentation follows.
@@ -30540,19 +30540,31 @@ func (v *RoleAssignmentConnectionResultRoleAssignmentConnection) __premarshalJSO
 
 // Describes the filter options for listing role assignments.
 type RoleAssignmentFilterInput struct {
+	ExcludeDelegated   *bool `json:"excludeDelegated,omitempty"`
+	ExcludeDelegations *bool `json:"excludeDelegations,omitempty"`
+	// Also included inherited assignments (from ancestor resources). By default (if not set), this is true.
+	Inherited *bool `json:"inherited,omitempty"`
+	// If true, only the assignments on the ancestor resources are returned. By default (if not set), this is false.
+	InheritedOnly *bool `json:"inheritedOnly,omitempty"`
 	// Filter on assignments on a specific resource.
 	Resource *string `json:"resource,omitempty"`
 	// Filter assignments for a specific role.
 	Role *string `json:"role,omitempty"`
 	// Filter assignments to a specific user.
 	User *string `json:"user,omitempty"`
-	// Also included inherited assignments (from ancestor resources). By default (if not set), this is true.
-	Inherited *bool `json:"inherited,omitempty"`
-	// If true, only the assignments on the ancestor resources are returned. By default (if not set), this is false.
-	InheritedOnly      *bool `json:"inheritedOnly,omitempty"`
-	ExcludeDelegations *bool `json:"excludeDelegations,omitempty"`
-	ExcludeDelegated   *bool `json:"excludeDelegated,omitempty"`
 }
+
+// GetExcludeDelegated returns RoleAssignmentFilterInput.ExcludeDelegated, and is useful for accessing the field via an interface.
+func (v *RoleAssignmentFilterInput) GetExcludeDelegated() *bool { return v.ExcludeDelegated }
+
+// GetExcludeDelegations returns RoleAssignmentFilterInput.ExcludeDelegations, and is useful for accessing the field via an interface.
+func (v *RoleAssignmentFilterInput) GetExcludeDelegations() *bool { return v.ExcludeDelegations }
+
+// GetInherited returns RoleAssignmentFilterInput.Inherited, and is useful for accessing the field via an interface.
+func (v *RoleAssignmentFilterInput) GetInherited() *bool { return v.Inherited }
+
+// GetInheritedOnly returns RoleAssignmentFilterInput.InheritedOnly, and is useful for accessing the field via an interface.
+func (v *RoleAssignmentFilterInput) GetInheritedOnly() *bool { return v.InheritedOnly }
 
 // GetResource returns RoleAssignmentFilterInput.Resource, and is useful for accessing the field via an interface.
 func (v *RoleAssignmentFilterInput) GetResource() *string { return v.Resource }
@@ -30562,18 +30574,6 @@ func (v *RoleAssignmentFilterInput) GetRole() *string { return v.Role }
 
 // GetUser returns RoleAssignmentFilterInput.User, and is useful for accessing the field via an interface.
 func (v *RoleAssignmentFilterInput) GetUser() *string { return v.User }
-
-// GetInherited returns RoleAssignmentFilterInput.Inherited, and is useful for accessing the field via an interface.
-func (v *RoleAssignmentFilterInput) GetInherited() *bool { return v.Inherited }
-
-// GetInheritedOnly returns RoleAssignmentFilterInput.InheritedOnly, and is useful for accessing the field via an interface.
-func (v *RoleAssignmentFilterInput) GetInheritedOnly() *bool { return v.InheritedOnly }
-
-// GetExcludeDelegations returns RoleAssignmentFilterInput.ExcludeDelegations, and is useful for accessing the field via an interface.
-func (v *RoleAssignmentFilterInput) GetExcludeDelegations() *bool { return v.ExcludeDelegations }
-
-// GetExcludeDelegated returns RoleAssignmentFilterInput.ExcludeDelegated, and is useful for accessing the field via an interface.
-func (v *RoleAssignmentFilterInput) GetExcludeDelegated() *bool { return v.ExcludeDelegated }
 
 // RoleAssignmentOn includes the requested fields of the GraphQL interface RoleAssignmentOn.
 //
@@ -30837,18 +30837,18 @@ func (v *RoleAssignmentOnPermissionDeniedError) GetTypename() *string { return v
 // Sorting options for list role assignments.
 type RoleAssignmentOrderInput struct {
 	ResourceName *Sort `json:"resourceName,omitempty"`
-	UserName     *Sort `json:"userName,omitempty"`
 	RoleName     *Sort `json:"roleName,omitempty"`
+	UserName     *Sort `json:"userName,omitempty"`
 }
 
 // GetResourceName returns RoleAssignmentOrderInput.ResourceName, and is useful for accessing the field via an interface.
 func (v *RoleAssignmentOrderInput) GetResourceName() *Sort { return v.ResourceName }
 
-// GetUserName returns RoleAssignmentOrderInput.UserName, and is useful for accessing the field via an interface.
-func (v *RoleAssignmentOrderInput) GetUserName() *Sort { return v.UserName }
-
 // GetRoleName returns RoleAssignmentOrderInput.RoleName, and is useful for accessing the field via an interface.
 func (v *RoleAssignmentOrderInput) GetRoleName() *Sort { return v.RoleName }
+
+// GetUserName returns RoleAssignmentOrderInput.UserName, and is useful for accessing the field via an interface.
+func (v *RoleAssignmentOrderInput) GetUserName() *Sort { return v.UserName }
 
 // RoleAssignmentRole includes the requested fields of the GraphQL type Role.
 // The GraphQL type's documentation follows.
@@ -31021,17 +31021,24 @@ func (v *RoleAssignmentToUser) GetTypename() *string { return v.Typename }
 func (v *RoleAssignmentToUser) GetId() string { return v.Id }
 
 type RootParameterDefinitionInput struct {
-	Global               []ParameterDefinitionInput `json:"global"`
+	AccessFromTargetSync []ParameterDefinitionInput `json:"accessFromTargetSync"`
+	AccessToTargetSync   []ParameterDefinitionInput `json:"accessToTargetSync"`
 	Connection           []ParameterDefinitionInput `json:"connection"`
 	DataObjectSync       []ParameterDefinitionInput `json:"dataObjectSync"`
+	Global               []ParameterDefinitionInput `json:"global"`
 	IdentitySync         []ParameterDefinitionInput `json:"identitySync"`
-	AccessToTargetSync   []ParameterDefinitionInput `json:"accessToTargetSync"`
-	AccessFromTargetSync []ParameterDefinitionInput `json:"accessFromTargetSync"`
 	UsageSync            []ParameterDefinitionInput `json:"usageSync"`
 }
 
-// GetGlobal returns RootParameterDefinitionInput.Global, and is useful for accessing the field via an interface.
-func (v *RootParameterDefinitionInput) GetGlobal() []ParameterDefinitionInput { return v.Global }
+// GetAccessFromTargetSync returns RootParameterDefinitionInput.AccessFromTargetSync, and is useful for accessing the field via an interface.
+func (v *RootParameterDefinitionInput) GetAccessFromTargetSync() []ParameterDefinitionInput {
+	return v.AccessFromTargetSync
+}
+
+// GetAccessToTargetSync returns RootParameterDefinitionInput.AccessToTargetSync, and is useful for accessing the field via an interface.
+func (v *RootParameterDefinitionInput) GetAccessToTargetSync() []ParameterDefinitionInput {
+	return v.AccessToTargetSync
+}
 
 // GetConnection returns RootParameterDefinitionInput.Connection, and is useful for accessing the field via an interface.
 func (v *RootParameterDefinitionInput) GetConnection() []ParameterDefinitionInput {
@@ -31043,19 +31050,12 @@ func (v *RootParameterDefinitionInput) GetDataObjectSync() []ParameterDefinition
 	return v.DataObjectSync
 }
 
+// GetGlobal returns RootParameterDefinitionInput.Global, and is useful for accessing the field via an interface.
+func (v *RootParameterDefinitionInput) GetGlobal() []ParameterDefinitionInput { return v.Global }
+
 // GetIdentitySync returns RootParameterDefinitionInput.IdentitySync, and is useful for accessing the field via an interface.
 func (v *RootParameterDefinitionInput) GetIdentitySync() []ParameterDefinitionInput {
 	return v.IdentitySync
-}
-
-// GetAccessToTargetSync returns RootParameterDefinitionInput.AccessToTargetSync, and is useful for accessing the field via an interface.
-func (v *RootParameterDefinitionInput) GetAccessToTargetSync() []ParameterDefinitionInput {
-	return v.AccessToTargetSync
-}
-
-// GetAccessFromTargetSync returns RootParameterDefinitionInput.AccessFromTargetSync, and is useful for accessing the field via an interface.
-func (v *RootParameterDefinitionInput) GetAccessFromTargetSync() []ParameterDefinitionInput {
-	return v.AccessFromTargetSync
 }
 
 // GetUsageSync returns RootParameterDefinitionInput.UsageSync, and is useful for accessing the field via an interface.
@@ -31610,22 +31610,22 @@ func (v *StartExportFlow) GetStartTime() time.Time { return v.StartTime }
 
 type StartImportFlowInput struct {
 	JobId     string             `json:"jobId"`
-	TaskId    string             `json:"taskId"`
-	SubtaskId string             `json:"subtaskId"`
 	Options   *ImportFlowOptions `json:"options,omitempty"`
+	SubtaskId string             `json:"subtaskId"`
+	TaskId    string             `json:"taskId"`
 }
 
 // GetJobId returns StartImportFlowInput.JobId, and is useful for accessing the field via an interface.
 func (v *StartImportFlowInput) GetJobId() string { return v.JobId }
 
-// GetTaskId returns StartImportFlowInput.TaskId, and is useful for accessing the field via an interface.
-func (v *StartImportFlowInput) GetTaskId() string { return v.TaskId }
+// GetOptions returns StartImportFlowInput.Options, and is useful for accessing the field via an interface.
+func (v *StartImportFlowInput) GetOptions() *ImportFlowOptions { return v.Options }
 
 // GetSubtaskId returns StartImportFlowInput.SubtaskId, and is useful for accessing the field via an interface.
 func (v *StartImportFlowInput) GetSubtaskId() string { return v.SubtaskId }
 
-// GetOptions returns StartImportFlowInput.Options, and is useful for accessing the field via an interface.
-func (v *StartImportFlowInput) GetOptions() *ImportFlowOptions { return v.Options }
+// GetTaskId returns StartImportFlowInput.TaskId, and is useful for accessing the field via an interface.
+func (v *StartImportFlowInput) GetTaskId() string { return v.TaskId }
 
 // StartImportFlowResponse is returned by StartImportFlow on success.
 type StartImportFlowResponse struct {
@@ -32150,16 +32150,16 @@ func __marshalStartImportFlowStartImportFlowSubtaskReturnResult(v *StartImportFl
 }
 
 type StatementImportDataObject struct {
-	GlobalPermission *ActionType `json:"globalPermission,omitempty"`
 	FullName         string      `json:"fullName"`
+	GlobalPermission *ActionType `json:"globalPermission,omitempty"`
 	Type             *string     `json:"type,omitempty"`
 }
 
-// GetGlobalPermission returns StatementImportDataObject.GlobalPermission, and is useful for accessing the field via an interface.
-func (v *StatementImportDataObject) GetGlobalPermission() *ActionType { return v.GlobalPermission }
-
 // GetFullName returns StatementImportDataObject.FullName, and is useful for accessing the field via an interface.
 func (v *StatementImportDataObject) GetFullName() string { return v.FullName }
+
+// GetGlobalPermission returns StatementImportDataObject.GlobalPermission, and is useful for accessing the field via an interface.
+func (v *StatementImportDataObject) GetGlobalPermission() *ActionType { return v.GlobalPermission }
 
 // GetType returns StatementImportDataObject.Type, and is useful for accessing the field via an interface.
 func (v *StatementImportDataObject) GetType() *string { return v.Type }
@@ -32679,14 +32679,20 @@ func (v *Subtask) GetFlowCommandsUpdated() int { return v.FlowCommandsUpdated }
 func (v *Subtask) GetFlowCommandsRemoved() int { return v.FlowCommandsRemoved }
 
 type SubtaskInput struct {
+	DataSourceId *string       `json:"dataSourceId,omitempty"`
+	EventTime    time.Time     `json:"eventTime"`
 	JobId        string        `json:"jobId"`
 	JobType      string        `json:"jobType"`
-	SubtaskId    string        `json:"subtaskId"`
-	DataSourceId *string       `json:"dataSourceId,omitempty"`
-	Status       SubtaskStatus `json:"status"`
-	EventTime    time.Time     `json:"eventTime"`
 	ReceivedDate *int          `json:"receivedDate,omitempty"`
+	Status       SubtaskStatus `json:"status"`
+	SubtaskId    string        `json:"subtaskId"`
 }
+
+// GetDataSourceId returns SubtaskInput.DataSourceId, and is useful for accessing the field via an interface.
+func (v *SubtaskInput) GetDataSourceId() *string { return v.DataSourceId }
+
+// GetEventTime returns SubtaskInput.EventTime, and is useful for accessing the field via an interface.
+func (v *SubtaskInput) GetEventTime() time.Time { return v.EventTime }
 
 // GetJobId returns SubtaskInput.JobId, and is useful for accessing the field via an interface.
 func (v *SubtaskInput) GetJobId() string { return v.JobId }
@@ -32694,40 +32700,34 @@ func (v *SubtaskInput) GetJobId() string { return v.JobId }
 // GetJobType returns SubtaskInput.JobType, and is useful for accessing the field via an interface.
 func (v *SubtaskInput) GetJobType() string { return v.JobType }
 
-// GetSubtaskId returns SubtaskInput.SubtaskId, and is useful for accessing the field via an interface.
-func (v *SubtaskInput) GetSubtaskId() string { return v.SubtaskId }
-
-// GetDataSourceId returns SubtaskInput.DataSourceId, and is useful for accessing the field via an interface.
-func (v *SubtaskInput) GetDataSourceId() *string { return v.DataSourceId }
+// GetReceivedDate returns SubtaskInput.ReceivedDate, and is useful for accessing the field via an interface.
+func (v *SubtaskInput) GetReceivedDate() *int { return v.ReceivedDate }
 
 // GetStatus returns SubtaskInput.Status, and is useful for accessing the field via an interface.
 func (v *SubtaskInput) GetStatus() SubtaskStatus { return v.Status }
 
-// GetEventTime returns SubtaskInput.EventTime, and is useful for accessing the field via an interface.
-func (v *SubtaskInput) GetEventTime() time.Time { return v.EventTime }
-
-// GetReceivedDate returns SubtaskInput.ReceivedDate, and is useful for accessing the field via an interface.
-func (v *SubtaskInput) GetReceivedDate() *int { return v.ReceivedDate }
+// GetSubtaskId returns SubtaskInput.SubtaskId, and is useful for accessing the field via an interface.
+func (v *SubtaskInput) GetSubtaskId() string { return v.SubtaskId }
 
 type SubtaskStatus string
 
 const (
-	SubtaskStatusStarted      SubtaskStatus = "Started"
-	SubtaskStatusQueued       SubtaskStatus = "Queued"
-	SubtaskStatusDataretrieve SubtaskStatus = "DataRetrieve"
-	SubtaskStatusInprogress   SubtaskStatus = "InProgress"
 	SubtaskStatusCompleted    SubtaskStatus = "Completed"
+	SubtaskStatusDataretrieve SubtaskStatus = "DataRetrieve"
 	SubtaskStatusFailed       SubtaskStatus = "Failed"
+	SubtaskStatusInprogress   SubtaskStatus = "InProgress"
+	SubtaskStatusQueued       SubtaskStatus = "Queued"
+	SubtaskStatusStarted      SubtaskStatus = "Started"
 	SubtaskStatusTimedout     SubtaskStatus = "TimedOut"
 )
 
 var AllSubtaskStatus = []SubtaskStatus{
-	SubtaskStatusStarted,
-	SubtaskStatusQueued,
-	SubtaskStatusDataretrieve,
-	SubtaskStatusInprogress,
 	SubtaskStatusCompleted,
+	SubtaskStatusDataretrieve,
 	SubtaskStatusFailed,
+	SubtaskStatusInprogress,
+	SubtaskStatusQueued,
+	SubtaskStatusStarted,
 	SubtaskStatusTimedout,
 }
 
@@ -34022,27 +34022,27 @@ func (v *SyncJobJobPermissionDeniedError) __premarshalJSON() (*__premarshalSyncJ
 type SyncStatus string
 
 const (
-	// This data source has not been synced yet.
-	SyncStatusNotconnected SyncStatus = "NotConnected"
 	// The sync process has failed.
 	SyncStatusFailed SyncStatus = "Failed"
-	// This data source hasn't been synced in a long time.
-	SyncStatusOutofdate SyncStatus = "OutOfDate"
 	// The sync process is currently running.
 	SyncStatusInprogress SyncStatus = "InProgress"
-	// The data source is fully synced.
-	SyncStatusSynced SyncStatus = "Synced"
+	// This data source has not been synced yet.
+	SyncStatusNotconnected SyncStatus = "NotConnected"
+	// This data source hasn't been synced in a long time.
+	SyncStatusOutofdate SyncStatus = "OutOfDate"
 	// There are access control changes made in the data source that have not been synced yet.
 	SyncStatusOutofsync SyncStatus = "OutOfSync"
+	// The data source is fully synced.
+	SyncStatusSynced SyncStatus = "Synced"
 )
 
 var AllSyncStatus = []SyncStatus{
-	SyncStatusNotconnected,
 	SyncStatusFailed,
-	SyncStatusOutofdate,
 	SyncStatusInprogress,
-	SyncStatusSynced,
+	SyncStatusNotconnected,
+	SyncStatusOutofdate,
 	SyncStatusOutofsync,
+	SyncStatusSynced,
 }
 
 // Specifies the filter options to filter lists of tags.
@@ -34061,18 +34061,18 @@ func (v *TagFilter) GetStringValue() *string { return v.StringValue }
 
 type TagImport struct {
 	Key    string `json:"key"`
-	Value  string `json:"value"`
 	Source string `json:"source"`
+	Value  string `json:"value"`
 }
 
 // GetKey returns TagImport.Key, and is useful for accessing the field via an interface.
 func (v *TagImport) GetKey() string { return v.Key }
 
-// GetValue returns TagImport.Value, and is useful for accessing the field via an interface.
-func (v *TagImport) GetValue() string { return v.Value }
-
 // GetSource returns TagImport.Source, and is useful for accessing the field via an interface.
 func (v *TagImport) GetSource() string { return v.Source }
+
+// GetValue returns TagImport.Value, and is useful for accessing the field via an interface.
+func (v *TagImport) GetValue() string { return v.Value }
 
 // Task includes the GraphQL fields of Task requested by the fragment Task.
 // The GraphQL type's documentation follows.
@@ -34658,15 +34658,24 @@ func (v *TaskConnectionResultTaskConnection) __premarshalJSON() (*__premarshalTa
 }
 
 type TaskEventInput struct {
+	DataSourceId *string           `json:"dataSourceId,omitempty"`
+	Errors       []string          `json:"errors"`
+	EventTime    time.Time         `json:"eventTime"`
 	JobId        string            `json:"jobId"`
 	JobType      string            `json:"jobType"`
-	DataSourceId *string           `json:"dataSourceId,omitempty"`
-	Status       TaskStatus        `json:"status"`
-	EventTime    time.Time         `json:"eventTime"`
-	Errors       []string          `json:"errors"`
-	Warnings     []string          `json:"warnings"`
 	Result       []TaskResultInput `json:"result"`
+	Status       TaskStatus        `json:"status"`
+	Warnings     []string          `json:"warnings"`
 }
+
+// GetDataSourceId returns TaskEventInput.DataSourceId, and is useful for accessing the field via an interface.
+func (v *TaskEventInput) GetDataSourceId() *string { return v.DataSourceId }
+
+// GetErrors returns TaskEventInput.Errors, and is useful for accessing the field via an interface.
+func (v *TaskEventInput) GetErrors() []string { return v.Errors }
+
+// GetEventTime returns TaskEventInput.EventTime, and is useful for accessing the field via an interface.
+func (v *TaskEventInput) GetEventTime() time.Time { return v.EventTime }
 
 // GetJobId returns TaskEventInput.JobId, and is useful for accessing the field via an interface.
 func (v *TaskEventInput) GetJobId() string { return v.JobId }
@@ -34674,23 +34683,14 @@ func (v *TaskEventInput) GetJobId() string { return v.JobId }
 // GetJobType returns TaskEventInput.JobType, and is useful for accessing the field via an interface.
 func (v *TaskEventInput) GetJobType() string { return v.JobType }
 
-// GetDataSourceId returns TaskEventInput.DataSourceId, and is useful for accessing the field via an interface.
-func (v *TaskEventInput) GetDataSourceId() *string { return v.DataSourceId }
+// GetResult returns TaskEventInput.Result, and is useful for accessing the field via an interface.
+func (v *TaskEventInput) GetResult() []TaskResultInput { return v.Result }
 
 // GetStatus returns TaskEventInput.Status, and is useful for accessing the field via an interface.
 func (v *TaskEventInput) GetStatus() TaskStatus { return v.Status }
 
-// GetEventTime returns TaskEventInput.EventTime, and is useful for accessing the field via an interface.
-func (v *TaskEventInput) GetEventTime() time.Time { return v.EventTime }
-
-// GetErrors returns TaskEventInput.Errors, and is useful for accessing the field via an interface.
-func (v *TaskEventInput) GetErrors() []string { return v.Errors }
-
 // GetWarnings returns TaskEventInput.Warnings, and is useful for accessing the field via an interface.
 func (v *TaskEventInput) GetWarnings() []string { return v.Warnings }
-
-// GetResult returns TaskEventInput.Result, and is useful for accessing the field via an interface.
-func (v *TaskEventInput) GetResult() []TaskResultInput { return v.Result }
 
 // TaskResult includes the requested fields of the GraphQL type TaskResult.
 // The GraphQL type's documentation follows.
@@ -34766,51 +34766,51 @@ func (v *TaskResult) __premarshalJSON() (*__premarshalTaskResult, error) {
 }
 
 type TaskResultInput struct {
-	ObjectType string `json:"objectType"`
 	Added      *int   `json:"added,omitempty"`
-	Updated    *int   `json:"updated,omitempty"`
-	Removed    *int   `json:"removed,omitempty"`
 	Failed     *int   `json:"failed,omitempty"`
+	ObjectType string `json:"objectType"`
+	Removed    *int   `json:"removed,omitempty"`
+	Updated    *int   `json:"updated,omitempty"`
 }
-
-// GetObjectType returns TaskResultInput.ObjectType, and is useful for accessing the field via an interface.
-func (v *TaskResultInput) GetObjectType() string { return v.ObjectType }
 
 // GetAdded returns TaskResultInput.Added, and is useful for accessing the field via an interface.
 func (v *TaskResultInput) GetAdded() *int { return v.Added }
 
-// GetUpdated returns TaskResultInput.Updated, and is useful for accessing the field via an interface.
-func (v *TaskResultInput) GetUpdated() *int { return v.Updated }
+// GetFailed returns TaskResultInput.Failed, and is useful for accessing the field via an interface.
+func (v *TaskResultInput) GetFailed() *int { return v.Failed }
+
+// GetObjectType returns TaskResultInput.ObjectType, and is useful for accessing the field via an interface.
+func (v *TaskResultInput) GetObjectType() string { return v.ObjectType }
 
 // GetRemoved returns TaskResultInput.Removed, and is useful for accessing the field via an interface.
 func (v *TaskResultInput) GetRemoved() *int { return v.Removed }
 
-// GetFailed returns TaskResultInput.Failed, and is useful for accessing the field via an interface.
-func (v *TaskResultInput) GetFailed() *int { return v.Failed }
+// GetUpdated returns TaskResultInput.Updated, and is useful for accessing the field via an interface.
+func (v *TaskResultInput) GetUpdated() *int { return v.Updated }
 
 type TaskStatus string
 
 const (
-	TaskStatusStarted        TaskStatus = "Started"
+	TaskStatusCompleted      TaskStatus = "Completed"
+	TaskStatusDataprocessing TaskStatus = "DataProcessing"
 	TaskStatusDataretrieve   TaskStatus = "DataRetrieve"
 	TaskStatusDataupload     TaskStatus = "DataUpload"
-	TaskStatusQueued         TaskStatus = "Queued"
-	TaskStatusDataprocessing TaskStatus = "DataProcessing"
-	TaskStatusCompleted      TaskStatus = "Completed"
 	TaskStatusFailed         TaskStatus = "Failed"
+	TaskStatusQueued         TaskStatus = "Queued"
 	TaskStatusSkipped        TaskStatus = "Skipped"
+	TaskStatusStarted        TaskStatus = "Started"
 	TaskStatusTimedout       TaskStatus = "TimedOut"
 )
 
 var AllTaskStatus = []TaskStatus{
-	TaskStatusStarted,
+	TaskStatusCompleted,
+	TaskStatusDataprocessing,
 	TaskStatusDataretrieve,
 	TaskStatusDataupload,
-	TaskStatusQueued,
-	TaskStatusDataprocessing,
-	TaskStatusCompleted,
 	TaskStatusFailed,
+	TaskStatusQueued,
 	TaskStatusSkipped,
+	TaskStatusStarted,
 	TaskStatusTimedout,
 }
 
@@ -39091,15 +39091,15 @@ func (v *UsageMetaInput) GetDefaultLevel() *string { return v.DefaultLevel }
 func (v *UsageMetaInput) GetLevels() []UsageMetaInputDetail { return v.Levels }
 
 type UsageMetaInputDetail struct {
-	Name            string   `json:"name"`
 	DataObjectTypes []string `json:"dataObjectTypes"`
+	Name            string   `json:"name"`
 }
-
-// GetName returns UsageMetaInputDetail.Name, and is useful for accessing the field via an interface.
-func (v *UsageMetaInputDetail) GetName() string { return v.Name }
 
 // GetDataObjectTypes returns UsageMetaInputDetail.DataObjectTypes, and is useful for accessing the field via an interface.
 func (v *UsageMetaInputDetail) GetDataObjectTypes() []string { return v.DataObjectTypes }
+
+// GetName returns UsageMetaInputDetail.Name, and is useful for accessing the field via an interface.
+func (v *UsageMetaInputDetail) GetName() string { return v.Name }
 
 // User includes the GraphQL fields of User requested by the fragment User.
 // The GraphQL type's documentation follows.
@@ -39129,58 +39129,58 @@ func (v *User) GetEmail() *string { return v.Email }
 func (v *User) GetType() UserType { return v.Type }
 
 type UserImport struct {
-	ExternalId string      `json:"externalId"`
-	Name       string      `json:"name"`
-	UserName   string      `json:"userName"`
 	Email      string      `json:"email"`
-	Tags       []TagImport `json:"tags"`
+	ExternalId string      `json:"externalId"`
 	IsMachine  bool        `json:"isMachine"`
+	Name       string      `json:"name"`
+	Tags       []TagImport `json:"tags"`
+	UserName   string      `json:"userName"`
 }
-
-// GetExternalId returns UserImport.ExternalId, and is useful for accessing the field via an interface.
-func (v *UserImport) GetExternalId() string { return v.ExternalId }
-
-// GetName returns UserImport.Name, and is useful for accessing the field via an interface.
-func (v *UserImport) GetName() string { return v.Name }
-
-// GetUserName returns UserImport.UserName, and is useful for accessing the field via an interface.
-func (v *UserImport) GetUserName() string { return v.UserName }
 
 // GetEmail returns UserImport.Email, and is useful for accessing the field via an interface.
 func (v *UserImport) GetEmail() string { return v.Email }
 
-// GetTags returns UserImport.Tags, and is useful for accessing the field via an interface.
-func (v *UserImport) GetTags() []TagImport { return v.Tags }
+// GetExternalId returns UserImport.ExternalId, and is useful for accessing the field via an interface.
+func (v *UserImport) GetExternalId() string { return v.ExternalId }
 
 // GetIsMachine returns UserImport.IsMachine, and is useful for accessing the field via an interface.
 func (v *UserImport) GetIsMachine() bool { return v.IsMachine }
 
+// GetName returns UserImport.Name, and is useful for accessing the field via an interface.
+func (v *UserImport) GetName() string { return v.Name }
+
+// GetTags returns UserImport.Tags, and is useful for accessing the field via an interface.
+func (v *UserImport) GetTags() []TagImport { return v.Tags }
+
+// GetUserName returns UserImport.UserName, and is useful for accessing the field via an interface.
+func (v *UserImport) GetUserName() string { return v.UserName }
+
 type UserInput struct {
-	Name            *string    `json:"name,omitempty"`
-	Email           *string    `json:"email,omitempty"`
-	Type            *UserType  `json:"type,omitempty"`
 	DelegateTo      *string    `json:"delegateTo,omitempty"`
-	DelegationStart *time.Time `json:"delegationStart,omitempty"`
 	DelegationEnd   *time.Time `json:"delegationEnd,omitempty"`
+	DelegationStart *time.Time `json:"delegationStart,omitempty"`
+	Email           *string    `json:"email,omitempty"`
+	Name            *string    `json:"name,omitempty"`
+	Type            *UserType  `json:"type,omitempty"`
 }
-
-// GetName returns UserInput.Name, and is useful for accessing the field via an interface.
-func (v *UserInput) GetName() *string { return v.Name }
-
-// GetEmail returns UserInput.Email, and is useful for accessing the field via an interface.
-func (v *UserInput) GetEmail() *string { return v.Email }
-
-// GetType returns UserInput.Type, and is useful for accessing the field via an interface.
-func (v *UserInput) GetType() *UserType { return v.Type }
 
 // GetDelegateTo returns UserInput.DelegateTo, and is useful for accessing the field via an interface.
 func (v *UserInput) GetDelegateTo() *string { return v.DelegateTo }
 
+// GetDelegationEnd returns UserInput.DelegationEnd, and is useful for accessing the field via an interface.
+func (v *UserInput) GetDelegationEnd() *time.Time { return v.DelegationEnd }
+
 // GetDelegationStart returns UserInput.DelegationStart, and is useful for accessing the field via an interface.
 func (v *UserInput) GetDelegationStart() *time.Time { return v.DelegationStart }
 
-// GetDelegationEnd returns UserInput.DelegationEnd, and is useful for accessing the field via an interface.
-func (v *UserInput) GetDelegationEnd() *time.Time { return v.DelegationEnd }
+// GetEmail returns UserInput.Email, and is useful for accessing the field via an interface.
+func (v *UserInput) GetEmail() *string { return v.Email }
+
+// GetName returns UserInput.Name, and is useful for accessing the field via an interface.
+func (v *UserInput) GetName() *string { return v.Name }
+
+// GetType returns UserInput.Type, and is useful for accessing the field via an interface.
+func (v *UserInput) GetType() *UserType { return v.Type }
 
 // The possible user types.
 type UserType string
@@ -39227,37 +39227,37 @@ func (v *WhatAbacRule) GetRuleJson() *string { return v.RuleJson }
 
 // Input object for creating and updating WHAT ABAC rules in an access control.
 type WhatAbacRuleInput struct {
-	// The optional ID of the ABAC rule to create or update. If not specified a new ID will be generated.
-	Id *string `json:"id,omitempty"`
 	// The data object types that will be matched by this ABAC rule.
 	DoTypes []string `json:"doTypes"`
-	// In case of a grant, the permissions that will be granted on the data objects matching the ABAC rule.
-	Permissions []string `json:"permissions"`
 	// In case of a grant, the global permissions that will be granted on the data objects matching the ABAC rule.
 	GlobalPermissions []string `json:"globalPermissions"`
-	// The list of data objects in which this ABAC rule will apply. Only descendants of these data objects will be considered.
-	Scope []string `json:"scope"`
+	// The optional ID of the ABAC rule to create or update. If not specified a new ID will be generated.
+	Id *string `json:"id,omitempty"`
+	// In case of a grant, the permissions that will be granted on the data objects matching the ABAC rule.
+	Permissions []string `json:"permissions"`
 	// The actual boolean expression to define which data objects to match.
 	Rule AbacComparisonExpressionInput `json:"rule"`
+	// The list of data objects in which this ABAC rule will apply. Only descendants of these data objects will be considered.
+	Scope []string `json:"scope"`
 }
-
-// GetId returns WhatAbacRuleInput.Id, and is useful for accessing the field via an interface.
-func (v *WhatAbacRuleInput) GetId() *string { return v.Id }
 
 // GetDoTypes returns WhatAbacRuleInput.DoTypes, and is useful for accessing the field via an interface.
 func (v *WhatAbacRuleInput) GetDoTypes() []string { return v.DoTypes }
 
-// GetPermissions returns WhatAbacRuleInput.Permissions, and is useful for accessing the field via an interface.
-func (v *WhatAbacRuleInput) GetPermissions() []string { return v.Permissions }
-
 // GetGlobalPermissions returns WhatAbacRuleInput.GlobalPermissions, and is useful for accessing the field via an interface.
 func (v *WhatAbacRuleInput) GetGlobalPermissions() []string { return v.GlobalPermissions }
 
-// GetScope returns WhatAbacRuleInput.Scope, and is useful for accessing the field via an interface.
-func (v *WhatAbacRuleInput) GetScope() []string { return v.Scope }
+// GetId returns WhatAbacRuleInput.Id, and is useful for accessing the field via an interface.
+func (v *WhatAbacRuleInput) GetId() *string { return v.Id }
+
+// GetPermissions returns WhatAbacRuleInput.Permissions, and is useful for accessing the field via an interface.
+func (v *WhatAbacRuleInput) GetPermissions() []string { return v.Permissions }
 
 // GetRule returns WhatAbacRuleInput.Rule, and is useful for accessing the field via an interface.
 func (v *WhatAbacRuleInput) GetRule() AbacComparisonExpressionInput { return v.Rule }
+
+// GetScope returns WhatAbacRuleInput.Scope, and is useful for accessing the field via an interface.
+func (v *WhatAbacRuleInput) GetScope() []string { return v.Scope }
 
 type WhatItemImport struct {
 	AccessControlExternalId string                    `json:"accessControlExternalId"`
@@ -39303,16 +39303,19 @@ func (v *WhoAbacRule) GetRuleJson() *string { return v.RuleJson }
 type WhoAbacRuleInput struct {
 	// The optional ID of the ABAC rule to create or update. If not specified a new ID will be generated.
 	Id *string `json:"id,omitempty"`
+	// In case `type=whoPromise`, this indicates for how long the promise will provide access when requested.
+	PromiseDuration *int64 `json:"promiseDuration,omitempty"`
 	// The actual boolean expression to define which users to match.
 	Rule AbacComparisonExpressionInput `json:"rule"`
 	// Defines if the users that are matched by this ABAC rule will get the access granted directly or as a promise (pre-approval).
 	Type AccessWhoItemType `json:"type"`
-	// In case `type=whoPromise`, this indicates for how long the promise will provide access when requested.
-	PromiseDuration *int64 `json:"promiseDuration,omitempty"`
 }
 
 // GetId returns WhoAbacRuleInput.Id, and is useful for accessing the field via an interface.
 func (v *WhoAbacRuleInput) GetId() *string { return v.Id }
+
+// GetPromiseDuration returns WhoAbacRuleInput.PromiseDuration, and is useful for accessing the field via an interface.
+func (v *WhoAbacRuleInput) GetPromiseDuration() *int64 { return v.PromiseDuration }
 
 // GetRule returns WhoAbacRuleInput.Rule, and is useful for accessing the field via an interface.
 func (v *WhoAbacRuleInput) GetRule() AbacComparisonExpressionInput { return v.Rule }
@@ -39320,17 +39323,11 @@ func (v *WhoAbacRuleInput) GetRule() AbacComparisonExpressionInput { return v.Ru
 // GetType returns WhoAbacRuleInput.Type, and is useful for accessing the field via an interface.
 func (v *WhoAbacRuleInput) GetType() AccessWhoItemType { return v.Type }
 
-// GetPromiseDuration returns WhoAbacRuleInput.PromiseDuration, and is useful for accessing the field via an interface.
-func (v *WhoAbacRuleInput) GetPromiseDuration() *int64 { return v.PromiseDuration }
-
 type WhoItemImport struct {
-	Users          []string `json:"users"`
 	AccessControls []string `json:"accessControls"`
 	Recipients     []string `json:"recipients"`
+	Users          []string `json:"users"`
 }
-
-// GetUsers returns WhoItemImport.Users, and is useful for accessing the field via an interface.
-func (v *WhoItemImport) GetUsers() []string { return v.Users }
 
 // GetAccessControls returns WhoItemImport.AccessControls, and is useful for accessing the field via an interface.
 func (v *WhoItemImport) GetAccessControls() []string { return v.AccessControls }
@@ -39338,26 +39335,26 @@ func (v *WhoItemImport) GetAccessControls() []string { return v.AccessControls }
 // GetRecipients returns WhoItemImport.Recipients, and is useful for accessing the field via an interface.
 func (v *WhoItemImport) GetRecipients() []string { return v.Recipients }
 
+// GetUsers returns WhoItemImport.Users, and is useful for accessing the field via an interface.
+func (v *WhoItemImport) GetUsers() []string { return v.Users }
+
 // Input object to represent a WHO item for the access control. Only one of `user`, `accessControl`, `dataSource` or `recipient` should be filled in, depending on the type of the WHO item.
 type WhoItemInput struct {
-	// The ID of the user for the WHO item.
-	User *string `json:"user,omitempty"`
 	// The ID of the access control for the WHO item.
 	AccessControl *string `json:"accessControl,omitempty"`
 	// The ID of the data source for the WHO item (for shares).
 	DataSource *string `json:"dataSource,omitempty"`
-	// The identifier of the recipient account (for shares).
-	Recipient *string `json:"recipient,omitempty"`
 	// The time at which this WHO item will expire.
 	ExpiresAt *time.Time `json:"expiresAt,omitempty"`
-	// Defines if the users that are matched by this ABAC rule will get the access granted directly or as a promise (pre-approval).
-	Type *AccessWhoItemType `json:"type,omitempty"`
 	// In case `type=whoPromise`, this indicates for how long the promise will provide access when requested.
 	PromiseDuration *int64 `json:"promiseDuration,omitempty"`
+	// The identifier of the recipient account (for shares).
+	Recipient *string `json:"recipient,omitempty"`
+	// Defines if the users that are matched by this ABAC rule will get the access granted directly or as a promise (pre-approval).
+	Type *AccessWhoItemType `json:"type,omitempty"`
+	// The ID of the user for the WHO item.
+	User *string `json:"user,omitempty"`
 }
-
-// GetUser returns WhoItemInput.User, and is useful for accessing the field via an interface.
-func (v *WhoItemInput) GetUser() *string { return v.User }
 
 // GetAccessControl returns WhoItemInput.AccessControl, and is useful for accessing the field via an interface.
 func (v *WhoItemInput) GetAccessControl() *string { return v.AccessControl }
@@ -39365,17 +39362,20 @@ func (v *WhoItemInput) GetAccessControl() *string { return v.AccessControl }
 // GetDataSource returns WhoItemInput.DataSource, and is useful for accessing the field via an interface.
 func (v *WhoItemInput) GetDataSource() *string { return v.DataSource }
 
-// GetRecipient returns WhoItemInput.Recipient, and is useful for accessing the field via an interface.
-func (v *WhoItemInput) GetRecipient() *string { return v.Recipient }
-
 // GetExpiresAt returns WhoItemInput.ExpiresAt, and is useful for accessing the field via an interface.
 func (v *WhoItemInput) GetExpiresAt() *time.Time { return v.ExpiresAt }
+
+// GetPromiseDuration returns WhoItemInput.PromiseDuration, and is useful for accessing the field via an interface.
+func (v *WhoItemInput) GetPromiseDuration() *int64 { return v.PromiseDuration }
+
+// GetRecipient returns WhoItemInput.Recipient, and is useful for accessing the field via an interface.
+func (v *WhoItemInput) GetRecipient() *string { return v.Recipient }
 
 // GetType returns WhoItemInput.Type, and is useful for accessing the field via an interface.
 func (v *WhoItemInput) GetType() *AccessWhoItemType { return v.Type }
 
-// GetPromiseDuration returns WhoItemInput.PromiseDuration, and is useful for accessing the field via an interface.
-func (v *WhoItemInput) GetPromiseDuration() *int64 { return v.PromiseDuration }
+// GetUser returns WhoItemInput.User, and is useful for accessing the field via an interface.
+func (v *WhoItemInput) GetUser() *string { return v.User }
 
 // __ActivateAccessControlInput is used internally by genqlient
 type __ActivateAccessControlInput struct {
@@ -41296,7 +41296,7 @@ func DeleteGrantCategory(
 // The query executed by EdgeSiteInfo.
 const EdgeSiteInfo_Operation = `
 query EdgeSiteInfo ($site: String!) {
-	edgeSiteInfo(edgeSite: $site) {
+	edgeSiteInfo(edgeSiteId: $site) {
 		__typename
 		... EdgeSiteInfoResult
 		... PermissionDeniedError
@@ -41304,7 +41304,7 @@ query EdgeSiteInfo ($site: String!) {
 	}
 }
 fragment EdgeSiteInfoResult on EdgeSiteInfoResponse {
-	edgeSite
+	edgeSiteId
 	connectors {
 		dataSourceType
 		agentVersion
@@ -43898,7 +43898,7 @@ func ListTasksOfJob(
 // The query executed by NextSyncJobForSite.
 const NextSyncJobForSite_Operation = `
 query NextSyncJobForSite ($site: String!) {
-	nextSyncJobForSite(edgeSite: $site) {
+	nextSyncJobForSite(edgeSiteId: $site) {
 		__typename
 		... SyncJob
 		... PermissionDeniedError

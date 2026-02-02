@@ -9,13 +9,13 @@ type AbacComparisonExpressionComparisonInput = schema.AbacComparisonExpressionCo
 type AbacComparisonExpressionComparisonOperator = schema.AbacComparisonExpressionComparisonOperator
 
 const (
+	AbacComparisonExpressionComparisonOperatorContainstag        AbacComparisonExpressionComparisonOperator = schema.AbacComparisonExpressionComparisonOperatorContainstag
+	AbacComparisonExpressionComparisonOperatorHastag             AbacComparisonExpressionComparisonOperator = schema.AbacComparisonExpressionComparisonOperatorHastag
+	AbacComparisonExpressionComparisonOperatorPropertycontains   AbacComparisonExpressionComparisonOperator = schema.AbacComparisonExpressionComparisonOperatorPropertycontains
+	AbacComparisonExpressionComparisonOperatorPropertyendswith   AbacComparisonExpressionComparisonOperator = schema.AbacComparisonExpressionComparisonOperatorPropertyendswith
 	AbacComparisonExpressionComparisonOperatorPropertyequals     AbacComparisonExpressionComparisonOperator = schema.AbacComparisonExpressionComparisonOperatorPropertyequals
 	AbacComparisonExpressionComparisonOperatorPropertyin         AbacComparisonExpressionComparisonOperator = schema.AbacComparisonExpressionComparisonOperatorPropertyin
-	AbacComparisonExpressionComparisonOperatorHastag             AbacComparisonExpressionComparisonOperator = schema.AbacComparisonExpressionComparisonOperatorHastag
-	AbacComparisonExpressionComparisonOperatorContainstag        AbacComparisonExpressionComparisonOperator = schema.AbacComparisonExpressionComparisonOperatorContainstag
 	AbacComparisonExpressionComparisonOperatorPropertystartswith AbacComparisonExpressionComparisonOperator = schema.AbacComparisonExpressionComparisonOperatorPropertystartswith
-	AbacComparisonExpressionComparisonOperatorPropertyendswith   AbacComparisonExpressionComparisonOperator = schema.AbacComparisonExpressionComparisonOperatorPropertyendswith
-	AbacComparisonExpressionComparisonOperatorPropertycontains   AbacComparisonExpressionComparisonOperator = schema.AbacComparisonExpressionComparisonOperatorPropertycontains
 )
 
 type AbacComparisonExpressionInput = schema.AbacComparisonExpressionInput
@@ -26,12 +26,12 @@ type AccessControl = schema.AccessControl
 type AccessControlAction = schema.AccessControlAction
 
 const (
-	AccessControlActionGrant      AccessControlAction = schema.AccessControlActionGrant
-	AccessControlActionMask       AccessControlAction = schema.AccessControlActionMask
 	AccessControlActionFilter     AccessControlAction = schema.AccessControlActionFilter
-	AccessControlActionShare      AccessControlAction = schema.AccessControlActionShare
-	AccessControlActionGroup      AccessControlAction = schema.AccessControlActionGroup
 	AccessControlActionFilterrule AccessControlAction = schema.AccessControlActionFilterrule
+	AccessControlActionGrant      AccessControlAction = schema.AccessControlActionGrant
+	AccessControlActionGroup      AccessControlAction = schema.AccessControlActionGroup
+	AccessControlActionMask       AccessControlAction = schema.AccessControlActionMask
+	AccessControlActionShare      AccessControlAction = schema.AccessControlActionShare
 )
 
 type AccessControlCategoryGrantCategory = schema.AccessControlCategoryGrantCategory
@@ -53,12 +53,12 @@ type AccessControlInput = schema.AccessControlInput
 type AccessControlLock = schema.AccessControlLock
 
 const (
-	AccessControlLockWholock         AccessControlLock = schema.AccessControlLockWholock
-	AccessControlLockInheritancelock AccessControlLock = schema.AccessControlLockInheritancelock
-	AccessControlLockWhatlock        AccessControlLock = schema.AccessControlLockWhatlock
-	AccessControlLockNamelock        AccessControlLock = schema.AccessControlLockNamelock
 	AccessControlLockDeletelock      AccessControlLock = schema.AccessControlLockDeletelock
+	AccessControlLockInheritancelock AccessControlLock = schema.AccessControlLockInheritancelock
+	AccessControlLockNamelock        AccessControlLock = schema.AccessControlLockNamelock
 	AccessControlLockOwnerlock       AccessControlLock = schema.AccessControlLockOwnerlock
+	AccessControlLockWhatlock        AccessControlLock = schema.AccessControlLockWhatlock
+	AccessControlLockWholock         AccessControlLock = schema.AccessControlLockWholock
 )
 
 type AccessControlLockData = schema.AccessControlLockData
@@ -79,8 +79,8 @@ type AccessControlState = schema.AccessControlState
 
 const (
 	AccessControlStateActive   AccessControlState = schema.AccessControlStateActive
-	AccessControlStateInactive AccessControlState = schema.AccessControlStateInactive
 	AccessControlStateDeleted  AccessControlState = schema.AccessControlStateDeleted
+	AccessControlStateInactive AccessControlState = schema.AccessControlStateInactive
 )
 
 type AccessControlSyncData = schema.AccessControlSyncData
@@ -135,9 +135,9 @@ const (
 type ActionType = schema.ActionType
 
 const (
+	ActionTypeAdmin ActionType = schema.ActionTypeAdmin
 	ActionTypeRead  ActionType = schema.ActionTypeRead
 	ActionTypeWrite ActionType = schema.ActionTypeWrite
-	ActionTypeAdmin ActionType = schema.ActionTypeAdmin
 )
 
 type ActivateAccessControlActivateAccessControl = schema.ActivateAccessControlActivateAccessControl
@@ -200,18 +200,18 @@ type DataComparisonExpressionComparisonOperator = schema.DataComparisonExpressio
 
 const (
 	DataComparisonExpressionComparisonOperatorEqual              DataComparisonExpressionComparisonOperator = schema.DataComparisonExpressionComparisonOperatorEqual
-	DataComparisonExpressionComparisonOperatorNotequal           DataComparisonExpressionComparisonOperator = schema.DataComparisonExpressionComparisonOperatorNotequal
-	DataComparisonExpressionComparisonOperatorLessthan           DataComparisonExpressionComparisonOperator = schema.DataComparisonExpressionComparisonOperatorLessthan
-	DataComparisonExpressionComparisonOperatorLessthanorequal    DataComparisonExpressionComparisonOperator = schema.DataComparisonExpressionComparisonOperatorLessthanorequal
 	DataComparisonExpressionComparisonOperatorGreaterthan        DataComparisonExpressionComparisonOperator = schema.DataComparisonExpressionComparisonOperatorGreaterthan
 	DataComparisonExpressionComparisonOperatorGreaterthanorequal DataComparisonExpressionComparisonOperator = schema.DataComparisonExpressionComparisonOperatorGreaterthanorequal
+	DataComparisonExpressionComparisonOperatorLessthan           DataComparisonExpressionComparisonOperator = schema.DataComparisonExpressionComparisonOperatorLessthan
+	DataComparisonExpressionComparisonOperatorLessthanorequal    DataComparisonExpressionComparisonOperator = schema.DataComparisonExpressionComparisonOperatorLessthanorequal
+	DataComparisonExpressionComparisonOperatorNotequal           DataComparisonExpressionComparisonOperator = schema.DataComparisonExpressionComparisonOperatorNotequal
 )
 
 type DataComparisonExpressionEntityType = schema.DataComparisonExpressionEntityType
 
 const (
-	DataComparisonExpressionEntityTypeDataobject            DataComparisonExpressionEntityType = schema.DataComparisonExpressionEntityTypeDataobject
 	DataComparisonExpressionEntityTypeColumnreferencebyname DataComparisonExpressionEntityType = schema.DataComparisonExpressionEntityTypeColumnreferencebyname
+	DataComparisonExpressionEntityTypeDataobject            DataComparisonExpressionEntityType = schema.DataComparisonExpressionEntityTypeDataobject
 )
 
 type DataComparisonExpressionInput = schema.DataComparisonExpressionInput
@@ -260,8 +260,8 @@ type DataSourceFeatures = schema.DataSourceFeatures
 
 const (
 	DataSourceFeaturesColumnmasking DataSourceFeatures = schema.DataSourceFeaturesColumnmasking
-	DataSourceFeaturesRowfiltering  DataSourceFeatures = schema.DataSourceFeaturesRowfiltering
 	DataSourceFeaturesDatasharing   DataSourceFeatures = schema.DataSourceFeaturesDatasharing
+	DataSourceFeaturesRowfiltering  DataSourceFeatures = schema.DataSourceFeaturesRowfiltering
 )
 
 type DataSourceFilterInput = schema.DataSourceFilterInput
@@ -281,8 +281,8 @@ type DataSourceTypeInfo = schema.DataSourceTypeInfo
 type DataTypeOrigin = schema.DataTypeOrigin
 
 const (
-	DataTypeOriginInternal DataTypeOrigin = schema.DataTypeOriginInternal
 	DataTypeOriginExternal DataTypeOrigin = schema.DataTypeOriginExternal
+	DataTypeOriginInternal DataTypeOrigin = schema.DataTypeOriginInternal
 	DataTypeOriginShared   DataTypeOrigin = schema.DataTypeOriginShared
 )
 
@@ -329,18 +329,18 @@ type EndOfTargetsSyncResponse = schema.EndOfTargetsSyncResponse
 type EntityType = schema.EntityType
 
 const (
-	EntityTypeAccesscontrol      EntityType = schema.EntityTypeAccesscontrol
 	EntityTypeAccess             EntityType = schema.EntityTypeAccess
+	EntityTypeAccesscontrol      EntityType = schema.EntityTypeAccesscontrol
 	EntityTypeAccessrequest      EntityType = schema.EntityTypeAccessrequest
-	EntityTypeUser               EntityType = schema.EntityTypeUser
+	EntityTypeAccount            EntityType = schema.EntityTypeAccount
 	EntityTypeDataobject         EntityType = schema.EntityTypeDataobject
+	EntityTypeDatasharerecipient EntityType = schema.EntityTypeDatasharerecipient
 	EntityTypeDatasource         EntityType = schema.EntityTypeDatasource
 	EntityTypeDatausage          EntityType = schema.EntityTypeDatausage
-	EntityTypeTag                EntityType = schema.EntityTypeTag
 	EntityTypeRole               EntityType = schema.EntityTypeRole
 	EntityTypeRoleassignment     EntityType = schema.EntityTypeRoleassignment
-	EntityTypeAccount            EntityType = schema.EntityTypeAccount
-	EntityTypeDatasharerecipient EntityType = schema.EntityTypeDatasharerecipient
+	EntityTypeTag                EntityType = schema.EntityTypeTag
+	EntityTypeUser               EntityType = schema.EntityTypeUser
 )
 
 type ExportAccessControl = schema.ExportAccessControl
@@ -501,10 +501,10 @@ type JobInput = schema.JobInput
 type JobStatus = schema.JobStatus
 
 const (
-	JobStatusStarted    JobStatus = schema.JobStatusStarted
-	JobStatusInprogress JobStatus = schema.JobStatusInprogress
 	JobStatusCompleted  JobStatus = schema.JobStatusCompleted
 	JobStatusFailed     JobStatus = schema.JobStatusFailed
+	JobStatusInprogress JobStatus = schema.JobStatusInprogress
+	JobStatusStarted    JobStatus = schema.JobStatusStarted
 	JobStatusTimedout   JobStatus = schema.JobStatusTimedout
 )
 
@@ -616,15 +616,15 @@ type PageInfo = schema.PageInfo
 type ParameterDataType = schema.ParameterDataType
 
 const (
-	ParameterDataTypeString         ParameterDataType = schema.ParameterDataTypeString
-	ParameterDataTypeInteger        ParameterDataType = schema.ParameterDataTypeInteger
-	ParameterDataTypeFloat          ParameterDataType = schema.ParameterDataTypeFloat
 	ParameterDataTypeBoolean        ParameterDataType = schema.ParameterDataTypeBoolean
-	ParameterDataTypeTimestamp      ParameterDataType = schema.ParameterDataTypeTimestamp
-	ParameterDataTypeStringarray    ParameterDataType = schema.ParameterDataTypeStringarray
-	ParameterDataTypeIntegerarray   ParameterDataType = schema.ParameterDataTypeIntegerarray
-	ParameterDataTypeFloatarray     ParameterDataType = schema.ParameterDataTypeFloatarray
 	ParameterDataTypeBooleanarray   ParameterDataType = schema.ParameterDataTypeBooleanarray
+	ParameterDataTypeFloat          ParameterDataType = schema.ParameterDataTypeFloat
+	ParameterDataTypeFloatarray     ParameterDataType = schema.ParameterDataTypeFloatarray
+	ParameterDataTypeInteger        ParameterDataType = schema.ParameterDataTypeInteger
+	ParameterDataTypeIntegerarray   ParameterDataType = schema.ParameterDataTypeIntegerarray
+	ParameterDataTypeString         ParameterDataType = schema.ParameterDataTypeString
+	ParameterDataTypeStringarray    ParameterDataType = schema.ParameterDataTypeStringarray
+	ParameterDataTypeTimestamp      ParameterDataType = schema.ParameterDataTypeTimestamp
 	ParameterDataTypeTimestamparray ParameterDataType = schema.ParameterDataTypeTimestamparray
 )
 
@@ -641,10 +641,10 @@ const (
 type ParameterType = schema.ParameterType
 
 const (
-	ParameterTypeParameter ParameterType = schema.ParameterTypeParameter
-	ParameterTypeObject    ParameterType = schema.ParameterTypeObject
 	ParameterTypeAdvanced  ParameterType = schema.ParameterTypeAdvanced
 	ParameterTypeArray     ParameterType = schema.ParameterTypeArray
+	ParameterTypeObject    ParameterType = schema.ParameterTypeObject
+	ParameterTypeParameter ParameterType = schema.ParameterTypeParameter
 )
 
 type PermissionDeniedError = schema.PermissionDeniedError
@@ -709,12 +709,12 @@ type SubtaskInput = schema.SubtaskInput
 type SubtaskStatus = schema.SubtaskStatus
 
 const (
-	SubtaskStatusStarted      SubtaskStatus = schema.SubtaskStatusStarted
-	SubtaskStatusQueued       SubtaskStatus = schema.SubtaskStatusQueued
-	SubtaskStatusDataretrieve SubtaskStatus = schema.SubtaskStatusDataretrieve
-	SubtaskStatusInprogress   SubtaskStatus = schema.SubtaskStatusInprogress
 	SubtaskStatusCompleted    SubtaskStatus = schema.SubtaskStatusCompleted
+	SubtaskStatusDataretrieve SubtaskStatus = schema.SubtaskStatusDataretrieve
 	SubtaskStatusFailed       SubtaskStatus = schema.SubtaskStatusFailed
+	SubtaskStatusInprogress   SubtaskStatus = schema.SubtaskStatusInprogress
+	SubtaskStatusQueued       SubtaskStatus = schema.SubtaskStatusQueued
+	SubtaskStatusStarted      SubtaskStatus = schema.SubtaskStatusStarted
 	SubtaskStatusTimedout     SubtaskStatus = schema.SubtaskStatusTimedout
 )
 
@@ -740,12 +740,12 @@ type SyncJobJobPermissionDeniedError = schema.SyncJobJobPermissionDeniedError
 type SyncStatus = schema.SyncStatus
 
 const (
-	SyncStatusNotconnected SyncStatus = schema.SyncStatusNotconnected
 	SyncStatusFailed       SyncStatus = schema.SyncStatusFailed
-	SyncStatusOutofdate    SyncStatus = schema.SyncStatusOutofdate
 	SyncStatusInprogress   SyncStatus = schema.SyncStatusInprogress
-	SyncStatusSynced       SyncStatus = schema.SyncStatusSynced
+	SyncStatusNotconnected SyncStatus = schema.SyncStatusNotconnected
+	SyncStatusOutofdate    SyncStatus = schema.SyncStatusOutofdate
 	SyncStatusOutofsync    SyncStatus = schema.SyncStatusOutofsync
+	SyncStatusSynced       SyncStatus = schema.SyncStatusSynced
 )
 
 type TagFilter = schema.TagFilter
@@ -766,14 +766,14 @@ type TaskResultInput = schema.TaskResultInput
 type TaskStatus = schema.TaskStatus
 
 const (
-	TaskStatusStarted        TaskStatus = schema.TaskStatusStarted
+	TaskStatusCompleted      TaskStatus = schema.TaskStatusCompleted
+	TaskStatusDataprocessing TaskStatus = schema.TaskStatusDataprocessing
 	TaskStatusDataretrieve   TaskStatus = schema.TaskStatusDataretrieve
 	TaskStatusDataupload     TaskStatus = schema.TaskStatusDataupload
-	TaskStatusQueued         TaskStatus = schema.TaskStatusQueued
-	TaskStatusDataprocessing TaskStatus = schema.TaskStatusDataprocessing
-	TaskStatusCompleted      TaskStatus = schema.TaskStatusCompleted
 	TaskStatusFailed         TaskStatus = schema.TaskStatusFailed
+	TaskStatusQueued         TaskStatus = schema.TaskStatusQueued
 	TaskStatusSkipped        TaskStatus = schema.TaskStatusSkipped
+	TaskStatusStarted        TaskStatus = schema.TaskStatusStarted
 	TaskStatusTimedout       TaskStatus = schema.TaskStatusTimedout
 )
 
@@ -853,26 +853,26 @@ type WhoAbacRuleInput = schema.WhoAbacRuleInput
 type WhoItemImport = schema.WhoItemImport
 type WhoItemInput = schema.WhoItemInput
 
-var AllAbacComparisonExpressionComparisonOperator = []AbacComparisonExpressionComparisonOperator{AbacComparisonExpressionComparisonOperatorPropertyequals, AbacComparisonExpressionComparisonOperatorPropertyin, AbacComparisonExpressionComparisonOperatorHastag, AbacComparisonExpressionComparisonOperatorContainstag, AbacComparisonExpressionComparisonOperatorPropertystartswith, AbacComparisonExpressionComparisonOperatorPropertyendswith, AbacComparisonExpressionComparisonOperatorPropertycontains}
-var AllAccessControlAction = []AccessControlAction{AccessControlActionGrant, AccessControlActionMask, AccessControlActionFilter, AccessControlActionShare, AccessControlActionGroup, AccessControlActionFilterrule}
-var AllAccessControlLock = []AccessControlLock{AccessControlLockWholock, AccessControlLockInheritancelock, AccessControlLockWhatlock, AccessControlLockNamelock, AccessControlLockDeletelock, AccessControlLockOwnerlock}
+var AllAbacComparisonExpressionComparisonOperator = []AbacComparisonExpressionComparisonOperator{AbacComparisonExpressionComparisonOperatorContainstag, AbacComparisonExpressionComparisonOperatorHastag, AbacComparisonExpressionComparisonOperatorPropertycontains, AbacComparisonExpressionComparisonOperatorPropertyendswith, AbacComparisonExpressionComparisonOperatorPropertyequals, AbacComparisonExpressionComparisonOperatorPropertyin, AbacComparisonExpressionComparisonOperatorPropertystartswith}
+var AllAccessControlAction = []AccessControlAction{AccessControlActionFilter, AccessControlActionFilterrule, AccessControlActionGrant, AccessControlActionGroup, AccessControlActionMask, AccessControlActionShare}
+var AllAccessControlLock = []AccessControlLock{AccessControlLockDeletelock, AccessControlLockInheritancelock, AccessControlLockNamelock, AccessControlLockOwnerlock, AccessControlLockWhatlock, AccessControlLockWholock}
 var AllAccessControlLockType = []AccessControlLockType{AccessControlLockTypeImportexport, AccessControlLockTypeUseronly}
-var AllAccessControlState = []AccessControlState{AccessControlStateActive, AccessControlStateInactive, AccessControlStateDeleted}
+var AllAccessControlState = []AccessControlState{AccessControlStateActive, AccessControlStateDeleted, AccessControlStateInactive}
 var AllAccessWhoItemType = []AccessWhoItemType{AccessWhoItemTypeWhogrant, AccessWhoItemTypeWhopromise}
-var AllActionType = []ActionType{ActionTypeRead, ActionTypeWrite, ActionTypeAdmin}
+var AllActionType = []ActionType{ActionTypeAdmin, ActionTypeRead, ActionTypeWrite}
 var AllBinaryExpressionAggregatorOperator = []BinaryExpressionAggregatorOperator{BinaryExpressionAggregatorOperatorAnd, BinaryExpressionAggregatorOperatorOr}
 var AllBinaryExpressionUnaryExpressionOperator = []BinaryExpressionUnaryExpressionOperator{BinaryExpressionUnaryExpressionOperatorNot}
-var AllDataComparisonExpressionComparisonOperator = []DataComparisonExpressionComparisonOperator{DataComparisonExpressionComparisonOperatorEqual, DataComparisonExpressionComparisonOperatorNotequal, DataComparisonExpressionComparisonOperatorLessthan, DataComparisonExpressionComparisonOperatorLessthanorequal, DataComparisonExpressionComparisonOperatorGreaterthan, DataComparisonExpressionComparisonOperatorGreaterthanorequal}
-var AllDataComparisonExpressionEntityType = []DataComparisonExpressionEntityType{DataComparisonExpressionEntityTypeDataobject, DataComparisonExpressionEntityTypeColumnreferencebyname}
-var AllDataSourceFeatures = []DataSourceFeatures{DataSourceFeaturesColumnmasking, DataSourceFeaturesRowfiltering, DataSourceFeaturesDatasharing}
-var AllDataTypeOrigin = []DataTypeOrigin{DataTypeOriginInternal, DataTypeOriginExternal, DataTypeOriginShared}
-var AllEntityType = []EntityType{EntityTypeAccesscontrol, EntityTypeAccess, EntityTypeAccessrequest, EntityTypeUser, EntityTypeDataobject, EntityTypeDatasource, EntityTypeDatausage, EntityTypeTag, EntityTypeRole, EntityTypeRoleassignment, EntityTypeAccount, EntityTypeDatasharerecipient}
-var AllJobStatus = []JobStatus{JobStatusStarted, JobStatusInprogress, JobStatusCompleted, JobStatusFailed, JobStatusTimedout}
-var AllParameterDataType = []ParameterDataType{ParameterDataTypeString, ParameterDataTypeInteger, ParameterDataTypeFloat, ParameterDataTypeBoolean, ParameterDataTypeTimestamp, ParameterDataTypeStringarray, ParameterDataTypeIntegerarray, ParameterDataTypeFloatarray, ParameterDataTypeBooleanarray, ParameterDataTypeTimestamparray}
+var AllDataComparisonExpressionComparisonOperator = []DataComparisonExpressionComparisonOperator{DataComparisonExpressionComparisonOperatorEqual, DataComparisonExpressionComparisonOperatorGreaterthan, DataComparisonExpressionComparisonOperatorGreaterthanorequal, DataComparisonExpressionComparisonOperatorLessthan, DataComparisonExpressionComparisonOperatorLessthanorequal, DataComparisonExpressionComparisonOperatorNotequal}
+var AllDataComparisonExpressionEntityType = []DataComparisonExpressionEntityType{DataComparisonExpressionEntityTypeColumnreferencebyname, DataComparisonExpressionEntityTypeDataobject}
+var AllDataSourceFeatures = []DataSourceFeatures{DataSourceFeaturesColumnmasking, DataSourceFeaturesDatasharing, DataSourceFeaturesRowfiltering}
+var AllDataTypeOrigin = []DataTypeOrigin{DataTypeOriginExternal, DataTypeOriginInternal, DataTypeOriginShared}
+var AllEntityType = []EntityType{EntityTypeAccess, EntityTypeAccesscontrol, EntityTypeAccessrequest, EntityTypeAccount, EntityTypeDataobject, EntityTypeDatasharerecipient, EntityTypeDatasource, EntityTypeDatausage, EntityTypeRole, EntityTypeRoleassignment, EntityTypeTag, EntityTypeUser}
+var AllJobStatus = []JobStatus{JobStatusCompleted, JobStatusFailed, JobStatusInprogress, JobStatusStarted, JobStatusTimedout}
+var AllParameterDataType = []ParameterDataType{ParameterDataTypeBoolean, ParameterDataTypeBooleanarray, ParameterDataTypeFloat, ParameterDataTypeFloatarray, ParameterDataTypeInteger, ParameterDataTypeIntegerarray, ParameterDataTypeString, ParameterDataTypeStringarray, ParameterDataTypeTimestamp, ParameterDataTypeTimestamparray}
 var AllParameterSource = []ParameterSource{ParameterSourceAgent, ParameterSourceAgentruntime, ParameterSourceConnector, ParameterSourceConnectorsecure}
-var AllParameterType = []ParameterType{ParameterTypeParameter, ParameterTypeObject, ParameterTypeAdvanced, ParameterTypeArray}
+var AllParameterType = []ParameterType{ParameterTypeAdvanced, ParameterTypeArray, ParameterTypeObject, ParameterTypeParameter}
 var AllSort = []Sort{SortAsc, SortDesc}
-var AllSubtaskStatus = []SubtaskStatus{SubtaskStatusStarted, SubtaskStatusQueued, SubtaskStatusDataretrieve, SubtaskStatusInprogress, SubtaskStatusCompleted, SubtaskStatusFailed, SubtaskStatusTimedout}
-var AllSyncStatus = []SyncStatus{SyncStatusNotconnected, SyncStatusFailed, SyncStatusOutofdate, SyncStatusInprogress, SyncStatusSynced, SyncStatusOutofsync}
-var AllTaskStatus = []TaskStatus{TaskStatusStarted, TaskStatusDataretrieve, TaskStatusDataupload, TaskStatusQueued, TaskStatusDataprocessing, TaskStatusCompleted, TaskStatusFailed, TaskStatusSkipped, TaskStatusTimedout}
+var AllSubtaskStatus = []SubtaskStatus{SubtaskStatusCompleted, SubtaskStatusDataretrieve, SubtaskStatusFailed, SubtaskStatusInprogress, SubtaskStatusQueued, SubtaskStatusStarted, SubtaskStatusTimedout}
+var AllSyncStatus = []SyncStatus{SyncStatusFailed, SyncStatusInprogress, SyncStatusNotconnected, SyncStatusOutofdate, SyncStatusOutofsync, SyncStatusSynced}
+var AllTaskStatus = []TaskStatus{TaskStatusCompleted, TaskStatusDataprocessing, TaskStatusDataretrieve, TaskStatusDataupload, TaskStatusFailed, TaskStatusQueued, TaskStatusSkipped, TaskStatusStarted, TaskStatusTimedout}
 var AllUserType = []UserType{UserTypeHuman, UserTypeMachine}
