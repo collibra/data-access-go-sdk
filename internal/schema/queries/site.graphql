@@ -24,7 +24,7 @@ fragment SyncJob on SyncJob {
 }
 
 query NextSyncJobForSite($site: String!) {
-    nextSyncJobForSite(edgeSite: $site) {
+    nextSyncJobForSite(edgeSiteId: $site) {
         ... SyncJob
         ... PermissionDeniedError
         ... NotFoundError
@@ -40,7 +40,7 @@ mutation UpdateSiteSettings($input: EdgeSiteInfoInput!) {
 }
 
 fragment EdgeSiteInfoResult on EdgeSiteInfoResponse {
-    edgeSite
+    edgeSiteId
     connectors {
         dataSourceType
         agentVersion
@@ -49,7 +49,7 @@ fragment EdgeSiteInfoResult on EdgeSiteInfoResponse {
 }
 
 query EdgeSiteInfo($site: String!) {
-    edgeSiteInfo(edgeSite: $site) {
+    edgeSiteInfo(edgeSiteId: $site) {
         ... EdgeSiteInfoResult
         ... PermissionDeniedError
         ... NotFoundError

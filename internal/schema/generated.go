@@ -9073,10 +9073,12 @@ type DataSourceInput struct {
 	SyncSchedule *DataSourceSyncScheduleInput `json:"syncSchedule,omitempty"`
 	// The optional UUID of the system asset from Collibra Catalog this data source corresponds with. Pass 00000000-0000-0000-0000-000000000000 to clear.
 	CatalogSystemId *uuid.UUID `json:"catalogSystemId,omitempty"`
-	// The UUID of the Edge Site associated with this data source.
-	EdgeSiteId *uuid.UUID `json:"edgeSiteId,omitempty"`
-	// The UUID of the Edge Connection associated with this data source.
-	EdgeConnectionId *uuid.UUID `json:"edgeConnectionId,omitempty"`
+	// type indicates the type of data source (Snowflake, BigQuery, etc.).
+	Type *string `json:"type,omitempty"`
+	// The ID of the Edge Site associated with this data source.
+	EdgeSiteId *string `json:"edgeSiteId,omitempty"`
+	// The ID of the Edge Connection associated with this data source.
+	EdgeConnectionId *string `json:"edgeConnectionId,omitempty"`
 }
 
 // GetName returns DataSourceInput.Name, and is useful for accessing the field via an interface.
@@ -9100,11 +9102,14 @@ func (v *DataSourceInput) GetSyncSchedule() *DataSourceSyncScheduleInput { retur
 // GetCatalogSystemId returns DataSourceInput.CatalogSystemId, and is useful for accessing the field via an interface.
 func (v *DataSourceInput) GetCatalogSystemId() *uuid.UUID { return v.CatalogSystemId }
 
+// GetType returns DataSourceInput.Type, and is useful for accessing the field via an interface.
+func (v *DataSourceInput) GetType() *string { return v.Type }
+
 // GetEdgeSiteId returns DataSourceInput.EdgeSiteId, and is useful for accessing the field via an interface.
-func (v *DataSourceInput) GetEdgeSiteId() *uuid.UUID { return v.EdgeSiteId }
+func (v *DataSourceInput) GetEdgeSiteId() *string { return v.EdgeSiteId }
 
 // GetEdgeConnectionId returns DataSourceInput.EdgeConnectionId, and is useful for accessing the field via an interface.
-func (v *DataSourceInput) GetEdgeConnectionId() *uuid.UUID { return v.EdgeConnectionId }
+func (v *DataSourceInput) GetEdgeConnectionId() *string { return v.EdgeConnectionId }
 
 // DataSourceMaskInformationDataSource includes the requested fields of the GraphQL type DataSource.
 // The GraphQL type's documentation follows.
@@ -11695,9 +11700,9 @@ type EdgeSiteInfoEdgeSiteInfoEdgeSiteInfoResponse struct {
 // GetTypename returns EdgeSiteInfoEdgeSiteInfoEdgeSiteInfoResponse.Typename, and is useful for accessing the field via an interface.
 func (v *EdgeSiteInfoEdgeSiteInfoEdgeSiteInfoResponse) GetTypename() *string { return v.Typename }
 
-// GetEdgeSite returns EdgeSiteInfoEdgeSiteInfoEdgeSiteInfoResponse.EdgeSite, and is useful for accessing the field via an interface.
-func (v *EdgeSiteInfoEdgeSiteInfoEdgeSiteInfoResponse) GetEdgeSite() string {
-	return v.EdgeSiteInfoResult.EdgeSite
+// GetEdgeSiteId returns EdgeSiteInfoEdgeSiteInfoEdgeSiteInfoResponse.EdgeSiteId, and is useful for accessing the field via an interface.
+func (v *EdgeSiteInfoEdgeSiteInfoEdgeSiteInfoResponse) GetEdgeSiteId() string {
+	return v.EdgeSiteInfoResult.EdgeSiteId
 }
 
 // GetConnectors returns EdgeSiteInfoEdgeSiteInfoEdgeSiteInfoResponse.Connectors, and is useful for accessing the field via an interface.
@@ -11733,7 +11738,7 @@ func (v *EdgeSiteInfoEdgeSiteInfoEdgeSiteInfoResponse) UnmarshalJSON(b []byte) e
 type __premarshalEdgeSiteInfoEdgeSiteInfoEdgeSiteInfoResponse struct {
 	Typename *string `json:"__typename"`
 
-	EdgeSite string `json:"edgeSite"`
+	EdgeSiteId string `json:"edgeSiteId"`
 
 	Connectors []*EdgeSiteInfoResultConnectorsSyncConnectionInfo `json:"connectors"`
 }
@@ -11750,7 +11755,7 @@ func (v *EdgeSiteInfoEdgeSiteInfoEdgeSiteInfoResponse) __premarshalJSON() (*__pr
 	var retval __premarshalEdgeSiteInfoEdgeSiteInfoEdgeSiteInfoResponse
 
 	retval.Typename = v.Typename
-	retval.EdgeSite = v.EdgeSiteInfoResult.EdgeSite
+	retval.EdgeSiteId = v.EdgeSiteInfoResult.EdgeSiteId
 	retval.Connectors = v.EdgeSiteInfoResult.Connectors
 	return &retval, nil
 }
@@ -11981,13 +11986,13 @@ func (v *EdgeSiteInfoEdgeSiteInfoPermissionDeniedError) __premarshalJSON() (*__p
 }
 
 type EdgeSiteInfoInput struct {
-	EdgeSite   string                       `json:"edgeSite"`
+	EdgeSiteId string                       `json:"edgeSiteId"`
 	External   bool                         `json:"external"`
 	Connectors []EdgeSiteConnectorInfoInput `json:"connectors"`
 }
 
-// GetEdgeSite returns EdgeSiteInfoInput.EdgeSite, and is useful for accessing the field via an interface.
-func (v *EdgeSiteInfoInput) GetEdgeSite() string { return v.EdgeSite }
+// GetEdgeSiteId returns EdgeSiteInfoInput.EdgeSiteId, and is useful for accessing the field via an interface.
+func (v *EdgeSiteInfoInput) GetEdgeSiteId() string { return v.EdgeSiteId }
 
 // GetExternal returns EdgeSiteInfoInput.External, and is useful for accessing the field via an interface.
 func (v *EdgeSiteInfoInput) GetExternal() bool { return v.External }
@@ -12070,12 +12075,12 @@ func (v *EdgeSiteInfoResponse) __premarshalJSON() (*__premarshalEdgeSiteInfoResp
 
 // EdgeSiteInfoResult includes the GraphQL fields of EdgeSiteInfoResponse requested by the fragment EdgeSiteInfoResult.
 type EdgeSiteInfoResult struct {
-	EdgeSite   string                                            `json:"edgeSite"`
+	EdgeSiteId string                                            `json:"edgeSiteId"`
 	Connectors []*EdgeSiteInfoResultConnectorsSyncConnectionInfo `json:"connectors"`
 }
 
-// GetEdgeSite returns EdgeSiteInfoResult.EdgeSite, and is useful for accessing the field via an interface.
-func (v *EdgeSiteInfoResult) GetEdgeSite() string { return v.EdgeSite }
+// GetEdgeSiteId returns EdgeSiteInfoResult.EdgeSiteId, and is useful for accessing the field via an interface.
+func (v *EdgeSiteInfoResult) GetEdgeSiteId() string { return v.EdgeSiteId }
 
 // GetConnectors returns EdgeSiteInfoResult.Connectors, and is useful for accessing the field via an interface.
 func (v *EdgeSiteInfoResult) GetConnectors() []*EdgeSiteInfoResultConnectorsSyncConnectionInfo {
@@ -20960,6 +20965,8 @@ func (v *GrantCategoryDetailsDefaultTypePerDataSourceGrantCategoryTypeForDataSou
 type GrantCategoryInput struct {
 	// Display name for the grant category.
 	Name *string `json:"name,omitempty"`
+	// The plural form of the display name for the grant category.
+	NamePlural *string `json:"namePlural,omitempty"`
 	// Description of the grant category.
 	Description *string `json:"description,omitempty"`
 	// The icon to use in the user interface to identify grants of this category.
@@ -20996,6 +21003,9 @@ type GrantCategoryInput struct {
 
 // GetName returns GrantCategoryInput.Name, and is useful for accessing the field via an interface.
 func (v *GrantCategoryInput) GetName() *string { return v.Name }
+
+// GetNamePlural returns GrantCategoryInput.NamePlural, and is useful for accessing the field via an interface.
+func (v *GrantCategoryInput) GetNamePlural() *string { return v.NamePlural }
 
 // GetDescription returns GrantCategoryInput.Description, and is useful for accessing the field via an interface.
 func (v *GrantCategoryInput) GetDescription() *string { return v.Description }
@@ -41296,7 +41306,7 @@ func DeleteGrantCategory(
 // The query executed by EdgeSiteInfo.
 const EdgeSiteInfo_Operation = `
 query EdgeSiteInfo ($site: String!) {
-	edgeSiteInfo(edgeSite: $site) {
+	edgeSiteInfo(edgeSiteId: $site) {
 		__typename
 		... EdgeSiteInfoResult
 		... PermissionDeniedError
@@ -41304,7 +41314,7 @@ query EdgeSiteInfo ($site: String!) {
 	}
 }
 fragment EdgeSiteInfoResult on EdgeSiteInfoResponse {
-	edgeSite
+	edgeSiteId
 	connectors {
 		dataSourceType
 		agentVersion
@@ -43898,7 +43908,7 @@ func ListTasksOfJob(
 // The query executed by NextSyncJobForSite.
 const NextSyncJobForSite_Operation = `
 query NextSyncJobForSite ($site: String!) {
-	nextSyncJobForSite(edgeSite: $site) {
+	nextSyncJobForSite(edgeSiteId: $site) {
 		__typename
 		... SyncJob
 		... PermissionDeniedError
