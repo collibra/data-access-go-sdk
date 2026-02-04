@@ -16,6 +16,7 @@ query ListGrantCategories {
 fragment GrantCategory on GrantCategory {
     id
     name
+    namePlural
     isSystem
     isDefault
 }
@@ -26,6 +27,7 @@ fragment GrantCategoryDetails on GrantCategory {
     modifiedAt
     isSystem
     name
+    namePlural
     description
     icon
     isDefault
