@@ -3,14 +3,13 @@ package services_test
 import (
 	"testing"
 
+	"github.com/google/uuid"
+	"github.com/stretchr/testify/suite"
 
-"github.com/google/uuid"
-"github.com/stretchr/testify/suite"
-
-sdk "github.com/collibra/data-access-go-sdk"
-"github.com/collibra/data-access-go-sdk/internal/schema"
-"github.com/collibra/data-access-go-sdk/services"
-"github.com/collibra/data-access-go-sdk/utils"
+	sdk "github.com/collibra/data-access-go-sdk"
+	"github.com/collibra/data-access-go-sdk/internal/schema"
+	"github.com/collibra/data-access-go-sdk/services"
+	"github.com/collibra/data-access-go-sdk/utils"
 )
 
 type GrantCategoryServiceTestSuite struct {
