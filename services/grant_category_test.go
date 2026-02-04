@@ -3,12 +3,14 @@ package services_test
 import (
 	"testing"
 
-	sdk "github.com/collibra/data-access-go-sdk"
-	"github.com/collibra/data-access-go-sdk/internal/schema"
-	"github.com/collibra/data-access-go-sdk/services"
-	"github.com/collibra/data-access-go-sdk/utils"
-	"github.com/google/uuid"
-	"github.com/stretchr/testify/suite"
+
+"github.com/google/uuid"
+"github.com/stretchr/testify/suite"
+
+sdk "github.com/collibra/data-access-go-sdk"
+"github.com/collibra/data-access-go-sdk/internal/schema"
+"github.com/collibra/data-access-go-sdk/services"
+"github.com/collibra/data-access-go-sdk/utils"
 )
 
 type GrantCategoryServiceTestSuite struct {
@@ -40,6 +42,7 @@ func (suite *GrantCategoryServiceTestSuite) TestGrantCategory() {
 
 	suite.Run("Create Grant Category", func() {
 		name := "Test Category " + uuid.New().String()
+		namePlural := name + "s"
 		description := "Test Category Description"
 		canCreate := true
 		canRequestAccess := true
@@ -47,6 +50,7 @@ func (suite *GrantCategoryServiceTestSuite) TestGrantCategory() {
 		icon := "📁"
 		input := &schema.GrantCategoryInput{
 			Name:                &name,
+			NamePlural:          &namePlural,
 			Description:         &description,
 			Icon:                &icon,
 			CanCreate:           &canCreate,
