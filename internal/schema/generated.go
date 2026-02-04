@@ -297,6 +297,11 @@ func (v *AccessControlCategoryGrantCategory) GetId() string { return v.GrantCate
 // GetName returns AccessControlCategoryGrantCategory.Name, and is useful for accessing the field via an interface.
 func (v *AccessControlCategoryGrantCategory) GetName() string { return v.GrantCategory.Name }
 
+// GetNamePlural returns AccessControlCategoryGrantCategory.NamePlural, and is useful for accessing the field via an interface.
+func (v *AccessControlCategoryGrantCategory) GetNamePlural() string {
+	return v.GrantCategory.NamePlural
+}
+
 // GetIsSystem returns AccessControlCategoryGrantCategory.IsSystem, and is useful for accessing the field via an interface.
 func (v *AccessControlCategoryGrantCategory) GetIsSystem() bool { return v.GrantCategory.IsSystem }
 
@@ -333,6 +338,8 @@ type __premarshalAccessControlCategoryGrantCategory struct {
 
 	Name string `json:"name"`
 
+	NamePlural string `json:"namePlural"`
+
 	IsSystem bool `json:"isSystem"`
 
 	IsDefault bool `json:"isDefault"`
@@ -351,6 +358,7 @@ func (v *AccessControlCategoryGrantCategory) __premarshalJSON() (*__premarshalAc
 
 	retval.Id = v.GrantCategory.Id
 	retval.Name = v.GrantCategory.Name
+	retval.NamePlural = v.GrantCategory.NamePlural
 	retval.IsSystem = v.GrantCategory.IsSystem
 	retval.IsDefault = v.GrantCategory.IsDefault
 	return &retval, nil
@@ -5731,6 +5739,11 @@ func (v *CreateGrantCategoryCreateGrantCategory) GetIsSystem() bool {
 // GetName returns CreateGrantCategoryCreateGrantCategory.Name, and is useful for accessing the field via an interface.
 func (v *CreateGrantCategoryCreateGrantCategory) GetName() string { return v.GrantCategoryDetails.Name }
 
+// GetNamePlural returns CreateGrantCategoryCreateGrantCategory.NamePlural, and is useful for accessing the field via an interface.
+func (v *CreateGrantCategoryCreateGrantCategory) GetNamePlural() string {
+	return v.GrantCategoryDetails.NamePlural
+}
+
 // GetDescription returns CreateGrantCategoryCreateGrantCategory.Description, and is useful for accessing the field via an interface.
 func (v *CreateGrantCategoryCreateGrantCategory) GetDescription() string {
 	return v.GrantCategoryDetails.Description
@@ -5812,6 +5825,8 @@ type __premarshalCreateGrantCategoryCreateGrantCategory struct {
 
 	Name string `json:"name"`
 
+	NamePlural string `json:"namePlural"`
+
 	Description string `json:"description"`
 
 	Icon string `json:"icon"`
@@ -5848,6 +5863,7 @@ func (v *CreateGrantCategoryCreateGrantCategory) __premarshalJSON() (*__premarsh
 	retval.ModifiedAt = v.GrantCategoryDetails.ModifiedAt
 	retval.IsSystem = v.GrantCategoryDetails.IsSystem
 	retval.Name = v.GrantCategoryDetails.Name
+	retval.NamePlural = v.GrantCategoryDetails.NamePlural
 	retval.Description = v.GrantCategoryDetails.Description
 	retval.Icon = v.GrantCategoryDetails.Icon
 	retval.IsDefault = v.GrantCategoryDetails.IsDefault
@@ -18778,6 +18794,11 @@ func (v *GetGrantCategoryGrantCategory) GetIsSystem() bool { return v.GrantCateg
 // GetName returns GetGrantCategoryGrantCategory.Name, and is useful for accessing the field via an interface.
 func (v *GetGrantCategoryGrantCategory) GetName() string { return v.GrantCategoryDetails.Name }
 
+// GetNamePlural returns GetGrantCategoryGrantCategory.NamePlural, and is useful for accessing the field via an interface.
+func (v *GetGrantCategoryGrantCategory) GetNamePlural() string {
+	return v.GrantCategoryDetails.NamePlural
+}
+
 // GetDescription returns GetGrantCategoryGrantCategory.Description, and is useful for accessing the field via an interface.
 func (v *GetGrantCategoryGrantCategory) GetDescription() string {
 	return v.GrantCategoryDetails.Description
@@ -18855,6 +18876,8 @@ type __premarshalGetGrantCategoryGrantCategory struct {
 
 	Name string `json:"name"`
 
+	NamePlural string `json:"namePlural"`
+
 	Description string `json:"description"`
 
 	Icon string `json:"icon"`
@@ -18891,6 +18914,7 @@ func (v *GetGrantCategoryGrantCategory) __premarshalJSON() (*__premarshalGetGran
 	retval.ModifiedAt = v.GrantCategoryDetails.ModifiedAt
 	retval.IsSystem = v.GrantCategoryDetails.IsSystem
 	retval.Name = v.GrantCategoryDetails.Name
+	retval.NamePlural = v.GrantCategoryDetails.NamePlural
 	retval.Description = v.GrantCategoryDetails.Description
 	retval.Icon = v.GrantCategoryDetails.Icon
 	retval.IsDefault = v.GrantCategoryDetails.IsDefault
@@ -20585,6 +20609,8 @@ type GrantCategory struct {
 	Id string `json:"id"`
 	// Display name for the grant category.
 	Name string `json:"name"`
+	// The plural form of the display name for the grant category.
+	NamePlural string `json:"namePlural"`
 	// If true, this grant category is provisioned by the system and cannot be edited or removed.
 	IsSystem bool `json:"isSystem"`
 	// If true, new access controls will be created in this category as default and imported (external) access controls will also be in this category.
@@ -20596,6 +20622,9 @@ func (v *GrantCategory) GetId() string { return v.Id }
 
 // GetName returns GrantCategory.Name, and is useful for accessing the field via an interface.
 func (v *GrantCategory) GetName() string { return v.Name }
+
+// GetNamePlural returns GrantCategory.NamePlural, and is useful for accessing the field via an interface.
+func (v *GrantCategory) GetNamePlural() string { return v.NamePlural }
 
 // GetIsSystem returns GrantCategory.IsSystem, and is useful for accessing the field via an interface.
 func (v *GrantCategory) GetIsSystem() bool { return v.IsSystem }
@@ -20690,6 +20719,8 @@ type GrantCategoryDetails struct {
 	IsSystem bool `json:"isSystem"`
 	// Display name for the grant category.
 	Name string `json:"name"`
+	// The plural form of the display name for the grant category.
+	NamePlural string `json:"namePlural"`
 	// Description of the grant category.
 	Description string `json:"description"`
 	// The icon to use in the user interface to identify grants of this category.
@@ -20724,6 +20755,9 @@ func (v *GrantCategoryDetails) GetIsSystem() bool { return v.IsSystem }
 
 // GetName returns GrantCategoryDetails.Name, and is useful for accessing the field via an interface.
 func (v *GrantCategoryDetails) GetName() string { return v.Name }
+
+// GetNamePlural returns GrantCategoryDetails.NamePlural, and is useful for accessing the field via an interface.
+func (v *GrantCategoryDetails) GetNamePlural() string { return v.NamePlural }
 
 // GetDescription returns GrantCategoryDetails.Description, and is useful for accessing the field via an interface.
 func (v *GrantCategoryDetails) GetDescription() string { return v.Description }
@@ -24499,6 +24533,11 @@ func (v *ListGrantCategoriesGrantCategoriesGrantCategory) GetName() string {
 	return v.GrantCategoryDetails.Name
 }
 
+// GetNamePlural returns ListGrantCategoriesGrantCategoriesGrantCategory.NamePlural, and is useful for accessing the field via an interface.
+func (v *ListGrantCategoriesGrantCategoriesGrantCategory) GetNamePlural() string {
+	return v.GrantCategoryDetails.NamePlural
+}
+
 // GetDescription returns ListGrantCategoriesGrantCategoriesGrantCategory.Description, and is useful for accessing the field via an interface.
 func (v *ListGrantCategoriesGrantCategoriesGrantCategory) GetDescription() string {
 	return v.GrantCategoryDetails.Description
@@ -24580,6 +24619,8 @@ type __premarshalListGrantCategoriesGrantCategoriesGrantCategory struct {
 
 	Name string `json:"name"`
 
+	NamePlural string `json:"namePlural"`
+
 	Description string `json:"description"`
 
 	Icon string `json:"icon"`
@@ -24615,6 +24656,7 @@ func (v *ListGrantCategoriesGrantCategoriesGrantCategory) __premarshalJSON() (*_
 	retval.ModifiedAt = v.GrantCategoryDetails.ModifiedAt
 	retval.IsSystem = v.GrantCategoryDetails.IsSystem
 	retval.Name = v.GrantCategoryDetails.Name
+	retval.NamePlural = v.GrantCategoryDetails.NamePlural
 	retval.Description = v.GrantCategoryDetails.Description
 	retval.Icon = v.GrantCategoryDetails.Icon
 	retval.IsDefault = v.GrantCategoryDetails.IsDefault
@@ -36594,6 +36636,11 @@ func (v *UpdateGrantCategoryUpdateGrantCategory) GetIsSystem() bool {
 // GetName returns UpdateGrantCategoryUpdateGrantCategory.Name, and is useful for accessing the field via an interface.
 func (v *UpdateGrantCategoryUpdateGrantCategory) GetName() string { return v.GrantCategoryDetails.Name }
 
+// GetNamePlural returns UpdateGrantCategoryUpdateGrantCategory.NamePlural, and is useful for accessing the field via an interface.
+func (v *UpdateGrantCategoryUpdateGrantCategory) GetNamePlural() string {
+	return v.GrantCategoryDetails.NamePlural
+}
+
 // GetDescription returns UpdateGrantCategoryUpdateGrantCategory.Description, and is useful for accessing the field via an interface.
 func (v *UpdateGrantCategoryUpdateGrantCategory) GetDescription() string {
 	return v.GrantCategoryDetails.Description
@@ -36675,6 +36722,8 @@ type __premarshalUpdateGrantCategoryUpdateGrantCategory struct {
 
 	Name string `json:"name"`
 
+	NamePlural string `json:"namePlural"`
+
 	Description string `json:"description"`
 
 	Icon string `json:"icon"`
@@ -36711,6 +36760,7 @@ func (v *UpdateGrantCategoryUpdateGrantCategory) __premarshalJSON() (*__premarsh
 	retval.ModifiedAt = v.GrantCategoryDetails.ModifiedAt
 	retval.IsSystem = v.GrantCategoryDetails.IsSystem
 	retval.Name = v.GrantCategoryDetails.Name
+	retval.NamePlural = v.GrantCategoryDetails.NamePlural
 	retval.Description = v.GrantCategoryDetails.Description
 	retval.Icon = v.GrantCategoryDetails.Icon
 	retval.IsDefault = v.GrantCategoryDetails.IsDefault
@@ -40196,6 +40246,7 @@ fragment InvalidInputError on InvalidInputError {
 fragment GrantCategory on GrantCategory {
 	id
 	name
+	namePlural
 	isSystem
 	isDefault
 }
@@ -40433,6 +40484,7 @@ fragment InvalidInputError on InvalidInputError {
 fragment GrantCategory on GrantCategory {
 	id
 	name
+	namePlural
 	isSystem
 	isDefault
 }
@@ -40588,6 +40640,7 @@ fragment GrantCategoryDetails on GrantCategory {
 	modifiedAt
 	isSystem
 	name
+	namePlural
 	description
 	icon
 	isDefault
@@ -40977,6 +41030,7 @@ fragment InvalidInputError on InvalidInputError {
 fragment GrantCategory on GrantCategory {
 	id
 	name
+	namePlural
 	isSystem
 	isDefault
 }
@@ -41112,6 +41166,7 @@ fragment InvalidInputError on InvalidInputError {
 fragment GrantCategory on GrantCategory {
 	id
 	name
+	namePlural
 	isSystem
 	isDefault
 }
@@ -41681,6 +41736,7 @@ fragment InvalidInputError on InvalidInputError {
 fragment GrantCategory on GrantCategory {
 	id
 	name
+	namePlural
 	isSystem
 	isDefault
 }
@@ -41848,6 +41904,7 @@ fragment AccessControl on AccessControl {
 fragment GrantCategory on GrantCategory {
 	id
 	name
+	namePlural
 	isSystem
 	isDefault
 }
@@ -42241,6 +42298,7 @@ fragment GrantCategoryDetails on GrantCategory {
 	modifiedAt
 	isSystem
 	name
+	namePlural
 	description
 	icon
 	isDefault
@@ -42832,6 +42890,7 @@ fragment AccessControl on AccessControl {
 fragment GrantCategory on GrantCategory {
 	id
 	name
+	namePlural
 	isSystem
 	isDefault
 }
@@ -43100,6 +43159,7 @@ fragment GrantCategoryDetails on GrantCategory {
 	modifiedAt
 	isSystem
 	name
+	namePlural
 	description
 	icon
 	isDefault
@@ -44303,6 +44363,7 @@ fragment NotFoundError on NotFoundError {
 fragment GrantCategory on GrantCategory {
 	id
 	name
+	namePlural
 	isSystem
 	isDefault
 }
@@ -44464,6 +44525,7 @@ fragment GrantCategoryDetails on GrantCategory {
 	modifiedAt
 	isSystem
 	name
+	namePlural
 	description
 	icon
 	isDefault
