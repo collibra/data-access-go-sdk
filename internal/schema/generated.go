@@ -29339,11 +29339,6 @@ func (v *NextSyncJobForSiteNextSyncJobForSiteSyncJob) GetDataSource() *SyncJobDa
 	return v.SyncJob.DataSource
 }
 
-// GetEdgeJobId returns NextSyncJobForSiteNextSyncJobForSiteSyncJob.EdgeJobId, and is useful for accessing the field via an interface.
-func (v *NextSyncJobForSiteNextSyncJobForSiteSyncJob) GetEdgeJobId() *string {
-	return v.SyncJob.EdgeJobId
-}
-
 // GetJob returns NextSyncJobForSiteNextSyncJobForSiteSyncJob.Job, and is useful for accessing the field via an interface.
 func (v *NextSyncJobForSiteNextSyncJobForSiteSyncJob) GetJob() *SyncJobJobJobResult {
 	return v.SyncJob.Job
@@ -29391,8 +29386,6 @@ type __premarshalNextSyncJobForSiteNextSyncJobForSiteSyncJob struct {
 
 	DataSource json.RawMessage `json:"dataSource"`
 
-	EdgeJobId *string `json:"edgeJobId"`
-
 	Job json.RawMessage `json:"job"`
 
 	ModifiedAt time.Time `json:"modifiedAt"`
@@ -29439,7 +29432,6 @@ func (v *NextSyncJobForSiteNextSyncJobForSiteSyncJob) __premarshalJSON() (*__pre
 			}
 		}
 	}
-	retval.EdgeJobId = v.SyncJob.EdgeJobId
 	{
 
 		dst := &retval.Job
@@ -33054,7 +33046,6 @@ type SyncJob struct {
 	Configuration map[string]interface{}             `json:"-"`
 	CreatedAt     time.Time                          `json:"createdAt"`
 	DataSource    *SyncJobDataSourceDataSourceResult `json:"-"`
-	EdgeJobId     *string                            `json:"edgeJobId"`
 	Job           *SyncJobJobJobResult               `json:"-"`
 	ModifiedAt    time.Time                          `json:"modifiedAt"`
 	Triggered     bool                               `json:"triggered"`
@@ -33068,9 +33059,6 @@ func (v *SyncJob) GetCreatedAt() time.Time { return v.CreatedAt }
 
 // GetDataSource returns SyncJob.DataSource, and is useful for accessing the field via an interface.
 func (v *SyncJob) GetDataSource() *SyncJobDataSourceDataSourceResult { return v.DataSource }
-
-// GetEdgeJobId returns SyncJob.EdgeJobId, and is useful for accessing the field via an interface.
-func (v *SyncJob) GetEdgeJobId() *string { return v.EdgeJobId }
 
 // GetJob returns SyncJob.Job, and is useful for accessing the field via an interface.
 func (v *SyncJob) GetJob() *SyncJobJobJobResult { return v.Job }
@@ -33151,8 +33139,6 @@ type __premarshalSyncJob struct {
 
 	DataSource json.RawMessage `json:"dataSource"`
 
-	EdgeJobId *string `json:"edgeJobId"`
-
 	Job json.RawMessage `json:"job"`
 
 	ModifiedAt time.Time `json:"modifiedAt"`
@@ -33198,7 +33184,6 @@ func (v *SyncJob) __premarshalJSON() (*__premarshalSyncJob, error) {
 			}
 		}
 	}
-	retval.EdgeJobId = v.EdgeJobId
 	{
 
 		dst := &retval.Job
@@ -43926,7 +43911,6 @@ fragment SyncJob on SyncJob {
 		... InvalidInputError
 		... NotFoundError
 	}
-	edgeJobId
 	job {
 		__typename
 		... Job
