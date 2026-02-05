@@ -29771,6 +29771,7 @@ type ParameterDefinitionInput struct {
 	Source       *ParameterSource           `json:"source,omitempty"`
 	DefaultValue *interface{}               `json:"defaultValue,omitempty"`
 	Parameters   []ParameterDefinitionInput `json:"parameters"`
+	IsAdvanced   bool                       `json:"isAdvanced"`
 }
 
 // GetType returns ParameterDefinitionInput.Type, and is useful for accessing the field via an interface.
@@ -29800,6 +29801,9 @@ func (v *ParameterDefinitionInput) GetDefaultValue() *interface{} { return v.Def
 // GetParameters returns ParameterDefinitionInput.Parameters, and is useful for accessing the field via an interface.
 func (v *ParameterDefinitionInput) GetParameters() []ParameterDefinitionInput { return v.Parameters }
 
+// GetIsAdvanced returns ParameterDefinitionInput.IsAdvanced, and is useful for accessing the field via an interface.
+func (v *ParameterDefinitionInput) GetIsAdvanced() bool { return v.IsAdvanced }
+
 type ParameterSource string
 
 const (
@@ -29821,14 +29825,12 @@ type ParameterType string
 const (
 	ParameterTypeParameter ParameterType = "Parameter"
 	ParameterTypeObject    ParameterType = "Object"
-	ParameterTypeAdvanced  ParameterType = "Advanced"
 	ParameterTypeArray     ParameterType = "Array"
 )
 
 var AllParameterType = []ParameterType{
 	ParameterTypeParameter,
 	ParameterTypeObject,
-	ParameterTypeAdvanced,
 	ParameterTypeArray,
 }
 
