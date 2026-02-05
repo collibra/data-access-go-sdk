@@ -68,11 +68,11 @@ func manualUnescapeUnicode(input string) string {
 
 				switch {
 				case char >= '0' && char <= '9':
-					val |= rune(char - '0')
+					val |= char - '0'
 				case char >= 'a' && char <= 'f':
-					val |= rune(char - 'a' + 10)
+					val |= char - 'a' + 10
 				case char >= 'A' && char <= 'F':
-					val |= rune(char - 'A' + 10)
+					val |= char - 'A' + 10
 				default:
 					valid = false
 				}
