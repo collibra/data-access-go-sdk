@@ -34,26 +34,47 @@ func UnmarshalGraphQLString(s string) string {
 		s = s[1 : len(s)-1]
 	}
 
-	r := strings.NewReplacer(
-		`\t`, "\t",
-		`\n`, "\n",
-		`\r`, "\r",
-		`\"`, "\"",
-	)
-
-	s = r.Replace(s)
-	if strings.Contains(s, `\u00`) {
-		s = manualUnescapeUnicode(s)
-	}
+	s = unescape(s)
 
 	return s
 }
 
-func manualUnescapeUnicode(input string) string {
+func unescape(input string) string { //nolint:cyclop
 	var builder strings.Builder
 	builder.Grow(len(input))
 
 	for i := 0; i < len(input); i++ {
+		if input[i] == '\\' {
+			if i+1 < len(input) {
+				switch input[i+1] {
+				case 't':
+					builder.WriteByte('\t')
+
+					i++
+					continue
+				case 'n':
+					builder.WriteByte('\n')
+
+					i++
+					continue
+				case 'r':
+					builder.WriteByte('\r')
+
+					i++
+					continue
+				case '\\':
+					builder.WriteByte('\\')
+
+					i++
+					continue
+				case '"':
+					builder.WriteByte('"')
+
+					i++
+					continue
+				}
+			}
+		}
 		// Check for the beginning of a \uXXXX sequence
 		if input[i] == '\\' && i+5 < len(input) && input[i+1] == 'u' {
 			// Extract the 4 hex digits after \u
