@@ -643,7 +643,6 @@ type ParameterType = schema.ParameterType
 const (
 	ParameterTypeParameter ParameterType = schema.ParameterTypeParameter
 	ParameterTypeObject    ParameterType = schema.ParameterTypeObject
-	ParameterTypeAdvanced  ParameterType = schema.ParameterTypeAdvanced
 	ParameterTypeArray     ParameterType = schema.ParameterTypeArray
 )
 
@@ -870,7 +869,7 @@ var AllEntityType = []EntityType{EntityTypeAccesscontrol, EntityTypeAccess, Enti
 var AllJobStatus = []JobStatus{JobStatusStarted, JobStatusInprogress, JobStatusCompleted, JobStatusFailed, JobStatusTimedout}
 var AllParameterDataType = []ParameterDataType{ParameterDataTypeString, ParameterDataTypeInteger, ParameterDataTypeFloat, ParameterDataTypeBoolean, ParameterDataTypeTimestamp, ParameterDataTypeStringarray, ParameterDataTypeIntegerarray, ParameterDataTypeFloatarray, ParameterDataTypeBooleanarray, ParameterDataTypeTimestamparray}
 var AllParameterSource = []ParameterSource{ParameterSourceAgent, ParameterSourceAgentruntime, ParameterSourceConnector, ParameterSourceConnectorsecure}
-var AllParameterType = []ParameterType{ParameterTypeParameter, ParameterTypeObject, ParameterTypeAdvanced, ParameterTypeArray}
+var AllParameterType = []ParameterType{ParameterTypeParameter, ParameterTypeObject, ParameterTypeArray}
 var AllSort = []Sort{SortAsc, SortDesc}
 var AllSubtaskStatus = []SubtaskStatus{SubtaskStatusStarted, SubtaskStatusQueued, SubtaskStatusDataretrieve, SubtaskStatusInprogress, SubtaskStatusCompleted, SubtaskStatusFailed, SubtaskStatusTimedout}
 var AllSyncStatus = []SyncStatus{SyncStatusNotconnected, SyncStatusFailed, SyncStatusOutofdate, SyncStatusInprogress, SyncStatusSynced, SyncStatusOutofsync}
