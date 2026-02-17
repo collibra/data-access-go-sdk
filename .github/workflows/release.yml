@@ -19,7 +19,7 @@ jobs:
 
       - name: Get tag
         id: tag
-        uses: dawidd6/action-get-tag@v1
+        run: echo "tag=${{ github.ref_name }}" >> $GITHUB_OUTPUT
 
       - name: Current tag
         run: echo "Current tag ${{steps.tag.outputs.tag}}"
