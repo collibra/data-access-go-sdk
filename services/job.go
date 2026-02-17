@@ -11,7 +11,6 @@ import (
 	"github.com/collibra/data-access-go-sdk/internal"
 	"github.com/collibra/data-access-go-sdk/internal/schema"
 	"github.com/collibra/data-access-go-sdk/types"
-	"github.com/collibra/data-access-go-sdk/utils"
 )
 
 type JobClient struct {
@@ -52,7 +51,7 @@ func (c *JobClient) ListJobs(ctx context.Context, ops ...func(*JobListOptions)) 
 	}
 
 	loadPageFn := func(ctx context.Context, cursor *string) (*types.PageInfo, []types.JobConnectionEdgesJobEdge, error) {
-		output, err := schema.ListJobs(ctx, c.client, options.filter, cursor, utils.Ptr(internal.MaxPageSize))
+		output, err := schema.ListJobs(ctx, c.client, options.filter, cursor, new(internal.MaxPageSize))
 		if err != nil {
 			return nil, nil, types.NewErrClient(err)
 		}
@@ -94,7 +93,7 @@ func (c *JobClient) GetTask(ctx context.Context, jobId string, taskType string) 
 // ListTasksOfJob returns a channel that will receive the list of tasks for a job.
 func (c *JobClient) ListTasksOfJob(ctx context.Context, jobId string) iter.Seq2[*types.Task, error] {
 	loadPageFn := func(ctx context.Context, cursor *string) (*types.PageInfo, []types.TaskConnectionEdgesTaskEdge, error) {
-		output, err := schema.ListTasksOfJob(ctx, c.client, jobId, cursor, utils.Ptr(internal.MaxPageSize))
+		output, err := schema.ListTasksOfJob(ctx, c.client, jobId, cursor, new(internal.MaxPageSize))
 		if err != nil {
 			return nil, nil, types.NewErrClient(err)
 		}

@@ -10,7 +10,6 @@ import (
 	"github.com/collibra/data-access-go-sdk/internal"
 	"github.com/collibra/data-access-go-sdk/internal/schema"
 	"github.com/collibra/data-access-go-sdk/types"
-	"github.com/collibra/data-access-go-sdk/utils"
 )
 
 type DataSourceClient struct {
@@ -166,7 +165,7 @@ func (c *DataSourceClient) ListDataSources(ctx context.Context, ops ...func(*Dat
 	}
 
 	loadPageFn := func(ctx context.Context, cursor *string) (*types.PageInfo, []types.DataSourceConnectionEdgesDataSourceEdge, error) {
-		output, err := schema.ListDataSources(ctx, c.client, cursor, utils.Ptr(internal.MaxPageSize), options.filter, options.order)
+		output, err := schema.ListDataSources(ctx, c.client, cursor, new(internal.MaxPageSize), options.filter, options.order)
 		if err != nil {
 			return nil, nil, types.NewErrClient(err)
 		}
