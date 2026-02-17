@@ -11,7 +11,6 @@ import (
 	"github.com/collibra/data-access-go-sdk/internal"
 	"github.com/collibra/data-access-go-sdk/internal/schema"
 	"github.com/collibra/data-access-go-sdk/types"
-	"github.com/collibra/data-access-go-sdk/utils"
 )
 
 type AccessControlClient struct {
@@ -201,7 +200,7 @@ func (a *AccessControlClient) ListAccessControls(ctx context.Context, ops ...fun
 	}
 
 	loadPageFn := func(ctx context.Context, cursor *string) (*schema.PageInfo, []schema.AccessControlConnectionEdgesAccessControlEdge, error) {
-		output, err := schema.ListAccessControls(ctx, a.client, cursor, utils.Ptr(internal.MaxPageSize), options.filter, options.order)
+		output, err := schema.ListAccessControls(ctx, a.client, cursor, new(internal.MaxPageSize), options.filter, options.order)
 		if err != nil {
 			return nil, nil, types.NewErrClient(err)
 		}
@@ -249,7 +248,7 @@ func (a *AccessControlClient) GetAccessControlWhoList(ctx context.Context, id st
 	}
 
 	loadPageFn := func(ctx context.Context, cursor *string) (*types.PageInfo, []types.AccessWhoItemConnectionEdgesAccessWhoItemEdge, error) {
-		output, err := schema.GetAccessControlWhoList(ctx, a.client, id, cursor, utils.Ptr(internal.MaxPageSize), nil, options.order)
+		output, err := schema.GetAccessControlWhoList(ctx, a.client, id, cursor, new(internal.MaxPageSize), nil, options.order)
 		if err != nil {
 			return nil, nil, types.NewErrClient(err)
 		}
@@ -314,7 +313,7 @@ func (a *AccessControlClient) GetAccessControlWhatDataObjectList(ctx context.Con
 	}
 
 	loadPageFn := func(ctx context.Context, cursor *string) (*types.PageInfo, []types.AccessWhatDataObjectItemConnectionEdgesAccessWhatDataObjectItemEdge, error) {
-		output, err := schema.GetAccessControlWhatDataObjectList(ctx, a.client, id, cursor, utils.Ptr(internal.MaxPageSize), options.filter, options.order)
+		output, err := schema.GetAccessControlWhatDataObjectList(ctx, a.client, id, cursor, new(internal.MaxPageSize), options.filter, options.order)
 		if err != nil {
 			return nil, nil, types.NewErrClient(err)
 		}
@@ -377,7 +376,7 @@ func (a *AccessControlClient) GetAccessControlWhatAccessControlList(ctx context.
 	}
 
 	loadPageFn := func(ctx context.Context, cursor *string) (*types.PageInfo, []types.AccessWhatAccessControlItemConnectionEdgesAccessWhatAccessControlItemEdge, error) {
-		output, err := schema.GetAccessControlWhatAccessControls(ctx, a.client, id, cursor, utils.Ptr(internal.MaxPageSize), options.order, options.filter)
+		output, err := schema.GetAccessControlWhatAccessControls(ctx, a.client, id, cursor, new(internal.MaxPageSize), options.order, options.filter)
 		if err != nil {
 			return nil, nil, types.NewErrClient(err)
 		}
@@ -446,7 +445,7 @@ func (a *AccessControlClient) GetAccessControlAbacWhatScope(ctx context.Context,
 	}
 
 	loadPageFn := func(ctx context.Context, cursor *string) (*types.PageInfo, []types.DataObjectConnectionEdgesDataObjectEdge, error) {
-		output, err := schema.ListAccessControlAbacWhatScope(ctx, a.client, id, cursor, utils.Ptr(internal.MaxPageSize), options.search, abacRule, options.order)
+		output, err := schema.ListAccessControlAbacWhatScope(ctx, a.client, id, cursor, new(internal.MaxPageSize), options.search, abacRule, options.order)
 		if err != nil {
 			return nil, nil, types.NewErrClient(err)
 		}

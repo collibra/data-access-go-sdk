@@ -10,7 +10,6 @@ import (
 	"github.com/collibra/data-access-go-sdk/internal"
 	"github.com/collibra/data-access-go-sdk/internal/schema"
 	"github.com/collibra/data-access-go-sdk/types"
-	"github.com/collibra/data-access-go-sdk/utils"
 )
 
 type RoleClient struct {
@@ -65,7 +64,7 @@ func (c *RoleClient) ListRoleAssignments(ctx context.Context, ops ...func(*RoleA
 	}
 
 	loadPageFn := func(ctx context.Context, cursor *string) (*types.PageInfo, []types.RoleAssignmentConnectionEdgesRoleAssignmentEdge, error) { //nolint:dupl
-		output, err := schema.ListRoleAssignments(ctx, c.client, cursor, utils.Ptr(internal.MaxPageSize), options.filter, options.order)
+		output, err := schema.ListRoleAssignments(ctx, c.client, cursor, new(internal.MaxPageSize), options.filter, options.order)
 		if err != nil {
 			return nil, nil, types.NewErrClient(err)
 		}
@@ -99,7 +98,7 @@ func (c *RoleClient) ListRoleAssignmentsOnDataObject(ctx context.Context, object
 	}
 
 	loadPageFn := func(ctx context.Context, cursor *string) (*types.PageInfo, []types.RoleAssignmentConnectionEdgesRoleAssignmentEdge, error) {
-		output, err := schema.ListRoleAssignmentsOnDataObject(ctx, c.client, objectId, cursor, utils.Ptr(internal.MaxPageSize), options.filter, options.order)
+		output, err := schema.ListRoleAssignmentsOnDataObject(ctx, c.client, objectId, cursor, new(internal.MaxPageSize), options.filter, options.order)
 		if err != nil {
 			return nil, nil, types.NewErrClient(err)
 		}
@@ -133,7 +132,7 @@ func (c *RoleClient) ListRoleAssignmentsOnDataSource(ctx context.Context, dataSo
 	}
 
 	loadPageFn := func(ctx context.Context, cursor *string) (*types.PageInfo, []types.RoleAssignmentConnectionEdgesRoleAssignmentEdge, error) {
-		output, err := schema.ListRoleAssignmentsOnDataSource(ctx, c.client, dataSourceId, cursor, utils.Ptr(internal.MaxPageSize), options.filter, options.order)
+		output, err := schema.ListRoleAssignmentsOnDataSource(ctx, c.client, dataSourceId, cursor, new(internal.MaxPageSize), options.filter, options.order)
 		if err != nil {
 			return nil, nil, types.NewErrClient(err)
 		}
@@ -174,7 +173,7 @@ func (c *RoleClient) ListRoleAssignmentsOnAccessControl(ctx context.Context, acc
 	}
 
 	loadPageFn := func(ctx context.Context, cursor *string) (*types.PageInfo, []types.RoleAssignmentConnectionEdgesRoleAssignmentEdge, error) {
-		output, err := schema.ListRoleAssignmentsOnAccessControl(ctx, c.client, accessControlId, cursor, utils.Ptr(internal.MaxPageSize), options.filter, options.order)
+		output, err := schema.ListRoleAssignmentsOnAccessControl(ctx, c.client, accessControlId, cursor, new(internal.MaxPageSize), options.filter, options.order)
 		if err != nil {
 			return nil, nil, types.NewErrClient(err)
 		}
@@ -207,7 +206,7 @@ func (c *RoleClient) ListRoleAssignmentsOnUser(ctx context.Context, userId strin
 	}
 
 	loadPageFn := func(ctx context.Context, cursor *string) (*types.PageInfo, []types.RoleAssignmentConnectionEdgesRoleAssignmentEdge, error) {
-		output, err := schema.ListRoleAssignmentsOnUser(ctx, c.client, userId, cursor, utils.Ptr(internal.MaxPageSize), options.filter, options.order)
+		output, err := schema.ListRoleAssignmentsOnUser(ctx, c.client, userId, cursor, new(internal.MaxPageSize), options.filter, options.order)
 		if err != nil {
 			return nil, nil, types.NewErrClient(err)
 		}

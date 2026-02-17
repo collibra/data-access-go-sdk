@@ -8,7 +8,6 @@ import (
 
 	"github.com/collibra/data-access-go-sdk/internal/schema"
 	"github.com/collibra/data-access-go-sdk/types"
-	"github.com/collibra/data-access-go-sdk/utils"
 )
 
 type UserClient struct {
@@ -61,7 +60,7 @@ func (c *UserClient) GetUserByEmail(ctx context.Context, email string) (*types.U
 	}
 
 	if result.UserByEmail == nil {
-		return nil, types.NewErrNotFound(email, utils.Ptr("user"), "No user found for the given email address.")
+		return nil, types.NewErrNotFound(email, new("user"), "No user found for the given email address.")
 	}
 
 	switch user := (*result.UserByEmail).(type) {

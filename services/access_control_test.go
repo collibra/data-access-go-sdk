@@ -399,7 +399,7 @@ func (suite *AccessControlServiceTestSuite) TestGetAccessControlABACWhatScope() 
 	stringLiteral := "Stripe"
 	// TODO: adjust data here so the GetAccessControlAbacWhatScope response contains at least one item
 	whatAbacRule := schema.WhatAbacRuleInput{
-		Id:          utils.Ptr("rule1"),
+		Id:          new("rule1"),
 		DoTypes:     []string{"schema"},
 		Permissions: []string{"READ"},
 		Scope:       []string{"RAITO_DBT"},

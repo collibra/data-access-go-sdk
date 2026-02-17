@@ -10,7 +10,6 @@ import (
 	"github.com/collibra/data-access-go-sdk/internal"
 	"github.com/collibra/data-access-go-sdk/internal/schema"
 	"github.com/collibra/data-access-go-sdk/types"
-	"github.com/collibra/data-access-go-sdk/utils"
 )
 
 type DataObjectClient struct {
@@ -64,7 +63,7 @@ func (c *DataObjectClient) ListDataObjects(ctx context.Context, ops ...func(opti
 	}
 
 	loadPageFn := func(ctx context.Context, cursor *string) (*types.PageInfo, []types.DataObjectConnectionEdgesDataObjectEdge, error) { //nolint:dupl
-		output, err := schema.ListDataObjects(ctx, c.client, cursor, utils.Ptr(internal.MaxPageSize), options.filter, options.order)
+		output, err := schema.ListDataObjects(ctx, c.client, cursor, new(internal.MaxPageSize), options.filter, options.order)
 		if err != nil {
 			return nil, nil, types.NewErrClient(err)
 		}

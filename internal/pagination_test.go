@@ -32,13 +32,13 @@ func testPaginationExecutorSuccess(t *testing.T) {
 		}
 
 		if pageNr < 2 {
-			pageInfo := &types.PageInfo{HasNextPage: boolPtr(true)}
+			pageInfo := &types.PageInfo{HasNextPage: new(true)}
 			pageOffset := 3 * pageNr
 			edges := []int{pageOffset, pageOffset + 1, pageOffset + 2}
 
 			return pageInfo, edges, nil
 		} else {
-			pageInfo := &types.PageInfo{HasNextPage: boolPtr(false)}
+			pageInfo := &types.PageInfo{HasNextPage: new(false)}
 			pageOffset := 3 * pageNr
 			edges := []int{pageOffset, pageOffset + 1}
 			return pageInfo, edges, nil
@@ -103,7 +103,7 @@ func testPaginationExecutorEdgeFnError(t *testing.T) {
 	ctx := context.Background()
 	expectedErr := errors.New("edgeFn error")
 	mockLoadPageFn := func(ctx context.Context, cursor *string) (*types.PageInfo, []int, error) {
-		pageInfo := &types.PageInfo{HasNextPage: boolPtr(true)}
+		pageInfo := &types.PageInfo{HasNextPage: new(true)}
 		edges := []int{1, 2, 3}
 		return pageInfo, edges, nil
 	}
@@ -146,13 +146,13 @@ func testPaginationExecutorCancel(t *testing.T) {
 		}
 
 		if pageNr < 2 {
-			pageInfo := &types.PageInfo{HasNextPage: boolPtr(true)}
+			pageInfo := &types.PageInfo{HasNextPage: new(true)}
 			pageOffset := 3 * pageNr
 			edges := []int{pageOffset, pageOffset + 1, pageOffset + 2}
 
 			return pageInfo, edges, nil
 		} else {
-			pageInfo := &types.PageInfo{HasNextPage: boolPtr(false)}
+			pageInfo := &types.PageInfo{HasNextPage: new(false)}
 			pageOffset := 3 * pageNr
 			edges := []int{pageOffset, pageOffset + 1}
 			return pageInfo, edges, nil
@@ -187,9 +187,4 @@ func testPaginationExecutorCancel(t *testing.T) {
 
 	assert.Equal(t, []string{"item 0", "item 1", "item 2", "item 3", "item 4"}, items)
 	assert.ErrorIs(t, errEncountered, context.Canceled)
-}
-
-// Utility function to get a pointer to bool
-func boolPtr(b bool) *bool {
-	return &b
 }
