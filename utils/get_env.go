@@ -11,7 +11,7 @@ type ClientOptions = func(*internal.ClientOptions)
 
 type EnvConfig struct {
 	User     string
-	Password string
+	Password string //nolint:gosec
 	URL      string
 }
 

@@ -79,7 +79,7 @@ func (suite *AuthTestSuite) TestBasicAuthRoundTripper_PreservesHeaders() {
 	suite.Require().NoError(err)
 	req.Header.Set("Content-Type", "application/json")
 
-	resp, err := client.Do(req)
+	resp, err := client.Do(req) //nolint:gosec
 	suite.Require().NoError(err)
 
 	defer resp.Body.Close()

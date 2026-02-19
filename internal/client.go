@@ -14,7 +14,7 @@ import (
 type ClientOptions struct {
 	// Auth
 	Username string
-	Password string
+	Password string //nolint:gosec
 
 	// MaxRetries specifies the maximum number of retries for failed requests.
 	RetryWaitMin time.Duration
