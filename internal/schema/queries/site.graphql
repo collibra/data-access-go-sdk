@@ -22,8 +22,8 @@ fragment SyncJob on SyncJob {
     triggered
 }
 
-query NextSyncJobForSite($site: String!) {
-    nextSyncJobForSite(edgeSiteId: $site) {
+query NextSyncJobForEdgeDataSource($syncInput: SyncJobForEdgeDataSourceInput!) {
+    nextSyncJobForEdgeDataSource(syncInput: $syncInput) {
         ... SyncJob
         ... PermissionDeniedError
         ... NotFoundError

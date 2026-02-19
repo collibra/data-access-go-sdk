@@ -35,21 +35,21 @@ func (s *SiteService) UpdateSiteSettings(ctx context.Context, siteInfo types.Edg
 	}
 }
 
-func (s *SiteService) NextSyncJobForSite(ctx context.Context, siteId string) (*types.SyncJob, error) {
-	response, err := schema.NextSyncJobForSite(ctx, s.client, siteId)
+func (s *SiteService) NextSyncJobForEdgeDataSource(ctx context.Context, syncInput types.SyncJobForEdgeDataSourceInput) (*types.SyncJob, error) {
+	response, err := schema.NextSyncJobForEdgeDataSource(ctx, s.client, syncInput)
 	if err != nil {
 		return nil, types.NewErrClient(err)
 	}
 
-	switch v := response.NextSyncJobForSite.(type) {
-	case *schema.NextSyncJobForSiteNextSyncJobForSiteSyncJob:
+	switch v := response.NextSyncJobForEdgeDataSource.(type) {
+	case *schema.NextSyncJobForEdgeDataSourceNextSyncJobForEdgeDataSourceSyncJob:
 		return &v.SyncJob, nil
-	case *schema.NextSyncJobForSiteNextSyncJobForSitePermissionDeniedError:
+	case *schema.NextSyncJobForEdgeDataSourceNextSyncJobForEdgeDataSourcePermissionDeniedError:
 		return nil, types.NewErrPermissionDenied("nextSyncJobForSite", v.Message)
-	case *schema.NextSyncJobForSiteNextSyncJobForSiteInvalidInputError:
+	case *schema.NextSyncJobForEdgeDataSourceNextSyncJobForEdgeDataSourceInvalidInputError:
 		return nil, types.NewErrInvalidInput(v.Message)
-	case *schema.NextSyncJobForSiteNextSyncJobForSiteNotFoundError:
-		return nil, types.NewErrNotFound(siteId, nil, v.Message)
+	case *schema.NextSyncJobForEdgeDataSourceNextSyncJobForEdgeDataSourceNotFoundError:
+		return nil, types.NewErrNotFound(syncInput.DataSourceId, nil, v.Message)
 	default:
 		return nil, fmt.Errorf("unexpected response type: %T", v)
 	}

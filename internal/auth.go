@@ -6,7 +6,7 @@ import (
 
 type BasicAuthRoundTripper struct {
 	User     string
-	Password string
+	Password string //nolint:gosec
 
 	Proxied http.RoundTripper
 }
