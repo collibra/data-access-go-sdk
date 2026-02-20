@@ -3,12 +3,13 @@ package services_test
 import (
 	"testing"
 
+	"github.com/google/uuid"
+	"github.com/stretchr/testify/suite"
+
 	sdk "github.com/collibra/data-access-go-sdk"
 	"github.com/collibra/data-access-go-sdk/services"
 	"github.com/collibra/data-access-go-sdk/types"
 	"github.com/collibra/data-access-go-sdk/utils"
-	"github.com/google/uuid"
-	"github.com/stretchr/testify/suite"
 )
 
 type SiteServiceTestSuite struct {
@@ -40,9 +41,8 @@ func (suite *SiteServiceTestSuite) SetupSuite() {
 func (suite *SiteServiceTestSuite) Test_NextSyncJobForEdgeDataSource() {
 	ctx := suite.T().Context()
 	syncInput := types.SyncJobForEdgeDataSourceInput{
-		EdgeSiteId:       suite.siteId.String(),
-		EdgeConnectionId: suite.connectionId.String(),
-		DataSourceId:     suite.dataSourceId,
+		EdgeSiteId:   suite.siteId.String(),
+		DataSourceId: suite.dataSourceId,
 	}
 	_, err := suite.SiteClient.NextSyncJobForEdgeDataSource(ctx, syncInput)
 	suite.Require().Error(err)

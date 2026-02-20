@@ -33656,9 +33656,8 @@ func (v *SyncJobDataSourcePermissionDeniedError) __premarshalJSON() (*__premarsh
 }
 
 type SyncJobForEdgeDataSourceInput struct {
-	DataSourceId     string `json:"dataSourceId"`
-	EdgeSiteId       string `json:"edgeSiteId"`
-	EdgeConnectionId string `json:"edgeConnectionId"`
+	DataSourceId string `json:"dataSourceId"`
+	EdgeSiteId   string `json:"edgeSiteId"`
 }
 
 // GetDataSourceId returns SyncJobForEdgeDataSourceInput.DataSourceId, and is useful for accessing the field via an interface.
@@ -33666,9 +33665,6 @@ func (v *SyncJobForEdgeDataSourceInput) GetDataSourceId() string { return v.Data
 
 // GetEdgeSiteId returns SyncJobForEdgeDataSourceInput.EdgeSiteId, and is useful for accessing the field via an interface.
 func (v *SyncJobForEdgeDataSourceInput) GetEdgeSiteId() string { return v.EdgeSiteId }
-
-// GetEdgeConnectionId returns SyncJobForEdgeDataSourceInput.EdgeConnectionId, and is useful for accessing the field via an interface.
-func (v *SyncJobForEdgeDataSourceInput) GetEdgeConnectionId() string { return v.EdgeConnectionId }
 
 // SyncJobJob includes the requested fields of the GraphQL type Job.
 // The GraphQL type's documentation follows.
