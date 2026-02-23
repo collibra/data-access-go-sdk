@@ -616,16 +616,12 @@ type PageInfo = schema.PageInfo
 type ParameterDataType = schema.ParameterDataType
 
 const (
-	ParameterDataTypeString         ParameterDataType = schema.ParameterDataTypeString
-	ParameterDataTypeInteger        ParameterDataType = schema.ParameterDataTypeInteger
-	ParameterDataTypeFloat          ParameterDataType = schema.ParameterDataTypeFloat
-	ParameterDataTypeBoolean        ParameterDataType = schema.ParameterDataTypeBoolean
-	ParameterDataTypeTimestamp      ParameterDataType = schema.ParameterDataTypeTimestamp
-	ParameterDataTypeStringarray    ParameterDataType = schema.ParameterDataTypeStringarray
-	ParameterDataTypeIntegerarray   ParameterDataType = schema.ParameterDataTypeIntegerarray
-	ParameterDataTypeFloatarray     ParameterDataType = schema.ParameterDataTypeFloatarray
-	ParameterDataTypeBooleanarray   ParameterDataType = schema.ParameterDataTypeBooleanarray
-	ParameterDataTypeTimestamparray ParameterDataType = schema.ParameterDataTypeTimestamparray
+	ParameterDataTypeString    ParameterDataType = schema.ParameterDataTypeString
+	ParameterDataTypeInteger   ParameterDataType = schema.ParameterDataTypeInteger
+	ParameterDataTypeFloat     ParameterDataType = schema.ParameterDataTypeFloat
+	ParameterDataTypeBoolean   ParameterDataType = schema.ParameterDataTypeBoolean
+	ParameterDataTypeTimestamp ParameterDataType = schema.ParameterDataTypeTimestamp
+	ParameterDataTypeObject    ParameterDataType = schema.ParameterDataTypeObject
 )
 
 type ParameterDefinitionInput = schema.ParameterDefinitionInput
@@ -642,7 +638,6 @@ type ParameterType = schema.ParameterType
 
 const (
 	ParameterTypeParameter ParameterType = schema.ParameterTypeParameter
-	ParameterTypeObject    ParameterType = schema.ParameterTypeObject
 	ParameterTypeArray     ParameterType = schema.ParameterTypeArray
 )
 
@@ -868,9 +863,9 @@ var AllDataSourceFeatures = []DataSourceFeatures{DataSourceFeaturesColumnmasking
 var AllDataTypeOrigin = []DataTypeOrigin{DataTypeOriginInternal, DataTypeOriginExternal, DataTypeOriginShared}
 var AllEntityType = []EntityType{EntityTypeAccesscontrol, EntityTypeAccess, EntityTypeAccessrequest, EntityTypeUser, EntityTypeDataobject, EntityTypeDatasource, EntityTypeDatausage, EntityTypeTag, EntityTypeRole, EntityTypeRoleassignment, EntityTypeAccount, EntityTypeDatasharerecipient}
 var AllJobStatus = []JobStatus{JobStatusStarted, JobStatusInprogress, JobStatusCompleted, JobStatusFailed, JobStatusTimedout}
-var AllParameterDataType = []ParameterDataType{ParameterDataTypeString, ParameterDataTypeInteger, ParameterDataTypeFloat, ParameterDataTypeBoolean, ParameterDataTypeTimestamp, ParameterDataTypeStringarray, ParameterDataTypeIntegerarray, ParameterDataTypeFloatarray, ParameterDataTypeBooleanarray, ParameterDataTypeTimestamparray}
+var AllParameterDataType = []ParameterDataType{ParameterDataTypeString, ParameterDataTypeInteger, ParameterDataTypeFloat, ParameterDataTypeBoolean, ParameterDataTypeTimestamp, ParameterDataTypeObject}
 var AllParameterSource = []ParameterSource{ParameterSourceAgent, ParameterSourceAgentruntime, ParameterSourceConnector, ParameterSourceConnectorsecure}
-var AllParameterType = []ParameterType{ParameterTypeParameter, ParameterTypeObject, ParameterTypeArray}
+var AllParameterType = []ParameterType{ParameterTypeParameter, ParameterTypeArray}
 var AllSort = []Sort{SortAsc, SortDesc}
 var AllSubtaskStatus = []SubtaskStatus{SubtaskStatusStarted, SubtaskStatusQueued, SubtaskStatusDataretrieve, SubtaskStatusInprogress, SubtaskStatusCompleted, SubtaskStatusFailed, SubtaskStatusTimedout}
 var AllSyncStatus = []SyncStatus{SyncStatusNotconnected, SyncStatusFailed, SyncStatusOutofdate, SyncStatusInprogress, SyncStatusSynced, SyncStatusOutofsync}
