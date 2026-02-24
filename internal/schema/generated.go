@@ -29742,16 +29742,12 @@ func (v *PageInfo) GetStartCursor() *string { return v.StartCursor }
 type ParameterDataType string
 
 const (
-	ParameterDataTypeString         ParameterDataType = "String"
-	ParameterDataTypeInteger        ParameterDataType = "Integer"
-	ParameterDataTypeFloat          ParameterDataType = "Float"
-	ParameterDataTypeBoolean        ParameterDataType = "Boolean"
-	ParameterDataTypeTimestamp      ParameterDataType = "Timestamp"
-	ParameterDataTypeStringarray    ParameterDataType = "StringArray"
-	ParameterDataTypeIntegerarray   ParameterDataType = "IntegerArray"
-	ParameterDataTypeFloatarray     ParameterDataType = "FloatArray"
-	ParameterDataTypeBooleanarray   ParameterDataType = "BooleanArray"
-	ParameterDataTypeTimestamparray ParameterDataType = "TimestampArray"
+	ParameterDataTypeString    ParameterDataType = "String"
+	ParameterDataTypeInteger   ParameterDataType = "Integer"
+	ParameterDataTypeFloat     ParameterDataType = "Float"
+	ParameterDataTypeBoolean   ParameterDataType = "Boolean"
+	ParameterDataTypeTimestamp ParameterDataType = "Timestamp"
+	ParameterDataTypeObject    ParameterDataType = "Object"
 )
 
 var AllParameterDataType = []ParameterDataType{
@@ -29760,11 +29756,7 @@ var AllParameterDataType = []ParameterDataType{
 	ParameterDataTypeFloat,
 	ParameterDataTypeBoolean,
 	ParameterDataTypeTimestamp,
-	ParameterDataTypeStringarray,
-	ParameterDataTypeIntegerarray,
-	ParameterDataTypeFloatarray,
-	ParameterDataTypeBooleanarray,
-	ParameterDataTypeTimestamparray,
+	ParameterDataTypeObject,
 }
 
 type ParameterDefinitionInput struct {
@@ -29830,13 +29822,11 @@ type ParameterType string
 
 const (
 	ParameterTypeParameter ParameterType = "Parameter"
-	ParameterTypeObject    ParameterType = "Object"
 	ParameterTypeArray     ParameterType = "Array"
 )
 
 var AllParameterType = []ParameterType{
 	ParameterTypeParameter,
-	ParameterTypeObject,
 	ParameterTypeArray,
 }
 
