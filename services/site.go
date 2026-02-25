@@ -41,6 +41,7 @@ func (s *SiteService) NextSyncJobForEdgeDataSource(ctx context.Context, syncInpu
 	if err != nil {
 		return nil, types.NewErrClient(err)
 	}
+
 	if response.NextSyncJobForEdgeDataSource == nil {
 		return nil, nil
 	}
