@@ -5378,9 +5378,21 @@ func (v *CreateDataSourceCreateDataSource) __premarshalJSON() (*__premarshalCrea
 	return &retval, nil
 }
 
+// CreateDataSourceCreateDataSourceAlreadyExistsError includes the requested fields of the GraphQL type AlreadyExistsError.
+// The GraphQL type's documentation follows.
+//
+// Error when the user tries to create a resource that already exists.
+type CreateDataSourceCreateDataSourceAlreadyExistsError struct {
+	Typename *string `json:"__typename"`
+}
+
+// GetTypename returns CreateDataSourceCreateDataSourceAlreadyExistsError.Typename, and is useful for accessing the field via an interface.
+func (v *CreateDataSourceCreateDataSourceAlreadyExistsError) GetTypename() *string { return v.Typename }
+
 // CreateDataSourceCreateDataSourceDataSourceResult includes the requested fields of the GraphQL interface DataSourceResult.
 //
 // CreateDataSourceCreateDataSourceDataSourceResult is implemented by the following types:
+// CreateDataSourceCreateDataSourceAlreadyExistsError
 // CreateDataSourceCreateDataSource
 // CreateDataSourceCreateDataSourceInvalidInputError
 // CreateDataSourceCreateDataSourceNotFoundError
@@ -5391,6 +5403,8 @@ type CreateDataSourceCreateDataSourceDataSourceResult interface {
 	GetTypename() *string
 }
 
+func (v *CreateDataSourceCreateDataSourceAlreadyExistsError) implementsGraphQLInterfaceCreateDataSourceCreateDataSourceDataSourceResult() {
+}
 func (v *CreateDataSourceCreateDataSource) implementsGraphQLInterfaceCreateDataSourceCreateDataSourceDataSourceResult() {
 }
 func (v *CreateDataSourceCreateDataSourceInvalidInputError) implementsGraphQLInterfaceCreateDataSourceCreateDataSourceDataSourceResult() {
@@ -5414,6 +5428,9 @@ func __unmarshalCreateDataSourceCreateDataSourceDataSourceResult(b []byte, v *Cr
 	}
 
 	switch tn.TypeName {
+	case "AlreadyExistsError":
+		*v = new(CreateDataSourceCreateDataSourceAlreadyExistsError)
+		return json.Unmarshal(b, *v)
 	case "DataSource":
 		*v = new(CreateDataSourceCreateDataSource)
 		return json.Unmarshal(b, *v)
@@ -5439,6 +5456,14 @@ func __marshalCreateDataSourceCreateDataSourceDataSourceResult(v *CreateDataSour
 
 	var typename string
 	switch v := (*v).(type) {
+	case *CreateDataSourceCreateDataSourceAlreadyExistsError:
+		typename = "AlreadyExistsError"
+
+		result := struct {
+			TypeName string `json:"__typename"`
+			*CreateDataSourceCreateDataSourceAlreadyExistsError
+		}{typename, v}
+		return json.Marshal(result)
 	case *CreateDataSourceCreateDataSource:
 		typename = "DataSource"
 
@@ -9145,9 +9170,23 @@ func (v *DataSourceMaskInformationDataSource) GetMaskingMetadata() *DataSourceMa
 	return v.MaskingMetadata
 }
 
+// DataSourceMaskInformationDataSourceAlreadyExistsError includes the requested fields of the GraphQL type AlreadyExistsError.
+// The GraphQL type's documentation follows.
+//
+// Error when the user tries to create a resource that already exists.
+type DataSourceMaskInformationDataSourceAlreadyExistsError struct {
+	Typename *string `json:"__typename"`
+}
+
+// GetTypename returns DataSourceMaskInformationDataSourceAlreadyExistsError.Typename, and is useful for accessing the field via an interface.
+func (v *DataSourceMaskInformationDataSourceAlreadyExistsError) GetTypename() *string {
+	return v.Typename
+}
+
 // DataSourceMaskInformationDataSourceDataSourceResult includes the requested fields of the GraphQL interface DataSourceResult.
 //
 // DataSourceMaskInformationDataSourceDataSourceResult is implemented by the following types:
+// DataSourceMaskInformationDataSourceAlreadyExistsError
 // DataSourceMaskInformationDataSource
 // DataSourceMaskInformationDataSourceInvalidInputError
 // DataSourceMaskInformationDataSourceNotFoundError
@@ -9158,6 +9197,8 @@ type DataSourceMaskInformationDataSourceDataSourceResult interface {
 	GetTypename() *string
 }
 
+func (v *DataSourceMaskInformationDataSourceAlreadyExistsError) implementsGraphQLInterfaceDataSourceMaskInformationDataSourceDataSourceResult() {
+}
 func (v *DataSourceMaskInformationDataSource) implementsGraphQLInterfaceDataSourceMaskInformationDataSourceDataSourceResult() {
 }
 func (v *DataSourceMaskInformationDataSourceInvalidInputError) implementsGraphQLInterfaceDataSourceMaskInformationDataSourceDataSourceResult() {
@@ -9181,6 +9222,9 @@ func __unmarshalDataSourceMaskInformationDataSourceDataSourceResult(b []byte, v 
 	}
 
 	switch tn.TypeName {
+	case "AlreadyExistsError":
+		*v = new(DataSourceMaskInformationDataSourceAlreadyExistsError)
+		return json.Unmarshal(b, *v)
 	case "DataSource":
 		*v = new(DataSourceMaskInformationDataSource)
 		return json.Unmarshal(b, *v)
@@ -9206,6 +9250,14 @@ func __marshalDataSourceMaskInformationDataSourceDataSourceResult(v *DataSourceM
 
 	var typename string
 	switch v := (*v).(type) {
+	case *DataSourceMaskInformationDataSourceAlreadyExistsError:
+		typename = "AlreadyExistsError"
+
+		result := struct {
+			TypeName string `json:"__typename"`
+			*DataSourceMaskInformationDataSourceAlreadyExistsError
+		}{typename, v}
+		return json.Marshal(result)
 	case *DataSourceMaskInformationDataSource:
 		typename = "DataSource"
 
@@ -18439,9 +18491,21 @@ func (v *GetDataSourceDataSource) __premarshalJSON() (*__premarshalGetDataSource
 	return &retval, nil
 }
 
+// GetDataSourceDataSourceAlreadyExistsError includes the requested fields of the GraphQL type AlreadyExistsError.
+// The GraphQL type's documentation follows.
+//
+// Error when the user tries to create a resource that already exists.
+type GetDataSourceDataSourceAlreadyExistsError struct {
+	Typename *string `json:"__typename"`
+}
+
+// GetTypename returns GetDataSourceDataSourceAlreadyExistsError.Typename, and is useful for accessing the field via an interface.
+func (v *GetDataSourceDataSourceAlreadyExistsError) GetTypename() *string { return v.Typename }
+
 // GetDataSourceDataSourceDataSourceResult includes the requested fields of the GraphQL interface DataSourceResult.
 //
 // GetDataSourceDataSourceDataSourceResult is implemented by the following types:
+// GetDataSourceDataSourceAlreadyExistsError
 // GetDataSourceDataSource
 // GetDataSourceDataSourceInvalidInputError
 // GetDataSourceDataSourceNotFoundError
@@ -18452,6 +18516,8 @@ type GetDataSourceDataSourceDataSourceResult interface {
 	GetTypename() *string
 }
 
+func (v *GetDataSourceDataSourceAlreadyExistsError) implementsGraphQLInterfaceGetDataSourceDataSourceDataSourceResult() {
+}
 func (v *GetDataSourceDataSource) implementsGraphQLInterfaceGetDataSourceDataSourceDataSourceResult() {
 }
 func (v *GetDataSourceDataSourceInvalidInputError) implementsGraphQLInterfaceGetDataSourceDataSourceDataSourceResult() {
@@ -18475,6 +18541,9 @@ func __unmarshalGetDataSourceDataSourceDataSourceResult(b []byte, v *GetDataSour
 	}
 
 	switch tn.TypeName {
+	case "AlreadyExistsError":
+		*v = new(GetDataSourceDataSourceAlreadyExistsError)
+		return json.Unmarshal(b, *v)
 	case "DataSource":
 		*v = new(GetDataSourceDataSource)
 		return json.Unmarshal(b, *v)
@@ -18500,6 +18569,14 @@ func __marshalGetDataSourceDataSourceDataSourceResult(v *GetDataSourceDataSource
 
 	var typename string
 	switch v := (*v).(type) {
+	case *GetDataSourceDataSourceAlreadyExistsError:
+		typename = "AlreadyExistsError"
+
+		result := struct {
+			TypeName string `json:"__typename"`
+			*GetDataSourceDataSourceAlreadyExistsError
+		}{typename, v}
+		return json.Marshal(result)
 	case *GetDataSourceDataSource:
 		typename = "DataSource"
 
@@ -26495,9 +26572,23 @@ func (v *ListRoleAssignmentsOnDataSourceDataSource) __premarshalJSON() (*__prema
 	return &retval, nil
 }
 
+// ListRoleAssignmentsOnDataSourceDataSourceAlreadyExistsError includes the requested fields of the GraphQL type AlreadyExistsError.
+// The GraphQL type's documentation follows.
+//
+// Error when the user tries to create a resource that already exists.
+type ListRoleAssignmentsOnDataSourceDataSourceAlreadyExistsError struct {
+	Typename *string `json:"__typename"`
+}
+
+// GetTypename returns ListRoleAssignmentsOnDataSourceDataSourceAlreadyExistsError.Typename, and is useful for accessing the field via an interface.
+func (v *ListRoleAssignmentsOnDataSourceDataSourceAlreadyExistsError) GetTypename() *string {
+	return v.Typename
+}
+
 // ListRoleAssignmentsOnDataSourceDataSourceDataSourceResult includes the requested fields of the GraphQL interface DataSourceResult.
 //
 // ListRoleAssignmentsOnDataSourceDataSourceDataSourceResult is implemented by the following types:
+// ListRoleAssignmentsOnDataSourceDataSourceAlreadyExistsError
 // ListRoleAssignmentsOnDataSourceDataSource
 // ListRoleAssignmentsOnDataSourceDataSourceInvalidInputError
 // ListRoleAssignmentsOnDataSourceDataSourceNotFoundError
@@ -26508,6 +26599,8 @@ type ListRoleAssignmentsOnDataSourceDataSourceDataSourceResult interface {
 	GetTypename() *string
 }
 
+func (v *ListRoleAssignmentsOnDataSourceDataSourceAlreadyExistsError) implementsGraphQLInterfaceListRoleAssignmentsOnDataSourceDataSourceDataSourceResult() {
+}
 func (v *ListRoleAssignmentsOnDataSourceDataSource) implementsGraphQLInterfaceListRoleAssignmentsOnDataSourceDataSourceDataSourceResult() {
 }
 func (v *ListRoleAssignmentsOnDataSourceDataSourceInvalidInputError) implementsGraphQLInterfaceListRoleAssignmentsOnDataSourceDataSourceDataSourceResult() {
@@ -26531,6 +26624,9 @@ func __unmarshalListRoleAssignmentsOnDataSourceDataSourceDataSourceResult(b []by
 	}
 
 	switch tn.TypeName {
+	case "AlreadyExistsError":
+		*v = new(ListRoleAssignmentsOnDataSourceDataSourceAlreadyExistsError)
+		return json.Unmarshal(b, *v)
 	case "DataSource":
 		*v = new(ListRoleAssignmentsOnDataSourceDataSource)
 		return json.Unmarshal(b, *v)
@@ -26556,6 +26652,14 @@ func __marshalListRoleAssignmentsOnDataSourceDataSourceDataSourceResult(v *ListR
 
 	var typename string
 	switch v := (*v).(type) {
+	case *ListRoleAssignmentsOnDataSourceDataSourceAlreadyExistsError:
+		typename = "AlreadyExistsError"
+
+		result := struct {
+			TypeName string `json:"__typename"`
+			*ListRoleAssignmentsOnDataSourceDataSourceAlreadyExistsError
+		}{typename, v}
+		return json.Marshal(result)
 	case *ListRoleAssignmentsOnDataSourceDataSource:
 		typename = "DataSource"
 
@@ -29618,11 +29722,11 @@ func __marshalNextSyncJobForEdgeDataSourceNextSyncJobForEdgeDataSourceSyncJobRes
 
 // NextSyncJobForEdgeDataSourceResponse is returned by NextSyncJobForEdgeDataSource on success.
 type NextSyncJobForEdgeDataSourceResponse struct {
-	NextSyncJobForEdgeDataSource NextSyncJobForEdgeDataSourceNextSyncJobForEdgeDataSourceSyncJobResult `json:"-"`
+	NextSyncJobForEdgeDataSource *NextSyncJobForEdgeDataSourceNextSyncJobForEdgeDataSourceSyncJobResult `json:"-"`
 }
 
 // GetNextSyncJobForEdgeDataSource returns NextSyncJobForEdgeDataSourceResponse.NextSyncJobForEdgeDataSource, and is useful for accessing the field via an interface.
-func (v *NextSyncJobForEdgeDataSourceResponse) GetNextSyncJobForEdgeDataSource() NextSyncJobForEdgeDataSourceNextSyncJobForEdgeDataSourceSyncJobResult {
+func (v *NextSyncJobForEdgeDataSourceResponse) GetNextSyncJobForEdgeDataSource() *NextSyncJobForEdgeDataSourceNextSyncJobForEdgeDataSourceSyncJobResult {
 	return v.NextSyncJobForEdgeDataSource
 }
 
@@ -29648,8 +29752,9 @@ func (v *NextSyncJobForEdgeDataSourceResponse) UnmarshalJSON(b []byte) error {
 		dst := &v.NextSyncJobForEdgeDataSource
 		src := firstPass.NextSyncJobForEdgeDataSource
 		if len(src) != 0 && string(src) != "null" {
+			*dst = new(NextSyncJobForEdgeDataSourceNextSyncJobForEdgeDataSourceSyncJobResult)
 			err = __unmarshalNextSyncJobForEdgeDataSourceNextSyncJobForEdgeDataSourceSyncJobResult(
-				src, dst)
+				src, *dst)
 			if err != nil {
 				return fmt.Errorf(
 					"unable to unmarshal NextSyncJobForEdgeDataSourceResponse.NextSyncJobForEdgeDataSource: %w", err)
@@ -29678,12 +29783,14 @@ func (v *NextSyncJobForEdgeDataSourceResponse) __premarshalJSON() (*__premarshal
 
 		dst := &retval.NextSyncJobForEdgeDataSource
 		src := v.NextSyncJobForEdgeDataSource
-		var err error
-		*dst, err = __marshalNextSyncJobForEdgeDataSourceNextSyncJobForEdgeDataSourceSyncJobResult(
-			&src)
-		if err != nil {
-			return nil, fmt.Errorf(
-				"unable to marshal NextSyncJobForEdgeDataSourceResponse.NextSyncJobForEdgeDataSource: %w", err)
+		if src != nil {
+			var err error
+			*dst, err = __marshalNextSyncJobForEdgeDataSourceNextSyncJobForEdgeDataSourceSyncJobResult(
+				src)
+			if err != nil {
+				return nil, fmt.Errorf(
+					"unable to marshal NextSyncJobForEdgeDataSourceResponse.NextSyncJobForEdgeDataSource: %w", err)
+			}
 		}
 	}
 	return &retval, nil
@@ -31176,6 +31283,19 @@ func (v *SetDataSourceMetadataResponse) __premarshalJSON() (*__premarshalSetData
 	return &retval, nil
 }
 
+// SetDataSourceMetadataSetDataSourceMetaDataAlreadyExistsError includes the requested fields of the GraphQL type AlreadyExistsError.
+// The GraphQL type's documentation follows.
+//
+// Error when the user tries to create a resource that already exists.
+type SetDataSourceMetadataSetDataSourceMetaDataAlreadyExistsError struct {
+	Typename *string `json:"__typename"`
+}
+
+// GetTypename returns SetDataSourceMetadataSetDataSourceMetaDataAlreadyExistsError.Typename, and is useful for accessing the field via an interface.
+func (v *SetDataSourceMetadataSetDataSourceMetaDataAlreadyExistsError) GetTypename() *string {
+	return v.Typename
+}
+
 // SetDataSourceMetadataSetDataSourceMetaDataDataSource includes the requested fields of the GraphQL type DataSource.
 // The GraphQL type's documentation follows.
 //
@@ -31291,6 +31411,7 @@ func (v *SetDataSourceMetadataSetDataSourceMetaDataDataSource) __premarshalJSON(
 // SetDataSourceMetadataSetDataSourceMetaDataDataSourceResult includes the requested fields of the GraphQL interface DataSourceResult.
 //
 // SetDataSourceMetadataSetDataSourceMetaDataDataSourceResult is implemented by the following types:
+// SetDataSourceMetadataSetDataSourceMetaDataAlreadyExistsError
 // SetDataSourceMetadataSetDataSourceMetaDataDataSource
 // SetDataSourceMetadataSetDataSourceMetaDataInvalidInputError
 // SetDataSourceMetadataSetDataSourceMetaDataNotFoundError
@@ -31301,6 +31422,8 @@ type SetDataSourceMetadataSetDataSourceMetaDataDataSourceResult interface {
 	GetTypename() *string
 }
 
+func (v *SetDataSourceMetadataSetDataSourceMetaDataAlreadyExistsError) implementsGraphQLInterfaceSetDataSourceMetadataSetDataSourceMetaDataDataSourceResult() {
+}
 func (v *SetDataSourceMetadataSetDataSourceMetaDataDataSource) implementsGraphQLInterfaceSetDataSourceMetadataSetDataSourceMetaDataDataSourceResult() {
 }
 func (v *SetDataSourceMetadataSetDataSourceMetaDataInvalidInputError) implementsGraphQLInterfaceSetDataSourceMetadataSetDataSourceMetaDataDataSourceResult() {
@@ -31324,6 +31447,9 @@ func __unmarshalSetDataSourceMetadataSetDataSourceMetaDataDataSourceResult(b []b
 	}
 
 	switch tn.TypeName {
+	case "AlreadyExistsError":
+		*v = new(SetDataSourceMetadataSetDataSourceMetaDataAlreadyExistsError)
+		return json.Unmarshal(b, *v)
 	case "DataSource":
 		*v = new(SetDataSourceMetadataSetDataSourceMetaDataDataSource)
 		return json.Unmarshal(b, *v)
@@ -31349,6 +31475,14 @@ func __marshalSetDataSourceMetadataSetDataSourceMetaDataDataSourceResult(v *SetD
 
 	var typename string
 	switch v := (*v).(type) {
+	case *SetDataSourceMetadataSetDataSourceMetaDataAlreadyExistsError:
+		typename = "AlreadyExistsError"
+
+		result := struct {
+			TypeName string `json:"__typename"`
+			*SetDataSourceMetadataSetDataSourceMetaDataAlreadyExistsError
+		}{typename, v}
+		return json.Marshal(result)
 	case *SetDataSourceMetadataSetDataSourceMetaDataDataSource:
 		typename = "DataSource"
 
@@ -33341,9 +33475,21 @@ func (v *SyncJobDataSource) __premarshalJSON() (*__premarshalSyncJobDataSource, 
 	return &retval, nil
 }
 
+// SyncJobDataSourceAlreadyExistsError includes the requested fields of the GraphQL type AlreadyExistsError.
+// The GraphQL type's documentation follows.
+//
+// Error when the user tries to create a resource that already exists.
+type SyncJobDataSourceAlreadyExistsError struct {
+	Typename *string `json:"__typename"`
+}
+
+// GetTypename returns SyncJobDataSourceAlreadyExistsError.Typename, and is useful for accessing the field via an interface.
+func (v *SyncJobDataSourceAlreadyExistsError) GetTypename() *string { return v.Typename }
+
 // SyncJobDataSourceDataSourceResult includes the requested fields of the GraphQL interface DataSourceResult.
 //
 // SyncJobDataSourceDataSourceResult is implemented by the following types:
+// SyncJobDataSourceAlreadyExistsError
 // SyncJobDataSource
 // SyncJobDataSourceInvalidInputError
 // SyncJobDataSourceNotFoundError
@@ -33354,6 +33500,8 @@ type SyncJobDataSourceDataSourceResult interface {
 	GetTypename() *string
 }
 
+func (v *SyncJobDataSourceAlreadyExistsError) implementsGraphQLInterfaceSyncJobDataSourceDataSourceResult() {
+}
 func (v *SyncJobDataSource) implementsGraphQLInterfaceSyncJobDataSourceDataSourceResult() {}
 func (v *SyncJobDataSourceInvalidInputError) implementsGraphQLInterfaceSyncJobDataSourceDataSourceResult() {
 }
@@ -33376,6 +33524,9 @@ func __unmarshalSyncJobDataSourceDataSourceResult(b []byte, v *SyncJobDataSource
 	}
 
 	switch tn.TypeName {
+	case "AlreadyExistsError":
+		*v = new(SyncJobDataSourceAlreadyExistsError)
+		return json.Unmarshal(b, *v)
 	case "DataSource":
 		*v = new(SyncJobDataSource)
 		return json.Unmarshal(b, *v)
@@ -33401,6 +33552,14 @@ func __marshalSyncJobDataSourceDataSourceResult(v *SyncJobDataSourceDataSourceRe
 
 	var typename string
 	switch v := (*v).(type) {
+	case *SyncJobDataSourceAlreadyExistsError:
+		typename = "AlreadyExistsError"
+
+		result := struct {
+			TypeName string `json:"__typename"`
+			*SyncJobDataSourceAlreadyExistsError
+		}{typename, v}
+		return json.Marshal(result)
 	case *SyncJobDataSource:
 		typename = "DataSource"
 
@@ -36285,9 +36444,21 @@ func (v *UpdateDataSourceUpdateDataSource) __premarshalJSON() (*__premarshalUpda
 	return &retval, nil
 }
 
+// UpdateDataSourceUpdateDataSourceAlreadyExistsError includes the requested fields of the GraphQL type AlreadyExistsError.
+// The GraphQL type's documentation follows.
+//
+// Error when the user tries to create a resource that already exists.
+type UpdateDataSourceUpdateDataSourceAlreadyExistsError struct {
+	Typename *string `json:"__typename"`
+}
+
+// GetTypename returns UpdateDataSourceUpdateDataSourceAlreadyExistsError.Typename, and is useful for accessing the field via an interface.
+func (v *UpdateDataSourceUpdateDataSourceAlreadyExistsError) GetTypename() *string { return v.Typename }
+
 // UpdateDataSourceUpdateDataSourceDataSourceResult includes the requested fields of the GraphQL interface DataSourceResult.
 //
 // UpdateDataSourceUpdateDataSourceDataSourceResult is implemented by the following types:
+// UpdateDataSourceUpdateDataSourceAlreadyExistsError
 // UpdateDataSourceUpdateDataSource
 // UpdateDataSourceUpdateDataSourceInvalidInputError
 // UpdateDataSourceUpdateDataSourceNotFoundError
@@ -36298,6 +36469,8 @@ type UpdateDataSourceUpdateDataSourceDataSourceResult interface {
 	GetTypename() *string
 }
 
+func (v *UpdateDataSourceUpdateDataSourceAlreadyExistsError) implementsGraphQLInterfaceUpdateDataSourceUpdateDataSourceDataSourceResult() {
+}
 func (v *UpdateDataSourceUpdateDataSource) implementsGraphQLInterfaceUpdateDataSourceUpdateDataSourceDataSourceResult() {
 }
 func (v *UpdateDataSourceUpdateDataSourceInvalidInputError) implementsGraphQLInterfaceUpdateDataSourceUpdateDataSourceDataSourceResult() {
@@ -36321,6 +36494,9 @@ func __unmarshalUpdateDataSourceUpdateDataSourceDataSourceResult(b []byte, v *Up
 	}
 
 	switch tn.TypeName {
+	case "AlreadyExistsError":
+		*v = new(UpdateDataSourceUpdateDataSourceAlreadyExistsError)
+		return json.Unmarshal(b, *v)
 	case "DataSource":
 		*v = new(UpdateDataSourceUpdateDataSource)
 		return json.Unmarshal(b, *v)
@@ -36346,6 +36522,14 @@ func __marshalUpdateDataSourceUpdateDataSourceDataSourceResult(v *UpdateDataSour
 
 	var typename string
 	switch v := (*v).(type) {
+	case *UpdateDataSourceUpdateDataSourceAlreadyExistsError:
+		typename = "AlreadyExistsError"
+
+		result := struct {
+			TypeName string `json:"__typename"`
+			*UpdateDataSourceUpdateDataSourceAlreadyExistsError
+		}{typename, v}
+		return json.Marshal(result)
 	case *UpdateDataSourceUpdateDataSource:
 		typename = "DataSource"
 
