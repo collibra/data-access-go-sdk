@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"github.com/Khan/genqlient/graphql"
+
 	"github.com/collibra/data-access-go-sdk/internal/schema"
 	"github.com/collibra/data-access-go-sdk/types"
 )
@@ -41,7 +42,11 @@ func (s *SiteService) NextSyncJobForEdgeDataSource(ctx context.Context, syncInpu
 		return nil, types.NewErrClient(err)
 	}
 
-	switch v := response.NextSyncJobForEdgeDataSource.(type) {
+	if response.NextSyncJobForEdgeDataSource == nil {
+		return nil, nil
+	}
+
+	switch v := (*response.NextSyncJobForEdgeDataSource).(type) {
 	case *schema.NextSyncJobForEdgeDataSourceNextSyncJobForEdgeDataSourceSyncJob:
 		return &v.SyncJob, nil
 	case *schema.NextSyncJobForEdgeDataSourceNextSyncJobForEdgeDataSourcePermissionDeniedError:
