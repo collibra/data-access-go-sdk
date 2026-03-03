@@ -1678,6 +1678,8 @@ type AccessControlTypeInput struct {
 	Type *string `json:"type,omitempty"`
 	// A human readable name for the access control
 	Label *string `json:"label,omitempty"`
+	// A description of the access control type
+	Description *string `json:"description,omitempty"`
 	// the name or base64 encoded version of the icon to use for this access control
 	Icon *string `json:"icon,omitempty"`
 	// Boolean to indicate if the access control represents a named entity (like a role or a policy) in the data source. False, typically means some kind of ACL system (nameless bindings).
@@ -1704,6 +1706,9 @@ func (v *AccessControlTypeInput) GetType() *string { return v.Type }
 
 // GetLabel returns AccessControlTypeInput.Label, and is useful for accessing the field via an interface.
 func (v *AccessControlTypeInput) GetLabel() *string { return v.Label }
+
+// GetDescription returns AccessControlTypeInput.Description, and is useful for accessing the field via an interface.
+func (v *AccessControlTypeInput) GetDescription() *string { return v.Description }
 
 // GetIcon returns AccessControlTypeInput.Icon, and is useful for accessing the field via an interface.
 func (v *AccessControlTypeInput) GetIcon() *string { return v.Icon }
