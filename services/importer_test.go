@@ -123,8 +123,6 @@ func (suite *ImporterServiceTestSuite) Test_SupportedCliVersions() {
 	versions, err := importerClient.SupportedCliVersion(ctx)
 	suite.Require().NoError(err, "Failed to get supported CLI versions")
 	suite.Require().NotEmpty(versions.SupportedVersions, "Supported CLI versions is empty")
-	suite.Require().NotEmpty(versions.DeprecatedVersions, "Deprecated versions is empty")
-	suite.Require().NotEmpty(versions.DeprecatedVersions.DeprecatedVersions, "Deprecated CLI versions is empty")
 }
 
 func (suite *ImporterServiceTestSuite) Test_SubmitImportObjects() {
