@@ -5313,6 +5313,11 @@ func (v *CreateDataSourceCreateDataSource) GetParent() *DataSourceParentDataSour
 	return v.DataSource.Parent
 }
 
+// GetEdgeSiteInfo returns CreateDataSourceCreateDataSource.EdgeSiteInfo, and is useful for accessing the field via an interface.
+func (v *CreateDataSourceCreateDataSource) GetEdgeSiteInfo() *DataSourceEdgeSiteInfoDataSourceLinkedEdgeSiteInfoResult {
+	return v.DataSource.EdgeSiteInfo
+}
+
 func (v *CreateDataSourceCreateDataSource) UnmarshalJSON(b []byte) error {
 
 	if string(b) == "null" {
@@ -5354,6 +5359,8 @@ type __premarshalCreateDataSourceCreateDataSource struct {
 	ModifiedAt time.Time `json:"modifiedAt"`
 
 	Parent *DataSourceParentDataSource `json:"parent"`
+
+	EdgeSiteInfo json.RawMessage `json:"edgeSiteInfo"`
 }
 
 func (v *CreateDataSourceCreateDataSource) MarshalJSON() ([]byte, error) {
@@ -5375,6 +5382,20 @@ func (v *CreateDataSourceCreateDataSource) __premarshalJSON() (*__premarshalCrea
 	retval.CreatedAt = v.DataSource.CreatedAt
 	retval.ModifiedAt = v.DataSource.ModifiedAt
 	retval.Parent = v.DataSource.Parent
+	{
+
+		dst := &retval.EdgeSiteInfo
+		src := v.DataSource.EdgeSiteInfo
+		if src != nil {
+			var err error
+			*dst, err = __marshalDataSourceEdgeSiteInfoDataSourceLinkedEdgeSiteInfoResult(
+				src)
+			if err != nil {
+				return nil, fmt.Errorf(
+					"unable to marshal CreateDataSourceCreateDataSource.DataSource.EdgeSiteInfo: %w", err)
+			}
+		}
+	}
 	return &retval, nil
 }
 
@@ -8494,6 +8515,8 @@ type DataSource struct {
 	ModifiedAt time.Time `json:"modifiedAt"`
 	// The optional parent data source.
 	Parent *DataSourceParentDataSource `json:"parent"`
+	// Retrieves the synchronization configuration settings for this data source.
+	EdgeSiteInfo *DataSourceEdgeSiteInfoDataSourceLinkedEdgeSiteInfoResult `json:"-"`
 }
 
 // GetId returns DataSource.Id, and is useful for accessing the field via an interface.
@@ -8516,6 +8539,98 @@ func (v *DataSource) GetModifiedAt() time.Time { return v.ModifiedAt }
 
 // GetParent returns DataSource.Parent, and is useful for accessing the field via an interface.
 func (v *DataSource) GetParent() *DataSourceParentDataSource { return v.Parent }
+
+// GetEdgeSiteInfo returns DataSource.EdgeSiteInfo, and is useful for accessing the field via an interface.
+func (v *DataSource) GetEdgeSiteInfo() *DataSourceEdgeSiteInfoDataSourceLinkedEdgeSiteInfoResult {
+	return v.EdgeSiteInfo
+}
+
+func (v *DataSource) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*DataSource
+		EdgeSiteInfo json.RawMessage `json:"edgeSiteInfo"`
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.DataSource = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	{
+		dst := &v.EdgeSiteInfo
+		src := firstPass.EdgeSiteInfo
+		if len(src) != 0 && string(src) != "null" {
+			*dst = new(DataSourceEdgeSiteInfoDataSourceLinkedEdgeSiteInfoResult)
+			err = __unmarshalDataSourceEdgeSiteInfoDataSourceLinkedEdgeSiteInfoResult(
+				src, *dst)
+			if err != nil {
+				return fmt.Errorf(
+					"unable to unmarshal DataSource.EdgeSiteInfo: %w", err)
+			}
+		}
+	}
+	return nil
+}
+
+type __premarshalDataSource struct {
+	Id string `json:"id"`
+
+	Name string `json:"name"`
+
+	Type string `json:"type"`
+
+	Description string `json:"description"`
+
+	CreatedAt time.Time `json:"createdAt"`
+
+	ModifiedAt time.Time `json:"modifiedAt"`
+
+	Parent *DataSourceParentDataSource `json:"parent"`
+
+	EdgeSiteInfo json.RawMessage `json:"edgeSiteInfo"`
+}
+
+func (v *DataSource) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *DataSource) __premarshalJSON() (*__premarshalDataSource, error) {
+	var retval __premarshalDataSource
+
+	retval.Id = v.Id
+	retval.Name = v.Name
+	retval.Type = v.Type
+	retval.Description = v.Description
+	retval.CreatedAt = v.CreatedAt
+	retval.ModifiedAt = v.ModifiedAt
+	retval.Parent = v.Parent
+	{
+
+		dst := &retval.EdgeSiteInfo
+		src := v.EdgeSiteInfo
+		if src != nil {
+			var err error
+			*dst, err = __marshalDataSourceEdgeSiteInfoDataSourceLinkedEdgeSiteInfoResult(
+				src)
+			if err != nil {
+				return nil, fmt.Errorf(
+					"unable to marshal DataSource.EdgeSiteInfo: %w", err)
+			}
+		}
+	}
+	return &retval, nil
+}
 
 // DataSourceConnection includes the GraphQL fields of DataSourceConnection requested by the fragment DataSourceConnection.
 // The GraphQL type's documentation follows.
@@ -8596,6 +8711,11 @@ func (v *DataSourceConnectionEdgesDataSourceEdgeNodeDataSource) GetParent() *Dat
 	return v.DataSource.Parent
 }
 
+// GetEdgeSiteInfo returns DataSourceConnectionEdgesDataSourceEdgeNodeDataSource.EdgeSiteInfo, and is useful for accessing the field via an interface.
+func (v *DataSourceConnectionEdgesDataSourceEdgeNodeDataSource) GetEdgeSiteInfo() *DataSourceEdgeSiteInfoDataSourceLinkedEdgeSiteInfoResult {
+	return v.DataSource.EdgeSiteInfo
+}
+
 func (v *DataSourceConnectionEdgesDataSourceEdgeNodeDataSource) UnmarshalJSON(b []byte) error {
 
 	if string(b) == "null" {
@@ -8635,6 +8755,8 @@ type __premarshalDataSourceConnectionEdgesDataSourceEdgeNodeDataSource struct {
 	ModifiedAt time.Time `json:"modifiedAt"`
 
 	Parent *DataSourceParentDataSource `json:"parent"`
+
+	EdgeSiteInfo json.RawMessage `json:"edgeSiteInfo"`
 }
 
 func (v *DataSourceConnectionEdgesDataSourceEdgeNodeDataSource) MarshalJSON() ([]byte, error) {
@@ -8655,6 +8777,20 @@ func (v *DataSourceConnectionEdgesDataSourceEdgeNodeDataSource) __premarshalJSON
 	retval.CreatedAt = v.DataSource.CreatedAt
 	retval.ModifiedAt = v.DataSource.ModifiedAt
 	retval.Parent = v.DataSource.Parent
+	{
+
+		dst := &retval.EdgeSiteInfo
+		src := v.DataSource.EdgeSiteInfo
+		if src != nil {
+			var err error
+			*dst, err = __marshalDataSourceEdgeSiteInfoDataSourceLinkedEdgeSiteInfoResult(
+				src)
+			if err != nil {
+				return nil, fmt.Errorf(
+					"unable to marshal DataSourceConnectionEdgesDataSourceEdgeNodeDataSource.DataSource.EdgeSiteInfo: %w", err)
+			}
+		}
+	}
 	return &retval, nil
 }
 
@@ -9052,6 +9188,138 @@ func (v *DataSourceConnectionResultPermissionDeniedError) __premarshalJSON() (*_
 	retval.Message = v.PermissionDeniedError.Message
 	return &retval, nil
 }
+
+// DataSourceEdgeSiteInfoDataSourceLinkedEdgeSiteInfo includes the requested fields of the GraphQL type DataSourceLinkedEdgeSiteInfo.
+// The GraphQL type's documentation follows.
+//
+// The configuration details of a data source connected via an Edge Site.
+type DataSourceEdgeSiteInfoDataSourceLinkedEdgeSiteInfo struct {
+	Typename         *string `json:"__typename"`
+	EdgeSiteId       *string `json:"edgeSiteId"`
+	EdgeConnectionId *string `json:"edgeConnectionId"`
+}
+
+// GetTypename returns DataSourceEdgeSiteInfoDataSourceLinkedEdgeSiteInfo.Typename, and is useful for accessing the field via an interface.
+func (v *DataSourceEdgeSiteInfoDataSourceLinkedEdgeSiteInfo) GetTypename() *string { return v.Typename }
+
+// GetEdgeSiteId returns DataSourceEdgeSiteInfoDataSourceLinkedEdgeSiteInfo.EdgeSiteId, and is useful for accessing the field via an interface.
+func (v *DataSourceEdgeSiteInfoDataSourceLinkedEdgeSiteInfo) GetEdgeSiteId() *string {
+	return v.EdgeSiteId
+}
+
+// GetEdgeConnectionId returns DataSourceEdgeSiteInfoDataSourceLinkedEdgeSiteInfo.EdgeConnectionId, and is useful for accessing the field via an interface.
+func (v *DataSourceEdgeSiteInfoDataSourceLinkedEdgeSiteInfo) GetEdgeConnectionId() *string {
+	return v.EdgeConnectionId
+}
+
+// DataSourceEdgeSiteInfoDataSourceLinkedEdgeSiteInfoResult includes the requested fields of the GraphQL interface DataSourceLinkedEdgeSiteInfoResult.
+//
+// DataSourceEdgeSiteInfoDataSourceLinkedEdgeSiteInfoResult is implemented by the following types:
+// DataSourceEdgeSiteInfoDataSourceLinkedEdgeSiteInfo
+// DataSourceEdgeSiteInfoNotFoundError
+// DataSourceEdgeSiteInfoPermissionDeniedError
+type DataSourceEdgeSiteInfoDataSourceLinkedEdgeSiteInfoResult interface {
+	implementsGraphQLInterfaceDataSourceEdgeSiteInfoDataSourceLinkedEdgeSiteInfoResult()
+	// GetTypename returns the receiver's concrete GraphQL type-name (see interface doc for possible values).
+	GetTypename() *string
+}
+
+func (v *DataSourceEdgeSiteInfoDataSourceLinkedEdgeSiteInfo) implementsGraphQLInterfaceDataSourceEdgeSiteInfoDataSourceLinkedEdgeSiteInfoResult() {
+}
+func (v *DataSourceEdgeSiteInfoNotFoundError) implementsGraphQLInterfaceDataSourceEdgeSiteInfoDataSourceLinkedEdgeSiteInfoResult() {
+}
+func (v *DataSourceEdgeSiteInfoPermissionDeniedError) implementsGraphQLInterfaceDataSourceEdgeSiteInfoDataSourceLinkedEdgeSiteInfoResult() {
+}
+
+func __unmarshalDataSourceEdgeSiteInfoDataSourceLinkedEdgeSiteInfoResult(b []byte, v *DataSourceEdgeSiteInfoDataSourceLinkedEdgeSiteInfoResult) error {
+	if string(b) == "null" {
+		return nil
+	}
+
+	var tn struct {
+		TypeName string `json:"__typename"`
+	}
+	err := json.Unmarshal(b, &tn)
+	if err != nil {
+		return err
+	}
+
+	switch tn.TypeName {
+	case "DataSourceLinkedEdgeSiteInfo":
+		*v = new(DataSourceEdgeSiteInfoDataSourceLinkedEdgeSiteInfo)
+		return json.Unmarshal(b, *v)
+	case "NotFoundError":
+		*v = new(DataSourceEdgeSiteInfoNotFoundError)
+		return json.Unmarshal(b, *v)
+	case "PermissionDeniedError":
+		*v = new(DataSourceEdgeSiteInfoPermissionDeniedError)
+		return json.Unmarshal(b, *v)
+	case "":
+		return fmt.Errorf(
+			"response was missing DataSourceLinkedEdgeSiteInfoResult.__typename")
+	default:
+		return fmt.Errorf(
+			`unexpected concrete type for DataSourceEdgeSiteInfoDataSourceLinkedEdgeSiteInfoResult: "%v"`, tn.TypeName)
+	}
+}
+
+func __marshalDataSourceEdgeSiteInfoDataSourceLinkedEdgeSiteInfoResult(v *DataSourceEdgeSiteInfoDataSourceLinkedEdgeSiteInfoResult) ([]byte, error) {
+
+	var typename string
+	switch v := (*v).(type) {
+	case *DataSourceEdgeSiteInfoDataSourceLinkedEdgeSiteInfo:
+		typename = "DataSourceLinkedEdgeSiteInfo"
+
+		result := struct {
+			TypeName string `json:"__typename"`
+			*DataSourceEdgeSiteInfoDataSourceLinkedEdgeSiteInfo
+		}{typename, v}
+		return json.Marshal(result)
+	case *DataSourceEdgeSiteInfoNotFoundError:
+		typename = "NotFoundError"
+
+		result := struct {
+			TypeName string `json:"__typename"`
+			*DataSourceEdgeSiteInfoNotFoundError
+		}{typename, v}
+		return json.Marshal(result)
+	case *DataSourceEdgeSiteInfoPermissionDeniedError:
+		typename = "PermissionDeniedError"
+
+		result := struct {
+			TypeName string `json:"__typename"`
+			*DataSourceEdgeSiteInfoPermissionDeniedError
+		}{typename, v}
+		return json.Marshal(result)
+	case nil:
+		return []byte("null"), nil
+	default:
+		return nil, fmt.Errorf(
+			`unexpected concrete type for DataSourceEdgeSiteInfoDataSourceLinkedEdgeSiteInfoResult: "%T"`, v)
+	}
+}
+
+// DataSourceEdgeSiteInfoNotFoundError includes the requested fields of the GraphQL type NotFoundError.
+// The GraphQL type's documentation follows.
+//
+// Error when the user is requesting a resource that does not exist.
+type DataSourceEdgeSiteInfoNotFoundError struct {
+	Typename *string `json:"__typename"`
+}
+
+// GetTypename returns DataSourceEdgeSiteInfoNotFoundError.Typename, and is useful for accessing the field via an interface.
+func (v *DataSourceEdgeSiteInfoNotFoundError) GetTypename() *string { return v.Typename }
+
+// DataSourceEdgeSiteInfoPermissionDeniedError includes the requested fields of the GraphQL type PermissionDeniedError.
+// The GraphQL type's documentation follows.
+//
+// Error when permission to the requested resource is denied.
+type DataSourceEdgeSiteInfoPermissionDeniedError struct {
+	Typename *string `json:"__typename"`
+}
+
+// GetTypename returns DataSourceEdgeSiteInfoPermissionDeniedError.Typename, and is useful for accessing the field via an interface.
+func (v *DataSourceEdgeSiteInfoPermissionDeniedError) GetTypename() *string { return v.Typename }
 
 type DataSourceFeatures string
 
@@ -18426,6 +18694,11 @@ func (v *GetDataSourceDataSource) GetModifiedAt() time.Time { return v.DataSourc
 // GetParent returns GetDataSourceDataSource.Parent, and is useful for accessing the field via an interface.
 func (v *GetDataSourceDataSource) GetParent() *DataSourceParentDataSource { return v.DataSource.Parent }
 
+// GetEdgeSiteInfo returns GetDataSourceDataSource.EdgeSiteInfo, and is useful for accessing the field via an interface.
+func (v *GetDataSourceDataSource) GetEdgeSiteInfo() *DataSourceEdgeSiteInfoDataSourceLinkedEdgeSiteInfoResult {
+	return v.DataSource.EdgeSiteInfo
+}
+
 func (v *GetDataSourceDataSource) UnmarshalJSON(b []byte) error {
 
 	if string(b) == "null" {
@@ -18467,6 +18740,8 @@ type __premarshalGetDataSourceDataSource struct {
 	ModifiedAt time.Time `json:"modifiedAt"`
 
 	Parent *DataSourceParentDataSource `json:"parent"`
+
+	EdgeSiteInfo json.RawMessage `json:"edgeSiteInfo"`
 }
 
 func (v *GetDataSourceDataSource) MarshalJSON() ([]byte, error) {
@@ -18488,6 +18763,20 @@ func (v *GetDataSourceDataSource) __premarshalJSON() (*__premarshalGetDataSource
 	retval.CreatedAt = v.DataSource.CreatedAt
 	retval.ModifiedAt = v.DataSource.ModifiedAt
 	retval.Parent = v.DataSource.Parent
+	{
+
+		dst := &retval.EdgeSiteInfo
+		src := v.DataSource.EdgeSiteInfo
+		if src != nil {
+			var err error
+			*dst, err = __marshalDataSourceEdgeSiteInfoDataSourceLinkedEdgeSiteInfoResult(
+				src)
+			if err != nil {
+				return nil, fmt.Errorf(
+					"unable to marshal GetDataSourceDataSource.DataSource.EdgeSiteInfo: %w", err)
+			}
+		}
+	}
 	return &retval, nil
 }
 
@@ -22408,6 +22697,11 @@ func (v *JobDataSource) GetModifiedAt() time.Time { return v.DataSource.Modified
 // GetParent returns JobDataSource.Parent, and is useful for accessing the field via an interface.
 func (v *JobDataSource) GetParent() *DataSourceParentDataSource { return v.DataSource.Parent }
 
+// GetEdgeSiteInfo returns JobDataSource.EdgeSiteInfo, and is useful for accessing the field via an interface.
+func (v *JobDataSource) GetEdgeSiteInfo() *DataSourceEdgeSiteInfoDataSourceLinkedEdgeSiteInfoResult {
+	return v.DataSource.EdgeSiteInfo
+}
+
 func (v *JobDataSource) UnmarshalJSON(b []byte) error {
 
 	if string(b) == "null" {
@@ -22447,6 +22741,8 @@ type __premarshalJobDataSource struct {
 	ModifiedAt time.Time `json:"modifiedAt"`
 
 	Parent *DataSourceParentDataSource `json:"parent"`
+
+	EdgeSiteInfo json.RawMessage `json:"edgeSiteInfo"`
 }
 
 func (v *JobDataSource) MarshalJSON() ([]byte, error) {
@@ -22467,6 +22763,20 @@ func (v *JobDataSource) __premarshalJSON() (*__premarshalJobDataSource, error) {
 	retval.CreatedAt = v.DataSource.CreatedAt
 	retval.ModifiedAt = v.DataSource.ModifiedAt
 	retval.Parent = v.DataSource.Parent
+	{
+
+		dst := &retval.EdgeSiteInfo
+		src := v.DataSource.EdgeSiteInfo
+		if src != nil {
+			var err error
+			*dst, err = __marshalDataSourceEdgeSiteInfoDataSourceLinkedEdgeSiteInfoResult(
+				src)
+			if err != nil {
+				return nil, fmt.Errorf(
+					"unable to marshal JobDataSource.DataSource.EdgeSiteInfo: %w", err)
+			}
+		}
+	}
 	return &retval, nil
 }
 
@@ -31343,6 +31653,11 @@ func (v *SetDataSourceMetadataSetDataSourceMetaDataDataSource) GetParent() *Data
 	return v.DataSource.Parent
 }
 
+// GetEdgeSiteInfo returns SetDataSourceMetadataSetDataSourceMetaDataDataSource.EdgeSiteInfo, and is useful for accessing the field via an interface.
+func (v *SetDataSourceMetadataSetDataSourceMetaDataDataSource) GetEdgeSiteInfo() *DataSourceEdgeSiteInfoDataSourceLinkedEdgeSiteInfoResult {
+	return v.DataSource.EdgeSiteInfo
+}
+
 func (v *SetDataSourceMetadataSetDataSourceMetaDataDataSource) UnmarshalJSON(b []byte) error {
 
 	if string(b) == "null" {
@@ -31384,6 +31699,8 @@ type __premarshalSetDataSourceMetadataSetDataSourceMetaDataDataSource struct {
 	ModifiedAt time.Time `json:"modifiedAt"`
 
 	Parent *DataSourceParentDataSource `json:"parent"`
+
+	EdgeSiteInfo json.RawMessage `json:"edgeSiteInfo"`
 }
 
 func (v *SetDataSourceMetadataSetDataSourceMetaDataDataSource) MarshalJSON() ([]byte, error) {
@@ -31405,6 +31722,20 @@ func (v *SetDataSourceMetadataSetDataSourceMetaDataDataSource) __premarshalJSON(
 	retval.CreatedAt = v.DataSource.CreatedAt
 	retval.ModifiedAt = v.DataSource.ModifiedAt
 	retval.Parent = v.DataSource.Parent
+	{
+
+		dst := &retval.EdgeSiteInfo
+		src := v.DataSource.EdgeSiteInfo
+		if src != nil {
+			var err error
+			*dst, err = __marshalDataSourceEdgeSiteInfoDataSourceLinkedEdgeSiteInfoResult(
+				src)
+			if err != nil {
+				return nil, fmt.Errorf(
+					"unable to marshal SetDataSourceMetadataSetDataSourceMetaDataDataSource.DataSource.EdgeSiteInfo: %w", err)
+			}
+		}
+	}
 	return &retval, nil
 }
 
@@ -33080,6 +33411,11 @@ func (v *SyncDataDataSource) GetModifiedAt() time.Time { return v.DataSource.Mod
 // GetParent returns SyncDataDataSource.Parent, and is useful for accessing the field via an interface.
 func (v *SyncDataDataSource) GetParent() *DataSourceParentDataSource { return v.DataSource.Parent }
 
+// GetEdgeSiteInfo returns SyncDataDataSource.EdgeSiteInfo, and is useful for accessing the field via an interface.
+func (v *SyncDataDataSource) GetEdgeSiteInfo() *DataSourceEdgeSiteInfoDataSourceLinkedEdgeSiteInfoResult {
+	return v.DataSource.EdgeSiteInfo
+}
+
 func (v *SyncDataDataSource) UnmarshalJSON(b []byte) error {
 
 	if string(b) == "null" {
@@ -33119,6 +33455,8 @@ type __premarshalSyncDataDataSource struct {
 	ModifiedAt time.Time `json:"modifiedAt"`
 
 	Parent *DataSourceParentDataSource `json:"parent"`
+
+	EdgeSiteInfo json.RawMessage `json:"edgeSiteInfo"`
 }
 
 func (v *SyncDataDataSource) MarshalJSON() ([]byte, error) {
@@ -33139,6 +33477,20 @@ func (v *SyncDataDataSource) __premarshalJSON() (*__premarshalSyncDataDataSource
 	retval.CreatedAt = v.DataSource.CreatedAt
 	retval.ModifiedAt = v.DataSource.ModifiedAt
 	retval.Parent = v.DataSource.Parent
+	{
+
+		dst := &retval.EdgeSiteInfo
+		src := v.DataSource.EdgeSiteInfo
+		if src != nil {
+			var err error
+			*dst, err = __marshalDataSourceEdgeSiteInfoDataSourceLinkedEdgeSiteInfoResult(
+				src)
+			if err != nil {
+				return nil, fmt.Errorf(
+					"unable to marshal SyncDataDataSource.DataSource.EdgeSiteInfo: %w", err)
+			}
+		}
+	}
 	return &retval, nil
 }
 
@@ -33410,6 +33762,11 @@ func (v *SyncJobDataSource) GetModifiedAt() time.Time { return v.DataSource.Modi
 // GetParent returns SyncJobDataSource.Parent, and is useful for accessing the field via an interface.
 func (v *SyncJobDataSource) GetParent() *DataSourceParentDataSource { return v.DataSource.Parent }
 
+// GetEdgeSiteInfo returns SyncJobDataSource.EdgeSiteInfo, and is useful for accessing the field via an interface.
+func (v *SyncJobDataSource) GetEdgeSiteInfo() *DataSourceEdgeSiteInfoDataSourceLinkedEdgeSiteInfoResult {
+	return v.DataSource.EdgeSiteInfo
+}
+
 func (v *SyncJobDataSource) UnmarshalJSON(b []byte) error {
 
 	if string(b) == "null" {
@@ -33451,6 +33808,8 @@ type __premarshalSyncJobDataSource struct {
 	ModifiedAt time.Time `json:"modifiedAt"`
 
 	Parent *DataSourceParentDataSource `json:"parent"`
+
+	EdgeSiteInfo json.RawMessage `json:"edgeSiteInfo"`
 }
 
 func (v *SyncJobDataSource) MarshalJSON() ([]byte, error) {
@@ -33472,6 +33831,20 @@ func (v *SyncJobDataSource) __premarshalJSON() (*__premarshalSyncJobDataSource, 
 	retval.CreatedAt = v.DataSource.CreatedAt
 	retval.ModifiedAt = v.DataSource.ModifiedAt
 	retval.Parent = v.DataSource.Parent
+	{
+
+		dst := &retval.EdgeSiteInfo
+		src := v.DataSource.EdgeSiteInfo
+		if src != nil {
+			var err error
+			*dst, err = __marshalDataSourceEdgeSiteInfoDataSourceLinkedEdgeSiteInfoResult(
+				src)
+			if err != nil {
+				return nil, fmt.Errorf(
+					"unable to marshal SyncJobDataSource.DataSource.EdgeSiteInfo: %w", err)
+			}
+		}
+	}
 	return &retval, nil
 }
 
@@ -36379,6 +36752,11 @@ func (v *UpdateDataSourceUpdateDataSource) GetParent() *DataSourceParentDataSour
 	return v.DataSource.Parent
 }
 
+// GetEdgeSiteInfo returns UpdateDataSourceUpdateDataSource.EdgeSiteInfo, and is useful for accessing the field via an interface.
+func (v *UpdateDataSourceUpdateDataSource) GetEdgeSiteInfo() *DataSourceEdgeSiteInfoDataSourceLinkedEdgeSiteInfoResult {
+	return v.DataSource.EdgeSiteInfo
+}
+
 func (v *UpdateDataSourceUpdateDataSource) UnmarshalJSON(b []byte) error {
 
 	if string(b) == "null" {
@@ -36420,6 +36798,8 @@ type __premarshalUpdateDataSourceUpdateDataSource struct {
 	ModifiedAt time.Time `json:"modifiedAt"`
 
 	Parent *DataSourceParentDataSource `json:"parent"`
+
+	EdgeSiteInfo json.RawMessage `json:"edgeSiteInfo"`
 }
 
 func (v *UpdateDataSourceUpdateDataSource) MarshalJSON() ([]byte, error) {
@@ -36441,6 +36821,20 @@ func (v *UpdateDataSourceUpdateDataSource) __premarshalJSON() (*__premarshalUpda
 	retval.CreatedAt = v.DataSource.CreatedAt
 	retval.ModifiedAt = v.DataSource.ModifiedAt
 	retval.Parent = v.DataSource.Parent
+	{
+
+		dst := &retval.EdgeSiteInfo
+		src := v.DataSource.EdgeSiteInfo
+		if src != nil {
+			var err error
+			*dst, err = __marshalDataSourceEdgeSiteInfoDataSourceLinkedEdgeSiteInfoResult(
+				src)
+			if err != nil {
+				return nil, fmt.Errorf(
+					"unable to marshal UpdateDataSourceUpdateDataSource.DataSource.EdgeSiteInfo: %w", err)
+			}
+		}
+	}
 	return &retval, nil
 }
 
@@ -40491,6 +40885,13 @@ fragment DataSource on DataSource {
 	parent {
 		id
 	}
+	edgeSiteInfo {
+		__typename
+		... on DataSourceLinkedEdgeSiteInfo {
+			edgeSiteId
+			edgeConnectionId
+		}
+	}
 }
 fragment MaskType on MaskType {
 	externalId
@@ -40729,6 +41130,13 @@ fragment DataSource on DataSource {
 	parent {
 		id
 	}
+	edgeSiteInfo {
+		__typename
+		... on DataSourceLinkedEdgeSiteInfo {
+			edgeSiteId
+			edgeConnectionId
+		}
+	}
 }
 fragment MaskType on MaskType {
 	externalId
@@ -40789,6 +41197,13 @@ fragment DataSource on DataSource {
 	description
 	parent {
 		id
+	}
+	edgeSiteInfo {
+		__typename
+		... on DataSourceLinkedEdgeSiteInfo {
+			edgeSiteId
+			edgeConnectionId
+		}
 	}
 }
 `
@@ -40931,6 +41346,13 @@ fragment DataSource on DataSource {
 	description
 	parent {
 		id
+	}
+	edgeSiteInfo {
+		__typename
+		... on DataSourceLinkedEdgeSiteInfo {
+			edgeSiteId
+			edgeConnectionId
+		}
 	}
 }
 `
@@ -41275,6 +41697,13 @@ fragment DataSource on DataSource {
 	parent {
 		id
 	}
+	edgeSiteInfo {
+		__typename
+		... on DataSourceLinkedEdgeSiteInfo {
+			edgeSiteId
+			edgeConnectionId
+		}
+	}
 }
 fragment MaskType on MaskType {
 	externalId
@@ -41410,6 +41839,13 @@ fragment DataSource on DataSource {
 	description
 	parent {
 		id
+	}
+	edgeSiteInfo {
+		__typename
+		... on DataSourceLinkedEdgeSiteInfo {
+			edgeSiteId
+			edgeConnectionId
+		}
 	}
 }
 fragment MaskType on MaskType {
@@ -41981,6 +42417,13 @@ fragment DataSource on DataSource {
 	parent {
 		id
 	}
+	edgeSiteInfo {
+		__typename
+		... on DataSourceLinkedEdgeSiteInfo {
+			edgeSiteId
+			edgeConnectionId
+		}
+	}
 }
 fragment MaskType on MaskType {
 	externalId
@@ -42148,6 +42591,13 @@ fragment DataSource on DataSource {
 	description
 	parent {
 		id
+	}
+	edgeSiteInfo {
+		__typename
+		... on DataSourceLinkedEdgeSiteInfo {
+			edgeSiteId
+			edgeConnectionId
+		}
 	}
 }
 fragment MaskType on MaskType {
@@ -42442,6 +42892,13 @@ fragment DataSource on DataSource {
 	parent {
 		id
 	}
+	edgeSiteInfo {
+		__typename
+		... on DataSourceLinkedEdgeSiteInfo {
+			edgeSiteId
+			edgeConnectionId
+		}
+	}
 }
 fragment PermissionDeniedError on PermissionDeniedError {
 	message
@@ -42589,6 +43046,13 @@ fragment DataSource on DataSource {
 	description
 	parent {
 		id
+	}
+	edgeSiteInfo {
+		__typename
+		... on DataSourceLinkedEdgeSiteInfo {
+			edgeSiteId
+			edgeConnectionId
+		}
 	}
 }
 `
@@ -43135,6 +43599,13 @@ fragment DataSource on DataSource {
 	parent {
 		id
 	}
+	edgeSiteInfo {
+		__typename
+		... on DataSourceLinkedEdgeSiteInfo {
+			edgeSiteId
+			edgeConnectionId
+		}
+	}
 }
 fragment MaskType on MaskType {
 	externalId
@@ -43307,6 +43778,13 @@ fragment DataSource on DataSource {
 	parent {
 		id
 	}
+	edgeSiteInfo {
+		__typename
+		... on DataSourceLinkedEdgeSiteInfo {
+			edgeSiteId
+			edgeConnectionId
+		}
+	}
 }
 `
 
@@ -43470,6 +43948,13 @@ fragment DataSource on DataSource {
 	description
 	parent {
 		id
+	}
+	edgeSiteInfo {
+		__typename
+		... on DataSourceLinkedEdgeSiteInfo {
+			edgeSiteId
+			edgeConnectionId
+		}
 	}
 }
 `
@@ -44197,6 +44682,13 @@ fragment DataSource on DataSource {
 	parent {
 		id
 	}
+	edgeSiteInfo {
+		__typename
+		... on DataSourceLinkedEdgeSiteInfo {
+			edgeSiteId
+			edgeConnectionId
+		}
+	}
 }
 fragment Job on Job {
 	id: jobId
@@ -44259,6 +44751,13 @@ fragment DataSource on DataSource {
 	description
 	parent {
 		id
+	}
+	edgeSiteInfo {
+		__typename
+		... on DataSourceLinkedEdgeSiteInfo {
+			edgeSiteId
+			edgeConnectionId
+		}
 	}
 }
 fragment PermissionDeniedError on PermissionDeniedError {
@@ -44608,6 +45107,13 @@ fragment DataSource on DataSource {
 	parent {
 		id
 	}
+	edgeSiteInfo {
+		__typename
+		... on DataSourceLinkedEdgeSiteInfo {
+			edgeSiteId
+			edgeConnectionId
+		}
+	}
 }
 fragment MaskType on MaskType {
 	externalId
@@ -44672,6 +45178,13 @@ fragment DataSource on DataSource {
 	description
 	parent {
 		id
+	}
+	edgeSiteInfo {
+		__typename
+		... on DataSourceLinkedEdgeSiteInfo {
+			edgeSiteId
+			edgeConnectionId
+		}
 	}
 }
 `
@@ -44818,6 +45331,13 @@ fragment DataSource on DataSource {
 	description
 	parent {
 		id
+	}
+	edgeSiteInfo {
+		__typename
+		... on DataSourceLinkedEdgeSiteInfo {
+			edgeSiteId
+			edgeConnectionId
+		}
 	}
 }
 `
