@@ -9,6 +9,12 @@ fragment DataSource on DataSource {
     parent {
         id
     }
+    edgeSiteInfo {
+        ... on DataSourceLinkedEdgeSiteInfo {
+            edgeSiteId
+            edgeConnectionId
+        }
+    }
 }
 
 fragment MaskType on MaskType {
