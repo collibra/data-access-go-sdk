@@ -1,6 +1,6 @@
 module github.com/collibra/data-access-go-sdk
 
-go 1.26.0
+go 1.26.1
 
 tool github.com/Khan/genqlient
 

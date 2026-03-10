@@ -31,6 +31,9 @@ fragment AccessControl on AccessControl {
     syncData {
        ...SyncData
     }
+
+    whatUnknown
+    whoUnknown
 }
 
 fragment SyncData on SyncData {

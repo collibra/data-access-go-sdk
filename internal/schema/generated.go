@@ -201,6 +201,10 @@ type AccessControl struct {
 	Locks []AccessControlLocksAccessControlLockData `json:"locks"`
 	// Retrieves synchronization information for each linked data source.
 	SyncData []AccessControlSyncData `json:"syncData"`
+	// If true, it indicates that the what of this access control couldn't be parsed on import
+	WhatUnknown bool `json:"whatUnknown"`
+	// If true, it indicates that the who of this access control couldn't be parsed on import
+	WhoUnknown bool `json:"whoUnknown"`
 }
 
 // GetId returns AccessControl.Id, and is useful for accessing the field via an interface.
@@ -257,6 +261,12 @@ func (v *AccessControl) GetLocks() []AccessControlLocksAccessControlLockData { r
 
 // GetSyncData returns AccessControl.SyncData, and is useful for accessing the field via an interface.
 func (v *AccessControl) GetSyncData() []AccessControlSyncData { return v.SyncData }
+
+// GetWhatUnknown returns AccessControl.WhatUnknown, and is useful for accessing the field via an interface.
+func (v *AccessControl) GetWhatUnknown() bool { return v.WhatUnknown }
+
+// GetWhoUnknown returns AccessControl.WhoUnknown, and is useful for accessing the field via an interface.
+func (v *AccessControl) GetWhoUnknown() bool { return v.WhoUnknown }
 
 // The possible actions for an access control. This determines what the access control will do.
 type AccessControlAction string
@@ -495,6 +505,16 @@ func (v *AccessControlConnectionEdgesAccessControlEdgeNodeAccessControl) GetSync
 	return v.AccessControl.SyncData
 }
 
+// GetWhatUnknown returns AccessControlConnectionEdgesAccessControlEdgeNodeAccessControl.WhatUnknown, and is useful for accessing the field via an interface.
+func (v *AccessControlConnectionEdgesAccessControlEdgeNodeAccessControl) GetWhatUnknown() bool {
+	return v.AccessControl.WhatUnknown
+}
+
+// GetWhoUnknown returns AccessControlConnectionEdgesAccessControlEdgeNodeAccessControl.WhoUnknown, and is useful for accessing the field via an interface.
+func (v *AccessControlConnectionEdgesAccessControlEdgeNodeAccessControl) GetWhoUnknown() bool {
+	return v.AccessControl.WhoUnknown
+}
+
 func (v *AccessControlConnectionEdgesAccessControlEdgeNodeAccessControl) UnmarshalJSON(b []byte) error {
 
 	if string(b) == "null" {
@@ -554,6 +574,10 @@ type __premarshalAccessControlConnectionEdgesAccessControlEdgeNodeAccessControl 
 	Locks []AccessControlLocksAccessControlLockData `json:"locks"`
 
 	SyncData []AccessControlSyncData `json:"syncData"`
+
+	WhatUnknown bool `json:"whatUnknown"`
+
+	WhoUnknown bool `json:"whoUnknown"`
 }
 
 func (v *AccessControlConnectionEdgesAccessControlEdgeNodeAccessControl) MarshalJSON() ([]byte, error) {
@@ -584,6 +608,8 @@ func (v *AccessControlConnectionEdgesAccessControlEdgeNodeAccessControl) __prema
 	retval.Complete = v.AccessControl.Complete
 	retval.Locks = v.AccessControl.Locks
 	retval.SyncData = v.AccessControl.SyncData
+	retval.WhatUnknown = v.AccessControl.WhatUnknown
+	retval.WhoUnknown = v.AccessControl.WhoUnknown
 	return &retval, nil
 }
 
@@ -1136,6 +1162,8 @@ type AccessControlImport struct {
 	Action                  AccessControlAction `json:"action"`
 	Policy                  *string             `json:"policy,omitempty"`
 	Who                     WhoItemImport       `json:"who"`
+	WhoUnknown              bool                `json:"whoUnknown"`
+	WhatUnknown             bool                `json:"whatUnknown"`
 	NotInternalizable       bool                `json:"notInternalizable"`
 	WhoLocked               bool                `json:"whoLocked"`
 	WhoLockedReason         *string             `json:"whoLockedReason,omitempty"`
@@ -1175,6 +1203,12 @@ func (v *AccessControlImport) GetPolicy() *string { return v.Policy }
 
 // GetWho returns AccessControlImport.Who, and is useful for accessing the field via an interface.
 func (v *AccessControlImport) GetWho() WhoItemImport { return v.Who }
+
+// GetWhoUnknown returns AccessControlImport.WhoUnknown, and is useful for accessing the field via an interface.
+func (v *AccessControlImport) GetWhoUnknown() bool { return v.WhoUnknown }
+
+// GetWhatUnknown returns AccessControlImport.WhatUnknown, and is useful for accessing the field via an interface.
+func (v *AccessControlImport) GetWhatUnknown() bool { return v.WhatUnknown }
 
 // GetNotInternalizable returns AccessControlImport.NotInternalizable, and is useful for accessing the field via an interface.
 func (v *AccessControlImport) GetNotInternalizable() bool { return v.NotInternalizable }
@@ -1678,6 +1712,8 @@ type AccessControlTypeInput struct {
 	Type *string `json:"type,omitempty"`
 	// A human readable name for the access control
 	Label *string `json:"label,omitempty"`
+	// A description of the access control type
+	Description *string `json:"description,omitempty"`
 	// the name or base64 encoded version of the icon to use for this access control
 	Icon *string `json:"icon,omitempty"`
 	// Boolean to indicate if the access control represents a named entity (like a role or a policy) in the data source. False, typically means some kind of ACL system (nameless bindings).
@@ -1704,6 +1740,9 @@ func (v *AccessControlTypeInput) GetType() *string { return v.Type }
 
 // GetLabel returns AccessControlTypeInput.Label, and is useful for accessing the field via an interface.
 func (v *AccessControlTypeInput) GetLabel() *string { return v.Label }
+
+// GetDescription returns AccessControlTypeInput.Description, and is useful for accessing the field via an interface.
+func (v *AccessControlTypeInput) GetDescription() *string { return v.Description }
 
 // GetIcon returns AccessControlTypeInput.Icon, and is useful for accessing the field via an interface.
 func (v *AccessControlTypeInput) GetIcon() *string { return v.Icon }
@@ -2137,6 +2176,16 @@ func (v *AccessWhatAccessControlItemAccessControl) GetSyncData() []AccessControl
 	return v.AccessControl.SyncData
 }
 
+// GetWhatUnknown returns AccessWhatAccessControlItemAccessControl.WhatUnknown, and is useful for accessing the field via an interface.
+func (v *AccessWhatAccessControlItemAccessControl) GetWhatUnknown() bool {
+	return v.AccessControl.WhatUnknown
+}
+
+// GetWhoUnknown returns AccessWhatAccessControlItemAccessControl.WhoUnknown, and is useful for accessing the field via an interface.
+func (v *AccessWhatAccessControlItemAccessControl) GetWhoUnknown() bool {
+	return v.AccessControl.WhoUnknown
+}
+
 func (v *AccessWhatAccessControlItemAccessControl) UnmarshalJSON(b []byte) error {
 
 	if string(b) == "null" {
@@ -2196,6 +2245,10 @@ type __premarshalAccessWhatAccessControlItemAccessControl struct {
 	Locks []AccessControlLocksAccessControlLockData `json:"locks"`
 
 	SyncData []AccessControlSyncData `json:"syncData"`
+
+	WhatUnknown bool `json:"whatUnknown"`
+
+	WhoUnknown bool `json:"whoUnknown"`
 }
 
 func (v *AccessWhatAccessControlItemAccessControl) MarshalJSON() ([]byte, error) {
@@ -2226,6 +2279,8 @@ func (v *AccessWhatAccessControlItemAccessControl) __premarshalJSON() (*__premar
 	retval.Complete = v.AccessControl.Complete
 	retval.Locks = v.AccessControl.Locks
 	retval.SyncData = v.AccessControl.SyncData
+	retval.WhatUnknown = v.AccessControl.WhatUnknown
+	retval.WhoUnknown = v.AccessControl.WhoUnknown
 	return &retval, nil
 }
 
@@ -3756,6 +3811,16 @@ func (v *ActivateAccessControlActivateAccessControl) GetSyncData() []AccessContr
 	return v.AccessControl.SyncData
 }
 
+// GetWhatUnknown returns ActivateAccessControlActivateAccessControl.WhatUnknown, and is useful for accessing the field via an interface.
+func (v *ActivateAccessControlActivateAccessControl) GetWhatUnknown() bool {
+	return v.AccessControl.WhatUnknown
+}
+
+// GetWhoUnknown returns ActivateAccessControlActivateAccessControl.WhoUnknown, and is useful for accessing the field via an interface.
+func (v *ActivateAccessControlActivateAccessControl) GetWhoUnknown() bool {
+	return v.AccessControl.WhoUnknown
+}
+
 func (v *ActivateAccessControlActivateAccessControl) UnmarshalJSON(b []byte) error {
 
 	if string(b) == "null" {
@@ -3817,6 +3882,10 @@ type __premarshalActivateAccessControlActivateAccessControl struct {
 	Locks []AccessControlLocksAccessControlLockData `json:"locks"`
 
 	SyncData []AccessControlSyncData `json:"syncData"`
+
+	WhatUnknown bool `json:"whatUnknown"`
+
+	WhoUnknown bool `json:"whoUnknown"`
 }
 
 func (v *ActivateAccessControlActivateAccessControl) MarshalJSON() ([]byte, error) {
@@ -3848,6 +3917,8 @@ func (v *ActivateAccessControlActivateAccessControl) __premarshalJSON() (*__prem
 	retval.Complete = v.AccessControl.Complete
 	retval.Locks = v.AccessControl.Locks
 	retval.SyncData = v.AccessControl.SyncData
+	retval.WhatUnknown = v.AccessControl.WhatUnknown
+	retval.WhoUnknown = v.AccessControl.WhoUnknown
 	return &retval, nil
 }
 
@@ -4632,6 +4703,16 @@ func (v *CreateAccessControlCreateAccessControl) GetSyncData() []AccessControlSy
 	return v.AccessControl.SyncData
 }
 
+// GetWhatUnknown returns CreateAccessControlCreateAccessControl.WhatUnknown, and is useful for accessing the field via an interface.
+func (v *CreateAccessControlCreateAccessControl) GetWhatUnknown() bool {
+	return v.AccessControl.WhatUnknown
+}
+
+// GetWhoUnknown returns CreateAccessControlCreateAccessControl.WhoUnknown, and is useful for accessing the field via an interface.
+func (v *CreateAccessControlCreateAccessControl) GetWhoUnknown() bool {
+	return v.AccessControl.WhoUnknown
+}
+
 func (v *CreateAccessControlCreateAccessControl) UnmarshalJSON(b []byte) error {
 
 	if string(b) == "null" {
@@ -4693,6 +4774,10 @@ type __premarshalCreateAccessControlCreateAccessControl struct {
 	Locks []AccessControlLocksAccessControlLockData `json:"locks"`
 
 	SyncData []AccessControlSyncData `json:"syncData"`
+
+	WhatUnknown bool `json:"whatUnknown"`
+
+	WhoUnknown bool `json:"whoUnknown"`
 }
 
 func (v *CreateAccessControlCreateAccessControl) MarshalJSON() ([]byte, error) {
@@ -4724,6 +4809,8 @@ func (v *CreateAccessControlCreateAccessControl) __premarshalJSON() (*__premarsh
 	retval.Complete = v.AccessControl.Complete
 	retval.Locks = v.AccessControl.Locks
 	retval.SyncData = v.AccessControl.SyncData
+	retval.WhatUnknown = v.AccessControl.WhatUnknown
+	retval.WhoUnknown = v.AccessControl.WhoUnknown
 	return &retval, nil
 }
 
@@ -4840,6 +4927,16 @@ func (v *CreateAccessControlCreateAccessControlAccessControlWithOptionalAccessRe
 	return v.AccessControl.SyncData
 }
 
+// GetWhatUnknown returns CreateAccessControlCreateAccessControlAccessControlWithOptionalAccessRequestsAccessControl.WhatUnknown, and is useful for accessing the field via an interface.
+func (v *CreateAccessControlCreateAccessControlAccessControlWithOptionalAccessRequestsAccessControl) GetWhatUnknown() bool {
+	return v.AccessControl.WhatUnknown
+}
+
+// GetWhoUnknown returns CreateAccessControlCreateAccessControlAccessControlWithOptionalAccessRequestsAccessControl.WhoUnknown, and is useful for accessing the field via an interface.
+func (v *CreateAccessControlCreateAccessControlAccessControlWithOptionalAccessRequestsAccessControl) GetWhoUnknown() bool {
+	return v.AccessControl.WhoUnknown
+}
+
 func (v *CreateAccessControlCreateAccessControlAccessControlWithOptionalAccessRequestsAccessControl) UnmarshalJSON(b []byte) error {
 
 	if string(b) == "null" {
@@ -4899,6 +4996,10 @@ type __premarshalCreateAccessControlCreateAccessControlAccessControlWithOptional
 	Locks []AccessControlLocksAccessControlLockData `json:"locks"`
 
 	SyncData []AccessControlSyncData `json:"syncData"`
+
+	WhatUnknown bool `json:"whatUnknown"`
+
+	WhoUnknown bool `json:"whoUnknown"`
 }
 
 func (v *CreateAccessControlCreateAccessControlAccessControlWithOptionalAccessRequestsAccessControl) MarshalJSON() ([]byte, error) {
@@ -4929,6 +5030,8 @@ func (v *CreateAccessControlCreateAccessControlAccessControlWithOptionalAccessRe
 	retval.Complete = v.AccessControl.Complete
 	retval.Locks = v.AccessControl.Locks
 	retval.SyncData = v.AccessControl.SyncData
+	retval.WhatUnknown = v.AccessControl.WhatUnknown
+	retval.WhoUnknown = v.AccessControl.WhoUnknown
 	return &retval, nil
 }
 
@@ -10092,6 +10195,16 @@ func (v *DeactivateAccessControlDeactivateAccessControl) GetSyncData() []AccessC
 	return v.AccessControl.SyncData
 }
 
+// GetWhatUnknown returns DeactivateAccessControlDeactivateAccessControl.WhatUnknown, and is useful for accessing the field via an interface.
+func (v *DeactivateAccessControlDeactivateAccessControl) GetWhatUnknown() bool {
+	return v.AccessControl.WhatUnknown
+}
+
+// GetWhoUnknown returns DeactivateAccessControlDeactivateAccessControl.WhoUnknown, and is useful for accessing the field via an interface.
+func (v *DeactivateAccessControlDeactivateAccessControl) GetWhoUnknown() bool {
+	return v.AccessControl.WhoUnknown
+}
+
 func (v *DeactivateAccessControlDeactivateAccessControl) UnmarshalJSON(b []byte) error {
 
 	if string(b) == "null" {
@@ -10153,6 +10266,10 @@ type __premarshalDeactivateAccessControlDeactivateAccessControl struct {
 	Locks []AccessControlLocksAccessControlLockData `json:"locks"`
 
 	SyncData []AccessControlSyncData `json:"syncData"`
+
+	WhatUnknown bool `json:"whatUnknown"`
+
+	WhoUnknown bool `json:"whoUnknown"`
 }
 
 func (v *DeactivateAccessControlDeactivateAccessControl) MarshalJSON() ([]byte, error) {
@@ -10184,6 +10301,8 @@ func (v *DeactivateAccessControlDeactivateAccessControl) __premarshalJSON() (*__
 	retval.Complete = v.AccessControl.Complete
 	retval.Locks = v.AccessControl.Locks
 	retval.SyncData = v.AccessControl.SyncData
+	retval.WhatUnknown = v.AccessControl.WhatUnknown
+	retval.WhoUnknown = v.AccessControl.WhoUnknown
 	return &retval, nil
 }
 
@@ -10665,6 +10784,16 @@ func (v *DeleteAccessControlDeleteAccessControl) GetSyncData() []AccessControlSy
 	return v.AccessControl.SyncData
 }
 
+// GetWhatUnknown returns DeleteAccessControlDeleteAccessControl.WhatUnknown, and is useful for accessing the field via an interface.
+func (v *DeleteAccessControlDeleteAccessControl) GetWhatUnknown() bool {
+	return v.AccessControl.WhatUnknown
+}
+
+// GetWhoUnknown returns DeleteAccessControlDeleteAccessControl.WhoUnknown, and is useful for accessing the field via an interface.
+func (v *DeleteAccessControlDeleteAccessControl) GetWhoUnknown() bool {
+	return v.AccessControl.WhoUnknown
+}
+
 func (v *DeleteAccessControlDeleteAccessControl) UnmarshalJSON(b []byte) error {
 
 	if string(b) == "null" {
@@ -10726,6 +10855,10 @@ type __premarshalDeleteAccessControlDeleteAccessControl struct {
 	Locks []AccessControlLocksAccessControlLockData `json:"locks"`
 
 	SyncData []AccessControlSyncData `json:"syncData"`
+
+	WhatUnknown bool `json:"whatUnknown"`
+
+	WhoUnknown bool `json:"whoUnknown"`
 }
 
 func (v *DeleteAccessControlDeleteAccessControl) MarshalJSON() ([]byte, error) {
@@ -10757,6 +10890,8 @@ func (v *DeleteAccessControlDeleteAccessControl) __premarshalJSON() (*__premarsh
 	retval.Complete = v.AccessControl.Complete
 	retval.Locks = v.AccessControl.Locks
 	retval.SyncData = v.AccessControl.SyncData
+	retval.WhatUnknown = v.AccessControl.WhatUnknown
+	retval.WhoUnknown = v.AccessControl.WhoUnknown
 	return &retval, nil
 }
 
@@ -15884,6 +16019,12 @@ func (v *GetAccessControlAccessControl) GetSyncData() []AccessControlSyncData {
 	return v.AccessControl.SyncData
 }
 
+// GetWhatUnknown returns GetAccessControlAccessControl.WhatUnknown, and is useful for accessing the field via an interface.
+func (v *GetAccessControlAccessControl) GetWhatUnknown() bool { return v.AccessControl.WhatUnknown }
+
+// GetWhoUnknown returns GetAccessControlAccessControl.WhoUnknown, and is useful for accessing the field via an interface.
+func (v *GetAccessControlAccessControl) GetWhoUnknown() bool { return v.AccessControl.WhoUnknown }
+
 func (v *GetAccessControlAccessControl) UnmarshalJSON(b []byte) error {
 
 	if string(b) == "null" {
@@ -15945,6 +16086,10 @@ type __premarshalGetAccessControlAccessControl struct {
 	Locks []AccessControlLocksAccessControlLockData `json:"locks"`
 
 	SyncData []AccessControlSyncData `json:"syncData"`
+
+	WhatUnknown bool `json:"whatUnknown"`
+
+	WhoUnknown bool `json:"whoUnknown"`
 }
 
 func (v *GetAccessControlAccessControl) MarshalJSON() ([]byte, error) {
@@ -15976,6 +16121,8 @@ func (v *GetAccessControlAccessControl) __premarshalJSON() (*__premarshalGetAcce
 	retval.Complete = v.AccessControl.Complete
 	retval.Locks = v.AccessControl.Locks
 	retval.SyncData = v.AccessControl.SyncData
+	retval.WhatUnknown = v.AccessControl.WhatUnknown
+	retval.WhoUnknown = v.AccessControl.WhoUnknown
 	return &retval, nil
 }
 
@@ -36014,6 +36161,16 @@ func (v *UpdateAccessControlUpdateAccessControl) GetSyncData() []AccessControlSy
 	return v.AccessControl.SyncData
 }
 
+// GetWhatUnknown returns UpdateAccessControlUpdateAccessControl.WhatUnknown, and is useful for accessing the field via an interface.
+func (v *UpdateAccessControlUpdateAccessControl) GetWhatUnknown() bool {
+	return v.AccessControl.WhatUnknown
+}
+
+// GetWhoUnknown returns UpdateAccessControlUpdateAccessControl.WhoUnknown, and is useful for accessing the field via an interface.
+func (v *UpdateAccessControlUpdateAccessControl) GetWhoUnknown() bool {
+	return v.AccessControl.WhoUnknown
+}
+
 func (v *UpdateAccessControlUpdateAccessControl) UnmarshalJSON(b []byte) error {
 
 	if string(b) == "null" {
@@ -36075,6 +36232,10 @@ type __premarshalUpdateAccessControlUpdateAccessControl struct {
 	Locks []AccessControlLocksAccessControlLockData `json:"locks"`
 
 	SyncData []AccessControlSyncData `json:"syncData"`
+
+	WhatUnknown bool `json:"whatUnknown"`
+
+	WhoUnknown bool `json:"whoUnknown"`
 }
 
 func (v *UpdateAccessControlUpdateAccessControl) MarshalJSON() ([]byte, error) {
@@ -36106,6 +36267,8 @@ func (v *UpdateAccessControlUpdateAccessControl) __premarshalJSON() (*__premarsh
 	retval.Complete = v.AccessControl.Complete
 	retval.Locks = v.AccessControl.Locks
 	retval.SyncData = v.AccessControl.SyncData
+	retval.WhatUnknown = v.AccessControl.WhatUnknown
+	retval.WhoUnknown = v.AccessControl.WhoUnknown
 	return &retval, nil
 }
 
@@ -36222,6 +36385,16 @@ func (v *UpdateAccessControlUpdateAccessControlAccessControlWithOptionalAccessRe
 	return v.AccessControl.SyncData
 }
 
+// GetWhatUnknown returns UpdateAccessControlUpdateAccessControlAccessControlWithOptionalAccessRequestsAccessControl.WhatUnknown, and is useful for accessing the field via an interface.
+func (v *UpdateAccessControlUpdateAccessControlAccessControlWithOptionalAccessRequestsAccessControl) GetWhatUnknown() bool {
+	return v.AccessControl.WhatUnknown
+}
+
+// GetWhoUnknown returns UpdateAccessControlUpdateAccessControlAccessControlWithOptionalAccessRequestsAccessControl.WhoUnknown, and is useful for accessing the field via an interface.
+func (v *UpdateAccessControlUpdateAccessControlAccessControlWithOptionalAccessRequestsAccessControl) GetWhoUnknown() bool {
+	return v.AccessControl.WhoUnknown
+}
+
 func (v *UpdateAccessControlUpdateAccessControlAccessControlWithOptionalAccessRequestsAccessControl) UnmarshalJSON(b []byte) error {
 
 	if string(b) == "null" {
@@ -36281,6 +36454,10 @@ type __premarshalUpdateAccessControlUpdateAccessControlAccessControlWithOptional
 	Locks []AccessControlLocksAccessControlLockData `json:"locks"`
 
 	SyncData []AccessControlSyncData `json:"syncData"`
+
+	WhatUnknown bool `json:"whatUnknown"`
+
+	WhoUnknown bool `json:"whoUnknown"`
 }
 
 func (v *UpdateAccessControlUpdateAccessControlAccessControlWithOptionalAccessRequestsAccessControl) MarshalJSON() ([]byte, error) {
@@ -36311,6 +36488,8 @@ func (v *UpdateAccessControlUpdateAccessControlAccessControlWithOptionalAccessRe
 	retval.Complete = v.AccessControl.Complete
 	retval.Locks = v.AccessControl.Locks
 	retval.SyncData = v.AccessControl.SyncData
+	retval.WhatUnknown = v.AccessControl.WhatUnknown
+	retval.WhoUnknown = v.AccessControl.WhoUnknown
 	return &retval, nil
 }
 
@@ -40822,6 +41001,8 @@ fragment AccessControl on AccessControl {
 	syncData {
 		... SyncData
 	}
+	whatUnknown
+	whoUnknown
 }
 fragment NotFoundError on NotFoundError {
 	message
@@ -41070,6 +41251,8 @@ fragment AccessControl on AccessControl {
 	syncData {
 		... SyncData
 	}
+	whatUnknown
+	whoUnknown
 }
 fragment PermissionDeniedError on PermissionDeniedError {
 	message
@@ -41634,6 +41817,8 @@ fragment AccessControl on AccessControl {
 	syncData {
 		... SyncData
 	}
+	whatUnknown
+	whoUnknown
 }
 fragment NotFoundError on NotFoundError {
 	message
@@ -41777,6 +41962,8 @@ fragment AccessControl on AccessControl {
 	syncData {
 		... SyncData
 	}
+	whatUnknown
+	whoUnknown
 }
 fragment NotFoundError on NotFoundError {
 	message
@@ -42354,6 +42541,8 @@ fragment AccessControl on AccessControl {
 	syncData {
 		... SyncData
 	}
+	whatUnknown
+	whoUnknown
 }
 fragment PermissionDeniedError on PermissionDeniedError {
 	message
@@ -42538,6 +42727,8 @@ fragment AccessControl on AccessControl {
 	syncData {
 		... SyncData
 	}
+	whatUnknown
+	whoUnknown
 }
 fragment GrantCategory on GrantCategory {
 	id
@@ -43545,6 +43736,8 @@ fragment AccessControl on AccessControl {
 	syncData {
 		... SyncData
 	}
+	whatUnknown
+	whoUnknown
 }
 fragment GrantCategory on GrantCategory {
 	id
@@ -45044,6 +45237,8 @@ fragment AccessControl on AccessControl {
 	syncData {
 		... SyncData
 	}
+	whatUnknown
+	whoUnknown
 }
 fragment PermissionDeniedError on PermissionDeniedError {
 	message
