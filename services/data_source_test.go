@@ -275,13 +275,16 @@ func (suite *DataSourceServiceTestSuite) TestDataSources() {
 			suite.T().SkipNow()
 		}
 
-		sfTags := any(true)
-		sfColumns := any(true)
+		boolVal := any(true)
+		intVal := any(42)
+		strVal := any("myTagValue")
 		input := types.SyncParameterValuesInput{
 			DataSourceId: createdDataSource.Id,
 			Values: []types.SyncParameterValueInput{
-				{Path: "global.sf-tags", Value: &sfTags},
-				{Path: "global.sf-columns", Value: &sfColumns},
+				{Path: "global.sf-tags", Value: &boolVal},
+				{Path: "global.sf-columns", Value: &boolVal},
+				{Path: "global.page-size", Value: &intVal},
+				{Path: "global.tag-name", Value: &strVal},
 			},
 		}
 

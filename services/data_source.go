@@ -2,6 +2,7 @@ package services
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"iter"
 
@@ -211,12 +212,35 @@ func (c *DataSourceClient) SetDataSourceMetadata(ctx context.Context, id string,
 	}
 }
 
+// marshalSyncParameterValues JSON-encodes each non-nil Value into a string so the
+// backend receives "true", "42", or "{...}" instead of a raw Go value.
+func marshalSyncParameterValues(input types.SyncParameterValuesInput) (types.SyncParameterValuesInput, error) {
+	values := make([]types.SyncParameterValueInput, len(input.Values))
+	for i, v := range input.Values {
+		if v.Value == nil {
+			values[i] = v
+			continue
+		}
+		b, err := json.Marshal(*v.Value)
+		if err != nil {
+			return types.SyncParameterValuesInput{}, fmt.Errorf("failed to marshal value for path %q: %w", v.Path, err)
+		}
+		jsonStr := any(string(b))
+		values[i] = types.SyncParameterValueInput{Path: v.Path, Value: &jsonStr}
+	}
+	return types.SyncParameterValuesInput{DataSourceId: input.DataSourceId, Values: values}, nil
+}
+
 // SetSyncConfigurationParameterValues sets sync configuration parameter values for a DataSource.
-// Each value's Path identifies the configuration key. Value can be any JSON-encodable type;
-// a nil value removes the parameter.
+// Each value's Path identifies the configuration key. Value can be any JSON-serializable type
+// (bool, number, string, map, …); a nil value removes the parameter.
 // Returns the updated DataSource if successful, otherwise returns an error.
 func (c *DataSourceClient) SetSyncConfigurationParameterValues(ctx context.Context, input types.SyncParameterValuesInput) (*types.DataSource, error) {
-	result, err := schema.SetSyncConfigurationParameterValues(ctx, c.client, input)
+	marshaled, err := marshalSyncParameterValues(input)
+	if err != nil {
+		return nil, types.NewErrClient(err)
+	}
+	result, err := schema.SetSyncConfigurationParameterValues(ctx, c.client, marshaled)
 	if err != nil {
 		return nil, types.NewErrClient(err)
 	}
