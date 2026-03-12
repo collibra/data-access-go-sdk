@@ -221,13 +221,16 @@ func marshalSyncParameterValues(input types.SyncParameterValuesInput) (types.Syn
 			values[i] = v
 			continue
 		}
+
 		b, err := json.Marshal(*v.Value)
 		if err != nil {
 			return types.SyncParameterValuesInput{}, fmt.Errorf("failed to marshal value for path %q: %w", v.Path, err)
 		}
+
 		jsonStr := any(string(b))
 		values[i] = types.SyncParameterValueInput{Path: v.Path, Value: &jsonStr}
 	}
+
 	return types.SyncParameterValuesInput{DataSourceId: input.DataSourceId, Values: values}, nil
 }
 
@@ -240,6 +243,7 @@ func (c *DataSourceClient) SetSyncConfigurationParameterValues(ctx context.Conte
 	if err != nil {
 		return nil, types.NewErrClient(err)
 	}
+
 	result, err := schema.SetSyncConfigurationParameterValues(ctx, c.client, marshaled)
 	if err != nil {
 		return nil, types.NewErrClient(err)
