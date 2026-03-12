@@ -210,3 +210,27 @@ func (c *DataSourceClient) SetDataSourceMetadata(ctx context.Context, id string,
 		return nil, fmt.Errorf("unexpected response type: %T", result.SetDataSourceMetaData)
 	}
 }
+
+// SetSyncConfigurationParameterValues sets sync configuration parameter values for a DataSource.
+// Each value's Path identifies the configuration key. Value can be any JSON-encodable type;
+// a nil value removes the parameter.
+// Returns the updated DataSource if successful, otherwise returns an error.
+func (c *DataSourceClient) SetSyncConfigurationParameterValues(ctx context.Context, input types.SyncParameterValuesInput) (*types.DataSource, error) {
+	result, err := schema.SetSyncConfigurationParameterValues(ctx, c.client, input)
+	if err != nil {
+		return nil, types.NewErrClient(err)
+	}
+
+	switch response := result.SetSyncConfigurationParameterValues.(type) {
+	case *schema.SetSyncConfigurationParameterValuesSetSyncConfigurationParameterValuesDataSource:
+		return &response.DataSource, nil
+	case *schema.SetSyncConfigurationParameterValuesSetSyncConfigurationParameterValuesNotFoundError:
+		return nil, types.NewErrNotFound(input.DataSourceId, response.Typename, response.Message)
+	case *schema.SetSyncConfigurationParameterValuesSetSyncConfigurationParameterValuesPermissionDeniedError:
+		return nil, types.NewErrPermissionDenied("setSyncConfigurationParameterValues", response.Message)
+	case *schema.SetSyncConfigurationParameterValuesSetSyncConfigurationParameterValuesInvalidInputError:
+		return nil, types.NewErrInvalidInput(response.Message)
+	default:
+		return nil, fmt.Errorf("unexpected response type: %T", result.SetSyncConfigurationParameterValues)
+	}
+}

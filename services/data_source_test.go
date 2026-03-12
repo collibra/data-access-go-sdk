@@ -2,6 +2,7 @@ package services_test
 
 import (
 	"encoding/json"
+	"iter"
 	"os"
 	"sort"
 	"testing"
@@ -14,6 +15,19 @@ import (
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/suite"
 )
+
+func containsDataSourceByID(s *suite.Suite, seq iter.Seq2[*schema.DataSource, error], id string) bool {
+	for ds, err := range seq {
+		s.Require().NoError(err, "Error while listing data sources")
+		s.NotNil(ds, "Data source is nil")
+
+		if ds.Id == id {
+			return true
+		}
+	}
+
+	return false
+}
 
 func readDataSourceMetadata(suite *suite.Suite) schema.DataSourceMetaDataInput {
 	metadataJson, err := os.ReadFile("testdata/test_data_source.json")
@@ -137,19 +151,7 @@ func (suite *DataSourceServiceTestSuite) TestDataSources() {
 		response := suite.dataSourceClient.ListDataSources(ctx, services.WithDataSourceListFilter(&schema.DataSourceFilterInput{
 			Parent: &parentDataSource.Id,
 		}))
-		found := false
-
-		for ds, err := range response {
-			suite.Require().NoError(err, "Error while listing data sources")
-			suite.NotNil(ds, "Data source is nil")
-
-			if ds.Id == createdDataSource.Id {
-				found = true
-				break
-			}
-		}
-
-		suite.Require().True(found, "Created data source not found in the list")
+		suite.Require().True(containsDataSourceByID(&suite.Suite, response, createdDataSource.Id), "Created data source not found in the list")
 	})
 
 	suite.Run("List Data Sources", func() {
@@ -159,19 +161,7 @@ func (suite *DataSourceServiceTestSuite) TestDataSources() {
 		}
 
 		response := suite.dataSourceClient.ListDataSources(ctx)
-		found := false
-
-		for ds, err := range response {
-			suite.Require().NoError(err, "Error while listing data sources with search and order")
-			suite.NotNil(ds, "Data source is nil")
-
-			if ds.Id == createdDataSource.Id {
-				found = true
-				break
-			}
-		}
-
-		suite.Require().True(found, "Created data source not found in the list")
+		suite.Require().True(containsDataSourceByID(&suite.Suite, response, createdDataSource.Id), "Created data source not found in the list")
 	})
 
 	suite.Run("List Data Sources With Data Source List Search And With Data Source List Order", func() {
@@ -277,6 +267,28 @@ func (suite *DataSourceServiceTestSuite) TestDataSources() {
 		suite.Require().NotNil(retrievedMaskingMetaData, "Retrieved masking metadata is nil")
 		suite.NotEmpty(retrievedMaskingMetaData.MaskTypes, "Mask types should not be empty")
 		suite.Equal(*suite.metadata.MaskingMetadata.DefaultMaskExternalName, *retrievedMaskingMetaData.DefaultMaskExternalName, "Default mask external name should match")
+	})
+
+	suite.Run("Set Sync Configuration Parameter Values", func() {
+		if createdDataSource == nil {
+			suite.T().Log("Skipping SetSyncConfigurationParameterValues as no data source was created")
+			suite.T().SkipNow()
+		}
+
+		sfTags := any(true)
+		sfColumns := any(true)
+		input := types.SyncParameterValuesInput{
+			DataSourceId: createdDataSource.Id,
+			Values: []types.SyncParameterValueInput{
+				{Path: "global.sf-tags", Value: &sfTags},
+				{Path: "global.sf-columns", Value: &sfColumns},
+			},
+		}
+
+		updated, err := dataSourceClient.SetSyncConfigurationParameterValues(ctx, input)
+		suite.Require().NoError(err, "Failed to set sync configuration parameter values")
+		suite.Require().NotNil(updated, "Updated data source is nil")
+		suite.Equal(createdDataSource.Id, updated.Id)
 	})
 
 	suite.Run("Delete Data Source with Parent", func() {
