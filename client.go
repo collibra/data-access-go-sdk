@@ -97,6 +97,18 @@ func WithUserAgent(userAgent string) ClientOptions {
 	}
 }
 
+func WithLogger(logger retryablehttp.Logger) ClientOptions {
+	return func(ops *internal.ClientOptions) {
+		ops.Logger = logger
+	}
+}
+
+func WithLeveledLogger(logger retryablehttp.LeveledLogger) ClientOptions {
+	return func(ops *internal.ClientOptions) {
+		ops.LeveledLogger = logger
+	}
+}
+
 // NewClient creates a new CollibraClient with the given credentials.
 func NewClient(url string, options ...ClientOptions) *CollibraClient {
 	ops := internal.ClientOptions{
