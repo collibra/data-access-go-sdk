@@ -294,6 +294,27 @@ func (suite *DataSourceServiceTestSuite) TestDataSources() {
 		suite.Equal(createdDataSource.Id, updated.Id)
 	})
 
+	suite.Run("Trigger Data Source CLI Sync", func() {
+		if createdDataSource == nil {
+			suite.T().Log("Skipping TriggerDataSourceCliSync as no data source was created")
+			suite.T().SkipNow()
+		}
+
+		request := types.DataSourceSyncRequest{
+			DataSourceId:             createdDataSource.Id,
+			DataObjectSync:           true,
+			DataAccessFromTargetSync: false,
+			DataAccessToTargetSync:   false,
+			IdentitySync:             false,
+			DataUsageSync:            false,
+		}
+
+		result, err := dataSourceClient.TriggerDataSourceCliSync(ctx, request)
+		suite.Require().NoError(err, "Failed to trigger data source CLI sync")
+		suite.Require().NotNil(result, "Result should not be nil")
+		suite.Equal(createdDataSource.Id, result.Id)
+	})
+
 	suite.Run("Delete Data Source with Parent", func() {
 		if createdDataSource == nil {
 			suite.T().Log("Skipping TestH_DeleteDataSource as no data sources were created")
