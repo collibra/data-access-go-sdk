@@ -3,12 +3,14 @@ package services_test
 import (
 	"testing"
 
-	sdk "github.com/collibra/data-access-go-sdk"
-	"github.com/collibra/data-access-go-sdk/internal/schema"
-	"github.com/collibra/data-access-go-sdk/services"
-	"github.com/collibra/data-access-go-sdk/utils"
-	"github.com/google/uuid"
-	"github.com/stretchr/testify/suite"
+
+"github.com/google/uuid"
+"github.com/stretchr/testify/suite"
+
+sdk "github.com/collibra/data-access-go-sdk"
+"github.com/collibra/data-access-go-sdk/internal/schema"
+"github.com/collibra/data-access-go-sdk/services"
+"github.com/collibra/data-access-go-sdk/utils"
 )
 
 type UserServiceTestSuite struct {
@@ -64,7 +66,7 @@ func (suite *UserServiceTestSuite) TestGetCurrentUser() {
 
 	suite.NotEmpty(user.Id)
 
-	expectedName := "Admin Istrator"
+	expectedName := "Data Access Go SDK"
 	suite.Equal(expectedName, user.Name)
 
 	suite.NotNil(user.Email)
