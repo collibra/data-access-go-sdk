@@ -10038,6 +10038,50 @@ type DataSourceParentDataSource struct {
 // GetId returns DataSourceParentDataSource.Id, and is useful for accessing the field via an interface.
 func (v *DataSourceParentDataSource) GetId() string { return v.Id }
 
+// Input object to request a manual sync of a data source.
+type DataSourceSyncRequest struct {
+	// The ID of the data source to sync.
+	DataSourceId string `json:"dataSourceId"`
+	// Boolean to indicate if the data objects needs to be synced or not.
+	DataObjectSync bool `json:"dataObjectSync"`
+	// Boolean to indicate if access from target needs to be synced or not.
+	DataAccessFromTargetSync bool `json:"dataAccessFromTargetSync"`
+	// Boolean to indicate if access to target needs to be synced or not.
+	DataAccessToTargetSync bool `json:"dataAccessToTargetSync"`
+	// Boolean to indicate if identities needs to be synced or not.
+	IdentitySync bool `json:"identitySync"`
+	// Boolean to indicate if usage needs to be synced or not.
+	DataUsageSync bool `json:"dataUsageSync"`
+	// Optional: the ID of the data object to sync. That means that, if this is specified, the import will be run with `DeleteUntouched=false`, so no cleanup will be done of removed data objects.
+	DataObjectParent *string `json:"dataObjectParent,omitempty"`
+	// Optional: When DataObjectParent is provided, this boolean can indicate whether we need to ignore all the existing child data objects of the parent or not (also look for new descendants there).
+	ExcludeExisting *bool `json:"excludeExisting,omitempty"`
+}
+
+// GetDataSourceId returns DataSourceSyncRequest.DataSourceId, and is useful for accessing the field via an interface.
+func (v *DataSourceSyncRequest) GetDataSourceId() string { return v.DataSourceId }
+
+// GetDataObjectSync returns DataSourceSyncRequest.DataObjectSync, and is useful for accessing the field via an interface.
+func (v *DataSourceSyncRequest) GetDataObjectSync() bool { return v.DataObjectSync }
+
+// GetDataAccessFromTargetSync returns DataSourceSyncRequest.DataAccessFromTargetSync, and is useful for accessing the field via an interface.
+func (v *DataSourceSyncRequest) GetDataAccessFromTargetSync() bool { return v.DataAccessFromTargetSync }
+
+// GetDataAccessToTargetSync returns DataSourceSyncRequest.DataAccessToTargetSync, and is useful for accessing the field via an interface.
+func (v *DataSourceSyncRequest) GetDataAccessToTargetSync() bool { return v.DataAccessToTargetSync }
+
+// GetIdentitySync returns DataSourceSyncRequest.IdentitySync, and is useful for accessing the field via an interface.
+func (v *DataSourceSyncRequest) GetIdentitySync() bool { return v.IdentitySync }
+
+// GetDataUsageSync returns DataSourceSyncRequest.DataUsageSync, and is useful for accessing the field via an interface.
+func (v *DataSourceSyncRequest) GetDataUsageSync() bool { return v.DataUsageSync }
+
+// GetDataObjectParent returns DataSourceSyncRequest.DataObjectParent, and is useful for accessing the field via an interface.
+func (v *DataSourceSyncRequest) GetDataObjectParent() *string { return v.DataObjectParent }
+
+// GetExcludeExisting returns DataSourceSyncRequest.ExcludeExisting, and is useful for accessing the field via an interface.
+func (v *DataSourceSyncRequest) GetExcludeExisting() *bool { return v.ExcludeExisting }
+
 // Input object to set the sync scheduling for a data source.
 type DataSourceSyncScheduleInput struct {
 	// The cron expression for the global synchronization. Null will not update the global cron expression. Empty string will remove the global cron expression.
@@ -36111,6 +36155,557 @@ var AllTaskStatus = []TaskStatus{
 	TaskStatusTimedout,
 }
 
+// TriggerDataSourceCliSyncResponse is returned by TriggerDataSourceCliSync on success.
+type TriggerDataSourceCliSyncResponse struct {
+	// Manually trigger a synchronization for a data source.
+	TriggerDataSourceCliSync TriggerDataSourceCliSyncTriggerDataSourceCliSyncDataSourceResult `json:"-"`
+}
+
+// GetTriggerDataSourceCliSync returns TriggerDataSourceCliSyncResponse.TriggerDataSourceCliSync, and is useful for accessing the field via an interface.
+func (v *TriggerDataSourceCliSyncResponse) GetTriggerDataSourceCliSync() TriggerDataSourceCliSyncTriggerDataSourceCliSyncDataSourceResult {
+	return v.TriggerDataSourceCliSync
+}
+
+func (v *TriggerDataSourceCliSyncResponse) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*TriggerDataSourceCliSyncResponse
+		TriggerDataSourceCliSync json.RawMessage `json:"triggerDataSourceCliSync"`
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.TriggerDataSourceCliSyncResponse = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	{
+		dst := &v.TriggerDataSourceCliSync
+		src := firstPass.TriggerDataSourceCliSync
+		if len(src) != 0 && string(src) != "null" {
+			err = __unmarshalTriggerDataSourceCliSyncTriggerDataSourceCliSyncDataSourceResult(
+				src, dst)
+			if err != nil {
+				return fmt.Errorf(
+					"unable to unmarshal TriggerDataSourceCliSyncResponse.TriggerDataSourceCliSync: %w", err)
+			}
+		}
+	}
+	return nil
+}
+
+type __premarshalTriggerDataSourceCliSyncResponse struct {
+	TriggerDataSourceCliSync json.RawMessage `json:"triggerDataSourceCliSync"`
+}
+
+func (v *TriggerDataSourceCliSyncResponse) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *TriggerDataSourceCliSyncResponse) __premarshalJSON() (*__premarshalTriggerDataSourceCliSyncResponse, error) {
+	var retval __premarshalTriggerDataSourceCliSyncResponse
+
+	{
+
+		dst := &retval.TriggerDataSourceCliSync
+		src := v.TriggerDataSourceCliSync
+		var err error
+		*dst, err = __marshalTriggerDataSourceCliSyncTriggerDataSourceCliSyncDataSourceResult(
+			&src)
+		if err != nil {
+			return nil, fmt.Errorf(
+				"unable to marshal TriggerDataSourceCliSyncResponse.TriggerDataSourceCliSync: %w", err)
+		}
+	}
+	return &retval, nil
+}
+
+// TriggerDataSourceCliSyncTriggerDataSourceCliSyncAlreadyExistsError includes the requested fields of the GraphQL type AlreadyExistsError.
+// The GraphQL type's documentation follows.
+//
+// Error when the user tries to create a resource that already exists.
+type TriggerDataSourceCliSyncTriggerDataSourceCliSyncAlreadyExistsError struct {
+	Typename *string `json:"__typename"`
+}
+
+// GetTypename returns TriggerDataSourceCliSyncTriggerDataSourceCliSyncAlreadyExistsError.Typename, and is useful for accessing the field via an interface.
+func (v *TriggerDataSourceCliSyncTriggerDataSourceCliSyncAlreadyExistsError) GetTypename() *string {
+	return v.Typename
+}
+
+// TriggerDataSourceCliSyncTriggerDataSourceCliSyncDataSource includes the requested fields of the GraphQL type DataSource.
+// The GraphQL type's documentation follows.
+//
+// Represents a data sourcein Collibra Data Access.
+type TriggerDataSourceCliSyncTriggerDataSourceCliSyncDataSource struct {
+	Typename   *string `json:"__typename"`
+	DataSource `json:"-"`
+}
+
+// GetTypename returns TriggerDataSourceCliSyncTriggerDataSourceCliSyncDataSource.Typename, and is useful for accessing the field via an interface.
+func (v *TriggerDataSourceCliSyncTriggerDataSourceCliSyncDataSource) GetTypename() *string {
+	return v.Typename
+}
+
+// GetId returns TriggerDataSourceCliSyncTriggerDataSourceCliSyncDataSource.Id, and is useful for accessing the field via an interface.
+func (v *TriggerDataSourceCliSyncTriggerDataSourceCliSyncDataSource) GetId() string {
+	return v.DataSource.Id
+}
+
+// GetName returns TriggerDataSourceCliSyncTriggerDataSourceCliSyncDataSource.Name, and is useful for accessing the field via an interface.
+func (v *TriggerDataSourceCliSyncTriggerDataSourceCliSyncDataSource) GetName() string {
+	return v.DataSource.Name
+}
+
+// GetType returns TriggerDataSourceCliSyncTriggerDataSourceCliSyncDataSource.Type, and is useful for accessing the field via an interface.
+func (v *TriggerDataSourceCliSyncTriggerDataSourceCliSyncDataSource) GetType() string {
+	return v.DataSource.Type
+}
+
+// GetDescription returns TriggerDataSourceCliSyncTriggerDataSourceCliSyncDataSource.Description, and is useful for accessing the field via an interface.
+func (v *TriggerDataSourceCliSyncTriggerDataSourceCliSyncDataSource) GetDescription() string {
+	return v.DataSource.Description
+}
+
+// GetCreatedAt returns TriggerDataSourceCliSyncTriggerDataSourceCliSyncDataSource.CreatedAt, and is useful for accessing the field via an interface.
+func (v *TriggerDataSourceCliSyncTriggerDataSourceCliSyncDataSource) GetCreatedAt() time.Time {
+	return v.DataSource.CreatedAt
+}
+
+// GetModifiedAt returns TriggerDataSourceCliSyncTriggerDataSourceCliSyncDataSource.ModifiedAt, and is useful for accessing the field via an interface.
+func (v *TriggerDataSourceCliSyncTriggerDataSourceCliSyncDataSource) GetModifiedAt() time.Time {
+	return v.DataSource.ModifiedAt
+}
+
+// GetParent returns TriggerDataSourceCliSyncTriggerDataSourceCliSyncDataSource.Parent, and is useful for accessing the field via an interface.
+func (v *TriggerDataSourceCliSyncTriggerDataSourceCliSyncDataSource) GetParent() *DataSourceParentDataSource {
+	return v.DataSource.Parent
+}
+
+// GetEdgeSiteInfo returns TriggerDataSourceCliSyncTriggerDataSourceCliSyncDataSource.EdgeSiteInfo, and is useful for accessing the field via an interface.
+func (v *TriggerDataSourceCliSyncTriggerDataSourceCliSyncDataSource) GetEdgeSiteInfo() *DataSourceEdgeSiteInfoDataSourceLinkedEdgeSiteInfoResult {
+	return v.DataSource.EdgeSiteInfo
+}
+
+func (v *TriggerDataSourceCliSyncTriggerDataSourceCliSyncDataSource) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*TriggerDataSourceCliSyncTriggerDataSourceCliSyncDataSource
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.TriggerDataSourceCliSyncTriggerDataSourceCliSyncDataSource = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.DataSource)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalTriggerDataSourceCliSyncTriggerDataSourceCliSyncDataSource struct {
+	Typename *string `json:"__typename"`
+
+	Id string `json:"id"`
+
+	Name string `json:"name"`
+
+	Type string `json:"type"`
+
+	Description string `json:"description"`
+
+	CreatedAt time.Time `json:"createdAt"`
+
+	ModifiedAt time.Time `json:"modifiedAt"`
+
+	Parent *DataSourceParentDataSource `json:"parent"`
+
+	EdgeSiteInfo json.RawMessage `json:"edgeSiteInfo"`
+}
+
+func (v *TriggerDataSourceCliSyncTriggerDataSourceCliSyncDataSource) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *TriggerDataSourceCliSyncTriggerDataSourceCliSyncDataSource) __premarshalJSON() (*__premarshalTriggerDataSourceCliSyncTriggerDataSourceCliSyncDataSource, error) {
+	var retval __premarshalTriggerDataSourceCliSyncTriggerDataSourceCliSyncDataSource
+
+	retval.Typename = v.Typename
+	retval.Id = v.DataSource.Id
+	retval.Name = v.DataSource.Name
+	retval.Type = v.DataSource.Type
+	retval.Description = v.DataSource.Description
+	retval.CreatedAt = v.DataSource.CreatedAt
+	retval.ModifiedAt = v.DataSource.ModifiedAt
+	retval.Parent = v.DataSource.Parent
+	{
+
+		dst := &retval.EdgeSiteInfo
+		src := v.DataSource.EdgeSiteInfo
+		if src != nil {
+			var err error
+			*dst, err = __marshalDataSourceEdgeSiteInfoDataSourceLinkedEdgeSiteInfoResult(
+				src)
+			if err != nil {
+				return nil, fmt.Errorf(
+					"unable to marshal TriggerDataSourceCliSyncTriggerDataSourceCliSyncDataSource.DataSource.EdgeSiteInfo: %w", err)
+			}
+		}
+	}
+	return &retval, nil
+}
+
+// TriggerDataSourceCliSyncTriggerDataSourceCliSyncDataSourceResult includes the requested fields of the GraphQL interface DataSourceResult.
+//
+// TriggerDataSourceCliSyncTriggerDataSourceCliSyncDataSourceResult is implemented by the following types:
+// TriggerDataSourceCliSyncTriggerDataSourceCliSyncAlreadyExistsError
+// TriggerDataSourceCliSyncTriggerDataSourceCliSyncDataSource
+// TriggerDataSourceCliSyncTriggerDataSourceCliSyncInvalidInputError
+// TriggerDataSourceCliSyncTriggerDataSourceCliSyncNotFoundError
+// TriggerDataSourceCliSyncTriggerDataSourceCliSyncPermissionDeniedError
+type TriggerDataSourceCliSyncTriggerDataSourceCliSyncDataSourceResult interface {
+	implementsGraphQLInterfaceTriggerDataSourceCliSyncTriggerDataSourceCliSyncDataSourceResult()
+	// GetTypename returns the receiver's concrete GraphQL type-name (see interface doc for possible values).
+	GetTypename() *string
+}
+
+func (v *TriggerDataSourceCliSyncTriggerDataSourceCliSyncAlreadyExistsError) implementsGraphQLInterfaceTriggerDataSourceCliSyncTriggerDataSourceCliSyncDataSourceResult() {
+}
+func (v *TriggerDataSourceCliSyncTriggerDataSourceCliSyncDataSource) implementsGraphQLInterfaceTriggerDataSourceCliSyncTriggerDataSourceCliSyncDataSourceResult() {
+}
+func (v *TriggerDataSourceCliSyncTriggerDataSourceCliSyncInvalidInputError) implementsGraphQLInterfaceTriggerDataSourceCliSyncTriggerDataSourceCliSyncDataSourceResult() {
+}
+func (v *TriggerDataSourceCliSyncTriggerDataSourceCliSyncNotFoundError) implementsGraphQLInterfaceTriggerDataSourceCliSyncTriggerDataSourceCliSyncDataSourceResult() {
+}
+func (v *TriggerDataSourceCliSyncTriggerDataSourceCliSyncPermissionDeniedError) implementsGraphQLInterfaceTriggerDataSourceCliSyncTriggerDataSourceCliSyncDataSourceResult() {
+}
+
+func __unmarshalTriggerDataSourceCliSyncTriggerDataSourceCliSyncDataSourceResult(b []byte, v *TriggerDataSourceCliSyncTriggerDataSourceCliSyncDataSourceResult) error {
+	if string(b) == "null" {
+		return nil
+	}
+
+	var tn struct {
+		TypeName string `json:"__typename"`
+	}
+	err := json.Unmarshal(b, &tn)
+	if err != nil {
+		return err
+	}
+
+	switch tn.TypeName {
+	case "AlreadyExistsError":
+		*v = new(TriggerDataSourceCliSyncTriggerDataSourceCliSyncAlreadyExistsError)
+		return json.Unmarshal(b, *v)
+	case "DataSource":
+		*v = new(TriggerDataSourceCliSyncTriggerDataSourceCliSyncDataSource)
+		return json.Unmarshal(b, *v)
+	case "InvalidInputError":
+		*v = new(TriggerDataSourceCliSyncTriggerDataSourceCliSyncInvalidInputError)
+		return json.Unmarshal(b, *v)
+	case "NotFoundError":
+		*v = new(TriggerDataSourceCliSyncTriggerDataSourceCliSyncNotFoundError)
+		return json.Unmarshal(b, *v)
+	case "PermissionDeniedError":
+		*v = new(TriggerDataSourceCliSyncTriggerDataSourceCliSyncPermissionDeniedError)
+		return json.Unmarshal(b, *v)
+	case "":
+		return fmt.Errorf(
+			"response was missing DataSourceResult.__typename")
+	default:
+		return fmt.Errorf(
+			`unexpected concrete type for TriggerDataSourceCliSyncTriggerDataSourceCliSyncDataSourceResult: "%v"`, tn.TypeName)
+	}
+}
+
+func __marshalTriggerDataSourceCliSyncTriggerDataSourceCliSyncDataSourceResult(v *TriggerDataSourceCliSyncTriggerDataSourceCliSyncDataSourceResult) ([]byte, error) {
+
+	var typename string
+	switch v := (*v).(type) {
+	case *TriggerDataSourceCliSyncTriggerDataSourceCliSyncAlreadyExistsError:
+		typename = "AlreadyExistsError"
+
+		result := struct {
+			TypeName string `json:"__typename"`
+			*TriggerDataSourceCliSyncTriggerDataSourceCliSyncAlreadyExistsError
+		}{typename, v}
+		return json.Marshal(result)
+	case *TriggerDataSourceCliSyncTriggerDataSourceCliSyncDataSource:
+		typename = "DataSource"
+
+		premarshaled, err := v.__premarshalJSON()
+		if err != nil {
+			return nil, err
+		}
+		result := struct {
+			TypeName string `json:"__typename"`
+			*__premarshalTriggerDataSourceCliSyncTriggerDataSourceCliSyncDataSource
+		}{typename, premarshaled}
+		return json.Marshal(result)
+	case *TriggerDataSourceCliSyncTriggerDataSourceCliSyncInvalidInputError:
+		typename = "InvalidInputError"
+
+		premarshaled, err := v.__premarshalJSON()
+		if err != nil {
+			return nil, err
+		}
+		result := struct {
+			TypeName string `json:"__typename"`
+			*__premarshalTriggerDataSourceCliSyncTriggerDataSourceCliSyncInvalidInputError
+		}{typename, premarshaled}
+		return json.Marshal(result)
+	case *TriggerDataSourceCliSyncTriggerDataSourceCliSyncNotFoundError:
+		typename = "NotFoundError"
+
+		premarshaled, err := v.__premarshalJSON()
+		if err != nil {
+			return nil, err
+		}
+		result := struct {
+			TypeName string `json:"__typename"`
+			*__premarshalTriggerDataSourceCliSyncTriggerDataSourceCliSyncNotFoundError
+		}{typename, premarshaled}
+		return json.Marshal(result)
+	case *TriggerDataSourceCliSyncTriggerDataSourceCliSyncPermissionDeniedError:
+		typename = "PermissionDeniedError"
+
+		premarshaled, err := v.__premarshalJSON()
+		if err != nil {
+			return nil, err
+		}
+		result := struct {
+			TypeName string `json:"__typename"`
+			*__premarshalTriggerDataSourceCliSyncTriggerDataSourceCliSyncPermissionDeniedError
+		}{typename, premarshaled}
+		return json.Marshal(result)
+	case nil:
+		return []byte("null"), nil
+	default:
+		return nil, fmt.Errorf(
+			`unexpected concrete type for TriggerDataSourceCliSyncTriggerDataSourceCliSyncDataSourceResult: "%T"`, v)
+	}
+}
+
+// TriggerDataSourceCliSyncTriggerDataSourceCliSyncInvalidInputError includes the requested fields of the GraphQL type InvalidInputError.
+// The GraphQL type's documentation follows.
+//
+// Error when some of the input parameters in the request are not valid.
+type TriggerDataSourceCliSyncTriggerDataSourceCliSyncInvalidInputError struct {
+	Typename          *string `json:"__typename"`
+	InvalidInputError `json:"-"`
+}
+
+// GetTypename returns TriggerDataSourceCliSyncTriggerDataSourceCliSyncInvalidInputError.Typename, and is useful for accessing the field via an interface.
+func (v *TriggerDataSourceCliSyncTriggerDataSourceCliSyncInvalidInputError) GetTypename() *string {
+	return v.Typename
+}
+
+// GetMessage returns TriggerDataSourceCliSyncTriggerDataSourceCliSyncInvalidInputError.Message, and is useful for accessing the field via an interface.
+func (v *TriggerDataSourceCliSyncTriggerDataSourceCliSyncInvalidInputError) GetMessage() string {
+	return v.InvalidInputError.Message
+}
+
+func (v *TriggerDataSourceCliSyncTriggerDataSourceCliSyncInvalidInputError) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*TriggerDataSourceCliSyncTriggerDataSourceCliSyncInvalidInputError
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.TriggerDataSourceCliSyncTriggerDataSourceCliSyncInvalidInputError = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.InvalidInputError)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalTriggerDataSourceCliSyncTriggerDataSourceCliSyncInvalidInputError struct {
+	Typename *string `json:"__typename"`
+
+	Message string `json:"message"`
+}
+
+func (v *TriggerDataSourceCliSyncTriggerDataSourceCliSyncInvalidInputError) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *TriggerDataSourceCliSyncTriggerDataSourceCliSyncInvalidInputError) __premarshalJSON() (*__premarshalTriggerDataSourceCliSyncTriggerDataSourceCliSyncInvalidInputError, error) {
+	var retval __premarshalTriggerDataSourceCliSyncTriggerDataSourceCliSyncInvalidInputError
+
+	retval.Typename = v.Typename
+	retval.Message = v.InvalidInputError.Message
+	return &retval, nil
+}
+
+// TriggerDataSourceCliSyncTriggerDataSourceCliSyncNotFoundError includes the requested fields of the GraphQL type NotFoundError.
+// The GraphQL type's documentation follows.
+//
+// Error when the user is requesting a resource that does not exist.
+type TriggerDataSourceCliSyncTriggerDataSourceCliSyncNotFoundError struct {
+	Typename      *string `json:"__typename"`
+	NotFoundError `json:"-"`
+}
+
+// GetTypename returns TriggerDataSourceCliSyncTriggerDataSourceCliSyncNotFoundError.Typename, and is useful for accessing the field via an interface.
+func (v *TriggerDataSourceCliSyncTriggerDataSourceCliSyncNotFoundError) GetTypename() *string {
+	return v.Typename
+}
+
+// GetMessage returns TriggerDataSourceCliSyncTriggerDataSourceCliSyncNotFoundError.Message, and is useful for accessing the field via an interface.
+func (v *TriggerDataSourceCliSyncTriggerDataSourceCliSyncNotFoundError) GetMessage() string {
+	return v.NotFoundError.Message
+}
+
+func (v *TriggerDataSourceCliSyncTriggerDataSourceCliSyncNotFoundError) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*TriggerDataSourceCliSyncTriggerDataSourceCliSyncNotFoundError
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.TriggerDataSourceCliSyncTriggerDataSourceCliSyncNotFoundError = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.NotFoundError)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalTriggerDataSourceCliSyncTriggerDataSourceCliSyncNotFoundError struct {
+	Typename *string `json:"__typename"`
+
+	Message string `json:"message"`
+}
+
+func (v *TriggerDataSourceCliSyncTriggerDataSourceCliSyncNotFoundError) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *TriggerDataSourceCliSyncTriggerDataSourceCliSyncNotFoundError) __premarshalJSON() (*__premarshalTriggerDataSourceCliSyncTriggerDataSourceCliSyncNotFoundError, error) {
+	var retval __premarshalTriggerDataSourceCliSyncTriggerDataSourceCliSyncNotFoundError
+
+	retval.Typename = v.Typename
+	retval.Message = v.NotFoundError.Message
+	return &retval, nil
+}
+
+// TriggerDataSourceCliSyncTriggerDataSourceCliSyncPermissionDeniedError includes the requested fields of the GraphQL type PermissionDeniedError.
+// The GraphQL type's documentation follows.
+//
+// Error when permission to the requested resource is denied.
+type TriggerDataSourceCliSyncTriggerDataSourceCliSyncPermissionDeniedError struct {
+	Typename              *string `json:"__typename"`
+	PermissionDeniedError `json:"-"`
+}
+
+// GetTypename returns TriggerDataSourceCliSyncTriggerDataSourceCliSyncPermissionDeniedError.Typename, and is useful for accessing the field via an interface.
+func (v *TriggerDataSourceCliSyncTriggerDataSourceCliSyncPermissionDeniedError) GetTypename() *string {
+	return v.Typename
+}
+
+// GetMessage returns TriggerDataSourceCliSyncTriggerDataSourceCliSyncPermissionDeniedError.Message, and is useful for accessing the field via an interface.
+func (v *TriggerDataSourceCliSyncTriggerDataSourceCliSyncPermissionDeniedError) GetMessage() string {
+	return v.PermissionDeniedError.Message
+}
+
+func (v *TriggerDataSourceCliSyncTriggerDataSourceCliSyncPermissionDeniedError) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*TriggerDataSourceCliSyncTriggerDataSourceCliSyncPermissionDeniedError
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.TriggerDataSourceCliSyncTriggerDataSourceCliSyncPermissionDeniedError = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.PermissionDeniedError)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalTriggerDataSourceCliSyncTriggerDataSourceCliSyncPermissionDeniedError struct {
+	Typename *string `json:"__typename"`
+
+	Message string `json:"message"`
+}
+
+func (v *TriggerDataSourceCliSyncTriggerDataSourceCliSyncPermissionDeniedError) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *TriggerDataSourceCliSyncTriggerDataSourceCliSyncPermissionDeniedError) __premarshalJSON() (*__premarshalTriggerDataSourceCliSyncTriggerDataSourceCliSyncPermissionDeniedError, error) {
+	var retval __premarshalTriggerDataSourceCliSyncTriggerDataSourceCliSyncPermissionDeniedError
+
+	retval.Typename = v.Typename
+	retval.Message = v.PermissionDeniedError.Message
+	return &retval, nil
+}
+
 // TriggerExportFlowResponse is returned by TriggerExportFlow on success.
 type TriggerExportFlowResponse struct {
 	StartExportFlow TriggerExportFlowStartExportFlowStartExportFlowResult `json:"-"`
@@ -41412,6 +42007,14 @@ type __SubmitImportObjectsInput struct {
 // GetInput returns __SubmitImportObjectsInput.Input, and is useful for accessing the field via an interface.
 func (v *__SubmitImportObjectsInput) GetInput() ImportCommands { return v.Input }
 
+// __TriggerDataSourceCliSyncInput is used internally by genqlient
+type __TriggerDataSourceCliSyncInput struct {
+	Request DataSourceSyncRequest `json:"request"`
+}
+
+// GetRequest returns __TriggerDataSourceCliSyncInput.Request, and is useful for accessing the field via an interface.
+func (v *__TriggerDataSourceCliSyncInput) GetRequest() DataSourceSyncRequest { return v.Request }
+
 // __TriggerExportFlowInput is used internally by genqlient
 type __TriggerExportFlowInput struct {
 	FlowId  uuid.UUID         `json:"flowId"`
@@ -45776,6 +46379,72 @@ func SupportedCLIVersion(
 	}
 
 	data_ = &SupportedCLIVersionResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
+// The mutation executed by TriggerDataSourceCliSync.
+const TriggerDataSourceCliSync_Operation = `
+mutation TriggerDataSourceCliSync ($request: DataSourceSyncRequest!) {
+	triggerDataSourceCliSync(request: $request) {
+		__typename
+		... DataSource
+		... PermissionDeniedError
+		... NotFoundError
+		... InvalidInputError
+	}
+}
+fragment DataSource on DataSource {
+	id
+	name
+	type
+	description
+	createdAt
+	modifiedAt
+	description
+	parent {
+		id
+	}
+	edgeSiteInfo {
+		__typename
+		... on DataSourceLinkedEdgeSiteInfo {
+			edgeSiteId
+			edgeConnectionId
+		}
+	}
+}
+fragment PermissionDeniedError on PermissionDeniedError {
+	message
+}
+fragment NotFoundError on NotFoundError {
+	message
+}
+fragment InvalidInputError on InvalidInputError {
+	message
+}
+`
+
+func TriggerDataSourceCliSync(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	request DataSourceSyncRequest,
+) (data_ *TriggerDataSourceCliSyncResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "TriggerDataSourceCliSync",
+		Query:  TriggerDataSourceCliSync_Operation,
+		Variables: &__TriggerDataSourceCliSyncInput{
+			Request: request,
+		},
+	}
+
+	data_ = &TriggerDataSourceCliSyncResponse{}
 	resp_ := &graphql.Response{Data: data_}
 
 	err_ = client_.MakeRequest(

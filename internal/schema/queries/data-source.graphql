@@ -118,3 +118,12 @@ mutation SetSyncConfigurationParameterValues($input: SyncParameterValuesInput!) 
         ... InvalidInputError
     }
 }
+
+mutation TriggerDataSourceCliSync($request: DataSourceSyncRequest!) {
+    triggerDataSourceCliSync(request: $request) {
+        ... DataSource
+        ... PermissionDeniedError
+        ... NotFoundError
+        ... InvalidInputError
+    }
+}

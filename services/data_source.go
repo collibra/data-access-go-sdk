@@ -234,6 +234,28 @@ func marshalSyncParameterValues(input types.SyncParameterValuesInput) (types.Syn
 	return types.SyncParameterValuesInput{DataSourceId: input.DataSourceId, Values: values}, nil
 }
 
+// TriggerDataSourceCliSync manually triggers a CLI synchronization for a DataSource.
+// Returns the updated DataSource if successful, otherwise returns an error.
+func (c *DataSourceClient) TriggerDataSourceCliSync(ctx context.Context, request types.DataSourceSyncRequest) (*types.DataSource, error) {
+	result, err := schema.TriggerDataSourceCliSync(ctx, c.client, request)
+	if err != nil {
+		return nil, types.NewErrClient(err)
+	}
+
+	switch response := result.TriggerDataSourceCliSync.(type) {
+	case *schema.TriggerDataSourceCliSyncTriggerDataSourceCliSyncDataSource:
+		return &response.DataSource, nil
+	case *schema.TriggerDataSourceCliSyncTriggerDataSourceCliSyncNotFoundError:
+		return nil, types.NewErrNotFound(request.DataSourceId, response.Typename, response.Message)
+	case *schema.TriggerDataSourceCliSyncTriggerDataSourceCliSyncPermissionDeniedError:
+		return nil, types.NewErrPermissionDenied("triggerDataSourceCliSync", response.Message)
+	case *schema.TriggerDataSourceCliSyncTriggerDataSourceCliSyncInvalidInputError:
+		return nil, types.NewErrInvalidInput(response.Message)
+	default:
+		return nil, fmt.Errorf("unexpected response type: %T", result.TriggerDataSourceCliSync)
+	}
+}
+
 // SetSyncConfigurationParameterValues sets sync configuration parameter values for a DataSource.
 // Each value's Path identifies the configuration key. Value can be any JSON-serializable type
 // (bool, number, string, map, …); a nil value removes the parameter.
