@@ -20,16 +20,10 @@ type UserServiceTestSuite struct {
 
 func (suite *UserServiceTestSuite) SetupSuite() {
 	url, clientOptions := utils.GetEnvConfig(&suite.Suite)
-	client := sdk.NewClient(url, clientOptions...)
-
-	if client == nil {
-		suite.FailNow("Failed to create Collibra client")
-	}
+	client, err := sdk.NewClient(url, clientOptions...)
+	suite.Require().NoError(err)
 
 	userClient := client.User()
-	if userClient == nil {
-		suite.FailNow("Failed to create User client")
-	}
 
 	suite.UserClient = userClient
 }
