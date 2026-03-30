@@ -20,9 +20,8 @@ type JobServiceTestSuite struct {
 
 func (suite *JobServiceTestSuite) SetupSuite() {
 	url, clientOptions := utils.GetEnvConfig(&suite.Suite)
-	sdkClient := sdk.NewClient(url, clientOptions...)
-
-	suite.Require().NotNil(sdkClient, "Failed to create SDK client")
+	sdkClient, err := sdk.NewClient(url, clientOptions...)
+	suite.Require().NoError(err)
 	suite.sdkClient = sdkClient
 	datasource := createDataSource(&suite.Suite, sdkClient.DataSource(), nil)
 	suite.createdDataSource = datasource

@@ -23,9 +23,8 @@ type DataObjectServiceTestSuite struct {
 
 func (suite *DataObjectServiceTestSuite) SetupSuite() {
 	url, clientOptions := utils.GetEnvConfig(&suite.Suite)
-	sdkClient := sdk.NewClient(url, clientOptions...)
-
-	suite.Require().NotNil(sdkClient, "Failed to create SDK client")
+	sdkClient, err := sdk.NewClient(url, clientOptions...)
+	suite.Require().NoError(err)
 	suite.sdkClient = sdkClient
 
 	// create data source

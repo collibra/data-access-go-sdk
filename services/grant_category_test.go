@@ -24,11 +24,8 @@ func TestGrantCategoryServiceTestSuite(t *testing.T) {
 
 func (suite *GrantCategoryServiceTestSuite) TestGrantCategory() {
 	url, clientOptions := utils.GetEnvConfig(&suite.Suite)
-	client := sdk.NewClient(url, clientOptions...)
-
-	if client == nil {
-		suite.FailNow("Failed to create Collibra client")
-	}
+	client, err := sdk.NewClient(url, clientOptions...)
+	suite.Require().NoError(err)
 
 	grantCategoryClient := client.GrantCategory()
 	if grantCategoryClient == nil {

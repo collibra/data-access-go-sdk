@@ -78,9 +78,8 @@ func TestExporterServiceTestSuite(t *testing.T) {
 
 func (suite *ExporterServiceTestSuite) SetupSuite() {
 	url, clientOptions := utils.GetEnvConfig(&suite.Suite)
-	sdkClient := sdk.NewClient(url, clientOptions...)
-
-	suite.Require().NotNil(sdkClient, "Failed to create SDK client")
+	sdkClient, err := sdk.NewClient(url, clientOptions...)
+	suite.Require().NoError(err)
 	suite.sdkClient = sdkClient
 
 	dataSource := createDataSource(&suite.Suite, sdkClient.DataSource(), nil)
