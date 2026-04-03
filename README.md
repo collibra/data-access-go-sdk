@@ -1,8 +1,7 @@
 # Collibra Data Access Go SDK
 
-
-**Note: This repository is still in an early stage of development.
-At this point, no contributions are accepted to the project yet.**
+**Note: This repository is still in an early stage of development and should not be used in production.
+Breaking changes can be made to this at any point in time.**
 
 This repository contains a simple SDK for Collibra Data Access.
 It can be used to automate basic operations.
