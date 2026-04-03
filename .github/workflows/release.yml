@@ -30,9 +30,3 @@ jobs:
           go-version-file: go.mod
           cache: true
           cache-dependency-path: go.sum
-
-      - name: Mod Tidy
-        run: go mod tidy
-
-      - name: Publish package
-        run: GOPROXY=proxy.golang.org go list -m github.com/collibra/data-access-go-sdk@${{steps.tag.outputs.tag}}
