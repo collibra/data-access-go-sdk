@@ -28,9 +28,8 @@ func TestSiteServiceTestSuite(t *testing.T) {
 
 func (suite *SiteServiceTestSuite) SetupSuite() {
 	url, clientOptions := utils.GetEnvConfig(&suite.Suite)
-	sdkClient := sdk.NewClient(url, clientOptions...)
-
-	suite.Require().NotNil(sdkClient, "Failed to create SDK client")
+	sdkClient, err := sdk.NewClient(url, clientOptions...)
+	suite.Require().NoError(err)
 	suite.SiteClient = sdkClient.Site()
 
 	suite.siteId, _ = uuid.NewRandom()

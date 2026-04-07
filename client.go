@@ -1,6 +1,9 @@
 package sdk
 
 import (
+	"errors"
+	"fmt"
+	neturl "net/url"
 	"strings"
 	"sync"
 	"time"
@@ -97,8 +100,33 @@ func WithUserAgent(userAgent string) ClientOptions {
 	}
 }
 
+func WithLogger(logger retryablehttp.Logger) ClientOptions {
+	return func(ops *internal.ClientOptions) {
+		ops.Logger = logger
+	}
+}
+
+func WithLeveledLogger(logger retryablehttp.LeveledLogger) ClientOptions {
+	return func(ops *internal.ClientOptions) {
+		ops.LeveledLogger = logger
+	}
+}
+
 // NewClient creates a new CollibraClient with the given credentials.
-func NewClient(url string, options ...ClientOptions) *CollibraClient {
+// A non-empty, valid absolute HTTP(S) URL must be provided.
+func NewClient(url string, options ...ClientOptions) (*CollibraClient, error) {
+	if url == "" {
+		return nil, errors.New("url must not be empty")
+	}
+
+	parsed, err := neturl.ParseRequestURI(url)
+	if err != nil || parsed.Scheme == "" || parsed.Host == "" {
+		if err == nil {
+			return nil, fmt.Errorf("url '%q' must be an absolute HTTP(S) URL", url)
+		}
+		return nil, fmt.Errorf("url '%q' must be an absolute HTTP(S) URL: %s", url, err.Error())
+	}
+
 	ops := internal.ClientOptions{
 		RetryWaitMin: 550 * time.Millisecond,
 		RetryWaitMax: 30 * time.Second,
@@ -111,10 +139,6 @@ func NewClient(url string, options ...ClientOptions) *CollibraClient {
 	}
 
 	apiUrl := url
-	if apiUrl == "" {
-		apiUrl = internal.DefaultApiEndpoint
-	}
-
 	if !strings.HasSuffix(apiUrl, "/") {
 		apiUrl += "/"
 	}
@@ -136,7 +160,7 @@ func NewClient(url string, options ...ClientOptions) *CollibraClient {
 		roleClient:          newSingletonClient(glcClient, services.NewRoleClient),
 		userClient:          newSingletonClient(glcClient, services.NewUserClient),
 		siteClient:          newSingletonClient(glcClient, services.NewSiteService),
-	}
+	}, nil
 }
 
 // AccessControl returns the AccessControlClient

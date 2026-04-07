@@ -24,6 +24,9 @@ type ClientOptions struct {
 	Backoff retryablehttp.Backoff
 
 	UserAgent string
+
+	Logger        retryablehttp.Logger
+	LeveledLogger retryablehttp.LeveledLogger
 }
 
 func CreateHttpClient(options *ClientOptions) *http.Client {
@@ -42,12 +45,20 @@ func CreateHttpClient(options *ClientOptions) *http.Client {
 		}
 	}
 
+	var logger any
+
+	if options.LeveledLogger != nil {
+		logger = options.LeveledLogger
+	} else if options.Logger != nil {
+		logger = options.Logger
+	}
+
 	// 3. Create a retryable http client
 	retryableClient := &retryablehttp.Client{
 		HTTPClient: &http.Client{
 			Transport: authRoundTripper,
 		},
-		Logger:       nil,
+		Logger:       logger,
 		RetryWaitMin: options.RetryWaitMin,
 		RetryWaitMax: options.RetryWaitMax,
 		RetryMax:     options.RetryMax,

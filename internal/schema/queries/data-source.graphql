@@ -109,3 +109,21 @@ mutation SetDataSourceMetadata($dsID: ID!, $input: DataSourceMetaDataInput!) {
         ... InvalidInputError
     }
 }
+
+mutation SetSyncConfigurationParameterValues($input: SyncParameterValuesInput!) {
+    setSyncConfigurationParameterValues(input: $input) {
+        ... DataSource
+        ... PermissionDeniedError
+        ... NotFoundError
+        ... InvalidInputError
+    }
+}
+
+mutation TriggerDataSourceCliSync($request: DataSourceSyncRequest!) {
+    triggerDataSourceCliSync(request: $request) {
+        ... DataSource
+        ... PermissionDeniedError
+        ... NotFoundError
+        ... InvalidInputError
+    }
+}

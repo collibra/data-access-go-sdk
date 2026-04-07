@@ -2,6 +2,7 @@ package services
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"iter"
 
@@ -208,5 +209,78 @@ func (c *DataSourceClient) SetDataSourceMetadata(ctx context.Context, id string,
 		return nil, types.NewErrPermissionDenied("setDataSourceMetadata", response.Message)
 	default:
 		return nil, fmt.Errorf("unexpected response type: %T", result.SetDataSourceMetaData)
+	}
+}
+
+// marshalSyncParameterValues JSON-encodes each non-nil Value into a string so the
+// backend receives "true", "42", or "{...}" instead of a raw Go value.
+func marshalSyncParameterValues(input types.SyncParameterValuesInput) (types.SyncParameterValuesInput, error) {
+	values := make([]types.SyncParameterValueInput, len(input.Values))
+	for i, v := range input.Values {
+		if v.Value == nil {
+			values[i] = v
+			continue
+		}
+
+		b, err := json.Marshal(*v.Value)
+		if err != nil {
+			return types.SyncParameterValuesInput{}, fmt.Errorf("failed to marshal value for path %q: %w", v.Path, err)
+		}
+
+		jsonStr := any(string(b))
+		values[i] = types.SyncParameterValueInput{Path: v.Path, Value: &jsonStr}
+	}
+
+	return types.SyncParameterValuesInput{DataSourceId: input.DataSourceId, Values: values}, nil
+}
+
+// TriggerDataSourceCliSync manually triggers a CLI synchronization for a DataSource.
+// Returns the updated DataSource if successful, otherwise returns an error.
+func (c *DataSourceClient) TriggerDataSourceCliSync(ctx context.Context, request types.DataSourceSyncRequest) (*types.DataSource, error) {
+	result, err := schema.TriggerDataSourceCliSync(ctx, c.client, request)
+	if err != nil {
+		return nil, types.NewErrClient(err)
+	}
+
+	switch response := result.TriggerDataSourceCliSync.(type) {
+	case *schema.TriggerDataSourceCliSyncTriggerDataSourceCliSyncDataSource:
+		return &response.DataSource, nil
+	case *schema.TriggerDataSourceCliSyncTriggerDataSourceCliSyncNotFoundError:
+		return nil, types.NewErrNotFound(request.DataSourceId, response.Typename, response.Message)
+	case *schema.TriggerDataSourceCliSyncTriggerDataSourceCliSyncPermissionDeniedError:
+		return nil, types.NewErrPermissionDenied("triggerDataSourceCliSync", response.Message)
+	case *schema.TriggerDataSourceCliSyncTriggerDataSourceCliSyncInvalidInputError:
+		return nil, types.NewErrInvalidInput(response.Message)
+	default:
+		return nil, fmt.Errorf("unexpected response type: %T", result.TriggerDataSourceCliSync)
+	}
+}
+
+// SetSyncConfigurationParameterValues sets sync configuration parameter values for a DataSource.
+// Each value's Path identifies the configuration key. Value can be any JSON-serializable type
+// (bool, number, string, map, …); a nil value removes the parameter.
+// Returns the updated DataSource if successful, otherwise returns an error.
+func (c *DataSourceClient) SetSyncConfigurationParameterValues(ctx context.Context, input types.SyncParameterValuesInput) (*types.DataSource, error) {
+	marshaled, err := marshalSyncParameterValues(input)
+	if err != nil {
+		return nil, types.NewErrClient(err)
+	}
+
+	result, err := schema.SetSyncConfigurationParameterValues(ctx, c.client, marshaled)
+	if err != nil {
+		return nil, types.NewErrClient(err)
+	}
+
+	switch response := result.SetSyncConfigurationParameterValues.(type) {
+	case *schema.SetSyncConfigurationParameterValuesSetSyncConfigurationParameterValuesDataSource:
+		return &response.DataSource, nil
+	case *schema.SetSyncConfigurationParameterValuesSetSyncConfigurationParameterValuesNotFoundError:
+		return nil, types.NewErrNotFound(input.DataSourceId, response.Typename, response.Message)
+	case *schema.SetSyncConfigurationParameterValuesSetSyncConfigurationParameterValuesPermissionDeniedError:
+		return nil, types.NewErrPermissionDenied("setSyncConfigurationParameterValues", response.Message)
+	case *schema.SetSyncConfigurationParameterValuesSetSyncConfigurationParameterValuesInvalidInputError:
+		return nil, types.NewErrInvalidInput(response.Message)
+	default:
+		return nil, fmt.Errorf("unexpected response type: %T", result.SetSyncConfigurationParameterValues)
 	}
 }

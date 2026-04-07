@@ -3,12 +3,13 @@ package services_test
 import (
 	"testing"
 
+	"github.com/google/uuid"
+	"github.com/stretchr/testify/suite"
+
 	sdk "github.com/collibra/data-access-go-sdk"
 	"github.com/collibra/data-access-go-sdk/internal/schema"
 	"github.com/collibra/data-access-go-sdk/services"
 	"github.com/collibra/data-access-go-sdk/utils"
-	"github.com/google/uuid"
-	"github.com/stretchr/testify/suite"
 )
 
 type UserServiceTestSuite struct {
@@ -19,16 +20,10 @@ type UserServiceTestSuite struct {
 
 func (suite *UserServiceTestSuite) SetupSuite() {
 	url, clientOptions := utils.GetEnvConfig(&suite.Suite)
-	client := sdk.NewClient(url, clientOptions...)
-
-	if client == nil {
-		suite.FailNow("Failed to create Collibra client")
-	}
+	client, err := sdk.NewClient(url, clientOptions...)
+	suite.Require().NoError(err)
 
 	userClient := client.User()
-	if userClient == nil {
-		suite.FailNow("Failed to create User client")
-	}
 
 	suite.UserClient = userClient
 }
@@ -64,7 +59,7 @@ func (suite *UserServiceTestSuite) TestGetCurrentUser() {
 
 	suite.NotEmpty(user.Id)
 
-	expectedName := "Admin Istrator"
+	expectedName := "Data Access Go SDK"
 	suite.Equal(expectedName, user.Name)
 
 	suite.NotNil(user.Email)
