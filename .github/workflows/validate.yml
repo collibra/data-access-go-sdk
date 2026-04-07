@@ -45,6 +45,7 @@ jobs:
 
       - name: SonarQube Scan
         uses: sonarsource/sonarqube-scan-action@v5
+        if: vars.SONAR_SKIP != 'TRUE'
         env:
           SONAR_TOKEN: ${{ secrets.SONARQUBE_PUBLIC_API_KEY }}
           SONAR_HOST_URL: https://sonarqube.collibra.dev
@@ -54,6 +55,7 @@ jobs:
 
       - name: SonarQube Quality Gate
         uses: sonarsource/sonarqube-quality-gate-action@v1.1.0
+        if: vars.SONAR_SKIP != 'TRUE'
         timeout-minutes: 10
         continue-on-error: true
         env:
