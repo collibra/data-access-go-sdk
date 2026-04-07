@@ -43,3 +43,25 @@ mutation UpdateUser($uId: ID!, $input: UserInput!) {
         ... NotFoundError
     }
 }
+
+# MCP
+fragment UserConnection on UserConnection {
+    edges {
+        node {
+            ... User
+        }
+        cursor
+    }
+    pageInfo {
+        startCursor
+        hasNextPage
+    }
+}
+
+query SearchUsers($after: String, $limit: Int, $filter: UserFilterInput) {
+    users(after: $after, limit: $limit, filter: $filter) {
+        ... UserConnection
+        ... PermissionDeniedError
+        ... InvalidInputError
+    }
+}

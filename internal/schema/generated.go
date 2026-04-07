@@ -16,9 +16,9 @@ import (
 // Input object to create an aggregator expression (e.g. `X OR Y OR Z`).
 type AbacComparisonExpressionAggregatorInput struct {
 	// The operator to use.
-	Operator BinaryExpressionAggregatorOperator `json:"operator"`
+	Operator BinaryExpressionAggregatorOperator `json:"operator" doc:"The operator to use."`
 	// The operands which will be combined with the operator.
-	Operands []AbacComparisonExpressionInput `json:"operands"`
+	Operands []AbacComparisonExpressionInput `json:"operands" doc:"The operands which will be combined with the operator."`
 }
 
 // GetOperator returns AbacComparisonExpressionAggregatorInput.Operator, and is useful for accessing the field via an interface.
@@ -34,11 +34,11 @@ func (v *AbacComparisonExpressionAggregatorInput) GetOperands() []AbacComparison
 // Input object to create a comparison expression (i.e. `field < value`).
 type AbacComparisonExpressionComparisonInput struct {
 	// The operator for the expression.
-	Operator AbacComparisonExpressionComparisonOperator `json:"operator"`
+	Operator AbacComparisonExpressionComparisonOperator `json:"operator" doc:"The operator for the expression."`
 	// The field to compare the value against.
-	LeftOperand string `json:"leftOperand"`
+	LeftOperand string `json:"leftOperand" doc:"The field to compare the value against."`
 	// The value operand.
-	RightOperand AbacComparisonExpressionOperandInput `json:"rightOperand"`
+	RightOperand AbacComparisonExpressionOperandInput `json:"rightOperand" doc:"The value operand."`
 }
 
 // GetOperator returns AbacComparisonExpressionComparisonInput.Operator, and is useful for accessing the field via an interface.
@@ -87,13 +87,13 @@ var AllAbacComparisonExpressionComparisonOperator = []AbacComparisonExpressionCo
 // Input object to create an ABAC expression. Exactly one of the fields should be specified, depending on the type.
 type AbacComparisonExpressionInput struct {
 	// In case you want to simply have a boolean literal to determine the outcome.
-	Literal *bool `json:"literal,omitempty"`
+	Literal *bool `json:"literal,omitempty" doc:"In case you want to simply have a boolean literal to determine the outcome."`
 	// To specify a single comparison (e.g. `field < value`).
-	Comparison *AbacComparisonExpressionComparisonInput `json:"comparison,omitempty"`
+	Comparison *AbacComparisonExpressionComparisonInput `json:"comparison,omitempty" doc:"To specify a single comparison (e.g. 'field < value')."`
 	// To specify an aggregator expression (e.g. `X OR Y OR Z`).
-	Aggregator *AbacComparisonExpressionAggregatorInput `json:"aggregator,omitempty"`
+	Aggregator *AbacComparisonExpressionAggregatorInput `json:"aggregator,omitempty" doc:"To specify an aggregator expression (e.g. 'X OR Y OR Z')."`
 	// To specify a unary expression (e.g. `NOT X`).
-	UnaryExpression *AbacComparisonExpressionUnaryExpressionInput `json:"unaryExpression,omitempty"`
+	UnaryExpression *AbacComparisonExpressionUnaryExpressionInput `json:"unaryExpression,omitempty" doc:"To specify a unary expression (e.g. 'NOT X')."`
 }
 
 // GetLiteral returns AbacComparisonExpressionInput.Literal, and is useful for accessing the field via an interface.
@@ -117,11 +117,11 @@ func (v *AbacComparisonExpressionInput) GetUnaryExpression() *AbacComparisonExpr
 // Input object to represent a literal value. Exactly one of the fields should be specified.
 type AbacComparisonExpressionLiteral struct {
 	// A boolean value.
-	Bool *bool `json:"bool,omitempty"`
+	Bool *bool `json:"bool,omitempty" doc:"A boolean value."`
 	// A string value.
-	String *string `json:"string,omitempty"`
+	String *string `json:"string,omitempty" doc:"A string value."`
 	// A string list value.
-	StringList []string `json:"stringList"`
+	StringList []string `json:"stringList" doc:"A string list value."`
 }
 
 // GetBool returns AbacComparisonExpressionLiteral.Bool, and is useful for accessing the field via an interface.
@@ -136,7 +136,7 @@ func (v *AbacComparisonExpressionLiteral) GetStringList() []string { return v.St
 // Input object to represent an operand.
 type AbacComparisonExpressionOperandInput struct {
 	// The literal value of the operand.
-	Literal *AbacComparisonExpressionLiteral `json:"literal,omitempty"`
+	Literal *AbacComparisonExpressionLiteral `json:"literal,omitempty" doc:"The literal value of the operand."`
 }
 
 // GetLiteral returns AbacComparisonExpressionOperandInput.Literal, and is useful for accessing the field via an interface.
@@ -147,9 +147,9 @@ func (v *AbacComparisonExpressionOperandInput) GetLiteral() *AbacComparisonExpre
 // Input object to create a unary expression (e.g. `NOT X`).
 type AbacComparisonExpressionUnaryExpressionInput struct {
 	// The operator to use.
-	Operator BinaryExpressionUnaryExpressionOperator `json:"operator"`
+	Operator BinaryExpressionUnaryExpressionOperator `json:"operator" doc:"The operator to use."`
 	// The operand to use with the operator.
-	Operand AbacComparisonExpressionInput `json:"operand"`
+	Operand AbacComparisonExpressionInput `json:"operand" doc:"The operand to use with the operator."`
 }
 
 // GetOperator returns AbacComparisonExpressionUnaryExpressionInput.Operator, and is useful for accessing the field via an interface.
@@ -168,43 +168,43 @@ func (v *AbacComparisonExpressionUnaryExpressionInput) GetOperand() AbacComparis
 // Represents an access control object in the system. An access control is the abstract model representing grants, masks, filters and groups (determined by the `action` field).
 type AccessControl struct {
 	// Unique identifier of the access control.
-	Id string `json:"id"`
+	Id string `json:"id" doc:"Unique identifier of the access control."`
 	// Timestamp when the access control was created.
-	CreatedAt time.Time `json:"createdAt"`
+	CreatedAt time.Time `json:"createdAt" doc:"Timestamp when the access control was created."`
 	// Timestamp when the access control was last modified.
-	ModifiedAt time.Time `json:"modifiedAt"`
+	ModifiedAt time.Time `json:"modifiedAt" doc:"Timestamp when the access control was last modified."`
 	// Name of the access control.
-	Name string `json:"name"`
+	Name string `json:"name" doc:"Name of the access control."`
 	// Naming hint for the access control, used for generating the actual names in target systems.
-	NamingHint *string `json:"namingHint"`
+	NamingHint *string `json:"namingHint" doc:"Naming hint for the access control, used for generating the actual names in target systems."`
 	// State of the access control.
-	State AccessControlState `json:"state"`
+	State AccessControlState `json:"state" doc:"State of the access control."`
 	// Action of the access control to determine if it is a grant, mask, filter or group.
-	Action AccessControlAction `json:"action"`
+	Action AccessControlAction `json:"action" doc:"Action of the access control to determine if it is a grant, mask, filter or group."`
 	// In case the access control is a grant (action), this contains the grant category (determining the behavior of the grant).
-	Category *AccessControlCategoryGrantCategory `json:"category"`
+	Category *AccessControlCategoryGrantCategory `json:"category" doc:"In case the access control is a grant (action), this contains the grant category (determining the behavior of the grant)."`
 	// Detailed description of the access control.
-	Description string `json:"description"`
+	Description string `json:"description" doc:"Detailed description of the access control."`
 	// The policy rule as a string. This is used only for certain cases, like imported row-level filters and column masks or for row-level filters that are implemented like this.
-	PolicyRule *string `json:"policyRule"`
+	PolicyRule *string `json:"policyRule" doc:"The policy rule as a string. This is used only for certain cases, like imported row-level filters and column masks or for row-level filters that are implemented like this."`
 	// Indicates whether the access control is managed externally (in the Data Source) or internally (in the Collibra Data Access application).
-	External bool `json:"external"`
+	External bool `json:"external" doc:"Indicates whether the access control is managed externally (in the Data Source) or internally (in the Collibra Data Access application)."`
 	// The list of ABAC rules for calculating the WHAT items dynamically.
-	WhatAbacRules []AccessControlWhatAbacRulesWhatAbacRule `json:"whatAbacRules"`
+	WhatAbacRules []AccessControlWhatAbacRulesWhatAbacRule `json:"whatAbacRules" doc:"The list of ABAC rules for calculating the WHAT items dynamically."`
 	// The list of ABAC rules for calculating the WHO items dynamically.
-	WhoAbacRules []AccessControlWhoAbacRulesWhoAbacRule `json:"whoAbacRules"`
+	WhoAbacRules []AccessControlWhoAbacRulesWhoAbacRule `json:"whoAbacRules" doc:"The list of ABAC rules for calculating the WHO items dynamically."`
 	// For externally managed access controls, indicates whether the access control cannot be internalized.
-	NotInternalizable bool `json:"notInternalizable"`
+	NotInternalizable bool `json:"notInternalizable" doc:"For externally managed access controls, indicates whether the access control cannot be internalized."`
 	// Indicates if this external access control is complete, meaning that all linked entities are knows in Collibra Data Access. If an imported access control is incomplete, information will be lost when internalizing the access control, because only the known entities will be kept.
-	Complete *bool `json:"complete"`
+	Complete *bool `json:"complete" doc:"Indicates if this external access control is complete, meaning that all linked entities are knows in Collibra Data Access. If an imported access control is incomplete, information will be lost when internalizing the access control, because only the known entities will be kept."`
 	// The list of locks that are configured on this access control. Locks can be used to prevent editing certain parts of the access control, typically because they are managed outside of Collibra Data Access and so should be imported from instead of exported to the data source).
-	Locks []AccessControlLocksAccessControlLockData `json:"locks"`
+	Locks []AccessControlLocksAccessControlLockData `json:"locks" doc:"The list of locks that are configured on this access control. Locks can be used to prevent editing certain parts of the access control, typically because they are managed outside of Collibra Data Access and so should be imported from instead of exported to the data source). "`
 	// Retrieves synchronization information for each linked data source.
-	SyncData []AccessControlSyncData `json:"syncData"`
+	SyncData []AccessControlSyncData `json:"syncData" doc:"Retrieves synchronization information for each linked data source."`
 	// If true, it indicates that the what of this access control couldn't be parsed on import
-	WhatUnknown bool `json:"whatUnknown"`
+	WhatUnknown bool `json:"whatUnknown" doc:"If true, it indicates that the what of this access control couldn't be parsed on import"`
 	// If true, it indicates that the who of this access control couldn't be parsed on import
-	WhoUnknown bool `json:"whoUnknown"`
+	WhoUnknown bool `json:"whoUnknown" doc:"If true, it indicates that the who of this access control couldn't be parsed on import"`
 }
 
 // GetId returns AccessControl.Id, and is useful for accessing the field via an interface.
@@ -380,9 +380,9 @@ func (v *AccessControlCategoryGrantCategory) __premarshalJSON() (*__premarshalAc
 // The connection type for paginated lists of [AccessControl]({{Types.AccessControl}}).
 type AccessControlConnection struct {
 	// Pagination information for the retrieved items.
-	PageInfo AccessControlConnectionPageInfo `json:"pageInfo"`
+	PageInfo AccessControlConnectionPageInfo `json:"pageInfo" doc:"Pagination information for the retrieved items."`
 	// The list of edges containing the actual queried items.
-	Edges []AccessControlConnectionEdgesAccessControlEdge `json:"edges"`
+	Edges []AccessControlConnectionEdgesAccessControlEdge `json:"edges" doc:"The list of edges containing the actual queried items."`
 }
 
 // GetPageInfo returns AccessControlConnection.PageInfo, and is useful for accessing the field via an interface.
@@ -1013,9 +1013,9 @@ func (v *AccessControlConnectionResultPermissionDeniedError) __premarshalJSON() 
 // Input object update the data sources linked to the access control.
 type AccessControlDataSourceInput struct {
 	// The ID of the data source
-	DataSource string `json:"dataSource"`
+	DataSource string `json:"dataSource" doc:"The ID of the data source"`
 	// The technical type of how this access control is represented in the underlying system. For masks this represents the masking method to use.
-	Type *string `json:"type,omitempty"`
+	Type *string `json:"type,omitempty" doc:"The technical type of how this access control is represented in the underlying system. For masks this represents the masking method to use."`
 }
 
 // GetDataSource returns AccessControlDataSourceInput.DataSource, and is useful for accessing the field via an interface.
@@ -1071,35 +1071,35 @@ func (v *AccessControlFeedbackState) GetWho() *AccessControlWhoFeedbackState { r
 // Defines the filter options for listing access controls. When using multiple filter options, all these options need to apply to return the item.
 type AccessControlFilterInput struct {
 	// The actions the access controls should have.
-	Actions []AccessControlAction `json:"actions"`
+	Actions []AccessControlAction `json:"actions" doc:"The actions the access controls should have."`
 	// The states the access controls should be in.
-	States []AccessControlState `json:"states"`
+	States []AccessControlState `json:"states" doc:"The states the access controls should be in."`
 	// The grant categories the access control should be in.
-	Categories []string `json:"categories"`
+	Categories []string `json:"categories" doc:"The grant categories the access control should be in."`
 	// To filter on only internal or external access controls.
-	External *bool `json:"external,omitempty"`
+	External *bool `json:"external,omitempty" doc:"To filter on only internal or external access controls."`
 	// The search string to use (will do a case-insensitive 'contains').
-	Search *string `json:"search,omitempty"`
+	Search *string `json:"search,omitempty" doc:"The search string to use (will do a case-insensitive 'contains')."`
 	// To filter access controls which are linked to a specific data source.
-	DataSource *string `json:"dataSource,omitempty"`
+	DataSource *string `json:"dataSource,omitempty" doc:"To filter access controls which are linked to a specific data source."`
 	// Only return access controls where the WHO is editable.
-	CanEditWho *bool `json:"canEditWho,omitempty"`
+	CanEditWho *bool `json:"canEditWho,omitempty" doc:"Only return access controls where the WHO is editable."`
 	// Only return access controls where the inheritance (= linking to other access controls) is editable.
-	CanEditInheritance *bool `json:"canEditInheritance,omitempty"`
+	CanEditInheritance *bool `json:"canEditInheritance,omitempty" doc:"Only return access controls where the inheritance (= linking to other access controls) is editable."`
 	// Only return access controls where the WHAT is editable.
-	CanEditWhat *bool          `json:"canEditWhat,omitempty"`
+	CanEditWhat *bool          `json:"canEditWhat,omitempty" doc:"Only return access controls where the WHAT is editable."`
 	CanLinkFrom *CanLinkFilter `json:"canLinkFrom,omitempty"`
 	CanLinkTo   *CanLinkFilter `json:"canLinkTo,omitempty"`
 	// Exclude this explicit list of access controls.
-	Exclude []string `json:"exclude"`
+	Exclude []string `json:"exclude" doc:"Exclude this explicit list of access controls."`
 	// The source of the access control
-	Source *string `json:"source,omitempty"`
+	Source *string `json:"source,omitempty" doc:"The source of the access control"`
 	// The access control must have any of the given owners (by user ID).
-	Owners []string `json:"owners"`
+	Owners []string `json:"owners" doc:"The access control must have any of the given owners (by user ID)."`
 	// Filter by which tags the access control needs to have.
-	HasTags []TagFilter `json:"hasTags"`
+	HasTags []TagFilter `json:"hasTags" doc:"Filter by which tags the access control needs to have."`
 	// Only return the access controls that have the given data object in its WHAT list.
-	DataObjectInWhat     *string `json:"dataObjectInWhat,omitempty"`
+	DataObjectInWhat     *string `json:"dataObjectInWhat,omitempty" doc:"Only return the access controls that have the given data object in its WHAT list."`
 	IsRoleAssignableOnly bool    `json:"isRoleAssignableOnly"`
 }
 
@@ -1264,38 +1264,38 @@ func (v *AccessControlImport) GetCommonWhatDataObject() *string { return v.Commo
 // Input object for creating and updating access controls.
 type AccessControlInput struct {
 	// Name of the access control.
-	Name *string `json:"name,omitempty"`
+	Name *string `json:"name,omitempty" doc:"Name of the access control."`
 	// Naming hint for the access control, used for generating the actual names in target systems.
-	NamingHint *string `json:"namingHint,omitempty"`
+	NamingHint *string `json:"namingHint,omitempty" doc:"Naming hint for the access control, used for generating the actual names in target systems."`
 	// Action of the access control to determine if it is a grant, mask, filter or group.
-	Action *AccessControlAction `json:"action,omitempty"`
+	Action *AccessControlAction `json:"action,omitempty" doc:"Action of the access control to determine if it is a grant, mask, filter or group."`
 	// Detailed description of the access control.
-	Description *string `json:"description,omitempty"`
+	Description *string `json:"description,omitempty" doc:"Detailed description of the access control."`
 	// In case the access control is a grant (action), this contains the grant category (determining the behavior of the grant).
-	Category *string `json:"category,omitempty"`
+	Category *string `json:"category,omitempty" doc:"In case the access control is a grant (action), this contains the grant category (determining the behavior of the grant)."`
 	// Source defines the source of the access control, if managed by third party tool.
-	Source *string `json:"source,omitempty"`
+	Source *string `json:"source,omitempty" doc:"Source defines the source of the access control, if managed by third party tool."`
 	// The list of ABAC rules for calculating the WHO items dynamically.
-	WhoAbacRules []*WhoAbacRuleInput `json:"whoAbacRules,omitempty"`
+	WhoAbacRules []*WhoAbacRuleInput `json:"whoAbacRules,omitempty" doc:"The list of ABAC rules for calculating the WHO items dynamically."`
 	// The list of static WHO items for this access control.
-	WhoItems []WhoItemInput `json:"whoItems"`
+	WhoItems []WhoItemInput `json:"whoItems" doc:"The list of static WHO items for this access control."`
 	// The list of ABAC rules for calculating the WHAT items dynamically.
-	WhatAbacRules []*WhatAbacRuleInput `json:"whatAbacRules,omitempty"`
+	WhatAbacRules []*WhatAbacRuleInput `json:"whatAbacRules,omitempty" doc:"The list of ABAC rules for calculating the WHAT items dynamically."`
 	// The list of static WHAT data object items for this access control.
-	WhatDataObjects []AccessControlWhatInputDO `json:"whatDataObjects"`
+	WhatDataObjects []AccessControlWhatInputDO `json:"whatDataObjects" doc:"The list of static WHAT data object items for this access control."`
 	// The list of static WHAT access controls for this access control.
-	WhatAccessControls []AccessControlWhatInputAP `json:"whatAccessControls"`
+	WhatAccessControls []AccessControlWhatInputAP `json:"whatAccessControls" doc:"The list of static WHAT access controls for this access control."`
 	// The policy rule as a string. This is used only for certain cases, like imported row-level filters and column masks or for row-level filters that are implemented like this.
-	PolicyRule *string `json:"policyRule,omitempty"`
+	PolicyRule *string `json:"policyRule,omitempty" doc:"The policy rule as a string. This is used only for certain cases, like imported row-level filters and column masks or for row-level filters that are implemented like this."`
 	// For access controls with `action=Filter`, this contains the boolean expression determining the filter criteria.
-	FilterCriteria *DataComparisonExpressionInput `json:"filterCriteria,omitempty"`
+	FilterCriteria *DataComparisonExpressionInput `json:"filterCriteria,omitempty" doc:"For access controls with 'action=Filter', this contains the boolean expression determining the filter criteria."`
 	// The data sources that this access control will get deployed to.
-	DataSources            []AccessControlDataSourceInput `json:"dataSources"`
+	DataSources            []AccessControlDataSourceInput `json:"dataSources" doc:"The data sources that this access control will get deployed to."`
 	CommonWhatDataObjectId *string                        `json:"commonWhatDataObjectId,omitempty"`
 	// The locks that should apply to this access control.
-	Locks []AccessControlLockDataInput `json:"locks"`
+	Locks []AccessControlLockDataInput `json:"locks" doc:"The locks that should apply to this access control."`
 	// Indicates whether the access control is managed externally (in the Data Source) or internally (in the Collibra Data Access application).
-	External *bool `json:"external,omitempty"`
+	External *bool `json:"external,omitempty" doc:"Indicates whether the access control is managed externally (in the Data Source) or internally (in the Collibra Data Access application)."`
 }
 
 // GetName returns AccessControlInput.Name, and is useful for accessing the field via an interface.
@@ -1388,9 +1388,9 @@ var AllAccessControlLock = []AccessControlLock{
 // Represents a lock on an access control field.
 type AccessControlLockData struct {
 	// The part that is locked.
-	LockKey AccessControlLock `json:"lockKey"`
+	LockKey AccessControlLock `json:"lockKey" doc:"The part that is locked."`
 	// Details about the locking.
-	Details AccessControlLockDataDetailsAccessControlLockDetails `json:"details"`
+	Details AccessControlLockDataDetailsAccessControlLockDetails `json:"details" doc:"Details about the locking."`
 }
 
 // GetLockKey returns AccessControlLockData.LockKey, and is useful for accessing the field via an interface.
@@ -1461,9 +1461,9 @@ func (v *AccessControlLockDataDetailsAccessControlLockDetails) __premarshalJSON(
 // Input for defining the lock settings
 type AccessControlLockDataInput struct {
 	// The part of the access control to lock.
-	LockKey AccessControlLock `json:"lockKey"`
+	LockKey AccessControlLock `json:"lockKey" doc:"The part of the access control to lock."`
 	// The lock details.
-	Details *AccessControlLockDetailsInput `json:"details,omitempty"`
+	Details *AccessControlLockDetailsInput `json:"details,omitempty" doc:"The lock details."`
 }
 
 // GetLockKey returns AccessControlLockDataInput.LockKey, and is useful for accessing the field via an interface.
@@ -1478,7 +1478,7 @@ func (v *AccessControlLockDataInput) GetDetails() *AccessControlLockDetailsInput
 // Represents the details about locks on parts of an access control.
 type AccessControlLockDetails struct {
 	// The reason explaining why this is locked.
-	Reason *string `json:"reason"`
+	Reason *string `json:"reason" doc:"The reason explaining why this is locked."`
 }
 
 // GetReason returns AccessControlLockDetails.Reason, and is useful for accessing the field via an interface.
@@ -1487,9 +1487,9 @@ func (v *AccessControlLockDetails) GetReason() *string { return v.Reason }
 // Input for defining the lock details.
 type AccessControlLockDetailsInput struct {
 	// The reason for locking this part of the access control.
-	Reason *string `json:"reason,omitempty"`
+	Reason *string `json:"reason,omitempty" doc:"The reason for locking this part of the access control."`
 	// The lock type.
-	LockType *AccessControlLockType `json:"lockType,omitempty"`
+	LockType *AccessControlLockType `json:"lockType,omitempty" doc:"The lock type."`
 }
 
 // GetReason returns AccessControlLockDetailsInput.Reason, and is useful for accessing the field via an interface.
@@ -1707,29 +1707,29 @@ func (v *AccessControlSyncData) __premarshalJSON() (*__premarshalAccessControlSy
 
 type AccessControlTypeInput struct {
 	// Boolean to specify that this is the default access control type to create for the data source
-	IsDefault *bool `json:"isDefault,omitempty"`
+	IsDefault *bool `json:"isDefault,omitempty" doc:"Boolean to specify that this is the default access control type to create for the data source"`
 	// The (internal) name of the type
-	Type *string `json:"type,omitempty"`
+	Type *string `json:"type,omitempty" doc:"The (internal) name of the type"`
 	// A human readable name for the access control
-	Label *string `json:"label,omitempty"`
+	Label *string `json:"label,omitempty" doc:"A human readable name for the access control"`
 	// A description of the access control type
-	Description *string `json:"description,omitempty"`
+	Description *string `json:"description,omitempty" doc:"A description of the access control type"`
 	// the name or base64 encoded version of the icon to use for this access control
-	Icon *string `json:"icon,omitempty"`
+	Icon *string `json:"icon,omitempty" doc:"the name or base64 encoded version of the icon to use for this access control"`
 	// Boolean to indicate if the access control represents a named entity (like a role or a policy) in the data source. False, typically means some kind of ACL system (nameless bindings).
-	IsNamedEntity *bool `json:"isNamedEntity,omitempty"`
+	IsNamedEntity *bool `json:"isNamedEntity,omitempty" doc:"Boolean to indicate if the access control represents a named entity (like a role or a policy) in the data source. False, typically means some kind of ACL system (nameless bindings)."`
 	// Boolean to indicate whether the access control can be created from the web application or not
-	CanBeCreated *bool `json:"canBeCreated,omitempty"`
+	CanBeCreated *bool `json:"canBeCreated,omitempty" doc:"Boolean to indicate whether the access control can be created from the web application or not"`
 	// Boolean to indicate that this (named entity) is something the user has to ‘assume’ to get these permissions. Typically, a role.
-	CanBeAssumed *bool `json:"canBeAssumed,omitempty"`
+	CanBeAssumed *bool `json:"canBeAssumed,omitempty" doc:"Boolean to indicate that this (named entity) is something the user has to ‘assume’ to get these permissions. Typically, a role."`
 	// Boolean to indicate that the user can assume multiple (roles).
-	CanAssumeMultiple *bool `json:"canAssumeMultiple,omitempty"`
+	CanAssumeMultiple *bool `json:"canAssumeMultiple,omitempty" doc:"Boolean to indicate that the user can assume multiple (roles)."`
 	// List of access control types that could be in the who list of this access control type
 	// Nil indicates that all access control types are allowed. Otherwise only defined access control types are allowed to be part of the who list of this access control type.
-	AllowedWhoAccessControlTypes []string `json:"allowedWhoAccessControlTypes"`
+	AllowedWhoAccessControlTypes []string `json:"allowedWhoAccessControlTypes" doc:"List of access control types that could be in the who list of this access control type Nil indicates that all access control types are allowed. Otherwise only defined access control types are allowed to be part of the who list of this access control type."`
 	// If set, this access control lives in a subset of the data source.
 	// This can be used to define database roles, application roles, etc.
-	CommonParentType *string `json:"commonParentType,omitempty"`
+	CommonParentType *string `json:"commonParentType,omitempty" doc:"If set, this access control lives in a subset of the data source. This can be used to define database roles, application roles, etc."`
 }
 
 // GetIsDefault returns AccessControlTypeInput.IsDefault, and is useful for accessing the field via an interface.
@@ -1881,9 +1881,9 @@ func (v *AccessControlWhatAccessControlFilterInput) GetSearch() *string { return
 // Input object to reference a data object by its `fullName`.
 type AccessControlWhatDoByNameInput struct {
 	// The full name of the data object.
-	FullName string `json:"fullName"`
+	FullName string `json:"fullName" doc:"The full name of the data object."`
 	// The data source ID of the data object.
-	DataSource string `json:"dataSource"`
+	DataSource string `json:"dataSource" doc:"The data source ID of the data object."`
 }
 
 // GetFullName returns AccessControlWhatDoByNameInput.FullName, and is useful for accessing the field via an interface.
@@ -1895,7 +1895,7 @@ func (v *AccessControlWhatDoByNameInput) GetDataSource() string { return v.DataS
 // Input object to represent an access control WHAT item for the access control.
 type AccessControlWhatInputAP struct {
 	// The ID of the access control to add in the WHAT of the access control.
-	AccessControl string     `json:"accessControl"`
+	AccessControl string     `json:"accessControl" doc:"The ID of the access control to add in the WHAT of the access control."`
 	ExpiresAt     *time.Time `json:"expiresAt,omitempty"`
 }
 
@@ -1908,15 +1908,15 @@ func (v *AccessControlWhatInputAP) GetExpiresAt() *time.Time { return v.ExpiresA
 // Input object to represent a data object WHAT item for the access control.
 type AccessControlWhatInputDO struct {
 	// The permissions to grant on the data object.
-	Permissions []*string `json:"permissions,omitempty"`
+	Permissions []*string `json:"permissions,omitempty" doc:"The permissions to grant on the data object."`
 	// The global permissions to grant on the data object.
-	GlobalPermissions []*string `json:"globalPermissions,omitempty"`
+	GlobalPermissions []*string `json:"globalPermissions,omitempty" doc:"The global permissions to grant on the data object."`
 	// The list of data object IDs to provide the access to.  Either this or `dataObjectByName` needs to be specified.
-	DataObjects []*string `json:"dataObjects,omitempty"`
+	DataObjects []*string `json:"dataObjects,omitempty" doc:"The list of data object IDs to provide the access to.  Either this or 'dataObjectByName' needs to be specified."`
 	// The reference by name to indicate the data object to provide access to. Either this or `dataObjects` needs to be specified.
-	DataObjectByName []AccessControlWhatDoByNameInput `json:"dataObjectByName"`
+	DataObjectByName []AccessControlWhatDoByNameInput `json:"dataObjectByName" doc:"The reference by name to indicate the data object to provide access to. Either this or 'dataObjects' needs to be specified."`
 	// The time at which this WHAT item will expire. Only used for Direct Access grants.
-	ExpiresAt *time.Time `json:"expiresAt,omitempty"`
+	ExpiresAt *time.Time `json:"expiresAt,omitempty" doc:"The time at which this WHAT item will expire. Only used for Direct Access grants."`
 }
 
 // GetPermissions returns AccessControlWhatInputDO.Permissions, and is useful for accessing the field via an interface.
@@ -2029,17 +2029,17 @@ func (v *AccessControlWhoFeedbackState) GetRecipients() []string { return v.Reci
 // For filtering the WHO items of an access control. When using multiple filter options, all these options need to apply to return the item.
 type AccessControlWhoListFilter struct {
 	// To only filter on either grants or promises.
-	WhoType *AccessWhoItemType `json:"whoType,omitempty"`
+	WhoType *AccessWhoItemType `json:"whoType,omitempty" doc:"To only filter on either grants or promises."`
 	// Only get the WHO item for a specific user.
-	TargetUser *string `json:"targetUser,omitempty"`
+	TargetUser *string `json:"targetUser,omitempty" doc:"Only get the WHO item for a specific user."`
 	// Only get the WHO item for a specific access control.
-	TargetAccessControl *string `json:"targetAccessControl,omitempty"`
+	TargetAccessControl *string `json:"targetAccessControl,omitempty" doc:"Only get the WHO item for a specific access control."`
 	// Only get WHO items with a specific type (User or AccessControl)
-	EntityType *EntityType `json:"entityType,omitempty"`
+	EntityType *EntityType `json:"entityType,omitempty" doc:"Only get WHO items with a specific type (User or AccessControl)"`
 	// The search string to use (will do a case-insensitive 'contains').
-	Search *string `json:"search,omitempty"`
+	Search *string `json:"search,omitempty" doc:"The search string to use (will do a case-insensitive 'contains')."`
 	// Optional ABAC rule to filter the who-list on. Only applicable when requesting users who-list without unpacking
-	AbacRule *string `json:"abacRule,omitempty"`
+	AbacRule *string `json:"abacRule,omitempty" doc:"Optional ABAC rule to filter the who-list on. Only applicable when requesting users who-list without unpacking"`
 }
 
 // GetWhoType returns AccessControlWhoListFilter.WhoType, and is useful for accessing the field via an interface.
@@ -2074,9 +2074,9 @@ func (v *AccessControlWhoOrderByInput) GetName() *Sort { return v.Name }
 // Represents the access control item in the WHAT list of an access control.
 type AccessWhatAccessControlItem struct {
 	// The access control that is part of the WHAT items of this access control.
-	AccessControl *AccessWhatAccessControlItemAccessControl `json:"accessControl"`
+	AccessControl *AccessWhatAccessControlItemAccessControl `json:"accessControl" doc:"The access control that is part of the WHAT items of this access control."`
 	// The optional expiration time for this WHAT item.
-	ExpiresAt *time.Time `json:"expiresAt"`
+	ExpiresAt *time.Time `json:"expiresAt" doc:"The optional expiration time for this WHAT item."`
 }
 
 // GetAccessControl returns AccessWhatAccessControlItem.AccessControl, and is useful for accessing the field via an interface.
@@ -2290,9 +2290,9 @@ func (v *AccessWhatAccessControlItemAccessControl) __premarshalJSON() (*__premar
 // The connection type for paginated lists of [AccessWhatAccessControlItem]({{Types.AccessWhatAccessControlItem}}).
 type AccessWhatAccessControlItemConnection struct {
 	// Pagination information for the retrieved items.
-	PageInfo AccessWhatAccessControlItemConnectionPageInfo `json:"pageInfo"`
+	PageInfo AccessWhatAccessControlItemConnectionPageInfo `json:"pageInfo" doc:"Pagination information for the retrieved items."`
 	// The list of edges containing the actual queried items.
-	Edges []AccessWhatAccessControlItemConnectionEdgesAccessWhatAccessControlItemEdge `json:"edges"`
+	Edges []AccessWhatAccessControlItemConnectionEdgesAccessWhatAccessControlItemEdge `json:"edges" doc:"The list of edges containing the actual queried items."`
 }
 
 // GetPageInfo returns AccessWhatAccessControlItemConnection.PageInfo, and is useful for accessing the field via an interface.
@@ -2798,11 +2798,11 @@ func (v *AccessWhatAccessControlItemConnectionResultPermissionDeniedError) __pre
 // Represents the data object item in the WHAT list of an access control.
 type AccessWhatDataObjectItem struct {
 	// The data object that the access is provided on (granted, masked or filtered).
-	DataObject *AccessWhatDataObjectItemDataObject `json:"dataObject"`
+	DataObject *AccessWhatDataObjectItemDataObject `json:"dataObject" doc:"The data object that the access is provided on (granted, masked or filtered)."`
 	// The global permissions that are granted on this data object in the access control.
-	GlobalPermissions []*string `json:"globalPermissions"`
+	GlobalPermissions []*string `json:"globalPermissions" doc:"The global permissions that are granted on this data object in the access control."`
 	// The permissions that are granted on this data object in the access control.
-	Permissions []*string `json:"permissions"`
+	Permissions []*string `json:"permissions" doc:"The permissions that are granted on this data object in the access control."`
 }
 
 // GetDataObject returns AccessWhatDataObjectItem.DataObject, and is useful for accessing the field via an interface.
@@ -2822,9 +2822,9 @@ func (v *AccessWhatDataObjectItem) GetPermissions() []*string { return v.Permiss
 // The connection type for paginated lists of [AccessWhatDataObjectItem]({{Types.AccessWhatDataObjectItem}}).
 type AccessWhatDataObjectItemConnection struct {
 	// Pagination information for the retrieved items.
-	PageInfo AccessWhatDataObjectItemConnectionPageInfo `json:"pageInfo"`
+	PageInfo AccessWhatDataObjectItemConnectionPageInfo `json:"pageInfo" doc:"Pagination information for the retrieved items."`
 	// The list of edges containing the actual queried items.
-	Edges []AccessWhatDataObjectItemConnectionEdgesAccessWhatDataObjectItemEdge `json:"edges"`
+	Edges []AccessWhatDataObjectItemConnectionEdgesAccessWhatDataObjectItemEdge `json:"edges" doc:"The list of edges containing the actual queried items."`
 }
 
 // GetPageInfo returns AccessWhatDataObjectItemConnection.PageInfo, and is useful for accessing the field via an interface.
@@ -3095,16 +3095,16 @@ func (v *AccessWhatDataObjectItemDataObject) __premarshalJSON() (*__premarshalAc
 // Defines the filter options for listing the WHAT items of an access control. When using multiple filter options, all these options need to apply to return the item.
 type AccessWhatFilterInput struct {
 	// The search string to use (will do a case-insensitive 'contains').
-	Search *string `json:"search,omitempty"`
+	Search *string `json:"search,omitempty" doc:"The search string to use (will do a case-insensitive 'contains')."`
 	// If true, also deleted WHAT items are returned.
-	IncludeDeleted *bool `json:"includeDeleted,omitempty"`
+	IncludeDeleted *bool `json:"includeDeleted,omitempty" doc:"If true, also deleted WHAT items are returned."`
 	// List of user IDs to filter on who owns the WHAT items.
-	Owners []string `json:"owners"`
+	Owners []string `json:"owners" doc:"List of user IDs to filter on who owns the WHAT items."`
 	// Filter by which tags the WHAT item needs to have.
-	HasTags          []TagFilter `json:"hasTags"`
+	HasTags          []TagFilter `json:"hasTags" doc:"Filter by which tags the WHAT item needs to have."`
 	TargetDataObject *string     `json:"targetDataObject,omitempty"`
 	// Optional ABAC rule to filter the what-list on. Only applicable when requesting data objects WHAT list without unpacking
-	AbacRule *string `json:"abacRule,omitempty"`
+	AbacRule *string `json:"abacRule,omitempty" doc:"Optional ABAC rule to filter the what-list on. Only applicable when requesting data objects WHAT list without unpacking"`
 }
 
 // GetSearch returns AccessWhatFilterInput.Search, and is useful for accessing the field via an interface.
@@ -3139,13 +3139,13 @@ func (v *AccessWhatOrderByInput) GetName() *Sort { return v.Name }
 // Represents an item in the WHO list of an access control.
 type AccessWhoItem struct {
 	// The optional expiration time for this WHO item.
-	ExpiresAt *time.Time `json:"expiresAt"`
+	ExpiresAt *time.Time `json:"expiresAt" doc:"The optional expiration time for this WHO item."`
 	// In case `type=WhoPromise`, this indicates the duration of the grant when access to a promise is requested.
-	PromiseDuration *int64 `json:"promiseDuration"`
+	PromiseDuration *int64 `json:"promiseDuration" doc:"In case 'type=WhoPromise', this indicates the duration of the grant when access to a promise is requested."`
 	// Determines whether the access is granted directly or only as a promise (pre-approval).
-	Type AccessWhoItemType `json:"type"`
+	Type AccessWhoItemType `json:"type" doc:"Determines whether the access is granted directly or only as a promise (pre-approval)."`
 	// The actual item in the WHO list.
-	Item AccessWhoItemItem `json:"-"`
+	Item AccessWhoItemItem `json:"-" doc:"The actual item in the WHO list."`
 }
 
 // GetExpiresAt returns AccessWhoItem.ExpiresAt, and is useful for accessing the field via an interface.
@@ -3238,9 +3238,9 @@ func (v *AccessWhoItem) __premarshalJSON() (*__premarshalAccessWhoItem, error) {
 // The connection type for paginated lists of [AccessWhoItem]({{Types.AccessWhoItem}}).
 type AccessWhoItemConnection struct {
 	// Pagination information for the retrieved items.
-	PageInfo AccessWhoItemConnectionPageInfo `json:"pageInfo"`
+	PageInfo AccessWhoItemConnectionPageInfo `json:"pageInfo" doc:"Pagination information for the retrieved items."`
 	// The list of edges containing the actual queried items.
-	Edges []AccessWhoItemConnectionEdgesAccessWhoItemEdge `json:"edges"`
+	Edges []AccessWhoItemConnectionEdgesAccessWhoItemEdge `json:"edges" doc:"The list of edges containing the actual queried items."`
 }
 
 // GetPageInfo returns AccessWhoItemConnection.PageInfo, and is useful for accessing the field via an interface.
@@ -7009,9 +7009,9 @@ func (v *CurrentUserResponse) GetCurrentUser() *CurrentUserCurrentUser { return 
 // Input object to create an aggregator expression (e.g. `X OR Y OR Z`).
 type DataComparisonExpressionAggregatorInput struct {
 	// The operator to use.
-	Operator BinaryExpressionAggregatorOperator `json:"operator"`
+	Operator BinaryExpressionAggregatorOperator `json:"operator" doc:"The operator to use."`
 	// The operands which will be combined with the operator.
-	Operands []DataComparisonExpressionInput `json:"operands"`
+	Operands []DataComparisonExpressionInput `json:"operands" doc:"The operands which will be combined with the operator."`
 }
 
 // GetOperator returns DataComparisonExpressionAggregatorInput.Operator, and is useful for accessing the field via an interface.
@@ -7027,11 +7027,11 @@ func (v *DataComparisonExpressionAggregatorInput) GetOperands() []DataComparison
 // Input object to create a comparison expression (i.e. `field < value`).
 type DataComparisonExpressionComparisonInput struct {
 	// The operator for the expression.
-	Operator DataComparisonExpressionComparisonOperator `json:"operator"`
+	Operator DataComparisonExpressionComparisonOperator `json:"operator" doc:"The operator for the expression."`
 	// The left operand.
-	LeftOperand DataComparisonExpressionOperandInput `json:"leftOperand"`
+	LeftOperand DataComparisonExpressionOperandInput `json:"leftOperand" doc:"The left operand."`
 	// The right operand.
-	RightOperand DataComparisonExpressionOperandInput `json:"rightOperand"`
+	RightOperand DataComparisonExpressionOperandInput `json:"rightOperand" doc:"The right operand."`
 }
 
 // GetOperator returns DataComparisonExpressionComparisonInput.Operator, and is useful for accessing the field via an interface.
@@ -7088,13 +7088,13 @@ var AllDataComparisonExpressionEntityType = []DataComparisonExpressionEntityType
 // Input object to create a comparison expression. Exactly one of the fields should be specific, depending on the type.
 type DataComparisonExpressionInput struct {
 	// In case you want to simply have a boolean literal to determine the outcome.
-	Literal *bool `json:"literal,omitempty"`
+	Literal *bool `json:"literal,omitempty" doc:"In case you want to simply have a boolean literal to determine the outcome."`
 	// To specify a single comparison (e.g. `field < value`).
-	Comparison *DataComparisonExpressionComparisonInput `json:"comparison,omitempty"`
+	Comparison *DataComparisonExpressionComparisonInput `json:"comparison,omitempty" doc:"To specify a single comparison (e.g. 'field < value')."`
 	// To specify an aggregator expression (e.g. `X OR Y OR Z`).
-	Aggregator *DataComparisonExpressionAggregatorInput `json:"aggregator,omitempty"`
+	Aggregator *DataComparisonExpressionAggregatorInput `json:"aggregator,omitempty" doc:"To specify an aggregator expression (e.g. 'X OR Y OR Z')."`
 	// To specify a unary expression (e.g. `NOT X`).
-	UnaryExpression *DataComparisonExpressionUnaryExpressionInput `json:"unaryExpression,omitempty"`
+	UnaryExpression *DataComparisonExpressionUnaryExpressionInput `json:"unaryExpression,omitempty" doc:"To specify a unary expression (e.g. 'NOT X')."`
 }
 
 // GetLiteral returns DataComparisonExpressionInput.Literal, and is useful for accessing the field via an interface.
@@ -7118,15 +7118,15 @@ func (v *DataComparisonExpressionInput) GetUnaryExpression() *DataComparisonExpr
 // Input object to represent a literal value. Exactly one of the fields should be specified.
 type DataComparisonExpressionLiteral struct {
 	// A boolean value.
-	Bool *bool `json:"bool,omitempty"`
+	Bool *bool `json:"bool,omitempty" doc:"A boolean value."`
 	// An integer value.
-	Int *int `json:"int,omitempty"`
+	Int *int `json:"int,omitempty" doc:"An integer value."`
 	// A float value
-	Float *float64 `json:"float,omitempty"`
+	Float *float64 `json:"float,omitempty" doc:"A float value"`
 	// A string value.
-	Str *string `json:"str,omitempty"`
+	Str *string `json:"str,omitempty" doc:"A string value."`
 	// A timestamp value.
-	Timestamp *time.Time `json:"timestamp,omitempty"`
+	Timestamp *time.Time `json:"timestamp,omitempty" doc:"A timestamp value."`
 }
 
 // GetBool returns DataComparisonExpressionLiteral.Bool, and is useful for accessing the field via an interface.
@@ -7147,9 +7147,9 @@ func (v *DataComparisonExpressionLiteral) GetTimestamp() *time.Time { return v.T
 // Input object to represent an operand. Exactly one of the fields should be specified.
 type DataComparisonExpressionOperandInput struct {
 	// A reference to a data object.
-	Reference *DataComparisonExpressionReferenceInput `json:"reference,omitempty"`
+	Reference *DataComparisonExpressionReferenceInput `json:"reference,omitempty" doc:"A reference to a data object."`
 	// A literal.
-	Literal *DataComparisonExpressionLiteral `json:"literal,omitempty"`
+	Literal *DataComparisonExpressionLiteral `json:"literal,omitempty" doc:"A literal."`
 }
 
 // GetReference returns DataComparisonExpressionOperandInput.Reference, and is useful for accessing the field via an interface.
@@ -7165,9 +7165,9 @@ func (v *DataComparisonExpressionOperandInput) GetLiteral() *DataComparisonExpre
 // Input object to reference a data object.
 type DataComparisonExpressionReferenceInput struct {
 	// The way you want to reference the data object.
-	EntityType DataComparisonExpressionEntityType `json:"entityType"`
+	EntityType DataComparisonExpressionEntityType `json:"entityType" doc:"The way you want to reference the data object."`
 	// The data object ID or column name.
-	EntityId string `json:"entityId"`
+	EntityId string `json:"entityId" doc:"The data object ID or column name."`
 }
 
 // GetEntityType returns DataComparisonExpressionReferenceInput.EntityType, and is useful for accessing the field via an interface.
@@ -7181,9 +7181,9 @@ func (v *DataComparisonExpressionReferenceInput) GetEntityId() string { return v
 // Input object to create a unary expression (e.g. `NOT X`).
 type DataComparisonExpressionUnaryExpressionInput struct {
 	// The operator to use.
-	Operator BinaryExpressionUnaryExpressionOperator `json:"operator"`
+	Operator BinaryExpressionUnaryExpressionOperator `json:"operator" doc:"The operator to use."`
 	// The operand to use with the operator.
-	Operand DataComparisonExpressionInput `json:"operand"`
+	Operand DataComparisonExpressionInput `json:"operand" doc:"The operand to use with the operator."`
 }
 
 // GetOperator returns DataComparisonExpressionUnaryExpressionInput.Operator, and is useful for accessing the field via an interface.
@@ -7202,21 +7202,21 @@ func (v *DataComparisonExpressionUnaryExpressionInput) GetOperand() DataComparis
 // Represents a data object in Collibra Data Access. These represents all the data entities in a data source (e.g. database, schema, table, column, folder, file, ...).
 type DataObject struct {
 	// A internal unique identifier for the data object.
-	Id string `json:"id"`
+	Id string `json:"id" doc:"A internal unique identifier for the data object."`
 	// The name of the data object.
-	Name string `json:"name"`
+	Name string `json:"name" doc:"The name of the data object."`
 	// A name that can uniquely identify the data object within the data source. This is generated by the connector in a predefined format.
-	FullName string `json:"fullName"`
+	FullName string `json:"fullName" doc:"A name that can uniquely identify the data object within the data source. This is generated by the connector in a predefined format."`
 	// The type name of data object (one of the data object types defined in the data source meta data).
-	Type string `json:"type"`
+	Type string `json:"type" doc:"The type name of data object (one of the data object types defined in the data source meta data)."`
 	// Typically used for column to indicate the data type.
-	DataType *string `json:"dataType"`
+	DataType *string `json:"dataType" doc:"Typically used for column to indicate the data type."`
 	// Indicates if the data object is deleted (unknown) or not.
-	Deleted bool `json:"deleted"`
+	Deleted bool `json:"deleted" doc:"Indicates if the data object is deleted (unknown) or not."`
 	// The description of the data object.
-	Description string `json:"description"`
+	Description string `json:"description" doc:"The description of the data object."`
 	// Returns the data source linked to the data object. This can be linked through its parents.
-	DataSource *DataObjectDataSource `json:"dataSource"`
+	DataSource *DataObjectDataSource `json:"dataSource" doc:"Returns the data source linked to the data object. This can be linked through its parents."`
 }
 
 // GetId returns DataObject.Id, and is useful for accessing the field via an interface.
@@ -7777,9 +7777,9 @@ func (v *DataObjectByExternalIdResponse) __premarshalJSON() (*__premarshalDataOb
 // The connection type for paginated lists of [DataObject]({{Types.DataObject}}).
 type DataObjectConnection struct {
 	// Pagination information for the retrieved items.
-	PageInfo DataObjectConnectionPageInfo `json:"pageInfo"`
+	PageInfo DataObjectConnectionPageInfo `json:"pageInfo" doc:"Pagination information for the retrieved items."`
 	// The list of edges containing the actual queried items.
-	Edges []DataObjectConnectionEdgesDataObjectEdge `json:"edges"`
+	Edges []DataObjectConnectionEdgesDataObjectEdge `json:"edges" doc:"The list of edges containing the actual queried items."`
 }
 
 // GetPageInfo returns DataObjectConnection.PageInfo, and is useful for accessing the field via an interface.
@@ -8330,35 +8330,35 @@ func (v *DataObjectDataSource) GetId() string { return v.Id }
 // Input object for filtering a list of data objects.
 type DataObjectFilterInput struct {
 	// Limit only to data objects in specific data sources.
-	DataSources []string `json:"dataSources"`
+	DataSources []string `json:"dataSources" doc:"Limit only to data objects in specific data sources."`
 	// Limit only to data objects with given (direct) parents.
-	Parents []string `json:"parents"`
+	Parents []string `json:"parents" doc:"Limit only to data objects with given (direct) parents."`
 	// Limit only to data objects with given ancestors.
-	Ancestors []string `json:"ancestors"`
+	Ancestors []string `json:"ancestors" doc:"Limit only to data objects with given ancestors."`
 	// Limit only to data object with given types. Cannot be used together with the `excludedTypes` filter.
-	Types []string `json:"types"`
+	Types []string `json:"types" doc:"Limit only to data object with given types. Cannot be used together with the 'excludedTypes' filter."`
 	// Do not returns data objects with the given types. Cannot be used together with the `types` filter.
-	ExcludedTypes []string `json:"excludedTypes"`
+	ExcludedTypes []string `json:"excludedTypes" doc:"Do not returns data objects with the given types. Cannot be used together with the 'types' filter."`
 	// Only returns data objects of types that can have permissions assigned to them (e.g. this will exclude columns). This is false by default.
-	CanHavePermissions *bool `json:"canHavePermissions,omitempty"`
+	CanHavePermissions *bool `json:"canHavePermissions,omitempty" doc:"Only returns data objects of types that can have permissions assigned to them (e.g. this will exclude columns). This is false by default."`
 	// Filter on the full names of the data object.
-	FullNames []string `json:"fullNames"`
+	FullNames []string `json:"fullNames" doc:"Filter on the full names of the data object."`
 	// The search string to use (will do a case-insensitive 'contains').
-	Search *string `json:"search,omitempty"`
+	Search *string `json:"search,omitempty" doc:"The search string to use (will do a case-insensitive 'contains')."`
 	// If true, also data top-level data object of type `datasource` is included.
-	IncludeDataSource *bool `json:"includeDataSource,omitempty"`
+	IncludeDataSource *bool `json:"includeDataSource,omitempty" doc:"If true, also data top-level data object of type 'datasource' is included."`
 	AsOwner           *bool `json:"asOwner,omitempty"`
 	CanUse            *bool `json:"canUse,omitempty"`
 	// Limit the data objects for which any of the given users is an owner.
-	Owners []string `json:"owners"`
+	Owners []string `json:"owners" doc:"Limit the data objects for which any of the given users is an owner."`
 	// If true, also deleted (unknown) data objects are included.
-	IncludeDeleted *bool `json:"includeDeleted,omitempty"`
+	IncludeDeleted *bool `json:"includeDeleted,omitempty" doc:"If true, also deleted (unknown) data objects are included."`
 	// Limit to certain data types (typically for columns).
-	DataTypes []string `json:"dataTypes"`
+	DataTypes []string `json:"dataTypes" doc:"Limit to certain data types (typically for columns)."`
 	// Excluded a fixed list of data objects.
-	Exclude []string `json:"exclude"`
+	Exclude []string `json:"exclude" doc:"Excluded a fixed list of data objects."`
 	// Filters by the tags that the data object has.
-	HasTags                     []TagFilter          `json:"hasTags"`
+	HasTags                     []TagFilter          `json:"hasTags" doc:"Filters by the tags that the data object has."`
 	SupportedDataSourceFeatures []DataSourceFeatures `json:"supportedDataSourceFeatures"`
 	CanRequestAccess            *bool                `json:"canRequestAccess,omitempty"`
 }
@@ -8506,9 +8506,9 @@ func (v *DataObjectSharePropertiesInput) GetCorrespondingSharedTypes() []string 
 
 type DataObjectTypeActionInput struct {
 	// The action that is defined
-	Action string `json:"action"`
+	Action string `json:"action" doc:"The action that is defined"`
 	// The corresponding global actions
-	GlobalActions []string `json:"globalActions"`
+	GlobalActions []string `json:"globalActions" doc:"The corresponding global actions"`
 }
 
 // GetAction returns DataObjectTypeActionInput.Action, and is useful for accessing the field via an interface.
@@ -8520,21 +8520,21 @@ func (v *DataObjectTypeActionInput) GetGlobalActions() []string { return v.Globa
 // Input object to specify a data object type.
 type DataObjectTypeInput struct {
 	// The unique name of the data object type within the data source.
-	Name *string `json:"name,omitempty"`
+	Name *string `json:"name,omitempty" doc:"The unique name of the data object type within the data source."`
 	// The name of the type of the data object type. This is used to group similar data object types in the same table in the user interface. For example, `external-table`, `table` and `special-table` could all have type `table`.
-	Type *string `json:"type,omitempty"`
+	Type *string `json:"type,omitempty" doc:"The name of the type of the data object type. This is used to group similar data object types in the same table in the user interface. For example, 'external-table', 'table' and 'special-table' could all have type 'table'."`
 	// The display label for this data object type.
-	Label *string `json:"label,omitempty"`
+	Label *string `json:"label,omitempty" doc:"The display label for this data object type."`
 	Icon  *string `json:"icon,omitempty"`
 	// The data object types that can be a child of this data object type (referenced by the `name` field).
-	Children []string `json:"children"`
+	Children []string `json:"children" doc:"The data object types that can be a child of this data object type (referenced by the 'name' field)."`
 	// The permissions which are applicable on this data object type.
-	Permissions     []DataObjectTypePermissionInput `json:"permissions"`
+	Permissions     []DataObjectTypePermissionInput `json:"permissions" doc:"The permissions which are applicable on this data object type."`
 	Actions         []DataObjectTypeActionInput     `json:"actions"`
 	DataOrigin      *DataTypeOrigin                 `json:"dataOrigin,omitempty"`
 	ShareProperties *DataObjectSharePropertiesInput `json:"shareProperties,omitempty"`
 	// Used to map the data object type to a catalog type in Collibra. For example, a data object type 'project' for Google BigQuery could map to catalog type 'database' in Collibra.
-	CatalogType *string `json:"catalogType,omitempty"`
+	CatalogType *string `json:"catalogType,omitempty" doc:"Used to map the data object type to a catalog type in Collibra. For example, a data object type 'project' for Google BigQuery could map to catalog type 'database' in Collibra."`
 }
 
 // GetName returns DataObjectTypeInput.Name, and is useful for accessing the field via an interface.
@@ -8572,14 +8572,14 @@ func (v *DataObjectTypeInput) GetCatalogType() *string { return v.CatalogType }
 // Input object for a permission on a data object type.
 type DataObjectTypePermissionInput struct {
 	// The permission itself, specific to the data source (e.g. SELECT, INSERT, roles/bigquery.dataViewer...).
-	Permission *string `json:"permission,omitempty"`
+	Permission *string `json:"permission,omitempty" doc:"The permission itself, specific to the data source (e.g. SELECT, INSERT, roles/bigquery.dataViewer...)."`
 	// The global permissions under which this permission can be categorized.
-	GlobalPermissions      []string `json:"globalPermissions"`
+	GlobalPermissions      []string `json:"globalPermissions" doc:"The global permissions under which this permission can be categorized."`
 	UsageGlobalPermissions []string `json:"usageGlobalPermissions"`
 	// The description of the permissions.
-	Description *string `json:"description,omitempty"`
+	Description *string `json:"description,omitempty" doc:"The description of the permissions."`
 	// If true, this permission cannot be set by the user in the user interface.
-	CannotBeGranted *bool `json:"cannotBeGranted,omitempty"`
+	CannotBeGranted *bool `json:"cannotBeGranted,omitempty" doc:"If true, this permission cannot be set by the user in the user interface."`
 }
 
 // GetPermission returns DataObjectTypePermissionInput.Permission, and is useful for accessing the field via an interface.
@@ -8605,21 +8605,21 @@ func (v *DataObjectTypePermissionInput) GetCannotBeGranted() *bool { return v.Ca
 // Represents a data sourcein Collibra Data Access.
 type DataSource struct {
 	// The unique identifier of the data source.
-	Id string `json:"id"`
+	Id string `json:"id" doc:"The unique identifier of the data source."`
 	// The display name of the data source.
-	Name string `json:"name"`
+	Name string `json:"name" doc:"The display name of the data source."`
 	// The type identifier of this data source. This is set by the connector during a sync.
-	Type string `json:"type"`
+	Type string `json:"type" doc:"The type identifier of this data source. This is set by the connector during a sync."`
 	// The description of the data source.
-	Description string `json:"description"`
+	Description string `json:"description" doc:"The description of the data source."`
 	// Indicates when the data source was initially created.
-	CreatedAt time.Time `json:"createdAt"`
+	CreatedAt time.Time `json:"createdAt" doc:"Indicates when the data source was initially created."`
 	// Indicates when the data source was last modified.
-	ModifiedAt time.Time `json:"modifiedAt"`
+	ModifiedAt time.Time `json:"modifiedAt" doc:"Indicates when the data source was last modified."`
 	// The optional parent data source.
-	Parent *DataSourceParentDataSource `json:"parent"`
+	Parent *DataSourceParentDataSource `json:"parent" doc:"The optional parent data source."`
 	// Retrieves the synchronization configuration settings for this data source.
-	EdgeSiteInfo *DataSourceEdgeSiteInfoDataSourceLinkedEdgeSiteInfoResult `json:"-"`
+	EdgeSiteInfo *DataSourceEdgeSiteInfoDataSourceLinkedEdgeSiteInfoResult `json:"-" doc:"Retrieves the synchronization configuration settings for this data source."`
 }
 
 // GetId returns DataSource.Id, and is useful for accessing the field via an interface.
@@ -8741,9 +8741,9 @@ func (v *DataSource) __premarshalJSON() (*__premarshalDataSource, error) {
 // The connection type for paginated lists of [DataSource]({{Types.DataSource}}).
 type DataSourceConnection struct {
 	// Pagination information for the retrieved items.
-	PageInfo DataSourceConnectionPageInfo `json:"pageInfo"`
+	PageInfo DataSourceConnectionPageInfo `json:"pageInfo" doc:"Pagination information for the retrieved items."`
 	// The list of edges containing the actual queried items.
-	Edges []DataSourceConnectionEdgesDataSourceEdge `json:"edges"`
+	Edges []DataSourceConnectionEdgesDataSourceEdge `json:"edges" doc:"The list of edges containing the actual queried items."`
 }
 
 // GetPageInfo returns DataSourceConnection.PageInfo, and is useful for accessing the field via an interface.
@@ -9442,11 +9442,11 @@ var AllDataSourceFeatures = []DataSourceFeatures{
 type DataSourceFilterInput struct {
 	Types []string `json:"types"`
 	// The search string to use (will do a case-insensitive 'contains').
-	Search *string `json:"search,omitempty"`
+	Search *string `json:"search,omitempty" doc:"The search string to use (will do a case-insensitive 'contains')."`
 	// Only show data sources with a specific parent data source.
-	Parent *string `json:"parent,omitempty"`
+	Parent *string `json:"parent,omitempty" doc:"Only show data sources with a specific parent data source."`
 	// List of user IDs to filter on who owns the data source.
-	Owners                []string              `json:"owners"`
+	Owners                []string              `json:"owners" doc:"List of user IDs to filter on who owns the data source."`
 	IncompleteDataWarning *bool                 `json:"incompleteDataWarning,omitempty"`
 	SupportedFeatures     []*DataSourceFeatures `json:"supportedFeatures,omitempty"`
 }
@@ -9474,23 +9474,23 @@ func (v *DataSourceFilterInput) GetSupportedFeatures() []*DataSourceFeatures {
 // Input object for creating or updating a data source.
 type DataSourceInput struct {
 	// The display name of the data source.
-	Name *string `json:"name,omitempty"`
+	Name *string `json:"name,omitempty" doc:"The display name of the data source."`
 	// The description of the data source.
-	Description *string `json:"description,omitempty"`
+	Description *string `json:"description,omitempty" doc:"The description of the data source."`
 	// The optional parent data source.
-	Parent                  *string  `json:"parent,omitempty"`
+	Parent                  *string  `json:"parent,omitempty" doc:"The optional parent data source."`
 	CanRequestAccess        *bool    `json:"canRequestAccess,omitempty"`
 	CanRequestAccessToTypes []string `json:"canRequestAccessToTypes"`
 	// The synchronization schedule configuration.
-	SyncSchedule *DataSourceSyncScheduleInput `json:"syncSchedule,omitempty"`
+	SyncSchedule *DataSourceSyncScheduleInput `json:"syncSchedule,omitempty" doc:"The synchronization schedule configuration."`
 	// The optional UUID of the system asset from Collibra Catalog this data source corresponds with. Pass 00000000-0000-0000-0000-000000000000 to clear.
-	CatalogSystemId *uuid.UUID `json:"catalogSystemId,omitempty"`
+	CatalogSystemId *uuid.UUID `json:"catalogSystemId,omitempty" doc:"The optional UUID of the system asset from Collibra Catalog this data source corresponds with. Pass 00000000-0000-0000-0000-000000000000 to clear."`
 	// type indicates the type of data source (Snowflake, BigQuery, etc.).
-	Type *string `json:"type,omitempty"`
+	Type *string `json:"type,omitempty" doc:"type indicates the type of data source (Snowflake, BigQuery, etc.)."`
 	// The ID of the Edge Site associated with this data source.
-	EdgeSiteId *string `json:"edgeSiteId,omitempty"`
+	EdgeSiteId *string `json:"edgeSiteId,omitempty" doc:"The ID of the Edge Site associated with this data source."`
 	// The ID of the Edge Connection associated with this data source.
-	EdgeConnectionId *string `json:"edgeConnectionId,omitempty"`
+	EdgeConnectionId *string `json:"edgeConnectionId,omitempty" doc:"The ID of the Edge Connection associated with this data source."`
 }
 
 // GetName returns DataSourceInput.Name, and is useful for accessing the field via an interface.
@@ -9961,20 +9961,20 @@ func (v *DataSourceMaskInformationResponse) __premarshalJSON() (*__premarshalDat
 
 type DataSourceMetaDataInput struct {
 	// The list of data object types that are available in this data source.
-	DataObjectTypes []DataObjectTypeInput `json:"dataObjectTypes"`
+	DataObjectTypes []DataObjectTypeInput `json:"dataObjectTypes" doc:"The list of data object types that are available in this data source."`
 	// The list of access control types that are available in this data source.
-	AccessControlTypes []AccessControlTypeInput `json:"accessControlTypes"`
+	AccessControlTypes []AccessControlTypeInput `json:"accessControlTypes" doc:"The list of access control types that are available in this data source."`
 	// SupportedFeatures is a list of features supported by the data source
 	// Currently supported features: columnMasking, rowFiltering, columnFiltering, dataSharing
-	SupportedFeatures []string `json:"supportedFeatures"`
+	SupportedFeatures []string `json:"supportedFeatures" doc:"SupportedFeatures is a list of features supported by the data source Currently supported features: columnMasking, rowFiltering, columnFiltering, dataSharing"`
 	// type indicates the type of data source (Snowflake, BigQuery, etc.).
-	Type *string `json:"type,omitempty"`
+	Type *string `json:"type,omitempty" doc:"type indicates the type of data source (Snowflake, BigQuery, etc.)."`
 	// Icon the name or base64 encoded version of the icon to use for this data source.
-	Icon *string `json:"icon,omitempty"`
+	Icon *string `json:"icon,omitempty" doc:"Icon the name or base64 encoded version of the icon to use for this data source."`
 	// UsageMetaInfo describes the usage metadata for this data source.
-	UsageMetaInfo *UsageMetaInput `json:"usageMetaInfo,omitempty"`
+	UsageMetaInfo *UsageMetaInput `json:"usageMetaInfo,omitempty" doc:"UsageMetaInfo describes the usage metadata for this data source."`
 	// If true, access controls will not be unpacked at export time. Otherwise, access controls will be unpacked into native groups and users.
-	SupportsAccessControlInheritance *bool                 `json:"supportsAccessControlInheritance,omitempty"`
+	SupportsAccessControlInheritance *bool                 `json:"supportsAccessControlInheritance,omitempty" doc:"If true, access controls will not be unpacked at export time. Otherwise, access controls will be unpacked into native groups and users."`
 	MaskingMetadata                  *MaskingMetadataInput `json:"maskingMetadata,omitempty"`
 	FilterMetadata                   *FilterMetadataInput  `json:"filterMetadata,omitempty"`
 	ShareMetadata                    *ShareMetadataInput   `json:"shareMetadata,omitempty"`
@@ -10041,15 +10041,15 @@ func (v *DataSourceParentDataSource) GetId() string { return v.Id }
 // Input object to set the sync scheduling for a data source.
 type DataSourceSyncScheduleInput struct {
 	// The cron expression for the global synchronization. Null will not update the global cron expression. Empty string will remove the global cron expression.
-	Global *string `json:"global,omitempty"`
+	Global *string `json:"global,omitempty" doc:"The cron expression for the global synchronization. Null will not update the global cron expression. Empty string will remove the global cron expression."`
 	// If set, this overrides the global cron expression for the data object sync specifically. Null will not update the global cron expression. Empty string will remove the global cron expression.
-	DataObjectSync *string `json:"dataObjectSync,omitempty"`
+	DataObjectSync *string `json:"dataObjectSync,omitempty" doc:"If set, this overrides the global cron expression for the data object sync specifically. Null will not update the global cron expression. Empty string will remove the global cron expression."`
 	// If set, this overrides the global cron expression for the identity sync specifically. Null will not update the global cron expression. Empty string will remove the global cron expression.
-	IdentitySync *string `json:"identitySync,omitempty"`
+	IdentitySync *string `json:"identitySync,omitempty" doc:"If set, this overrides the global cron expression for the identity sync specifically. Null will not update the global cron expression. Empty string will remove the global cron expression."`
 	// If set, this overrides the global cron expression for the access control to target sync specifically. Null will not update the global cron expression. Empty string will remove the global cron expression.
-	AccessToTargetSync *string `json:"accessToTargetSync,omitempty"`
+	AccessToTargetSync *string `json:"accessToTargetSync,omitempty" doc:"If set, this overrides the global cron expression for the access control to target sync specifically. Null will not update the global cron expression. Empty string will remove the global cron expression."`
 	// If set, this overrides the global cron expression for the access control from target sync specifically. Null will not update the global cron expression. Empty string will remove the global cron expression.
-	AccessFromTargetSync *string `json:"accessFromTargetSync,omitempty"`
+	AccessFromTargetSync *string `json:"accessFromTargetSync,omitempty" doc:"If set, this overrides the global cron expression for the access control from target sync specifically. Null will not update the global cron expression. Empty string will remove the global cron expression."`
 	UsageSync            *string `json:"usageSync,omitempty"`
 }
 
@@ -10075,9 +10075,9 @@ func (v *DataSourceSyncScheduleInput) GetUsageSync() *string { return v.UsageSyn
 
 type DataSourceTypeInfo struct {
 	// The ID of the data source
-	DataSource string `json:"dataSource"`
+	DataSource string `json:"dataSource" doc:"The ID of the data source"`
 	// The technical type of how this access control is represented in the underlying system. For masks this represents the masking method to use.
-	AccessControlType *string `json:"accessControlType,omitempty"`
+	AccessControlType *string `json:"accessControlType,omitempty" doc:"The technical type of how this access control is represented in the underlying system. For masks this represents the masking method to use."`
 }
 
 // GetDataSource returns DataSourceTypeInfo.DataSource, and is useful for accessing the field via an interface.
@@ -21119,15 +21119,15 @@ func __marshalGetUserUserUserResult(v *GetUserUserUserResult) ([]byte, error) {
 // Represent a grant category. Grant categories are used to categorize access controls with `action=Grant` to allow structuring them better.
 type GrantCategory struct {
 	// A unique identifier for the grant category.
-	Id string `json:"id"`
+	Id string `json:"id" doc:"A unique identifier for the grant category."`
 	// Display name for the grant category.
-	Name string `json:"name"`
+	Name string `json:"name" doc:"Display name for the grant category."`
 	// The plural form of the display name for the grant category.
-	NamePlural string `json:"namePlural"`
+	NamePlural string `json:"namePlural" doc:"The plural form of the display name for the grant category."`
 	// If true, this grant category is provisioned by the system and cannot be edited or removed.
-	IsSystem bool `json:"isSystem"`
+	IsSystem bool `json:"isSystem" doc:"If true, this grant category is provisioned by the system and cannot be edited or removed."`
 	// If true, new access controls will be created in this category as default and imported (external) access controls will also be in this category.
-	IsDefault bool `json:"isDefault"`
+	IsDefault bool `json:"isDefault" doc:"If true, new access controls will be created in this category as default and imported (external) access controls will also be in this category."`
 }
 
 // GetId returns GrantCategory.Id, and is useful for accessing the field via an interface.
@@ -21151,7 +21151,7 @@ func (v *GrantCategory) GetIsDefault() bool { return v.IsDefault }
 // Specifies which WHAT items are allowed for a grant category.
 type GrantCategoryAllowedWhatItems struct {
 	// If true, data objects are allowed in the WHAT list of the access control.
-	DataObject bool `json:"dataObject"`
+	DataObject bool `json:"dataObject" doc:"If true, data objects are allowed in the WHAT list of the access control."`
 }
 
 // GetDataObject returns GrantCategoryAllowedWhatItems.DataObject, and is useful for accessing the field via an interface.
@@ -21160,7 +21160,7 @@ func (v *GrantCategoryAllowedWhatItems) GetDataObject() bool { return v.DataObje
 // Input object to specify which WHAT items are allowed for a grant category.
 type GrantCategoryAllowedWhatItemsInput struct {
 	// If true, data objects are allowed in the WHAT list of the access control.
-	DataObject bool `json:"dataObject"`
+	DataObject bool `json:"dataObject" doc:"If true, data objects are allowed in the WHAT list of the access control."`
 }
 
 // GetDataObject returns GrantCategoryAllowedWhatItemsInput.DataObject, and is useful for accessing the field via an interface.
@@ -21172,13 +21172,13 @@ func (v *GrantCategoryAllowedWhatItemsInput) GetDataObject() bool { return v.Dat
 // Specifies which WHO items are allowed for a grant category.
 type GrantCategoryAllowedWhoItems struct {
 	// If true, users are allowed in the WHO list of the access control.
-	User bool `json:"user"`
+	User bool `json:"user" doc:"If true, users are allowed in the WHO list of the access control."`
 	// If true, other access controls from any category are allowed in the WHO list of the access control.
-	Inheritance bool `json:"inheritance"`
+	Inheritance bool `json:"inheritance" doc:"If true, other access controls from any category are allowed in the WHO list of the access control."`
 	// If true, other access controls from the same category are allowed in the WHO list of the access control.
-	Self bool `json:"self"`
+	Self bool `json:"self" doc:"If true, other access controls from the same category are allowed in the WHO list of the access control."`
 	// Access controls from the given categories are allowed in the WHO list of the access control.
-	Categories []string `json:"categories"`
+	Categories []string `json:"categories" doc:"Access controls from the given categories are allowed in the WHO list of the access control."`
 }
 
 // GetUser returns GrantCategoryAllowedWhoItems.User, and is useful for accessing the field via an interface.
@@ -21196,13 +21196,13 @@ func (v *GrantCategoryAllowedWhoItems) GetCategories() []string { return v.Categ
 // Input object to specify which WHO items are allowed for a grant category.
 type GrantCategoryAllowedWhoItemsInput struct {
 	// If true, users are allowed in the WHO list of the access control.
-	User bool `json:"user"`
+	User bool `json:"user" doc:"If true, users are allowed in the WHO list of the access control."`
 	// If true, other access controls from any category are allowed in the WHO list of the access control.
-	Inheritance bool `json:"inheritance"`
+	Inheritance bool `json:"inheritance" doc:"If true, other access controls from any category are allowed in the WHO list of the access control."`
 	// If true, other access controls from the same category are allowed in the WHO list of the access control.
-	Self bool `json:"self"`
+	Self bool `json:"self" doc:"If true, other access controls from the same category are allowed in the WHO list of the access control."`
 	// Access controls from the given categories are allowed in the WHO list of the access control.
-	Categories []string `json:"categories"`
+	Categories []string `json:"categories" doc:"Access controls from the given categories are allowed in the WHO list of the access control."`
 }
 
 // GetUser returns GrantCategoryAllowedWhoItemsInput.User, and is useful for accessing the field via an interface.
@@ -21511,41 +21511,41 @@ func (v *GrantCategoryDetailsDefaultTypePerDataSourceGrantCategoryTypeForDataSou
 // Input object to create or update a grant category.
 type GrantCategoryInput struct {
 	// Display name for the grant category.
-	Name *string `json:"name,omitempty"`
+	Name *string `json:"name,omitempty" doc:"Display name for the grant category."`
 	// The plural form of the display name for the grant category.
-	NamePlural *string `json:"namePlural,omitempty"`
+	NamePlural *string `json:"namePlural,omitempty" doc:"The plural form of the display name for the grant category."`
 	// Description of the grant category.
-	Description *string `json:"description,omitempty"`
+	Description *string `json:"description,omitempty" doc:"Description of the grant category."`
 	// The icon to use in the user interface to identify grants of this category.
-	Icon *string `json:"icon,omitempty"`
+	Icon *string `json:"icon,omitempty" doc:"The icon to use in the user interface to identify grants of this category."`
 	// If true, access controls of this category can be created in the UI.
-	CanCreate *bool `json:"canCreate,omitempty"`
+	CanCreate *bool `json:"canCreate,omitempty" doc:"If true, access controls of this category can be created in the UI."`
 	// Specifies if a user can request access to grants of this category or not. This is purely a frontend check.
-	CanRequestAccess *bool `json:"canRequestAccess,omitempty"`
+	CanRequestAccess *bool `json:"canRequestAccess,omitempty" doc:"Specifies if a user can request access to grants of this category or not. This is purely a frontend check."`
 	// If true, providing a description for access controls in this category is mandatory.
-	DescriptionMandatory *bool `json:"descriptionMandatory,omitempty"`
+	DescriptionMandatory *bool `json:"descriptionMandatory,omitempty" doc:"If true, providing a description for access controls in this category is mandatory."`
 	// If true, it is possible to create multiple access controls with the same name in this category. Otherwise, this will be blocked.
-	AllowDuplicateNames *bool `json:"allowDuplicateNames,omitempty"`
+	AllowDuplicateNames *bool `json:"allowDuplicateNames,omitempty" doc:"If true, it is possible to create multiple access controls with the same name in this category. Otherwise, this will be blocked."`
 	// If true, access controls in this category can be linked to multiple data sources. Otherwise, they will be limited to a single data source.
-	MultiDataSource *bool `json:"multiDataSource,omitempty"`
+	MultiDataSource *bool `json:"multiDataSource,omitempty" doc:"If true, access controls in this category can be linked to multiple data sources. Otherwise, they will be limited to a single data source."`
 	// For each data source, a default access control type can be specified.
-	DefaultTypePerDataSource []GrantCategoryTypeForDataSourceInput `json:"defaultTypePerDataSource"`
+	DefaultTypePerDataSource []GrantCategoryTypeForDataSourceInput `json:"defaultTypePerDataSource" doc:"For each data source, a default access control type can be specified."`
 	// If true, no local exceptions for masks and filters are calculated for corresponding access controls. Regular global exceptions will be used instead.
-	GlobalExceptions *bool `json:"globalExceptions,omitempty"`
+	GlobalExceptions *bool `json:"globalExceptions,omitempty" doc:"If true, no local exceptions for masks and filters are calculated for corresponding access controls. Regular global exceptions will be used instead."`
 	// Specifies which types can be put as WHO items for access controls in this category.
-	AllowedWhoItems *GrantCategoryAllowedWhoItemsInput `json:"allowedWhoItems,omitempty"`
+	AllowedWhoItems *GrantCategoryAllowedWhoItemsInput `json:"allowedWhoItems,omitempty" doc:"Specifies which types can be put as WHO items for access controls in this category."`
 	// Specifies which types can be put as WHAT items for access controls in this category.
-	AllowedWhatItems *GrantCategoryAllowedWhatItemsInput `json:"allowedWhatItems,omitempty"`
+	AllowedWhatItems *GrantCategoryAllowedWhatItemsInput `json:"allowedWhatItems,omitempty" doc:"Specifies which types can be put as WHAT items for access controls in this category."`
 	// If specified, the name of access controls in this category need to comply with the given regular expression.
-	NameRegEx *string `json:"nameRegEx,omitempty"`
+	NameRegEx *string `json:"nameRegEx,omitempty" doc:"If specified, the name of access controls in this category need to comply with the given regular expression."`
 	// The message shown to the user when the name does not comply with the regular expression.
-	NameRegExMsg *string `json:"nameRegExMsg,omitempty"`
+	NameRegExMsg *string `json:"nameRegExMsg,omitempty" doc:"The message shown to the user when the name does not comply with the regular expression."`
 	// If specified, the naming hint of access controls in this category need to comply with the given regular expression.
-	NamingHintRegEx *string `json:"namingHintRegEx,omitempty"`
+	NamingHintRegEx *string `json:"namingHintRegEx,omitempty" doc:"If specified, the naming hint of access controls in this category need to comply with the given regular expression."`
 	// The message shown to the user when the name does not comply with the regular expression.
-	NamingHintRegExMsg *string `json:"namingHintRegExMsg,omitempty"`
+	NamingHintRegExMsg *string `json:"namingHintRegExMsg,omitempty" doc:"The message shown to the user when the name does not comply with the regular expression."`
 	// The locks that need to be set when an access control in this category is created.
-	LocksOnCreate []AccessControlLock `json:"locksOnCreate"`
+	LocksOnCreate []AccessControlLock `json:"locksOnCreate" doc:"The locks that need to be set when an access control in this category is created."`
 }
 
 // GetName returns GrantCategoryInput.Name, and is useful for accessing the field via an interface.
@@ -21614,9 +21614,9 @@ func (v *GrantCategoryInput) GetLocksOnCreate() []AccessControlLock { return v.L
 // Specifies the type of the access control in the data source for a grant category.
 type GrantCategoryTypeForDataSource struct {
 	// The data source this type applies to.
-	DataSource string `json:"dataSource"`
+	DataSource string `json:"dataSource" doc:"The data source this type applies to."`
 	// The access control type that will be used for this data source.
-	Type string `json:"type"`
+	Type string `json:"type" doc:"The access control type that will be used for this data source."`
 }
 
 // GetDataSource returns GrantCategoryTypeForDataSource.DataSource, and is useful for accessing the field via an interface.
@@ -21628,9 +21628,9 @@ func (v *GrantCategoryTypeForDataSource) GetType() string { return v.Type }
 // Input object to specify the type of the access control in the data source for a grant category.
 type GrantCategoryTypeForDataSourceInput struct {
 	// The data source this type applies to.
-	DataSource string `json:"dataSource"`
+	DataSource string `json:"dataSource" doc:"The data source this type applies to."`
 	// The access control type that will be used for this data source.
-	Type string `json:"type"`
+	Type string `json:"type" doc:"The access control type that will be used for this data source."`
 }
 
 // GetDataSource returns GrantCategoryTypeForDataSourceInput.DataSource, and is useful for accessing the field via an interface.
@@ -22243,21 +22243,21 @@ type Job struct {
 	// Unique identifier of the job.
 	Id string `json:"id"`
 	// The current status of the job.
-	Status JobStatus `json:"status"`
+	Status JobStatus `json:"status" doc:"The current status of the job."`
 	// The time at which this job was started.
-	StartTime time.Time `json:"startTime"`
+	StartTime time.Time `json:"startTime" doc:"The time at which this job was started."`
 	// The time when this job was last updated.
-	LastUpdate time.Time `json:"lastUpdate"`
+	LastUpdate time.Time `json:"lastUpdate" doc:"The time when this job was last updated."`
 	// The time at which this job ended.
-	EndTime *time.Time `json:"endTime"`
+	EndTime *time.Time `json:"endTime" doc:"The time at which this job ended."`
 	// The duration of the job (endTime-startTime).
-	Duration *int64 `json:"duration"`
+	Duration *int64 `json:"duration" doc:"The duration of the job (endTime-startTime)."`
 	// If true, errors occurred during this job.
-	HasErrors *bool `json:"hasErrors"`
+	HasErrors *bool `json:"hasErrors" doc:"If true, errors occurred during this job."`
 	// If true, warnings occurred during this job.
-	HasWarnings *bool `json:"hasWarnings"`
+	HasWarnings *bool `json:"hasWarnings" doc:"If true, warnings occurred during this job."`
 	// The data source on which this job ran.
-	DataSource JobDataSource `json:"dataSource"`
+	DataSource JobDataSource `json:"dataSource" doc:"The data source on which this job ran."`
 }
 
 // GetId returns Job.Id, and is useful for accessing the field via an interface.
@@ -22293,9 +22293,9 @@ func (v *Job) GetDataSource() JobDataSource { return v.DataSource }
 // The connection type for paginated lists of [Job]({{Types.Job}}).
 type JobConnection struct {
 	// Pagination information for the retrieved items.
-	PageInfo JobConnectionPageInfo `json:"pageInfo"`
+	PageInfo JobConnectionPageInfo `json:"pageInfo" doc:"Pagination information for the retrieved items."`
 	// The list of edges containing the actual queried items.
-	Edges []JobConnectionEdgesJobEdge `json:"edges"`
+	Edges []JobConnectionEdgesJobEdge `json:"edges" doc:"The list of edges containing the actual queried items."`
 }
 
 // GetPageInfo returns JobConnection.PageInfo, and is useful for accessing the field via an interface.
@@ -29567,13 +29567,13 @@ func (v *ListTasksOfJobResponse) GetJob() ListTasksOfJobJob { return v.Job }
 // A single masking type.
 type MaskType struct {
 	// The IDof the masking type known by the connector.
-	ExternalId string `json:"externalId"`
+	ExternalId string `json:"externalId" doc:"The IDof the masking type known by the connector."`
 	// The display name of the masking type.
-	DisplayName string `json:"displayName"`
+	DisplayName string `json:"displayName" doc:"The display name of the masking type."`
 	// The description of the masking type.
-	Description string `json:"description"`
+	Description string `json:"description" doc:"The description of the masking type."`
 	// The list of data types on which this masking rule can be applied.
-	DataTypes []string `json:"dataTypes"`
+	DataTypes []string `json:"dataTypes" doc:"The list of data types on which this masking rule can be applied."`
 }
 
 // GetExternalId returns MaskType.ExternalId, and is useful for accessing the field via an interface.
@@ -29617,9 +29617,9 @@ func (v *MaskTypeInput) GetPrecedence() *int { return v.Precedence }
 // The meta data about how column masking works in the data source.
 type MaskingMetadata struct {
 	// The default mask type.
-	DefaultMaskExternalName *string `json:"defaultMaskExternalName"`
+	DefaultMaskExternalName *string `json:"defaultMaskExternalName" doc:"The default mask type."`
 	// The available masking types the data source supports.
-	MaskTypes []MaskingMetadataMaskTypesMaskType `json:"maskTypes"`
+	MaskTypes []MaskingMetadataMaskTypesMaskType `json:"maskTypes" doc:"The available masking types the data source supports."`
 }
 
 // GetDefaultMaskExternalName returns MaskingMetadata.DefaultMaskExternalName, and is useful for accessing the field via an interface.
@@ -30483,13 +30483,13 @@ func (v *Role) GetName() string { return v.Name }
 // Represents the assignment of a role.
 type RoleAssignment struct {
 	// The unique identifier for this role assignment.
-	Id string `json:"id"`
+	Id string `json:"id" doc:"The unique identifier for this role assignment."`
 	// The role that is assigned.
-	Role RoleAssignmentRole `json:"role"`
+	Role RoleAssignmentRole `json:"role" doc:"The role that is assigned."`
 	// Optionally describes which entity the role is assigned on.
-	On *RoleAssignmentOn `json:"-"`
+	On *RoleAssignmentOn `json:"-" doc:"Optionally describes which entity the role is assigned on."`
 	// Describes who/what the role is assigned to.
-	To RoleAssignmentTo `json:"-"`
+	To RoleAssignmentTo `json:"-" doc:"Describes who/what the role is assigned to."`
 }
 
 // GetId returns RoleAssignment.Id, and is useful for accessing the field via an interface.
@@ -30610,9 +30610,9 @@ func (v *RoleAssignment) __premarshalJSON() (*__premarshalRoleAssignment, error)
 // The connection type for paginated lists of [RoleAssignment]({{Types.RoleAssignment}}).
 type RoleAssignmentConnection struct {
 	// Pagination information for the retrieved items.
-	PageInfo RoleAssignmentConnectionPageInfo `json:"pageInfo"`
+	PageInfo RoleAssignmentConnectionPageInfo `json:"pageInfo" doc:"Pagination information for the retrieved items."`
 	// The list of edges containing the actual queried items.
-	Edges []RoleAssignmentConnectionEdgesRoleAssignmentEdge `json:"edges"`
+	Edges []RoleAssignmentConnectionEdgesRoleAssignmentEdge `json:"edges" doc:"The list of edges containing the actual queried items."`
 }
 
 // GetPageInfo returns RoleAssignmentConnection.PageInfo, and is useful for accessing the field via an interface.
@@ -31147,15 +31147,15 @@ func (v *RoleAssignmentConnectionResultRoleAssignmentConnection) __premarshalJSO
 // Describes the filter options for listing role assignments.
 type RoleAssignmentFilterInput struct {
 	// Filter on assignments on a specific resource.
-	Resource *string `json:"resource,omitempty"`
+	Resource *string `json:"resource,omitempty" doc:"Filter on assignments on a specific resource."`
 	// Filter assignments for a specific role.
-	Role *string `json:"role,omitempty"`
+	Role *string `json:"role,omitempty" doc:"Filter assignments for a specific role."`
 	// Filter assignments to a specific user.
-	User *string `json:"user,omitempty"`
+	User *string `json:"user,omitempty" doc:"Filter assignments to a specific user."`
 	// Also included inherited assignments (from ancestor resources). By default (if not set), this is true.
-	Inherited *bool `json:"inherited,omitempty"`
+	Inherited *bool `json:"inherited,omitempty" doc:"Also included inherited assignments (from ancestor resources). By default (if not set), this is true."`
 	// If true, only the assignments on the ancestor resources are returned. By default (if not set), this is false.
-	InheritedOnly      *bool `json:"inheritedOnly,omitempty"`
+	InheritedOnly      *bool `json:"inheritedOnly,omitempty" doc:"If true, only the assignments on the ancestor resources are returned. By default (if not set), this is false."`
 	ExcludeDelegations *bool `json:"excludeDelegations,omitempty"`
 	ExcludeDelegated   *bool `json:"excludeDelegated,omitempty"`
 }
@@ -31666,6 +31666,400 @@ func (v *RootParameterDefinitionInput) GetAccessFromTargetSync() []ParameterDefi
 
 // GetUsageSync returns RootParameterDefinitionInput.UsageSync, and is useful for accessing the field via an interface.
 func (v *RootParameterDefinitionInput) GetUsageSync() []ParameterDefinitionInput { return v.UsageSync }
+
+// SearchUsersResponse is returned by SearchUsers on success.
+type SearchUsersResponse struct {
+	// Retrieves a paginated list of identities.
+	Users SearchUsersUsersUserConnectionResult `json:"-"`
+}
+
+// GetUsers returns SearchUsersResponse.Users, and is useful for accessing the field via an interface.
+func (v *SearchUsersResponse) GetUsers() SearchUsersUsersUserConnectionResult { return v.Users }
+
+func (v *SearchUsersResponse) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*SearchUsersResponse
+		Users json.RawMessage `json:"users"`
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.SearchUsersResponse = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	{
+		dst := &v.Users
+		src := firstPass.Users
+		if len(src) != 0 && string(src) != "null" {
+			err = __unmarshalSearchUsersUsersUserConnectionResult(
+				src, dst)
+			if err != nil {
+				return fmt.Errorf(
+					"unable to unmarshal SearchUsersResponse.Users: %w", err)
+			}
+		}
+	}
+	return nil
+}
+
+type __premarshalSearchUsersResponse struct {
+	Users json.RawMessage `json:"users"`
+}
+
+func (v *SearchUsersResponse) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *SearchUsersResponse) __premarshalJSON() (*__premarshalSearchUsersResponse, error) {
+	var retval __premarshalSearchUsersResponse
+
+	{
+
+		dst := &retval.Users
+		src := v.Users
+		var err error
+		*dst, err = __marshalSearchUsersUsersUserConnectionResult(
+			&src)
+		if err != nil {
+			return nil, fmt.Errorf(
+				"unable to marshal SearchUsersResponse.Users: %w", err)
+		}
+	}
+	return &retval, nil
+}
+
+// SearchUsersUsersInvalidInputError includes the requested fields of the GraphQL type InvalidInputError.
+// The GraphQL type's documentation follows.
+//
+// Error when some of the input parameters in the request are not valid.
+type SearchUsersUsersInvalidInputError struct {
+	Typename          *string `json:"__typename"`
+	InvalidInputError `json:"-"`
+}
+
+// GetTypename returns SearchUsersUsersInvalidInputError.Typename, and is useful for accessing the field via an interface.
+func (v *SearchUsersUsersInvalidInputError) GetTypename() *string { return v.Typename }
+
+// GetMessage returns SearchUsersUsersInvalidInputError.Message, and is useful for accessing the field via an interface.
+func (v *SearchUsersUsersInvalidInputError) GetMessage() string { return v.InvalidInputError.Message }
+
+func (v *SearchUsersUsersInvalidInputError) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*SearchUsersUsersInvalidInputError
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.SearchUsersUsersInvalidInputError = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.InvalidInputError)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalSearchUsersUsersInvalidInputError struct {
+	Typename *string `json:"__typename"`
+
+	Message string `json:"message"`
+}
+
+func (v *SearchUsersUsersInvalidInputError) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *SearchUsersUsersInvalidInputError) __premarshalJSON() (*__premarshalSearchUsersUsersInvalidInputError, error) {
+	var retval __premarshalSearchUsersUsersInvalidInputError
+
+	retval.Typename = v.Typename
+	retval.Message = v.InvalidInputError.Message
+	return &retval, nil
+}
+
+// SearchUsersUsersNotFoundError includes the requested fields of the GraphQL type NotFoundError.
+// The GraphQL type's documentation follows.
+//
+// Error when the user is requesting a resource that does not exist.
+type SearchUsersUsersNotFoundError struct {
+	Typename *string `json:"__typename"`
+}
+
+// GetTypename returns SearchUsersUsersNotFoundError.Typename, and is useful for accessing the field via an interface.
+func (v *SearchUsersUsersNotFoundError) GetTypename() *string { return v.Typename }
+
+// SearchUsersUsersPermissionDeniedError includes the requested fields of the GraphQL type PermissionDeniedError.
+// The GraphQL type's documentation follows.
+//
+// Error when permission to the requested resource is denied.
+type SearchUsersUsersPermissionDeniedError struct {
+	Typename              *string `json:"__typename"`
+	PermissionDeniedError `json:"-"`
+}
+
+// GetTypename returns SearchUsersUsersPermissionDeniedError.Typename, and is useful for accessing the field via an interface.
+func (v *SearchUsersUsersPermissionDeniedError) GetTypename() *string { return v.Typename }
+
+// GetMessage returns SearchUsersUsersPermissionDeniedError.Message, and is useful for accessing the field via an interface.
+func (v *SearchUsersUsersPermissionDeniedError) GetMessage() string {
+	return v.PermissionDeniedError.Message
+}
+
+func (v *SearchUsersUsersPermissionDeniedError) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*SearchUsersUsersPermissionDeniedError
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.SearchUsersUsersPermissionDeniedError = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.PermissionDeniedError)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalSearchUsersUsersPermissionDeniedError struct {
+	Typename *string `json:"__typename"`
+
+	Message string `json:"message"`
+}
+
+func (v *SearchUsersUsersPermissionDeniedError) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *SearchUsersUsersPermissionDeniedError) __premarshalJSON() (*__premarshalSearchUsersUsersPermissionDeniedError, error) {
+	var retval __premarshalSearchUsersUsersPermissionDeniedError
+
+	retval.Typename = v.Typename
+	retval.Message = v.PermissionDeniedError.Message
+	return &retval, nil
+}
+
+// SearchUsersUsersUserConnection includes the requested fields of the GraphQL type UserConnection.
+// The GraphQL type's documentation follows.
+//
+// The connection type for paginated lists of [User]({{Types.User}}).
+type SearchUsersUsersUserConnection struct {
+	Typename       *string `json:"__typename"`
+	UserConnection `json:"-"`
+}
+
+// GetTypename returns SearchUsersUsersUserConnection.Typename, and is useful for accessing the field via an interface.
+func (v *SearchUsersUsersUserConnection) GetTypename() *string { return v.Typename }
+
+// GetEdges returns SearchUsersUsersUserConnection.Edges, and is useful for accessing the field via an interface.
+func (v *SearchUsersUsersUserConnection) GetEdges() []UserConnectionEdgesUserEdge {
+	return v.UserConnection.Edges
+}
+
+// GetPageInfo returns SearchUsersUsersUserConnection.PageInfo, and is useful for accessing the field via an interface.
+func (v *SearchUsersUsersUserConnection) GetPageInfo() UserConnectionPageInfo {
+	return v.UserConnection.PageInfo
+}
+
+func (v *SearchUsersUsersUserConnection) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*SearchUsersUsersUserConnection
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.SearchUsersUsersUserConnection = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.UserConnection)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalSearchUsersUsersUserConnection struct {
+	Typename *string `json:"__typename"`
+
+	Edges []UserConnectionEdgesUserEdge `json:"edges"`
+
+	PageInfo UserConnectionPageInfo `json:"pageInfo"`
+}
+
+func (v *SearchUsersUsersUserConnection) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *SearchUsersUsersUserConnection) __premarshalJSON() (*__premarshalSearchUsersUsersUserConnection, error) {
+	var retval __premarshalSearchUsersUsersUserConnection
+
+	retval.Typename = v.Typename
+	retval.Edges = v.UserConnection.Edges
+	retval.PageInfo = v.UserConnection.PageInfo
+	return &retval, nil
+}
+
+// SearchUsersUsersUserConnectionResult includes the requested fields of the GraphQL interface UserConnectionResult.
+//
+// SearchUsersUsersUserConnectionResult is implemented by the following types:
+// SearchUsersUsersInvalidInputError
+// SearchUsersUsersNotFoundError
+// SearchUsersUsersPermissionDeniedError
+// SearchUsersUsersUserConnection
+type SearchUsersUsersUserConnectionResult interface {
+	implementsGraphQLInterfaceSearchUsersUsersUserConnectionResult()
+	// GetTypename returns the receiver's concrete GraphQL type-name (see interface doc for possible values).
+	GetTypename() *string
+}
+
+func (v *SearchUsersUsersInvalidInputError) implementsGraphQLInterfaceSearchUsersUsersUserConnectionResult() {
+}
+func (v *SearchUsersUsersNotFoundError) implementsGraphQLInterfaceSearchUsersUsersUserConnectionResult() {
+}
+func (v *SearchUsersUsersPermissionDeniedError) implementsGraphQLInterfaceSearchUsersUsersUserConnectionResult() {
+}
+func (v *SearchUsersUsersUserConnection) implementsGraphQLInterfaceSearchUsersUsersUserConnectionResult() {
+}
+
+func __unmarshalSearchUsersUsersUserConnectionResult(b []byte, v *SearchUsersUsersUserConnectionResult) error {
+	if string(b) == "null" {
+		return nil
+	}
+
+	var tn struct {
+		TypeName string `json:"__typename"`
+	}
+	err := json.Unmarshal(b, &tn)
+	if err != nil {
+		return err
+	}
+
+	switch tn.TypeName {
+	case "InvalidInputError":
+		*v = new(SearchUsersUsersInvalidInputError)
+		return json.Unmarshal(b, *v)
+	case "NotFoundError":
+		*v = new(SearchUsersUsersNotFoundError)
+		return json.Unmarshal(b, *v)
+	case "PermissionDeniedError":
+		*v = new(SearchUsersUsersPermissionDeniedError)
+		return json.Unmarshal(b, *v)
+	case "UserConnection":
+		*v = new(SearchUsersUsersUserConnection)
+		return json.Unmarshal(b, *v)
+	case "":
+		return fmt.Errorf(
+			"response was missing UserConnectionResult.__typename")
+	default:
+		return fmt.Errorf(
+			`unexpected concrete type for SearchUsersUsersUserConnectionResult: "%v"`, tn.TypeName)
+	}
+}
+
+func __marshalSearchUsersUsersUserConnectionResult(v *SearchUsersUsersUserConnectionResult) ([]byte, error) {
+
+	var typename string
+	switch v := (*v).(type) {
+	case *SearchUsersUsersInvalidInputError:
+		typename = "InvalidInputError"
+
+		premarshaled, err := v.__premarshalJSON()
+		if err != nil {
+			return nil, err
+		}
+		result := struct {
+			TypeName string `json:"__typename"`
+			*__premarshalSearchUsersUsersInvalidInputError
+		}{typename, premarshaled}
+		return json.Marshal(result)
+	case *SearchUsersUsersNotFoundError:
+		typename = "NotFoundError"
+
+		result := struct {
+			TypeName string `json:"__typename"`
+			*SearchUsersUsersNotFoundError
+		}{typename, v}
+		return json.Marshal(result)
+	case *SearchUsersUsersPermissionDeniedError:
+		typename = "PermissionDeniedError"
+
+		premarshaled, err := v.__premarshalJSON()
+		if err != nil {
+			return nil, err
+		}
+		result := struct {
+			TypeName string `json:"__typename"`
+			*__premarshalSearchUsersUsersPermissionDeniedError
+		}{typename, premarshaled}
+		return json.Marshal(result)
+	case *SearchUsersUsersUserConnection:
+		typename = "UserConnection"
+
+		premarshaled, err := v.__premarshalJSON()
+		if err != nil {
+			return nil, err
+		}
+		result := struct {
+			TypeName string `json:"__typename"`
+			*__premarshalSearchUsersUsersUserConnection
+		}{typename, premarshaled}
+		return json.Marshal(result)
+	case nil:
+		return []byte("null"), nil
+	default:
+		return nil, fmt.Errorf(
+			`unexpected concrete type for SearchUsersUsersUserConnectionResult: "%T"`, v)
+	}
+}
 
 // SetDataSourceMetadataResponse is returned by SetDataSourceMetadata on success.
 type SetDataSourceMetadataResponse struct {
@@ -33491,15 +33885,15 @@ func (v *SupportedCliVersionDeprecatedVersionsDeprecatedCLIVersion) GetMsg() *st
 // Represents the synchronization data for an access control on a specific data source.
 type SyncData struct {
 	// The data source this is applicable to
-	DataSource SyncDataDataSource `json:"dataSource"`
+	DataSource SyncDataDataSource `json:"dataSource" doc:"The data source this is applicable to"`
 	// The meta data of the access control type in the target system.
-	AccessControlType *SyncDataAccessControlType `json:"accessControlType"`
+	AccessControlType *SyncDataAccessControlType `json:"accessControlType" doc:"The meta data of the access control type in the target system."`
 	// The actual name of the access control in the target system, if applicable.
-	ActualName *string `json:"actualName"`
+	ActualName *string `json:"actualName" doc:"The actual name of the access control in the target system, if applicable."`
 	// In case of a mask access control, this indicates the type of mask.
-	MaskType *SyncDataMaskType `json:"maskType"`
+	MaskType *SyncDataMaskType `json:"maskType" doc:"In case of a mask access control, this indicates the type of mask."`
 	// The current synchronization status of the access control on the data source.
-	SyncStatus SyncStatus `json:"syncStatus"`
+	SyncStatus SyncStatus `json:"syncStatus" doc:"The current synchronization status of the access control on the data source."`
 }
 
 // GetDataSource returns SyncData.DataSource, and is useful for accessing the field via an interface.
@@ -34773,9 +35167,9 @@ var AllSyncStatus = []SyncStatus{
 // Specifies the filter options to filter lists of tags.
 type TagFilter struct {
 	// Only return tags with a specify key.
-	Key *string `json:"key,omitempty"`
+	Key *string `json:"key,omitempty" doc:"Only return tags with a specify key."`
 	// Only return tags with a specific string value.
-	StringValue *string `json:"stringValue,omitempty"`
+	StringValue *string `json:"stringValue,omitempty" doc:"Only return tags with a specific string value."`
 }
 
 // GetKey returns TagFilter.Key, and is useful for accessing the field via an interface.
@@ -34805,23 +35199,23 @@ func (v *TagImport) GetSource() string { return v.Source }
 // Represents a task in a job.
 type Task struct {
 	// The ID of the job the task belongs to.
-	JobId string `json:"jobId"`
+	JobId string `json:"jobId" doc:"The ID of the job the task belongs to."`
 	// The type of the task
 	TaskType string `json:"taskType"`
 	// The current status of the task.
-	Status TaskStatus `json:"status"`
+	Status TaskStatus `json:"status" doc:"The current status of the task."`
 	// The time when this task started.
-	StartTime time.Time `json:"startTime"`
+	StartTime time.Time `json:"startTime" doc:"The time when this task started."`
 	// The time when this task was last updated.
-	LastUpdate time.Time `json:"lastUpdate"`
+	LastUpdate time.Time `json:"lastUpdate" doc:"The time when this task was last updated."`
 	// The time when this task ended.
-	EndTime *time.Time `json:"endTime"`
+	EndTime *time.Time `json:"endTime" doc:"The time when this task ended."`
 	// The duration of this task (endTime-startTime).
-	Duration *int64 `json:"duration"`
+	Duration *int64 `json:"duration" doc:"The duration of this task (endTime-startTime)."`
 	// The number of warnings that occurred in this task.
-	NumberOfWarnings int `json:"numberOfWarnings"`
+	NumberOfWarnings int `json:"numberOfWarnings" doc:"The number of warnings that occurred in this task."`
 	// The list of results from this task.
-	Result []TaskResult `json:"result"`
+	Result []TaskResult `json:"result" doc:"The list of results from this task."`
 }
 
 // GetJobId returns Task.JobId, and is useful for accessing the field via an interface.
@@ -34857,9 +35251,9 @@ func (v *Task) GetResult() []TaskResult { return v.Result }
 // The connection type for paginated lists of [Task]({{Types.Task}}).
 type TaskConnection struct {
 	// Pagination information for the retrieved items.
-	PageInfo TaskConnectionPageInfo `json:"pageInfo"`
+	PageInfo TaskConnectionPageInfo `json:"pageInfo" doc:"Pagination information for the retrieved items."`
 	// The list of edges containing the actual queried items.
-	Edges []TaskConnectionEdgesTaskEdge `json:"edges"`
+	Edges []TaskConnectionEdgesTaskEdge `json:"edges" doc:"The list of edges containing the actual queried items."`
 }
 
 // GetPageInfo returns TaskConnection.PageInfo, and is useful for accessing the field via an interface.
@@ -39918,13 +40312,13 @@ func (v *UsageMetaInputDetail) GetDataObjectTypes() []string { return v.DataObje
 // Represents a user in Collibra Data Access. It can be a human user or a machine user (service account) which groups accounts in different data sources.
 type User struct {
 	// The unique identifier for the user.
-	Id string `json:"id"`
+	Id string `json:"id" doc:"The unique identifier for the user."`
 	// The display name for the user.
-	Name string `json:"name"`
+	Name string `json:"name" doc:"The display name for the user."`
 	// The email address for the user. This will be used to match new accounts. If the email address matches, the new accounts will be automatically added to the user.
-	Email *string `json:"email"`
+	Email *string `json:"email" doc:"The email address for the user. This will be used to match new accounts. If the email address matches, the new accounts will be automatically added to the user."`
 	// Whether this user is a human or machine user.
-	Type UserType `json:"type"`
+	Type UserType `json:"type" doc:"Whether this user is a human or machine user."`
 }
 
 // GetId returns User.Id, and is useful for accessing the field via an interface.
@@ -39938,6 +40332,160 @@ func (v *User) GetEmail() *string { return v.Email }
 
 // GetType returns User.Type, and is useful for accessing the field via an interface.
 func (v *User) GetType() UserType { return v.Type }
+
+// MCP
+type UserConnection struct {
+	// The list of edges containing the actual queried items.
+	Edges []UserConnectionEdgesUserEdge `json:"edges" doc:"The list of edges containing the actual queried items."`
+	// Pagination information for the retrieved items.
+	PageInfo UserConnectionPageInfo `json:"pageInfo" doc:"Pagination information for the retrieved items."`
+}
+
+// GetEdges returns UserConnection.Edges, and is useful for accessing the field via an interface.
+func (v *UserConnection) GetEdges() []UserConnectionEdgesUserEdge { return v.Edges }
+
+// GetPageInfo returns UserConnection.PageInfo, and is useful for accessing the field via an interface.
+func (v *UserConnection) GetPageInfo() UserConnectionPageInfo { return v.PageInfo }
+
+// UserConnectionEdgesUserEdge includes the requested fields of the GraphQL type UserEdge.
+// The GraphQL type's documentation follows.
+//
+// The edge type for [UserConnection]({{Types.UserConnection}})
+type UserConnectionEdgesUserEdge struct {
+	// The actual user object.
+	Node *UserConnectionEdgesUserEdgeNodeUser `json:"node"`
+	// The cursor of this item for pagination.
+	Cursor *string `json:"cursor"`
+}
+
+// GetNode returns UserConnectionEdgesUserEdge.Node, and is useful for accessing the field via an interface.
+func (v *UserConnectionEdgesUserEdge) GetNode() *UserConnectionEdgesUserEdgeNodeUser { return v.Node }
+
+// GetCursor returns UserConnectionEdgesUserEdge.Cursor, and is useful for accessing the field via an interface.
+func (v *UserConnectionEdgesUserEdge) GetCursor() *string { return v.Cursor }
+
+// UserConnectionEdgesUserEdgeNodeUser includes the requested fields of the GraphQL type User.
+// The GraphQL type's documentation follows.
+//
+// Represents a user in Collibra Data Access. It can be a human user or a machine user (service account) which groups accounts in different data sources.
+type UserConnectionEdgesUserEdgeNodeUser struct {
+	User `json:"-"`
+}
+
+// GetId returns UserConnectionEdgesUserEdgeNodeUser.Id, and is useful for accessing the field via an interface.
+func (v *UserConnectionEdgesUserEdgeNodeUser) GetId() string { return v.User.Id }
+
+// GetName returns UserConnectionEdgesUserEdgeNodeUser.Name, and is useful for accessing the field via an interface.
+func (v *UserConnectionEdgesUserEdgeNodeUser) GetName() string { return v.User.Name }
+
+// GetEmail returns UserConnectionEdgesUserEdgeNodeUser.Email, and is useful for accessing the field via an interface.
+func (v *UserConnectionEdgesUserEdgeNodeUser) GetEmail() *string { return v.User.Email }
+
+// GetType returns UserConnectionEdgesUserEdgeNodeUser.Type, and is useful for accessing the field via an interface.
+func (v *UserConnectionEdgesUserEdgeNodeUser) GetType() UserType { return v.User.Type }
+
+func (v *UserConnectionEdgesUserEdgeNodeUser) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*UserConnectionEdgesUserEdgeNodeUser
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.UserConnectionEdgesUserEdgeNodeUser = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.User)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalUserConnectionEdgesUserEdgeNodeUser struct {
+	Id string `json:"id"`
+
+	Name string `json:"name"`
+
+	Email *string `json:"email"`
+
+	Type UserType `json:"type"`
+}
+
+func (v *UserConnectionEdgesUserEdgeNodeUser) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *UserConnectionEdgesUserEdgeNodeUser) __premarshalJSON() (*__premarshalUserConnectionEdgesUserEdgeNodeUser, error) {
+	var retval __premarshalUserConnectionEdgesUserEdgeNodeUser
+
+	retval.Id = v.User.Id
+	retval.Name = v.User.Name
+	retval.Email = v.User.Email
+	retval.Type = v.User.Type
+	return &retval, nil
+}
+
+// UserConnectionPageInfo includes the requested fields of the GraphQL type PageInfo.
+type UserConnectionPageInfo struct {
+	StartCursor *string `json:"startCursor"`
+	HasNextPage *bool   `json:"hasNextPage"`
+}
+
+// GetStartCursor returns UserConnectionPageInfo.StartCursor, and is useful for accessing the field via an interface.
+func (v *UserConnectionPageInfo) GetStartCursor() *string { return v.StartCursor }
+
+// GetHasNextPage returns UserConnectionPageInfo.HasNextPage, and is useful for accessing the field via an interface.
+func (v *UserConnectionPageInfo) GetHasNextPage() *bool { return v.HasNextPage }
+
+// Defines the filter options for listing users.
+type UserFilterInput struct {
+	// Only return the users what have an account in any of the given data sources.
+	DataSources   []string `json:"dataSources" doc:"Only return the users what have an account in any of the given data sources."`
+	AccessControl *string  `json:"accessControl,omitempty"`
+	// The search string to use (will do a case-insensitive 'contains').
+	Search *string `json:"search,omitempty" doc:"The search string to use (will do a case-insensitive 'contains')."`
+	// Only return human or machine users.
+	Type *UserType `json:"type,omitempty" doc:"Only return human or machine users."`
+	// Exclude a specific fixed list of users.
+	Exclude []string `json:"exclude" doc:"Exclude a specific fixed list of users."`
+	// Only return users that have certain tags.
+	HasTags []TagFilter `json:"hasTags" doc:"Only return users that have certain tags."`
+	// To filter users that exists or not exists as a Collibra platform user
+	IsCollibraUser *bool `json:"isCollibraUser,omitempty" doc:"To filter users that exists or not exists as a Collibra platform user"`
+}
+
+// GetDataSources returns UserFilterInput.DataSources, and is useful for accessing the field via an interface.
+func (v *UserFilterInput) GetDataSources() []string { return v.DataSources }
+
+// GetAccessControl returns UserFilterInput.AccessControl, and is useful for accessing the field via an interface.
+func (v *UserFilterInput) GetAccessControl() *string { return v.AccessControl }
+
+// GetSearch returns UserFilterInput.Search, and is useful for accessing the field via an interface.
+func (v *UserFilterInput) GetSearch() *string { return v.Search }
+
+// GetType returns UserFilterInput.Type, and is useful for accessing the field via an interface.
+func (v *UserFilterInput) GetType() *UserType { return v.Type }
+
+// GetExclude returns UserFilterInput.Exclude, and is useful for accessing the field via an interface.
+func (v *UserFilterInput) GetExclude() []string { return v.Exclude }
+
+// GetHasTags returns UserFilterInput.HasTags, and is useful for accessing the field via an interface.
+func (v *UserFilterInput) GetHasTags() []TagFilter { return v.HasTags }
+
+// GetIsCollibraUser returns UserFilterInput.IsCollibraUser, and is useful for accessing the field via an interface.
+func (v *UserFilterInput) GetIsCollibraUser() *bool { return v.IsCollibraUser }
 
 type UserImport struct {
 	ExternalId string      `json:"externalId"`
@@ -40013,11 +40561,11 @@ var AllUserType = []UserType{
 type WhatAbacRule struct {
 	Id string `json:"id"`
 	// The permissions the data objects from this ABAC rule will receive.
-	Permissions []string `json:"permissions"`
+	Permissions []string `json:"permissions" doc:"The permissions the data objects from this ABAC rule will receive."`
 	// The global permissions the data objects from this ABAC rule will receive.
-	GlobalPermissions []string `json:"globalPermissions"`
+	GlobalPermissions []string `json:"globalPermissions" doc:"The global permissions the data objects from this ABAC rule will receive."`
 	// The data object types that this ABAC rule applies to.
-	DoTypes  []string `json:"doTypes"`
+	DoTypes  []string `json:"doTypes" doc:"The data object types that this ABAC rule applies to."`
 	RuleJson *string  `json:"ruleJson"`
 }
 
@@ -40039,17 +40587,17 @@ func (v *WhatAbacRule) GetRuleJson() *string { return v.RuleJson }
 // Input object for creating and updating WHAT ABAC rules in an access control.
 type WhatAbacRuleInput struct {
 	// The optional ID of the ABAC rule to create or update. If not specified a new ID will be generated.
-	Id *string `json:"id,omitempty"`
+	Id *string `json:"id,omitempty" doc:"The optional ID of the ABAC rule to create or update. If not specified a new ID will be generated."`
 	// The data object types that will be matched by this ABAC rule.
-	DoTypes []string `json:"doTypes"`
+	DoTypes []string `json:"doTypes" doc:"The data object types that will be matched by this ABAC rule."`
 	// In case of a grant, the permissions that will be granted on the data objects matching the ABAC rule.
-	Permissions []string `json:"permissions"`
+	Permissions []string `json:"permissions" doc:"In case of a grant, the permissions that will be granted on the data objects matching the ABAC rule."`
 	// In case of a grant, the global permissions that will be granted on the data objects matching the ABAC rule.
-	GlobalPermissions []string `json:"globalPermissions"`
+	GlobalPermissions []string `json:"globalPermissions" doc:"In case of a grant, the global permissions that will be granted on the data objects matching the ABAC rule."`
 	// The list of data objects in which this ABAC rule will apply. Only descendants of these data objects will be considered.
-	Scope []string `json:"scope"`
+	Scope []string `json:"scope" doc:"The list of data objects in which this ABAC rule will apply. Only descendants of these data objects will be considered."`
 	// The actual boolean expression to define which data objects to match.
-	Rule AbacComparisonExpressionInput `json:"rule"`
+	Rule AbacComparisonExpressionInput `json:"rule" doc:"The actual boolean expression to define which data objects to match."`
 }
 
 // GetId returns WhatAbacRuleInput.Id, and is useful for accessing the field via an interface.
@@ -40092,9 +40640,9 @@ func (v *WhatItemImport) GetPermissions() []string { return v.Permissions }
 type WhoAbacRule struct {
 	Id string `json:"id"`
 	// In case `type=WhoPromise`, this indicates the duration of the promise.
-	PromiseDuration *int64 `json:"promiseDuration"`
+	PromiseDuration *int64 `json:"promiseDuration" doc:"In case 'type=WhoPromise', this indicates the duration of the promise."`
 	// Determines whether the users from this ABAC rule will get access granted directly or only a promise (pre-approval).
-	Type     AccessWhoItemType `json:"type"`
+	Type     AccessWhoItemType `json:"type" doc:"Determines whether the users from this ABAC rule will get access granted directly or only a promise (pre-approval)."`
 	RuleJson *string           `json:"ruleJson"`
 }
 
@@ -40113,13 +40661,13 @@ func (v *WhoAbacRule) GetRuleJson() *string { return v.RuleJson }
 // Input object for creating and updating WHO ABAC rules in an access control.
 type WhoAbacRuleInput struct {
 	// The optional ID of the ABAC rule to create or update. If not specified a new ID will be generated.
-	Id *string `json:"id,omitempty"`
+	Id *string `json:"id,omitempty" doc:"The optional ID of the ABAC rule to create or update. If not specified a new ID will be generated."`
 	// The actual boolean expression to define which users to match.
-	Rule AbacComparisonExpressionInput `json:"rule"`
+	Rule AbacComparisonExpressionInput `json:"rule" doc:"The actual boolean expression to define which users to match."`
 	// Defines if the users that are matched by this ABAC rule will get the access granted directly or as a promise (pre-approval).
-	Type AccessWhoItemType `json:"type"`
+	Type AccessWhoItemType `json:"type" doc:"Defines if the users that are matched by this ABAC rule will get the access granted directly or as a promise (pre-approval)."`
 	// In case `type=whoPromise`, this indicates for how long the promise will provide access when requested.
-	PromiseDuration *int64 `json:"promiseDuration,omitempty"`
+	PromiseDuration *int64 `json:"promiseDuration,omitempty" doc:"In case 'type=whoPromise', this indicates for how long the promise will provide access when requested."`
 }
 
 // GetId returns WhoAbacRuleInput.Id, and is useful for accessing the field via an interface.
@@ -40152,19 +40700,19 @@ func (v *WhoItemImport) GetRecipients() []string { return v.Recipients }
 // Input object to represent a WHO item for the access control. Only one of `user`, `accessControl`, `dataSource` or `recipient` should be filled in, depending on the type of the WHO item.
 type WhoItemInput struct {
 	// The ID of the user for the WHO item.
-	User *string `json:"user,omitempty"`
+	User *string `json:"user,omitempty" doc:"The ID of the user for the WHO item."`
 	// The ID of the access control for the WHO item.
-	AccessControl *string `json:"accessControl,omitempty"`
+	AccessControl *string `json:"accessControl,omitempty" doc:"The ID of the access control for the WHO item."`
 	// The ID of the data source for the WHO item (for shares).
-	DataSource *string `json:"dataSource,omitempty"`
+	DataSource *string `json:"dataSource,omitempty" doc:"The ID of the data source for the WHO item (for shares)."`
 	// The identifier of the recipient account (for shares).
-	Recipient *string `json:"recipient,omitempty"`
+	Recipient *string `json:"recipient,omitempty" doc:"The identifier of the recipient account (for shares)."`
 	// The time at which this WHO item will expire.
-	ExpiresAt *time.Time `json:"expiresAt,omitempty"`
+	ExpiresAt *time.Time `json:"expiresAt,omitempty" doc:"The time at which this WHO item will expire."`
 	// Defines if the users that are matched by this ABAC rule will get the access granted directly or as a promise (pre-approval).
-	Type *AccessWhoItemType `json:"type,omitempty"`
+	Type *AccessWhoItemType `json:"type,omitempty" doc:"Defines if the users that are matched by this ABAC rule will get the access granted directly or as a promise (pre-approval)."`
 	// In case `type=whoPromise`, this indicates for how long the promise will provide access when requested.
-	PromiseDuration *int64 `json:"promiseDuration,omitempty"`
+	PromiseDuration *int64 `json:"promiseDuration,omitempty" doc:"In case 'type=whoPromise', this indicates for how long the promise will provide access when requested."`
 }
 
 // GetUser returns WhoItemInput.User, and is useful for accessing the field via an interface.
@@ -40801,6 +41349,22 @@ type __NextSyncJobForEdgeDataSourceInput struct {
 func (v *__NextSyncJobForEdgeDataSourceInput) GetSyncInput() SyncJobForEdgeDataSourceInput {
 	return v.SyncInput
 }
+
+// __SearchUsersInput is used internally by genqlient
+type __SearchUsersInput struct {
+	After  *string          `json:"after,omitempty"`
+	Limit  *int             `json:"limit,omitempty"`
+	Filter *UserFilterInput `json:"filter,omitempty"`
+}
+
+// GetAfter returns __SearchUsersInput.After, and is useful for accessing the field via an interface.
+func (v *__SearchUsersInput) GetAfter() *string { return v.After }
+
+// GetLimit returns __SearchUsersInput.Limit, and is useful for accessing the field via an interface.
+func (v *__SearchUsersInput) GetLimit() *int { return v.Limit }
+
+// GetFilter returns __SearchUsersInput.Filter, and is useful for accessing the field via an interface.
+func (v *__SearchUsersInput) GetFilter() *UserFilterInput { return v.Filter }
 
 // __SetDataSourceMetadataInput is used internally by genqlient
 type __SetDataSourceMetadataInput struct {
@@ -44912,6 +45476,71 @@ func NextSyncJobForEdgeDataSource(
 	}
 
 	data_ = &NextSyncJobForEdgeDataSourceResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
+// The query executed by SearchUsers.
+const SearchUsers_Operation = `
+query SearchUsers ($after: String, $limit: Int, $filter: UserFilterInput) {
+	users(after: $after, limit: $limit, filter: $filter) {
+		__typename
+		... UserConnection
+		... PermissionDeniedError
+		... InvalidInputError
+	}
+}
+fragment UserConnection on UserConnection {
+	edges {
+		node {
+			... User
+		}
+		cursor
+	}
+	pageInfo {
+		startCursor
+		hasNextPage
+	}
+}
+fragment PermissionDeniedError on PermissionDeniedError {
+	message
+}
+fragment InvalidInputError on InvalidInputError {
+	message
+}
+fragment User on User {
+	id
+	name
+	email
+	type
+}
+`
+
+func SearchUsers(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	after *string,
+	limit *int,
+	filter *UserFilterInput,
+) (data_ *SearchUsersResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "SearchUsers",
+		Query:  SearchUsers_Operation,
+		Variables: &__SearchUsersInput{
+			After:  after,
+			Limit:  limit,
+			Filter: filter,
+		},
+	}
+
+	data_ = &SearchUsersResponse{}
 	resp_ := &graphql.Response{Data: data_}
 
 	err_ = client_.MakeRequest(

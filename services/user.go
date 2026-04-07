@@ -114,3 +114,28 @@ func (c *UserClient) UpdateUser(ctx context.Context, id string, userInput types.
 		return nil, types.NewErrClient(fmt.Errorf("unexpected result type: %T", user))
 	}
 }
+
+func (c *UserClient) SearchUsers(ctx context.Context, after *string, limit *int, filter *types.UserFilterInput) ([]types.User, *string, error) {
+	result, err := schema.SearchUsers(ctx, c.client, after, limit, filter)
+	if err != nil {
+		return nil, nil, types.NewErrClient(err)
+	}
+
+	users := []types.User{}
+
+	switch resultUsers := result.GetUsers().(type) {
+	case *schema.SearchUsersUsersUserConnection:
+		var cursor *string
+		for _, edge := range resultUsers.GetEdges() {
+			users = append(users, edge.GetNode().User)
+			cursor = edge.GetCursor()
+		}
+		return users, cursor, nil
+	case *schema.SearchUsersUsersInvalidInputError:
+		return nil, nil, types.NewErrInvalidInput(resultUsers.Message)
+	case *schema.SearchUsersUsersPermissionDeniedError:
+		return nil, nil, types.NewErrPermissionDenied("searchUsers", resultUsers.Message)
+	default:
+		return nil, nil, types.NewErrClient(fmt.Errorf("unexpected result type: %T", resultUsers))
+	}
+}
