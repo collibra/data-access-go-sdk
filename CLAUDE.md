@@ -25,11 +25,11 @@ This is a Go SDK (package `sdk`) for the Collibra Data Access GraphQL API. The m
 
 ### Layers
 
-**`client.go` (root)** — Public entry point. `NewClient(url, ...opts)` returns `*CollibraClient`. Service clients are lazily initialized via `sync.Once` and accessed through methods like `.AccessControl()`, `.DataSource()`, etc.
+**`client.go` (root)** — Public entry point. `NewClient(url, ...opts)` returns `*CollibraClient`. Service clients are accessed through methods like `.AccessControl()`, `.DataSource()`, etc.
 
-**`services/`** — One file per domain (access_control, data_source, data_object, importer, exporter, job, user, roles, grant_category, site). Each service struct wraps `graphql.Client` and exposes typed methods. Tests use `testify/suite`.
+**`services/`** — One file per domain (access_control, data_source, data_object, importer, exporter, job, user, roles, grant_category, site). Tests use `testify/suite`.
 
-**`types/`** — Exported types re-aliased from `internal/schema/generated.go` via the `agen` code generator. `errors.go` defines sentinel errors (`ErrNotFound`, `ErrPermissionDenied`, `ErrAlreadyExists`, `ErrInvalidInput`, `ErrClient`).
+**`types/`** — Exported types re-aliased from `internal/schema/generated.go` via the `agen` code generator. `errors.go` defines sentinel errors.
 
 ### Key patterns
 
