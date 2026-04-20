@@ -1,14 +1,19 @@
 package services_test
 
 import (
+	"context"
 	"sort"
 	"testing"
 
 	sdk "github.com/collibra/data-access-go-sdk"
+	"github.com/collibra/data-access-go-sdk/internal"
 	"github.com/collibra/data-access-go-sdk/internal/schema"
 	"github.com/collibra/data-access-go-sdk/services"
+	"github.com/collibra/data-access-go-sdk/types"
 	"github.com/collibra/data-access-go-sdk/utils"
 	"github.com/google/uuid"
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 	"github.com/stretchr/testify/suite"
 )
 
@@ -442,4 +447,22 @@ func (suite *AccessControlServiceTestSuite) TestGetAccessControlABACWhatScope() 
 	}
 
 	suite.Require().True(found, "Expected ABAC what scope not found in access control")
+}
+
+func TestListAccessControlsPage_PageSizeExceedsMax(t *testing.T) {
+	client := services.NewAccessControlClient(nil)
+	_, _, err := client.ListAccessControlsPage(context.Background(), services.WithAccessControlListPageSize(internal.MaxPageSize+1))
+	require.Error(t, err)
+	var invalidInput *types.ErrInvalidInput
+	require.ErrorAs(t, err, &invalidInput)
+}
+
+func TestListAccessControlsPage_PageSizeAtMax(t *testing.T) {
+	// MaxPageSize itself is valid: validation passes and the call reaches the API
+	// (which panics on a nil client rather than returning ErrInvalidInput).
+	client := services.NewAccessControlClient(nil)
+
+	assert.Panics(t, func() {
+		client.ListAccessControlsPage(context.Background(), services.WithAccessControlListPageSize(internal.MaxPageSize)) //nolint:errcheck
+	})
 }

@@ -3,6 +3,7 @@ package sdk
 import (
 	"errors"
 	"fmt"
+	"net/http"
 	neturl "net/url"
 	"strings"
 	"sync"
@@ -112,6 +113,14 @@ func WithLeveledLogger(logger retryablehttp.LeveledLogger) ClientOptions {
 	}
 }
 
+// WithHTTPClient sets an existing HTTP client to use instead of creating one.
+// When provided, all retry, auth, and logger options are ignored.
+func WithHTTPClient(client *http.Client) ClientOptions {
+	return func(ops *internal.ClientOptions) {
+		ops.HTTPClient = client
+	}
+}
+
 // NewClient creates a new CollibraClient with the given credentials.
 // A non-empty, valid absolute HTTP(S) URL must be provided.
 func NewClient(url string, options ...ClientOptions) (*CollibraClient, error) {
@@ -145,7 +154,12 @@ func NewClient(url string, options ...ClientOptions) (*CollibraClient, error) {
 
 	gqlApiUrl := apiUrl + internal.GqlApiPath
 
-	client := internal.CreateHttpClient(&ops)
+	var client *http.Client
+	if ops.HTTPClient != nil {
+		client = ops.HTTPClient
+	} else {
+		client = internal.CreateHttpClient(&ops)
+	}
 
 	glcClient := gql.NewClient(gqlApiUrl, client)
 

@@ -16,6 +16,10 @@ type ClientOptions struct {
 	Username string
 	Password string //nolint:gosec
 
+	// HTTPClient overrides the default HTTP client. When set, no internal client is
+	// created and all retry/auth options are ignored.
+	HTTPClient *http.Client
+
 	// MaxRetries specifies the maximum number of retries for failed requests.
 	RetryWaitMin time.Duration
 	RetryWaitMax time.Duration

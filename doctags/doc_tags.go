@@ -35,6 +35,7 @@ func main() {
 	if err != nil {
 		log.Fatalf("failed to read schema: %v", err)
 	}
+
 	schema, gerr := gqlparser.LoadSchema(&gql_ast.Source{Name: *inputFile, Input: string(schemaSource)})
 	if gerr != nil {
 		log.Fatalf("failed to parse schema: %v", gerr)
@@ -42,6 +43,7 @@ func main() {
 
 	// 2. Parse the generated Go file
 	fset := token.NewFileSet()
+
 	node, err := parser.ParseFile(fset, *generatedFile, nil, parser.ParseComments)
 	if err != nil {
 		log.Fatal(err)
@@ -54,6 +56,7 @@ func main() {
 		if !ok {
 			return true
 		}
+
 		structType, ok := typeSpec.Type.(*ast.StructType)
 		if !ok {
 			return true
@@ -69,6 +72,7 @@ func main() {
 			if len(field.Names) == 0 {
 				continue
 			}
+
 			goFieldName := field.Names[0].Name
 
 			// Match Go field to GraphQL field description
@@ -79,15 +83,18 @@ func main() {
 				}
 			}
 		}
+
 		return true
 	})
 
 	// 4. Write back to file
 	f, _ := os.Create(*outputFile)
+
 	defer func() { _ = f.Close() }()
+
 	err = format.Node(f, fset, node)
 	if err != nil {
-		log.Fatal(err)
+		log.Fatal(err) //nolint:gocritic
 	}
 
 	slog.Info("Doc tags completed successfully.")
@@ -99,7 +106,7 @@ func injectDocTag(field *ast.Field, description string) {
 	description = strings.ReplaceAll(description, "\"", "\\\"")
 	description = strings.ReplaceAll(description, "`", "'")
 
-	tagValue := fmt.Sprintf("doc:\"%s\"", description)
+	tagValue := fmt.Sprintf("doc:%q", description)
 
 	if field.Tag == nil {
 		field.Tag = &ast.BasicLit{Kind: token.STRING, Value: "`" + tagValue + "`"}

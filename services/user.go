@@ -126,10 +126,12 @@ func (c *UserClient) SearchUsers(ctx context.Context, after *string, limit *int,
 	switch resultUsers := result.GetUsers().(type) {
 	case *schema.SearchUsersUsersUserConnection:
 		var cursor *string
+
 		for _, edge := range resultUsers.GetEdges() {
 			users = append(users, edge.GetNode().User)
 			cursor = edge.GetCursor()
 		}
+
 		return users, cursor, nil
 	case *schema.SearchUsersUsersInvalidInputError:
 		return nil, nil, types.NewErrInvalidInput(resultUsers.Message)
