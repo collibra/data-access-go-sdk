@@ -21265,6 +21265,8 @@ func (v *GrantCategoryAllowedWhatItemsInput) GetDataObject() bool { return v.Dat
 type GrantCategoryAllowedWhoItems struct {
 	// If true, users are allowed in the WHO list of the access control.
 	User bool `json:"user"`
+	// If true, groups are allowed in the WHO list of the access control
+	Group bool `json:"group"`
 	// If true, other access controls from any category are allowed in the WHO list of the access control.
 	Inheritance bool `json:"inheritance"`
 	// If true, other access controls from the same category are allowed in the WHO list of the access control.
@@ -21275,6 +21277,9 @@ type GrantCategoryAllowedWhoItems struct {
 
 // GetUser returns GrantCategoryAllowedWhoItems.User, and is useful for accessing the field via an interface.
 func (v *GrantCategoryAllowedWhoItems) GetUser() bool { return v.User }
+
+// GetGroup returns GrantCategoryAllowedWhoItems.Group, and is useful for accessing the field via an interface.
+func (v *GrantCategoryAllowedWhoItems) GetGroup() bool { return v.Group }
 
 // GetInheritance returns GrantCategoryAllowedWhoItems.Inheritance, and is useful for accessing the field via an interface.
 func (v *GrantCategoryAllowedWhoItems) GetInheritance() bool { return v.Inheritance }
@@ -21472,6 +21477,11 @@ func (v *GrantCategoryDetailsAllowedWhoItemsGrantCategoryAllowedWhoItems) GetUse
 	return v.GrantCategoryAllowedWhoItems.User
 }
 
+// GetGroup returns GrantCategoryDetailsAllowedWhoItemsGrantCategoryAllowedWhoItems.Group, and is useful for accessing the field via an interface.
+func (v *GrantCategoryDetailsAllowedWhoItemsGrantCategoryAllowedWhoItems) GetGroup() bool {
+	return v.GrantCategoryAllowedWhoItems.Group
+}
+
 // GetInheritance returns GrantCategoryDetailsAllowedWhoItemsGrantCategoryAllowedWhoItems.Inheritance, and is useful for accessing the field via an interface.
 func (v *GrantCategoryDetailsAllowedWhoItemsGrantCategoryAllowedWhoItems) GetInheritance() bool {
 	return v.GrantCategoryAllowedWhoItems.Inheritance
@@ -21515,6 +21525,8 @@ func (v *GrantCategoryDetailsAllowedWhoItemsGrantCategoryAllowedWhoItems) Unmars
 type __premarshalGrantCategoryDetailsAllowedWhoItemsGrantCategoryAllowedWhoItems struct {
 	User bool `json:"user"`
 
+	Group bool `json:"group"`
+
 	Inheritance bool `json:"inheritance"`
 
 	Self bool `json:"self"`
@@ -21534,6 +21546,7 @@ func (v *GrantCategoryDetailsAllowedWhoItemsGrantCategoryAllowedWhoItems) __prem
 	var retval __premarshalGrantCategoryDetailsAllowedWhoItemsGrantCategoryAllowedWhoItems
 
 	retval.User = v.GrantCategoryAllowedWhoItems.User
+	retval.Group = v.GrantCategoryAllowedWhoItems.Group
 	retval.Inheritance = v.GrantCategoryAllowedWhoItems.Inheritance
 	retval.Self = v.GrantCategoryAllowedWhoItems.Self
 	retval.Categories = v.GrantCategoryAllowedWhoItems.Categories
@@ -42751,6 +42764,7 @@ fragment GrantCategoryTypeForDataSource on GrantCategoryTypeForDataSource {
 }
 fragment GrantCategoryAllowedWhoItems on GrantCategoryAllowedWhoItems {
 	user
+	group
 	inheritance
 	self
 	categories
@@ -44459,6 +44473,7 @@ fragment GrantCategoryTypeForDataSource on GrantCategoryTypeForDataSource {
 }
 fragment GrantCategoryAllowedWhoItems on GrantCategoryAllowedWhoItems {
 	user
+	group
 	inheritance
 	self
 	categories
@@ -45334,6 +45349,7 @@ fragment GrantCategoryTypeForDataSource on GrantCategoryTypeForDataSource {
 }
 fragment GrantCategoryAllowedWhoItems on GrantCategoryAllowedWhoItems {
 	user
+	group
 	inheritance
 	self
 	categories
@@ -46878,6 +46894,7 @@ fragment GrantCategoryTypeForDataSource on GrantCategoryTypeForDataSource {
 }
 fragment GrantCategoryAllowedWhoItems on GrantCategoryAllowedWhoItems {
 	user
+	group
 	inheritance
 	self
 	categories
