@@ -1,0 +1,30 @@
+name: Release Collibra Data Access SDK
+run-name: Release ${{ github.ref_name }}
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on:
+      - runs-on
+      - runner=tn
+      - env=production-eu
+      - run-id=${{ github.run_id }}
+      - tag=release
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.ref_name }}
+          name: ${{ github.ref_name }}
+          generate_release_notes: true
