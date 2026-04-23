@@ -42,7 +42,7 @@ while [[ $# -gt 0 ]]; do
 done
 
 # --- URL and Validation ---
-DEFAULT_URL="https://access-governance.collibra.tech/dataAccess/query"
+DEFAULT_URL="https://data-access.collibra.tech/dataAccess/query"
 SERVICE_URL=${URL_OVERRIDE:-$DEFAULT_URL}
 
 # Ensure the URL has the correct GraphQL endpoint path

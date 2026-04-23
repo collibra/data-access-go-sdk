@@ -1277,14 +1277,26 @@ type AccessControlInput struct {
 	Source *string `json:"source,omitempty"`
 	// The list of ABAC rules for calculating the WHO items dynamically.
 	WhoAbacRules []*WhoAbacRuleInput `json:"whoAbacRules,omitempty"`
-	// The list of static WHO items for this access control.
+	// The list of static WHO items for this access control. Cannot be used together with whoItemsToAdd or whoItemsToRemove.
 	WhoItems []WhoItemInput `json:"whoItems"`
+	// The list of static WHO items to add to this access control (diff-based update). Cannot be used together with whoItems.
+	WhoItemsToAdd []WhoItemInput `json:"whoItemsToAdd"`
+	// The list of static WHO items to remove from this access control (diff-based update). Cannot be used together with whoItems.
+	WhoItemsToRemove []WhoItemRemoveInput `json:"whoItemsToRemove"`
 	// The list of ABAC rules for calculating the WHAT items dynamically.
 	WhatAbacRules []*WhatAbacRuleInput `json:"whatAbacRules,omitempty"`
-	// The list of static WHAT data object items for this access control.
+	// The list of static WHAT data object items for this access control. Cannot be used together with whatDataObjectsToAdd or whatDataObjectsToRemove.
 	WhatDataObjects []AccessControlWhatInputDO `json:"whatDataObjects"`
-	// The list of static WHAT access controls for this access control.
+	// The list of static WHAT access controls for this access control. Cannot be used together with whatAccessControlsToAdd or whatAccessControlsToRemove.
 	WhatAccessControls []AccessControlWhatInputAP `json:"whatAccessControls"`
+	// The list of static WHAT data objects to add to this access control (diff-based update). Cannot be used together with whatDataObjects.
+	WhatDataObjectsToAdd []AccessControlWhatInputDO `json:"whatDataObjectsToAdd"`
+	// The list of static WHAT data objects to remove from this access control (diff-based update). Cannot be used together with whatDataObjects. When permissions and globalPermissions are both omitted, the entire WHAT link is removed. When specific permissions are provided, only those are removed.
+	WhatDataObjectsToRemove []WhatDataObjectRemoveInput `json:"whatDataObjectsToRemove"`
+	// The list of static WHAT access controls to add to this access control (diff-based update). Cannot be used together with whatAccessControls.
+	WhatAccessControlsToAdd []AccessControlWhatInputAP `json:"whatAccessControlsToAdd"`
+	// The list of static WHAT access control IDs to remove from this access control (diff-based update). Cannot be used together with whatAccessControls.
+	WhatAccessControlsToRemove []string `json:"whatAccessControlsToRemove"`
 	// The policy rule as a string. This is used only for certain cases, like imported row-level filters and column masks or for row-level filters that are implemented like this.
 	PolicyRule *string `json:"policyRule,omitempty"`
 	// For access controls with `action=Filter`, this contains the boolean expression determining the filter criteria.
@@ -1322,6 +1334,12 @@ func (v *AccessControlInput) GetWhoAbacRules() []*WhoAbacRuleInput { return v.Wh
 // GetWhoItems returns AccessControlInput.WhoItems, and is useful for accessing the field via an interface.
 func (v *AccessControlInput) GetWhoItems() []WhoItemInput { return v.WhoItems }
 
+// GetWhoItemsToAdd returns AccessControlInput.WhoItemsToAdd, and is useful for accessing the field via an interface.
+func (v *AccessControlInput) GetWhoItemsToAdd() []WhoItemInput { return v.WhoItemsToAdd }
+
+// GetWhoItemsToRemove returns AccessControlInput.WhoItemsToRemove, and is useful for accessing the field via an interface.
+func (v *AccessControlInput) GetWhoItemsToRemove() []WhoItemRemoveInput { return v.WhoItemsToRemove }
+
 // GetWhatAbacRules returns AccessControlInput.WhatAbacRules, and is useful for accessing the field via an interface.
 func (v *AccessControlInput) GetWhatAbacRules() []*WhatAbacRuleInput { return v.WhatAbacRules }
 
@@ -1333,6 +1351,26 @@ func (v *AccessControlInput) GetWhatDataObjects() []AccessControlWhatInputDO {
 // GetWhatAccessControls returns AccessControlInput.WhatAccessControls, and is useful for accessing the field via an interface.
 func (v *AccessControlInput) GetWhatAccessControls() []AccessControlWhatInputAP {
 	return v.WhatAccessControls
+}
+
+// GetWhatDataObjectsToAdd returns AccessControlInput.WhatDataObjectsToAdd, and is useful for accessing the field via an interface.
+func (v *AccessControlInput) GetWhatDataObjectsToAdd() []AccessControlWhatInputDO {
+	return v.WhatDataObjectsToAdd
+}
+
+// GetWhatDataObjectsToRemove returns AccessControlInput.WhatDataObjectsToRemove, and is useful for accessing the field via an interface.
+func (v *AccessControlInput) GetWhatDataObjectsToRemove() []WhatDataObjectRemoveInput {
+	return v.WhatDataObjectsToRemove
+}
+
+// GetWhatAccessControlsToAdd returns AccessControlInput.WhatAccessControlsToAdd, and is useful for accessing the field via an interface.
+func (v *AccessControlInput) GetWhatAccessControlsToAdd() []AccessControlWhatInputAP {
+	return v.WhatAccessControlsToAdd
+}
+
+// GetWhatAccessControlsToRemove returns AccessControlInput.WhatAccessControlsToRemove, and is useful for accessing the field via an interface.
+func (v *AccessControlInput) GetWhatAccessControlsToRemove() []string {
+	return v.WhatAccessControlsToRemove
 }
 
 // GetPolicyRule returns AccessControlInput.PolicyRule, and is useful for accessing the field via an interface.
@@ -8361,6 +8399,8 @@ type DataObjectFilterInput struct {
 	HasTags                     []TagFilter          `json:"hasTags"`
 	SupportedDataSourceFeatures []DataSourceFeatures `json:"supportedDataSourceFeatures"`
 	CanRequestAccess            *bool                `json:"canRequestAccess,omitempty"`
+	// Return only data objects matched by the given WHAT ABAC rule. The rule's `scope` is mandatory. ANDed with all other filter fields (e.g. `types`, `search`, `dataSources`). `permissions` / `globalPermissions` on the rule are ignored.
+	WhatAbacRule *WhatAbacRuleInput `json:"whatAbacRule,omitempty"`
 }
 
 // GetDataSources returns DataObjectFilterInput.DataSources, and is useful for accessing the field via an interface.
@@ -8418,6 +8458,9 @@ func (v *DataObjectFilterInput) GetSupportedDataSourceFeatures() []DataSourceFea
 
 // GetCanRequestAccess returns DataObjectFilterInput.CanRequestAccess, and is useful for accessing the field via an interface.
 func (v *DataObjectFilterInput) GetCanRequestAccess() *bool { return v.CanRequestAccess }
+
+// GetWhatAbacRule returns DataObjectFilterInput.WhatAbacRule, and is useful for accessing the field via an interface.
+func (v *DataObjectFilterInput) GetWhatAbacRule() *WhatAbacRuleInput { return v.WhatAbacRule }
 
 type DataObjectImport struct {
 	ExternalId              string      `json:"externalId"`
@@ -9449,6 +9492,8 @@ type DataSourceFilterInput struct {
 	Owners                []string              `json:"owners"`
 	IncompleteDataWarning *bool                 `json:"incompleteDataWarning,omitempty"`
 	SupportedFeatures     []*DataSourceFeatures `json:"supportedFeatures,omitempty"`
+	// If true, system data sources will also be included in the results.
+	IncludeSystem *bool `json:"includeSystem,omitempty"`
 }
 
 // GetTypes returns DataSourceFilterInput.Types, and is useful for accessing the field via an interface.
@@ -9470,6 +9515,9 @@ func (v *DataSourceFilterInput) GetIncompleteDataWarning() *bool { return v.Inco
 func (v *DataSourceFilterInput) GetSupportedFeatures() []*DataSourceFeatures {
 	return v.SupportedFeatures
 }
+
+// GetIncludeSystem returns DataSourceFilterInput.IncludeSystem, and is useful for accessing the field via an interface.
+func (v *DataSourceFilterInput) GetIncludeSystem() *bool { return v.IncludeSystem }
 
 // Input object for creating or updating a data source.
 type DataSourceInput struct {
@@ -21241,6 +21289,8 @@ func (v *GrantCategoryAllowedWhoItems) GetCategories() []string { return v.Categ
 type GrantCategoryAllowedWhoItemsInput struct {
 	// If true, users are allowed in the WHO list of the access control.
 	User bool `json:"user"`
+	// If true, groups are allowed in the WHO list of the access control.
+	Group bool `json:"group"`
 	// If true, other access controls from any category are allowed in the WHO list of the access control.
 	Inheritance bool `json:"inheritance"`
 	// If true, other access controls from the same category are allowed in the WHO list of the access control.
@@ -21251,6 +21301,9 @@ type GrantCategoryAllowedWhoItemsInput struct {
 
 // GetUser returns GrantCategoryAllowedWhoItemsInput.User, and is useful for accessing the field via an interface.
 func (v *GrantCategoryAllowedWhoItemsInput) GetUser() bool { return v.User }
+
+// GetGroup returns GrantCategoryAllowedWhoItemsInput.Group, and is useful for accessing the field via an interface.
+func (v *GrantCategoryAllowedWhoItemsInput) GetGroup() bool { return v.Group }
 
 // GetInheritance returns GrantCategoryAllowedWhoItemsInput.Inheritance, and is useful for accessing the field via an interface.
 func (v *GrantCategoryAllowedWhoItemsInput) GetInheritance() bool { return v.Inheritance }
@@ -41237,6 +41290,25 @@ func (v *WhatAbacRuleInput) GetScope() []string { return v.Scope }
 // GetRule returns WhatAbacRuleInput.Rule, and is useful for accessing the field via an interface.
 func (v *WhatAbacRuleInput) GetRule() AbacComparisonExpressionInput { return v.Rule }
 
+// Input object to identify a WHAT data object to remove from an access control. When both permissions and globalPermissions are omitted, the entire WHAT link is removed. When specific permissions are provided, only those permissions are subtracted.
+type WhatDataObjectRemoveInput struct {
+	// The ID of the data object to remove or remove permissions from.
+	DataObject string `json:"dataObject"`
+	// Specific permissions to remove. When omitted (together with globalPermissions), removes the entire WHAT link.
+	Permissions []string `json:"permissions"`
+	// Specific global permissions to remove. When omitted (together with permissions), removes the entire WHAT link.
+	GlobalPermissions []string `json:"globalPermissions"`
+}
+
+// GetDataObject returns WhatDataObjectRemoveInput.DataObject, and is useful for accessing the field via an interface.
+func (v *WhatDataObjectRemoveInput) GetDataObject() string { return v.DataObject }
+
+// GetPermissions returns WhatDataObjectRemoveInput.Permissions, and is useful for accessing the field via an interface.
+func (v *WhatDataObjectRemoveInput) GetPermissions() []string { return v.Permissions }
+
+// GetGlobalPermissions returns WhatDataObjectRemoveInput.GlobalPermissions, and is useful for accessing the field via an interface.
+func (v *WhatDataObjectRemoveInput) GetGlobalPermissions() []string { return v.GlobalPermissions }
+
 type WhatItemImport struct {
 	AccessControlExternalId string                    `json:"accessControlExternalId"`
 	DataObject              DataObjectReferenceImport `json:"dataObject"`
@@ -41354,6 +41426,35 @@ func (v *WhoItemInput) GetType() *AccessWhoItemType { return v.Type }
 
 // GetPromiseDuration returns WhoItemInput.PromiseDuration, and is useful for accessing the field via an interface.
 func (v *WhoItemInput) GetPromiseDuration() *int64 { return v.PromiseDuration }
+
+// Input object to identify a WHO item to remove from an access control. Only one of `user`, `accessControl`, `dataSource` or `recipient` should be filled in.
+type WhoItemRemoveInput struct {
+	// The ID of the user for the WHO item.
+	User *string `json:"user,omitempty"`
+	// The ID of the access control for the WHO item.
+	AccessControl *string `json:"accessControl,omitempty"`
+	// The ID of the data source for the WHO item (for shares).
+	DataSource *string `json:"dataSource,omitempty"`
+	// The identifier of the recipient account (for shares).
+	Recipient *string `json:"recipient,omitempty"`
+	// Defines if the WHO item is a grant or promise.
+	Type *AccessWhoItemType `json:"type,omitempty"`
+}
+
+// GetUser returns WhoItemRemoveInput.User, and is useful for accessing the field via an interface.
+func (v *WhoItemRemoveInput) GetUser() *string { return v.User }
+
+// GetAccessControl returns WhoItemRemoveInput.AccessControl, and is useful for accessing the field via an interface.
+func (v *WhoItemRemoveInput) GetAccessControl() *string { return v.AccessControl }
+
+// GetDataSource returns WhoItemRemoveInput.DataSource, and is useful for accessing the field via an interface.
+func (v *WhoItemRemoveInput) GetDataSource() *string { return v.DataSource }
+
+// GetRecipient returns WhoItemRemoveInput.Recipient, and is useful for accessing the field via an interface.
+func (v *WhoItemRemoveInput) GetRecipient() *string { return v.Recipient }
+
+// GetType returns WhoItemRemoveInput.Type, and is useful for accessing the field via an interface.
+func (v *WhoItemRemoveInput) GetType() *AccessWhoItemType { return v.Type }
 
 // __ActivateAccessControlInput is used internally by genqlient
 type __ActivateAccessControlInput struct {
