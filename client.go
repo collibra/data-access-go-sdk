@@ -143,6 +143,10 @@ func NewClient(url string, options ...ClientOptions) (*CollibraClient, error) {
 		apiUrl += "/"
 	}
 
+	if !strings.HasSuffix(apiUrl, "/"+internal.DataAccessApiPath+"/") {
+		apiUrl += internal.DataAccessApiPath + "/"
+	}
+
 	gqlApiUrl := apiUrl + internal.GqlApiPath
 
 	client := internal.CreateHttpClient(&ops)

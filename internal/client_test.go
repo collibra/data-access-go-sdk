@@ -41,10 +41,10 @@ func (suite *ClientTestSuite) TestCreateHttpClient() {
 }
 
 func (suite *ClientTestSuite) TestBasicAuth() {
-	var requestCount int32
+	var requestCount atomic.Int32
 
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		atomic.AddInt32(&requestCount, 1) // Atomic increment
+		requestCount.Add(1) // Atomic increment
 
 		username, password, found := r.BasicAuth()
 		suite.True(found)
@@ -76,14 +76,14 @@ func (suite *ClientTestSuite) TestBasicAuth() {
 
 	_ = resp.Body.Close()
 
-	suite.Equal(int32(1), atomic.LoadInt32(&requestCount))
+	suite.Equal(int32(1), requestCount.Load())
 }
 
 func (suite *ClientTestSuite) TestNoBasicAuth() {
-	var requestCount int32
+	var requestCount atomic.Int32
 
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		atomic.AddInt32(&requestCount, 1) // Atomic increment
+		requestCount.Add(1) // Atomic increment
 
 		_, _, found := r.BasicAuth()
 		suite.False(found)
@@ -111,14 +111,14 @@ func (suite *ClientTestSuite) TestNoBasicAuth() {
 
 	_ = resp.Body.Close()
 
-	suite.Equal(int32(1), atomic.LoadInt32(&requestCount))
+	suite.Equal(int32(1), requestCount.Load())
 }
 
 func (suite *ClientTestSuite) TestSdkHeaderTransport_RoundTrip() {
-	var requestCount int32
+	var requestCount atomic.Int32
 
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		atomic.AddInt32(&requestCount, 1) // Atomic increment
+		requestCount.Add(1) // Atomic increment
 
 		userAgent := r.Header.Get("User-Agent")
 		suite.NotEmpty(userAgent)
@@ -149,14 +149,14 @@ func (suite *ClientTestSuite) TestSdkHeaderTransport_RoundTrip() {
 
 	_ = resp.Body.Close()
 
-	suite.Equal(int32(1), atomic.LoadInt32(&requestCount))
+	suite.Equal(int32(1), requestCount.Load())
 }
 
 func (suite *ClientTestSuite) TestRetryBehavior() {
-	var attemptCount int32
+	var attemptCount atomic.Int32
 
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		current := atomic.AddInt32(&attemptCount, 1)
+		current := attemptCount.Add(1)
 		if current < 3 {
 			w.WriteHeader(http.StatusServiceUnavailable)
 			return
@@ -179,7 +179,7 @@ func (suite *ClientTestSuite) TestRetryBehavior() {
 	suite.Require().NoError(err)
 	suite.Equal(http.StatusOK, resp.StatusCode)
 
-	suite.GreaterOrEqual(atomic.LoadInt32(&attemptCount), int32(3))
+	suite.GreaterOrEqual(attemptCount.Load(), int32(3))
 
 	_ = resp.Body.Close()
 }
