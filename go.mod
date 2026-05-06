@@ -10,7 +10,7 @@ tool github.com/Khan/genqlient
 require github.com/Khan/genqlient v0.8.2-0.20251028054717-8ddeeee0a15a
 
 require (
-	github.com/Masterminds/semver/v3 v3.4.0
+	github.com/Masterminds/semver/v3 v3.5.0
 	github.com/google/uuid v1.6.0
 	github.com/hashicorp/go-cleanhttp v0.5.2
 	github.com/hashicorp/go-retryablehttp v0.7.8
