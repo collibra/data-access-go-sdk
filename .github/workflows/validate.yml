@@ -5,6 +5,8 @@ on:
     branches:
       - 'main'
   pull_request:
+  workflow_call:
+  workflow_dispatch:
 
 jobs:
   build:
@@ -45,7 +47,7 @@ jobs:
 
       - name: SonarQube Scan
         uses: sonarsource/sonarqube-scan-action@v5
-        if: vars.SONAR_SKIP != 'TRUE'
+        if: vars.SONAR_SKIP != 'TRUE' && (github.event_name == 'pull_request' || github.event_name == 'push')
         env:
           SONAR_TOKEN: ${{ secrets.SONARQUBE_PUBLIC_API_KEY }}
           SONAR_HOST_URL: https://sonarqube.collibra.dev
@@ -55,7 +57,7 @@ jobs:
 
       - name: SonarQube Quality Gate
         uses: sonarsource/sonarqube-quality-gate-action@v1.1.0
-        if: vars.SONAR_SKIP != 'TRUE'
+        if: vars.SONAR_SKIP != 'TRUE' && (github.event_name == 'pull_request' || github.event_name == 'push')
         timeout-minutes: 10
         continue-on-error: true
         env:
@@ -63,6 +65,7 @@ jobs:
           SONAR_HOST_URL: https://sonarqube.collibra.dev
 
       - name: FOSSA Scan
+        if: github.event_name == 'pull_request' || github.event_name == 'push'
         uses: fossas/fossa-action@v1
         with:
           api-key: ${{ secrets.FOSSA_PUBLIC_API_KEY }}
