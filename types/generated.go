@@ -881,11 +881,13 @@ const (
 
 type WhatAbacRule = schema.WhatAbacRule
 type WhatAbacRuleInput = schema.WhatAbacRuleInput
+type WhatDataObjectRemoveInput = schema.WhatDataObjectRemoveInput
 type WhatItemImport = schema.WhatItemImport
 type WhoAbacRule = schema.WhoAbacRule
 type WhoAbacRuleInput = schema.WhoAbacRuleInput
 type WhoItemImport = schema.WhoItemImport
 type WhoItemInput = schema.WhoItemInput
+type WhoItemRemoveInput = schema.WhoItemRemoveInput
 
 var AllAbacComparisonExpressionComparisonOperator = []AbacComparisonExpressionComparisonOperator{AbacComparisonExpressionComparisonOperatorPropertyequals, AbacComparisonExpressionComparisonOperatorPropertyin, AbacComparisonExpressionComparisonOperatorHastag, AbacComparisonExpressionComparisonOperatorContainstag, AbacComparisonExpressionComparisonOperatorPropertystartswith, AbacComparisonExpressionComparisonOperatorPropertyendswith, AbacComparisonExpressionComparisonOperatorPropertycontains}
 var AllAccessControlAction = []AccessControlAction{AccessControlActionGrant, AccessControlActionMask, AccessControlActionFilter, AccessControlActionShare, AccessControlActionGroup, AccessControlActionFilterrule}

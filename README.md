@@ -12,26 +12,31 @@ go get -u github.com/collibra/data-access-go-sdk
 ```
 
 ## Examples
+
 ```go
 package main
 
 import (
-    "context"
-    "fmt"
+	"context"
+	"fmt"
 
 	collibra "github.com/collibra/data-access-go-sdk"
 )
 
 func main() {
 	ctx := context.Background()
-	
-	// Create a new Collibra Data Access Client 
-	client := collibra.NewClient(ctx, "your-user", "your-password")
-	
+
+	// Create a new Collibra Data Access Client
+	url := "https://your-deployment.collibra.com/dataAccess"
+	client, err := collibra.NewClient(url, collibra.WithUsername("your-user"), collibra.WithPassword("your-password"))
+	if err != nil {
+		panic("can not create collibra client: " + err.Error())
+	}
+
 	// Access the AccessControlClient 
 	accessControlClient := client.AccessControl()
 	ac, err := accessControlClient.GetAccessControl(ctx, "ap-id")
-	if(err != nil) {
+	if err != nil {
 		panic("ap does not exist: " + err.Error())
 	}
 	fmt.Printf("AccessControl: %+v\n", ac)
