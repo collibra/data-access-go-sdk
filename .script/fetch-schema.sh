@@ -6,7 +6,7 @@
 # How to use:
 # ./fetch-schema.sh --login "user" --password "P4sWorD" --output "./result.txt" --url "https://access-governance.collibra.tech"
 # NOTE:
-# --url is optional. If not provided the "https://access-governance.collibra.tech" will be used
+# --url is optional. If not provided the "https://data-access.collibra.tech" will be used
 # ==========================================================
 
 # --- Argument Parsing ---

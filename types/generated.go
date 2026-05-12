@@ -94,6 +94,35 @@ type AccessControlWhoAbacRulesWhoAbacRule = schema.AccessControlWhoAbacRulesWhoA
 type AccessControlWhoFeedbackState = schema.AccessControlWhoFeedbackState
 type AccessControlWhoListFilter = schema.AccessControlWhoListFilter
 type AccessControlWhoOrderByInput = schema.AccessControlWhoOrderByInput
+type AccessRequest = schema.AccessRequest
+type AccessRequestAccessControlWhatInput = schema.AccessRequestAccessControlWhatInput
+type AccessRequestDataObjectWhatInput = schema.AccessRequestDataObjectWhatInput
+type AccessRequestInput = schema.AccessRequestInput
+type AccessRequestOutcome = schema.AccessRequestOutcome
+
+const (
+	AccessRequestOutcomeNone                 AccessRequestOutcome = schema.AccessRequestOutcomeNone
+	AccessRequestOutcomeRejected             AccessRequestOutcome = schema.AccessRequestOutcomeRejected
+	AccessRequestOutcomeImplemented          AccessRequestOutcome = schema.AccessRequestOutcomeImplemented
+	AccessRequestOutcomePartiallyimplemented AccessRequestOutcome = schema.AccessRequestOutcomePartiallyimplemented
+	AccessRequestOutcomeNotimplemented       AccessRequestOutcome = schema.AccessRequestOutcomeNotimplemented
+	AccessRequestOutcomeIncomplete           AccessRequestOutcome = schema.AccessRequestOutcomeIncomplete
+	AccessRequestOutcomeCancelled            AccessRequestOutcome = schema.AccessRequestOutcomeCancelled
+)
+
+type AccessRequestStatus = schema.AccessRequestStatus
+
+const (
+	AccessRequestStatusCreated                 AccessRequestStatus = schema.AccessRequestStatusCreated
+	AccessRequestStatusApproval                AccessRequestStatus = schema.AccessRequestStatusApproval
+	AccessRequestStatusImplementation          AccessRequestStatus = schema.AccessRequestStatusImplementation
+	AccessRequestStatusClosed                  AccessRequestStatus = schema.AccessRequestStatusClosed
+	AccessRequestStatusDatashareimplementation AccessRequestStatus = schema.AccessRequestStatusDatashareimplementation
+	AccessRequestStatusDatashareaccept         AccessRequestStatus = schema.AccessRequestStatusDatashareaccept
+)
+
+type AccessRequestWhatInput = schema.AccessRequestWhatInput
+type AccessRequestWhoInput = schema.AccessRequestWhoInput
 type AccessWhatAccessControlItem = schema.AccessWhatAccessControlItem
 type AccessWhatAccessControlItemAccessControl = schema.AccessWhatAccessControlItemAccessControl
 type AccessWhatAccessControlItemConnection = schema.AccessWhatAccessControlItemConnection
@@ -164,6 +193,7 @@ const (
 )
 
 type CanLinkFilter = schema.CanLinkFilter
+type CatalogAssetInput = schema.CatalogAssetInput
 type CreateAccessControlCreateAccessControl = schema.CreateAccessControlCreateAccessControl
 type CreateAccessControlCreateAccessControlAccessControlWithOptionalAccessRequests = schema.CreateAccessControlCreateAccessControlAccessControlWithOptionalAccessRequests
 type CreateAccessControlCreateAccessControlAccessControlWithOptionalAccessRequestsAccessControl = schema.CreateAccessControlCreateAccessControlAccessControlWithOptionalAccessRequestsAccessControl
@@ -172,6 +202,12 @@ type CreateAccessControlCreateAccessControlInvalidInputError = schema.CreateAcce
 type CreateAccessControlCreateAccessControlNotFoundError = schema.CreateAccessControlCreateAccessControlNotFoundError
 type CreateAccessControlCreateAccessControlPermissionDeniedError = schema.CreateAccessControlCreateAccessControlPermissionDeniedError
 type CreateAccessControlResponse = schema.CreateAccessControlResponse
+type CreateAccessRequestCreateAccessRequest = schema.CreateAccessRequestCreateAccessRequest
+type CreateAccessRequestCreateAccessRequestAccessRequestResult = schema.CreateAccessRequestCreateAccessRequestAccessRequestResult
+type CreateAccessRequestCreateAccessRequestInvalidInputError = schema.CreateAccessRequestCreateAccessRequestInvalidInputError
+type CreateAccessRequestCreateAccessRequestNotFoundError = schema.CreateAccessRequestCreateAccessRequestNotFoundError
+type CreateAccessRequestCreateAccessRequestPermissionDeniedError = schema.CreateAccessRequestCreateAccessRequestPermissionDeniedError
+type CreateAccessRequestResponse = schema.CreateAccessRequestResponse
 type CreateDataSourceCreateDataSource = schema.CreateDataSourceCreateDataSource
 type CreateDataSourceCreateDataSourceAlreadyExistsError = schema.CreateDataSourceCreateDataSourceAlreadyExistsError
 type CreateDataSourceCreateDataSourceDataSourceResult = schema.CreateDataSourceCreateDataSourceDataSourceResult
@@ -221,6 +257,7 @@ type DataComparisonExpressionOperandInput = schema.DataComparisonExpressionOpera
 type DataComparisonExpressionReferenceInput = schema.DataComparisonExpressionReferenceInput
 type DataComparisonExpressionUnaryExpressionInput = schema.DataComparisonExpressionUnaryExpressionInput
 type DataObject = schema.DataObject
+type DataObjectApplicablePermissionsPermission = schema.DataObjectApplicablePermissionsPermission
 type DataObjectByExternalIdDataObjectsDataObjectConnection = schema.DataObjectByExternalIdDataObjectsDataObjectConnection
 type DataObjectByExternalIdDataObjectsDataObjectConnectionEdgesDataObjectEdge = schema.DataObjectByExternalIdDataObjectsDataObjectConnectionEdgesDataObjectEdge
 type DataObjectByExternalIdDataObjectsDataObjectConnectionEdgesDataObjectEdgeNodeDataObject = schema.DataObjectByExternalIdDataObjectsDataObjectConnectionEdgesDataObjectEdgeNodeDataObject
@@ -650,6 +687,7 @@ const (
 	ParameterTypeArray     ParameterType = schema.ParameterTypeArray
 )
 
+type Permission = schema.Permission
 type PermissionDeniedError = schema.PermissionDeniedError
 type QueryStatementImport = schema.QueryStatementImport
 type Role = schema.Role
@@ -894,6 +932,8 @@ var AllAccessControlAction = []AccessControlAction{AccessControlActionGrant, Acc
 var AllAccessControlLock = []AccessControlLock{AccessControlLockWholock, AccessControlLockInheritancelock, AccessControlLockWhatlock, AccessControlLockNamelock, AccessControlLockDeletelock, AccessControlLockOwnerlock}
 var AllAccessControlLockType = []AccessControlLockType{AccessControlLockTypeImportexport, AccessControlLockTypeUseronly}
 var AllAccessControlState = []AccessControlState{AccessControlStateActive, AccessControlStateInactive, AccessControlStateDeleted}
+var AllAccessRequestOutcome = []AccessRequestOutcome{AccessRequestOutcomeNone, AccessRequestOutcomeRejected, AccessRequestOutcomeImplemented, AccessRequestOutcomePartiallyimplemented, AccessRequestOutcomeNotimplemented, AccessRequestOutcomeIncomplete, AccessRequestOutcomeCancelled}
+var AllAccessRequestStatus = []AccessRequestStatus{AccessRequestStatusCreated, AccessRequestStatusApproval, AccessRequestStatusImplementation, AccessRequestStatusClosed, AccessRequestStatusDatashareimplementation, AccessRequestStatusDatashareaccept}
 var AllAccessWhoItemType = []AccessWhoItemType{AccessWhoItemTypeWhogrant, AccessWhoItemTypeWhopromise}
 var AllActionType = []ActionType{ActionTypeRead, ActionTypeWrite, ActionTypeAdmin}
 var AllBinaryExpressionAggregatorOperator = []BinaryExpressionAggregatorOperator{BinaryExpressionAggregatorOperatorAnd, BinaryExpressionAggregatorOperatorOr}

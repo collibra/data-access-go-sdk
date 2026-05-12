@@ -42,6 +42,7 @@ func (s *singletonClient[T]) Get() *T {
 
 type CollibraClient struct {
 	accessControlClient singletonClient[services.AccessControlClient]
+	accessRequestClient singletonClient[services.AccessRequestClient]
 	dataObjectClient    singletonClient[services.DataObjectClient]
 	dataSourceClient    singletonClient[services.DataSourceClient]
 	exporterClient      singletonClient[services.ExporterClient]
@@ -169,6 +170,7 @@ func NewClient(url string, options ...ClientOptions) (*CollibraClient, error) {
 
 	return &CollibraClient{
 		accessControlClient: newSingletonClient(glcClient, services.NewAccessControlClient),
+		accessRequestClient: newSingletonClient(glcClient, services.NewAccessRequestClient),
 		dataObjectClient:    newSingletonClient(glcClient, services.NewDataObjectClient),
 		dataSourceClient:    newSingletonClient(glcClient, services.NewDataSourceClient),
 		exporterClient:      newSingletonClient(glcClient, services.NewExporterClient),
@@ -184,6 +186,11 @@ func NewClient(url string, options ...ClientOptions) (*CollibraClient, error) {
 // AccessControl returns the AccessControlClient
 func (c *CollibraClient) AccessControl() *services.AccessControlClient {
 	return c.accessControlClient.Get()
+}
+
+// AccessRequest returns the AccessRequestClient
+func (c *CollibraClient) AccessRequest() *services.AccessRequestClient {
+	return c.accessRequestClient.Get()
 }
 
 // DataObject returns the DataObjectClient
