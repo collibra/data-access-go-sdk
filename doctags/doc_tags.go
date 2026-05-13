@@ -1,3 +1,12 @@
+// doctags is a code-generation helper that enriches a genqlient-generated Go
+// file with `doc:"..."` struct tags sourced from the GraphQL schema's field
+// descriptions. It parses the schema and the generated Go file, matches struct
+// fields to their GraphQL counterparts (case-insensitively), and writes the
+// updated AST back to disk.
+//
+// Usage:
+//
+//	go run doctags/doc_tags.go -schema schema.graphql -generated generated.go -output out.go
 package main
 
 import (
