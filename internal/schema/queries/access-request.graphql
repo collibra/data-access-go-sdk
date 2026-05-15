@@ -1,0 +1,23 @@
+fragment AccessRequest on AccessRequest {
+    id
+    createdAt
+    modifiedAt
+    closedAt
+    name
+    description
+    status
+    outcome
+    processingSteps
+    implementationExpiresAt
+    anyExpirationAllowed
+    workflowInstanceId
+}
+
+mutation CreateAccessRequest($input: AccessRequestInput!) {
+    createAccessRequest(input: $input) {
+        ... AccessRequest
+        ... PermissionDeniedError
+        ... NotFoundError
+        ... InvalidInputError
+    }
+}

@@ -9,6 +9,7 @@ endif
 gql:
 	go run github.com/Khan/genqlient internal/schema/genqlient.yaml
 	go run github.com/collibra/data-access-go-sdk/agen --input internal/schema/generated.go --output types/generated.go
+	go run github.com/collibra/data-access-go-sdk/doctags --schema internal/schema/schema.graphql --generated internal/schema/generated.go --output internal/schema/generated.go
 
 fetch-schema:
 	@ .script/fetch-schema.sh --output internal/schema/schema.graphql --login ${COLLIBRA_USERNAME} --password ${COLLIBRA_PASSWORD}
