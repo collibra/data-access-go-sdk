@@ -4,9 +4,7 @@
 # This script downloads a GraphQL schema from a running
 # service using an introspection query and Basic Authentication.
 # How to use:
-# ./fetch-schema.sh --login "user" --password "P4sWorD" --output "./result.txt" --url "https://data-access.collibra.tech"
-# NOTE:
-# --url is optional. If not provided the "https://data-access.collibra.tech" will be used
+# ./fetch-schema.sh --url "https://example.collibra.com" --login "user" --password "P4sWorD" --output "./result.txt"
 # ==========================================================
 
 # --- Argument Parsing ---
@@ -31,7 +29,7 @@ while [[ $# -gt 0 ]]; do
       shift 2
       ;;
     --url)
-      URL_OVERRIDE=$2
+      SERVICE_URL=$2
       shift 2
       ;;
     *)
@@ -41,22 +39,18 @@ while [[ $# -gt 0 ]]; do
   esac
 done
 
-# --- URL and Validation ---
-DEFAULT_URL="https://data-access.collibra.tech/dataAccess/query"
-SERVICE_URL=${URL_OVERRIDE:-$DEFAULT_URL}
+# Check if all required arguments are provided
+if [ -z "${SERVICE_URL}" ] || [ -z "${LOGIN}" ] || [ -z "${PASSWORD}" ] || [ -z "${OUTPUT_FILE}" ]; then
+  echo "Error: Missing arguments."
+  echo "Usage: $0 --url SERVICE_URL --login COLLIBRA_USERNAME --password COLLIBRA_PASSWORD --output OUTPUT_FILE"
+  exit 1
+fi
 
 # Ensure the URL has the correct GraphQL endpoint path
 GRAPHQL_PATH="/dataAccess/query"
 if [[ ! "${SERVICE_URL}" =~ "${GRAPHQL_PATH}"$ ]]; then
   # Append the path if it's missing
   SERVICE_URL="${SERVICE_URL}${GRAPHQL_PATH}"
-fi
-
-# Check if all required arguments are provided
-if [ -z "${LOGIN}" ] || [ -z "${PASSWORD}" ] || [ -z "${OUTPUT_FILE}" ]; then
-  echo "Error: Missing arguments."
-  echo "Usage: $0 --login COLLIBRA_USERNAME --password COLLIBRA_PASSWORD --output OUTPUT_FILE [--url CUSTOM_URL]"
-  exit 1
 fi
 
 # --- Downloading the File using GraphQL Introspection ---
