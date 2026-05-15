@@ -4,7 +4,7 @@
 # This script downloads a GraphQL schema from a running
 # service using an introspection query and Basic Authentication.
 # How to use:
-# ./fetch-schema.sh --login "user" --password "P4sWorD" --output "./result.txt" --url "https://access-governance.collibra.tech"
+# ./fetch-schema.sh --login "user" --password "P4sWorD" --output "./result.txt" --url "https://data-access.collibra.tech"
 # NOTE:
 # --url is optional. If not provided the "https://data-access.collibra.tech" will be used
 # ==========================================================

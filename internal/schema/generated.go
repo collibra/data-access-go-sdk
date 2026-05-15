@@ -30557,6 +30557,460 @@ type ListTasksOfJobResponse struct {
 // GetJob returns ListTasksOfJobResponse.Job, and is useful for accessing the field via an interface.
 func (v *ListTasksOfJobResponse) GetJob() ListTasksOfJobJob { return v.Job }
 
+// ListUsersResponse is returned by ListUsers on success.
+type ListUsersResponse struct {
+	// Retrieves a paginated list of identities.
+	Users ListUsersUsersUserConnectionResult `json:"-"`
+}
+
+// GetUsers returns ListUsersResponse.Users, and is useful for accessing the field via an interface.
+func (v *ListUsersResponse) GetUsers() ListUsersUsersUserConnectionResult { return v.Users }
+
+func (v *ListUsersResponse) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*ListUsersResponse
+		Users json.RawMessage `json:"users"`
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.ListUsersResponse = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	{
+		dst := &v.Users
+		src := firstPass.Users
+		if len(src) != 0 && string(src) != "null" {
+			err = __unmarshalListUsersUsersUserConnectionResult(
+				src, dst)
+			if err != nil {
+				return fmt.Errorf(
+					"unable to unmarshal ListUsersResponse.Users: %w", err)
+			}
+		}
+	}
+	return nil
+}
+
+type __premarshalListUsersResponse struct {
+	Users json.RawMessage `json:"users"`
+}
+
+func (v *ListUsersResponse) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *ListUsersResponse) __premarshalJSON() (*__premarshalListUsersResponse, error) {
+	var retval __premarshalListUsersResponse
+
+	{
+
+		dst := &retval.Users
+		src := v.Users
+		var err error
+		*dst, err = __marshalListUsersUsersUserConnectionResult(
+			&src)
+		if err != nil {
+			return nil, fmt.Errorf(
+				"unable to marshal ListUsersResponse.Users: %w", err)
+		}
+	}
+	return &retval, nil
+}
+
+// ListUsersUsersInvalidInputError includes the requested fields of the GraphQL type InvalidInputError.
+// The GraphQL type's documentation follows.
+//
+// Error when some of the input parameters in the request are not valid.
+type ListUsersUsersInvalidInputError struct {
+	Typename                              *string `json:"__typename"`
+	UserConnectionResultInvalidInputError `json:"-"`
+}
+
+// GetTypename returns ListUsersUsersInvalidInputError.Typename, and is useful for accessing the field via an interface.
+func (v *ListUsersUsersInvalidInputError) GetTypename() *string { return v.Typename }
+
+// GetMessage returns ListUsersUsersInvalidInputError.Message, and is useful for accessing the field via an interface.
+func (v *ListUsersUsersInvalidInputError) GetMessage() string {
+	return v.UserConnectionResultInvalidInputError.InvalidInputError.Message
+}
+
+func (v *ListUsersUsersInvalidInputError) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*ListUsersUsersInvalidInputError
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.ListUsersUsersInvalidInputError = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.UserConnectionResultInvalidInputError)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalListUsersUsersInvalidInputError struct {
+	Typename *string `json:"__typename"`
+
+	Message string `json:"message"`
+}
+
+func (v *ListUsersUsersInvalidInputError) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *ListUsersUsersInvalidInputError) __premarshalJSON() (*__premarshalListUsersUsersInvalidInputError, error) {
+	var retval __premarshalListUsersUsersInvalidInputError
+
+	retval.Typename = v.Typename
+	retval.Message = v.UserConnectionResultInvalidInputError.InvalidInputError.Message
+	return &retval, nil
+}
+
+// ListUsersUsersNotFoundError includes the requested fields of the GraphQL type NotFoundError.
+// The GraphQL type's documentation follows.
+//
+// Error when the user is requesting a resource that does not exist.
+type ListUsersUsersNotFoundError struct {
+	Typename                          *string `json:"__typename"`
+	UserConnectionResultNotFoundError `json:"-"`
+}
+
+// GetTypename returns ListUsersUsersNotFoundError.Typename, and is useful for accessing the field via an interface.
+func (v *ListUsersUsersNotFoundError) GetTypename() *string { return v.Typename }
+
+// GetMessage returns ListUsersUsersNotFoundError.Message, and is useful for accessing the field via an interface.
+func (v *ListUsersUsersNotFoundError) GetMessage() string {
+	return v.UserConnectionResultNotFoundError.NotFoundError.Message
+}
+
+func (v *ListUsersUsersNotFoundError) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*ListUsersUsersNotFoundError
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.ListUsersUsersNotFoundError = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.UserConnectionResultNotFoundError)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalListUsersUsersNotFoundError struct {
+	Typename *string `json:"__typename"`
+
+	Message string `json:"message"`
+}
+
+func (v *ListUsersUsersNotFoundError) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *ListUsersUsersNotFoundError) __premarshalJSON() (*__premarshalListUsersUsersNotFoundError, error) {
+	var retval __premarshalListUsersUsersNotFoundError
+
+	retval.Typename = v.Typename
+	retval.Message = v.UserConnectionResultNotFoundError.NotFoundError.Message
+	return &retval, nil
+}
+
+// ListUsersUsersPermissionDeniedError includes the requested fields of the GraphQL type PermissionDeniedError.
+// The GraphQL type's documentation follows.
+//
+// Error when permission to the requested resource is denied.
+type ListUsersUsersPermissionDeniedError struct {
+	Typename                                  *string `json:"__typename"`
+	UserConnectionResultPermissionDeniedError `json:"-"`
+}
+
+// GetTypename returns ListUsersUsersPermissionDeniedError.Typename, and is useful for accessing the field via an interface.
+func (v *ListUsersUsersPermissionDeniedError) GetTypename() *string { return v.Typename }
+
+// GetMessage returns ListUsersUsersPermissionDeniedError.Message, and is useful for accessing the field via an interface.
+func (v *ListUsersUsersPermissionDeniedError) GetMessage() string {
+	return v.UserConnectionResultPermissionDeniedError.PermissionDeniedError.Message
+}
+
+func (v *ListUsersUsersPermissionDeniedError) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*ListUsersUsersPermissionDeniedError
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.ListUsersUsersPermissionDeniedError = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.UserConnectionResultPermissionDeniedError)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalListUsersUsersPermissionDeniedError struct {
+	Typename *string `json:"__typename"`
+
+	Message string `json:"message"`
+}
+
+func (v *ListUsersUsersPermissionDeniedError) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *ListUsersUsersPermissionDeniedError) __premarshalJSON() (*__premarshalListUsersUsersPermissionDeniedError, error) {
+	var retval __premarshalListUsersUsersPermissionDeniedError
+
+	retval.Typename = v.Typename
+	retval.Message = v.UserConnectionResultPermissionDeniedError.PermissionDeniedError.Message
+	return &retval, nil
+}
+
+// ListUsersUsersUserConnection includes the requested fields of the GraphQL type UserConnection.
+// The GraphQL type's documentation follows.
+//
+// The connection type for paginated lists of [User]({{Types.User}}).
+type ListUsersUsersUserConnection struct {
+	Typename                           *string `json:"__typename"`
+	UserConnectionResultUserConnection `json:"-"`
+}
+
+// GetTypename returns ListUsersUsersUserConnection.Typename, and is useful for accessing the field via an interface.
+func (v *ListUsersUsersUserConnection) GetTypename() *string { return v.Typename }
+
+// GetPageInfo returns ListUsersUsersUserConnection.PageInfo, and is useful for accessing the field via an interface.
+func (v *ListUsersUsersUserConnection) GetPageInfo() UserConnectionPageInfo {
+	return v.UserConnectionResultUserConnection.UserConnection.PageInfo
+}
+
+// GetEdges returns ListUsersUsersUserConnection.Edges, and is useful for accessing the field via an interface.
+func (v *ListUsersUsersUserConnection) GetEdges() []UserConnectionEdgesUserEdge {
+	return v.UserConnectionResultUserConnection.UserConnection.Edges
+}
+
+func (v *ListUsersUsersUserConnection) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*ListUsersUsersUserConnection
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.ListUsersUsersUserConnection = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.UserConnectionResultUserConnection)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalListUsersUsersUserConnection struct {
+	Typename *string `json:"__typename"`
+
+	PageInfo UserConnectionPageInfo `json:"pageInfo"`
+
+	Edges []UserConnectionEdgesUserEdge `json:"edges"`
+}
+
+func (v *ListUsersUsersUserConnection) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *ListUsersUsersUserConnection) __premarshalJSON() (*__premarshalListUsersUsersUserConnection, error) {
+	var retval __premarshalListUsersUsersUserConnection
+
+	retval.Typename = v.Typename
+	retval.PageInfo = v.UserConnectionResultUserConnection.UserConnection.PageInfo
+	retval.Edges = v.UserConnectionResultUserConnection.UserConnection.Edges
+	return &retval, nil
+}
+
+// ListUsersUsersUserConnectionResult includes the requested fields of the GraphQL interface UserConnectionResult.
+//
+// ListUsersUsersUserConnectionResult is implemented by the following types:
+// ListUsersUsersInvalidInputError
+// ListUsersUsersNotFoundError
+// ListUsersUsersPermissionDeniedError
+// ListUsersUsersUserConnection
+type ListUsersUsersUserConnectionResult interface {
+	implementsGraphQLInterfaceListUsersUsersUserConnectionResult()
+	// GetTypename returns the receiver's concrete GraphQL type-name (see interface doc for possible values).
+	GetTypename() *string
+	UserConnectionResult
+}
+
+func (v *ListUsersUsersInvalidInputError) implementsGraphQLInterfaceListUsersUsersUserConnectionResult() {
+}
+func (v *ListUsersUsersNotFoundError) implementsGraphQLInterfaceListUsersUsersUserConnectionResult() {
+}
+func (v *ListUsersUsersPermissionDeniedError) implementsGraphQLInterfaceListUsersUsersUserConnectionResult() {
+}
+func (v *ListUsersUsersUserConnection) implementsGraphQLInterfaceListUsersUsersUserConnectionResult() {
+}
+
+func __unmarshalListUsersUsersUserConnectionResult(b []byte, v *ListUsersUsersUserConnectionResult) error {
+	if string(b) == "null" {
+		return nil
+	}
+
+	var tn struct {
+		TypeName string `json:"__typename"`
+	}
+	err := json.Unmarshal(b, &tn)
+	if err != nil {
+		return err
+	}
+
+	switch tn.TypeName {
+	case "InvalidInputError":
+		*v = new(ListUsersUsersInvalidInputError)
+		return json.Unmarshal(b, *v)
+	case "NotFoundError":
+		*v = new(ListUsersUsersNotFoundError)
+		return json.Unmarshal(b, *v)
+	case "PermissionDeniedError":
+		*v = new(ListUsersUsersPermissionDeniedError)
+		return json.Unmarshal(b, *v)
+	case "UserConnection":
+		*v = new(ListUsersUsersUserConnection)
+		return json.Unmarshal(b, *v)
+	case "":
+		return fmt.Errorf(
+			"response was missing UserConnectionResult.__typename")
+	default:
+		return fmt.Errorf(
+			`unexpected concrete type for ListUsersUsersUserConnectionResult: "%v"`, tn.TypeName)
+	}
+}
+
+func __marshalListUsersUsersUserConnectionResult(v *ListUsersUsersUserConnectionResult) ([]byte, error) {
+
+	var typename string
+	switch v := (*v).(type) {
+	case *ListUsersUsersInvalidInputError:
+		typename = "InvalidInputError"
+
+		premarshaled, err := v.__premarshalJSON()
+		if err != nil {
+			return nil, err
+		}
+		result := struct {
+			TypeName string `json:"__typename"`
+			*__premarshalListUsersUsersInvalidInputError
+		}{typename, premarshaled}
+		return json.Marshal(result)
+	case *ListUsersUsersNotFoundError:
+		typename = "NotFoundError"
+
+		premarshaled, err := v.__premarshalJSON()
+		if err != nil {
+			return nil, err
+		}
+		result := struct {
+			TypeName string `json:"__typename"`
+			*__premarshalListUsersUsersNotFoundError
+		}{typename, premarshaled}
+		return json.Marshal(result)
+	case *ListUsersUsersPermissionDeniedError:
+		typename = "PermissionDeniedError"
+
+		premarshaled, err := v.__premarshalJSON()
+		if err != nil {
+			return nil, err
+		}
+		result := struct {
+			TypeName string `json:"__typename"`
+			*__premarshalListUsersUsersPermissionDeniedError
+		}{typename, premarshaled}
+		return json.Marshal(result)
+	case *ListUsersUsersUserConnection:
+		typename = "UserConnection"
+
+		premarshaled, err := v.__premarshalJSON()
+		if err != nil {
+			return nil, err
+		}
+		result := struct {
+			TypeName string `json:"__typename"`
+			*__premarshalListUsersUsersUserConnection
+		}{typename, premarshaled}
+		return json.Marshal(result)
+	case nil:
+		return []byte("null"), nil
+	default:
+		return nil, fmt.Errorf(
+			`unexpected concrete type for ListUsersUsersUserConnectionResult: "%T"`, v)
+	}
+}
+
 // MaskType includes the GraphQL fields of MaskType requested by the fragment MaskType.
 // The GraphQL type's documentation follows.
 //
@@ -32679,400 +33133,6 @@ func (v *RootParameterDefinitionInput) GetAccessFromTargetSync() []ParameterDefi
 
 // GetUsageSync returns RootParameterDefinitionInput.UsageSync, and is useful for accessing the field via an interface.
 func (v *RootParameterDefinitionInput) GetUsageSync() []ParameterDefinitionInput { return v.UsageSync }
-
-// SearchUsersResponse is returned by SearchUsers on success.
-type SearchUsersResponse struct {
-	// Retrieves a paginated list of identities.
-	Users SearchUsersUsersUserConnectionResult `json:"-"`
-}
-
-// GetUsers returns SearchUsersResponse.Users, and is useful for accessing the field via an interface.
-func (v *SearchUsersResponse) GetUsers() SearchUsersUsersUserConnectionResult { return v.Users }
-
-func (v *SearchUsersResponse) UnmarshalJSON(b []byte) error {
-
-	if string(b) == "null" {
-		return nil
-	}
-
-	var firstPass struct {
-		*SearchUsersResponse
-		Users json.RawMessage `json:"users"`
-		graphql.NoUnmarshalJSON
-	}
-	firstPass.SearchUsersResponse = v
-
-	err := json.Unmarshal(b, &firstPass)
-	if err != nil {
-		return err
-	}
-
-	{
-		dst := &v.Users
-		src := firstPass.Users
-		if len(src) != 0 && string(src) != "null" {
-			err = __unmarshalSearchUsersUsersUserConnectionResult(
-				src, dst)
-			if err != nil {
-				return fmt.Errorf(
-					"unable to unmarshal SearchUsersResponse.Users: %w", err)
-			}
-		}
-	}
-	return nil
-}
-
-type __premarshalSearchUsersResponse struct {
-	Users json.RawMessage `json:"users"`
-}
-
-func (v *SearchUsersResponse) MarshalJSON() ([]byte, error) {
-	premarshaled, err := v.__premarshalJSON()
-	if err != nil {
-		return nil, err
-	}
-	return json.Marshal(premarshaled)
-}
-
-func (v *SearchUsersResponse) __premarshalJSON() (*__premarshalSearchUsersResponse, error) {
-	var retval __premarshalSearchUsersResponse
-
-	{
-
-		dst := &retval.Users
-		src := v.Users
-		var err error
-		*dst, err = __marshalSearchUsersUsersUserConnectionResult(
-			&src)
-		if err != nil {
-			return nil, fmt.Errorf(
-				"unable to marshal SearchUsersResponse.Users: %w", err)
-		}
-	}
-	return &retval, nil
-}
-
-// SearchUsersUsersInvalidInputError includes the requested fields of the GraphQL type InvalidInputError.
-// The GraphQL type's documentation follows.
-//
-// Error when some of the input parameters in the request are not valid.
-type SearchUsersUsersInvalidInputError struct {
-	Typename          *string `json:"__typename"`
-	InvalidInputError `json:"-"`
-}
-
-// GetTypename returns SearchUsersUsersInvalidInputError.Typename, and is useful for accessing the field via an interface.
-func (v *SearchUsersUsersInvalidInputError) GetTypename() *string { return v.Typename }
-
-// GetMessage returns SearchUsersUsersInvalidInputError.Message, and is useful for accessing the field via an interface.
-func (v *SearchUsersUsersInvalidInputError) GetMessage() string { return v.InvalidInputError.Message }
-
-func (v *SearchUsersUsersInvalidInputError) UnmarshalJSON(b []byte) error {
-
-	if string(b) == "null" {
-		return nil
-	}
-
-	var firstPass struct {
-		*SearchUsersUsersInvalidInputError
-		graphql.NoUnmarshalJSON
-	}
-	firstPass.SearchUsersUsersInvalidInputError = v
-
-	err := json.Unmarshal(b, &firstPass)
-	if err != nil {
-		return err
-	}
-
-	err = json.Unmarshal(
-		b, &v.InvalidInputError)
-	if err != nil {
-		return err
-	}
-	return nil
-}
-
-type __premarshalSearchUsersUsersInvalidInputError struct {
-	Typename *string `json:"__typename"`
-
-	Message string `json:"message"`
-}
-
-func (v *SearchUsersUsersInvalidInputError) MarshalJSON() ([]byte, error) {
-	premarshaled, err := v.__premarshalJSON()
-	if err != nil {
-		return nil, err
-	}
-	return json.Marshal(premarshaled)
-}
-
-func (v *SearchUsersUsersInvalidInputError) __premarshalJSON() (*__premarshalSearchUsersUsersInvalidInputError, error) {
-	var retval __premarshalSearchUsersUsersInvalidInputError
-
-	retval.Typename = v.Typename
-	retval.Message = v.InvalidInputError.Message
-	return &retval, nil
-}
-
-// SearchUsersUsersNotFoundError includes the requested fields of the GraphQL type NotFoundError.
-// The GraphQL type's documentation follows.
-//
-// Error when the user is requesting a resource that does not exist.
-type SearchUsersUsersNotFoundError struct {
-	Typename *string `json:"__typename"`
-}
-
-// GetTypename returns SearchUsersUsersNotFoundError.Typename, and is useful for accessing the field via an interface.
-func (v *SearchUsersUsersNotFoundError) GetTypename() *string { return v.Typename }
-
-// SearchUsersUsersPermissionDeniedError includes the requested fields of the GraphQL type PermissionDeniedError.
-// The GraphQL type's documentation follows.
-//
-// Error when permission to the requested resource is denied.
-type SearchUsersUsersPermissionDeniedError struct {
-	Typename              *string `json:"__typename"`
-	PermissionDeniedError `json:"-"`
-}
-
-// GetTypename returns SearchUsersUsersPermissionDeniedError.Typename, and is useful for accessing the field via an interface.
-func (v *SearchUsersUsersPermissionDeniedError) GetTypename() *string { return v.Typename }
-
-// GetMessage returns SearchUsersUsersPermissionDeniedError.Message, and is useful for accessing the field via an interface.
-func (v *SearchUsersUsersPermissionDeniedError) GetMessage() string {
-	return v.PermissionDeniedError.Message
-}
-
-func (v *SearchUsersUsersPermissionDeniedError) UnmarshalJSON(b []byte) error {
-
-	if string(b) == "null" {
-		return nil
-	}
-
-	var firstPass struct {
-		*SearchUsersUsersPermissionDeniedError
-		graphql.NoUnmarshalJSON
-	}
-	firstPass.SearchUsersUsersPermissionDeniedError = v
-
-	err := json.Unmarshal(b, &firstPass)
-	if err != nil {
-		return err
-	}
-
-	err = json.Unmarshal(
-		b, &v.PermissionDeniedError)
-	if err != nil {
-		return err
-	}
-	return nil
-}
-
-type __premarshalSearchUsersUsersPermissionDeniedError struct {
-	Typename *string `json:"__typename"`
-
-	Message string `json:"message"`
-}
-
-func (v *SearchUsersUsersPermissionDeniedError) MarshalJSON() ([]byte, error) {
-	premarshaled, err := v.__premarshalJSON()
-	if err != nil {
-		return nil, err
-	}
-	return json.Marshal(premarshaled)
-}
-
-func (v *SearchUsersUsersPermissionDeniedError) __premarshalJSON() (*__premarshalSearchUsersUsersPermissionDeniedError, error) {
-	var retval __premarshalSearchUsersUsersPermissionDeniedError
-
-	retval.Typename = v.Typename
-	retval.Message = v.PermissionDeniedError.Message
-	return &retval, nil
-}
-
-// SearchUsersUsersUserConnection includes the requested fields of the GraphQL type UserConnection.
-// The GraphQL type's documentation follows.
-//
-// The connection type for paginated lists of [User]({{Types.User}}).
-type SearchUsersUsersUserConnection struct {
-	Typename       *string `json:"__typename"`
-	UserConnection `json:"-"`
-}
-
-// GetTypename returns SearchUsersUsersUserConnection.Typename, and is useful for accessing the field via an interface.
-func (v *SearchUsersUsersUserConnection) GetTypename() *string { return v.Typename }
-
-// GetEdges returns SearchUsersUsersUserConnection.Edges, and is useful for accessing the field via an interface.
-func (v *SearchUsersUsersUserConnection) GetEdges() []UserConnectionEdgesUserEdge {
-	return v.UserConnection.Edges
-}
-
-// GetPageInfo returns SearchUsersUsersUserConnection.PageInfo, and is useful for accessing the field via an interface.
-func (v *SearchUsersUsersUserConnection) GetPageInfo() UserConnectionPageInfo {
-	return v.UserConnection.PageInfo
-}
-
-func (v *SearchUsersUsersUserConnection) UnmarshalJSON(b []byte) error {
-
-	if string(b) == "null" {
-		return nil
-	}
-
-	var firstPass struct {
-		*SearchUsersUsersUserConnection
-		graphql.NoUnmarshalJSON
-	}
-	firstPass.SearchUsersUsersUserConnection = v
-
-	err := json.Unmarshal(b, &firstPass)
-	if err != nil {
-		return err
-	}
-
-	err = json.Unmarshal(
-		b, &v.UserConnection)
-	if err != nil {
-		return err
-	}
-	return nil
-}
-
-type __premarshalSearchUsersUsersUserConnection struct {
-	Typename *string `json:"__typename"`
-
-	Edges []UserConnectionEdgesUserEdge `json:"edges"`
-
-	PageInfo UserConnectionPageInfo `json:"pageInfo"`
-}
-
-func (v *SearchUsersUsersUserConnection) MarshalJSON() ([]byte, error) {
-	premarshaled, err := v.__premarshalJSON()
-	if err != nil {
-		return nil, err
-	}
-	return json.Marshal(premarshaled)
-}
-
-func (v *SearchUsersUsersUserConnection) __premarshalJSON() (*__premarshalSearchUsersUsersUserConnection, error) {
-	var retval __premarshalSearchUsersUsersUserConnection
-
-	retval.Typename = v.Typename
-	retval.Edges = v.UserConnection.Edges
-	retval.PageInfo = v.UserConnection.PageInfo
-	return &retval, nil
-}
-
-// SearchUsersUsersUserConnectionResult includes the requested fields of the GraphQL interface UserConnectionResult.
-//
-// SearchUsersUsersUserConnectionResult is implemented by the following types:
-// SearchUsersUsersInvalidInputError
-// SearchUsersUsersNotFoundError
-// SearchUsersUsersPermissionDeniedError
-// SearchUsersUsersUserConnection
-type SearchUsersUsersUserConnectionResult interface {
-	implementsGraphQLInterfaceSearchUsersUsersUserConnectionResult()
-	// GetTypename returns the receiver's concrete GraphQL type-name (see interface doc for possible values).
-	GetTypename() *string
-}
-
-func (v *SearchUsersUsersInvalidInputError) implementsGraphQLInterfaceSearchUsersUsersUserConnectionResult() {
-}
-func (v *SearchUsersUsersNotFoundError) implementsGraphQLInterfaceSearchUsersUsersUserConnectionResult() {
-}
-func (v *SearchUsersUsersPermissionDeniedError) implementsGraphQLInterfaceSearchUsersUsersUserConnectionResult() {
-}
-func (v *SearchUsersUsersUserConnection) implementsGraphQLInterfaceSearchUsersUsersUserConnectionResult() {
-}
-
-func __unmarshalSearchUsersUsersUserConnectionResult(b []byte, v *SearchUsersUsersUserConnectionResult) error {
-	if string(b) == "null" {
-		return nil
-	}
-
-	var tn struct {
-		TypeName string `json:"__typename"`
-	}
-	err := json.Unmarshal(b, &tn)
-	if err != nil {
-		return err
-	}
-
-	switch tn.TypeName {
-	case "InvalidInputError":
-		*v = new(SearchUsersUsersInvalidInputError)
-		return json.Unmarshal(b, *v)
-	case "NotFoundError":
-		*v = new(SearchUsersUsersNotFoundError)
-		return json.Unmarshal(b, *v)
-	case "PermissionDeniedError":
-		*v = new(SearchUsersUsersPermissionDeniedError)
-		return json.Unmarshal(b, *v)
-	case "UserConnection":
-		*v = new(SearchUsersUsersUserConnection)
-		return json.Unmarshal(b, *v)
-	case "":
-		return fmt.Errorf(
-			"response was missing UserConnectionResult.__typename")
-	default:
-		return fmt.Errorf(
-			`unexpected concrete type for SearchUsersUsersUserConnectionResult: "%v"`, tn.TypeName)
-	}
-}
-
-func __marshalSearchUsersUsersUserConnectionResult(v *SearchUsersUsersUserConnectionResult) ([]byte, error) {
-
-	var typename string
-	switch v := (*v).(type) {
-	case *SearchUsersUsersInvalidInputError:
-		typename = "InvalidInputError"
-
-		premarshaled, err := v.__premarshalJSON()
-		if err != nil {
-			return nil, err
-		}
-		result := struct {
-			TypeName string `json:"__typename"`
-			*__premarshalSearchUsersUsersInvalidInputError
-		}{typename, premarshaled}
-		return json.Marshal(result)
-	case *SearchUsersUsersNotFoundError:
-		typename = "NotFoundError"
-
-		result := struct {
-			TypeName string `json:"__typename"`
-			*SearchUsersUsersNotFoundError
-		}{typename, v}
-		return json.Marshal(result)
-	case *SearchUsersUsersPermissionDeniedError:
-		typename = "PermissionDeniedError"
-
-		premarshaled, err := v.__premarshalJSON()
-		if err != nil {
-			return nil, err
-		}
-		result := struct {
-			TypeName string `json:"__typename"`
-			*__premarshalSearchUsersUsersPermissionDeniedError
-		}{typename, premarshaled}
-		return json.Marshal(result)
-	case *SearchUsersUsersUserConnection:
-		typename = "UserConnection"
-
-		premarshaled, err := v.__premarshalJSON()
-		if err != nil {
-			return nil, err
-		}
-		result := struct {
-			TypeName string `json:"__typename"`
-			*__premarshalSearchUsersUsersUserConnection
-		}{typename, premarshaled}
-		return json.Marshal(result)
-	case nil:
-		return []byte("null"), nil
-	default:
-		return nil, fmt.Errorf(
-			`unexpected concrete type for SearchUsersUsersUserConnectionResult: "%T"`, v)
-	}
-}
 
 // SetDataSourceMetadataResponse is returned by SetDataSourceMetadata on success.
 type SetDataSourceMetadataResponse struct {
@@ -42469,36 +42529,39 @@ func (v *User) GetEmail() *string { return v.Email }
 // GetType returns User.Type, and is useful for accessing the field via an interface.
 func (v *User) GetType() UserType { return v.Type }
 
-// MCP
+// UserConnection includes the GraphQL fields of UserConnection requested by the fragment UserConnection.
+// The GraphQL type's documentation follows.
+//
+// The connection type for paginated lists of [User]({{Types.User}}).
 type UserConnection struct {
-	// The list of edges containing the actual queried items.
-	Edges []UserConnectionEdgesUserEdge `json:"edges" doc:"The list of edges containing the actual queried items."`
 	// Pagination information for the retrieved items.
 	PageInfo UserConnectionPageInfo `json:"pageInfo" doc:"Pagination information for the retrieved items."`
+	// The list of edges containing the actual queried items.
+	Edges []UserConnectionEdgesUserEdge `json:"edges" doc:"The list of edges containing the actual queried items."`
 }
-
-// GetEdges returns UserConnection.Edges, and is useful for accessing the field via an interface.
-func (v *UserConnection) GetEdges() []UserConnectionEdgesUserEdge { return v.Edges }
 
 // GetPageInfo returns UserConnection.PageInfo, and is useful for accessing the field via an interface.
 func (v *UserConnection) GetPageInfo() UserConnectionPageInfo { return v.PageInfo }
+
+// GetEdges returns UserConnection.Edges, and is useful for accessing the field via an interface.
+func (v *UserConnection) GetEdges() []UserConnectionEdgesUserEdge { return v.Edges }
 
 // UserConnectionEdgesUserEdge includes the requested fields of the GraphQL type UserEdge.
 // The GraphQL type's documentation follows.
 //
 // The edge type for [UserConnection]({{Types.UserConnection}})
 type UserConnectionEdgesUserEdge struct {
-	// The actual user object.
-	Node *UserConnectionEdgesUserEdgeNodeUser `json:"node"`
 	// The cursor of this item for pagination.
 	Cursor *string `json:"cursor"`
+	// The actual user object.
+	Node *UserConnectionEdgesUserEdgeNodeUser `json:"node"`
 }
-
-// GetNode returns UserConnectionEdgesUserEdge.Node, and is useful for accessing the field via an interface.
-func (v *UserConnectionEdgesUserEdge) GetNode() *UserConnectionEdgesUserEdgeNodeUser { return v.Node }
 
 // GetCursor returns UserConnectionEdgesUserEdge.Cursor, and is useful for accessing the field via an interface.
 func (v *UserConnectionEdgesUserEdge) GetCursor() *string { return v.Cursor }
+
+// GetNode returns UserConnectionEdgesUserEdge.Node, and is useful for accessing the field via an interface.
+func (v *UserConnectionEdgesUserEdge) GetNode() *UserConnectionEdgesUserEdgeNodeUser { return v.Node }
 
 // UserConnectionEdgesUserEdgeNodeUser includes the requested fields of the GraphQL type User.
 // The GraphQL type's documentation follows.
@@ -42575,15 +42638,395 @@ func (v *UserConnectionEdgesUserEdgeNodeUser) __premarshalJSON() (*__premarshalU
 
 // UserConnectionPageInfo includes the requested fields of the GraphQL type PageInfo.
 type UserConnectionPageInfo struct {
-	StartCursor *string `json:"startCursor"`
-	HasNextPage *bool   `json:"hasNextPage"`
+	PageInfo `json:"-"`
 }
 
-// GetStartCursor returns UserConnectionPageInfo.StartCursor, and is useful for accessing the field via an interface.
-func (v *UserConnectionPageInfo) GetStartCursor() *string { return v.StartCursor }
-
 // GetHasNextPage returns UserConnectionPageInfo.HasNextPage, and is useful for accessing the field via an interface.
-func (v *UserConnectionPageInfo) GetHasNextPage() *bool { return v.HasNextPage }
+func (v *UserConnectionPageInfo) GetHasNextPage() *bool { return v.PageInfo.HasNextPage }
+
+// GetStartCursor returns UserConnectionPageInfo.StartCursor, and is useful for accessing the field via an interface.
+func (v *UserConnectionPageInfo) GetStartCursor() *string { return v.PageInfo.StartCursor }
+
+func (v *UserConnectionPageInfo) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*UserConnectionPageInfo
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.UserConnectionPageInfo = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.PageInfo)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalUserConnectionPageInfo struct {
+	HasNextPage *bool `json:"hasNextPage"`
+
+	StartCursor *string `json:"startCursor"`
+}
+
+func (v *UserConnectionPageInfo) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *UserConnectionPageInfo) __premarshalJSON() (*__premarshalUserConnectionPageInfo, error) {
+	var retval __premarshalUserConnectionPageInfo
+
+	retval.HasNextPage = v.PageInfo.HasNextPage
+	retval.StartCursor = v.PageInfo.StartCursor
+	return &retval, nil
+}
+
+// UserConnectionResult includes the GraphQL fields of UserConnectionResult requested by the fragment UserConnectionResult.
+//
+// UserConnectionResult is implemented by the following types:
+// UserConnectionResultInvalidInputError
+// UserConnectionResultNotFoundError
+// UserConnectionResultPermissionDeniedError
+// UserConnectionResultUserConnection
+type UserConnectionResult interface {
+	implementsGraphQLInterfaceUserConnectionResult()
+}
+
+func (v *UserConnectionResultInvalidInputError) implementsGraphQLInterfaceUserConnectionResult() {}
+func (v *UserConnectionResultNotFoundError) implementsGraphQLInterfaceUserConnectionResult()     {}
+func (v *UserConnectionResultPermissionDeniedError) implementsGraphQLInterfaceUserConnectionResult() {
+}
+func (v *UserConnectionResultUserConnection) implementsGraphQLInterfaceUserConnectionResult() {}
+
+func __unmarshalUserConnectionResult(b []byte, v *UserConnectionResult) error {
+	if string(b) == "null" {
+		return nil
+	}
+
+	var tn struct {
+		TypeName string `json:"__typename"`
+	}
+	err := json.Unmarshal(b, &tn)
+	if err != nil {
+		return err
+	}
+
+	switch tn.TypeName {
+	case "InvalidInputError":
+		*v = new(UserConnectionResultInvalidInputError)
+		return json.Unmarshal(b, *v)
+	case "NotFoundError":
+		*v = new(UserConnectionResultNotFoundError)
+		return json.Unmarshal(b, *v)
+	case "PermissionDeniedError":
+		*v = new(UserConnectionResultPermissionDeniedError)
+		return json.Unmarshal(b, *v)
+	case "UserConnection":
+		*v = new(UserConnectionResultUserConnection)
+		return json.Unmarshal(b, *v)
+	case "":
+		return fmt.Errorf(
+			"response was missing UserConnectionResult.__typename")
+	default:
+		return fmt.Errorf(
+			`unexpected concrete type for UserConnectionResult: "%v"`, tn.TypeName)
+	}
+}
+
+func __marshalUserConnectionResult(v *UserConnectionResult) ([]byte, error) {
+
+	var typename string
+	switch v := (*v).(type) {
+	case *UserConnectionResultInvalidInputError:
+		typename = "InvalidInputError"
+
+		premarshaled, err := v.__premarshalJSON()
+		if err != nil {
+			return nil, err
+		}
+		result := struct {
+			TypeName string `json:"__typename"`
+			*__premarshalUserConnectionResultInvalidInputError
+		}{typename, premarshaled}
+		return json.Marshal(result)
+	case *UserConnectionResultNotFoundError:
+		typename = "NotFoundError"
+
+		premarshaled, err := v.__premarshalJSON()
+		if err != nil {
+			return nil, err
+		}
+		result := struct {
+			TypeName string `json:"__typename"`
+			*__premarshalUserConnectionResultNotFoundError
+		}{typename, premarshaled}
+		return json.Marshal(result)
+	case *UserConnectionResultPermissionDeniedError:
+		typename = "PermissionDeniedError"
+
+		premarshaled, err := v.__premarshalJSON()
+		if err != nil {
+			return nil, err
+		}
+		result := struct {
+			TypeName string `json:"__typename"`
+			*__premarshalUserConnectionResultPermissionDeniedError
+		}{typename, premarshaled}
+		return json.Marshal(result)
+	case *UserConnectionResultUserConnection:
+		typename = "UserConnection"
+
+		premarshaled, err := v.__premarshalJSON()
+		if err != nil {
+			return nil, err
+		}
+		result := struct {
+			TypeName string `json:"__typename"`
+			*__premarshalUserConnectionResultUserConnection
+		}{typename, premarshaled}
+		return json.Marshal(result)
+	case nil:
+		return []byte("null"), nil
+	default:
+		return nil, fmt.Errorf(
+			`unexpected concrete type for UserConnectionResult: "%T"`, v)
+	}
+}
+
+// UserConnectionResult includes the GraphQL fields of InvalidInputError requested by the fragment UserConnectionResult.
+type UserConnectionResultInvalidInputError struct {
+	InvalidInputError `json:"-"`
+}
+
+// GetMessage returns UserConnectionResultInvalidInputError.Message, and is useful for accessing the field via an interface.
+func (v *UserConnectionResultInvalidInputError) GetMessage() string {
+	return v.InvalidInputError.Message
+}
+
+func (v *UserConnectionResultInvalidInputError) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*UserConnectionResultInvalidInputError
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.UserConnectionResultInvalidInputError = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.InvalidInputError)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalUserConnectionResultInvalidInputError struct {
+	Message string `json:"message"`
+}
+
+func (v *UserConnectionResultInvalidInputError) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *UserConnectionResultInvalidInputError) __premarshalJSON() (*__premarshalUserConnectionResultInvalidInputError, error) {
+	var retval __premarshalUserConnectionResultInvalidInputError
+
+	retval.Message = v.InvalidInputError.Message
+	return &retval, nil
+}
+
+// UserConnectionResult includes the GraphQL fields of NotFoundError requested by the fragment UserConnectionResult.
+type UserConnectionResultNotFoundError struct {
+	NotFoundError `json:"-"`
+}
+
+// GetMessage returns UserConnectionResultNotFoundError.Message, and is useful for accessing the field via an interface.
+func (v *UserConnectionResultNotFoundError) GetMessage() string { return v.NotFoundError.Message }
+
+func (v *UserConnectionResultNotFoundError) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*UserConnectionResultNotFoundError
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.UserConnectionResultNotFoundError = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.NotFoundError)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalUserConnectionResultNotFoundError struct {
+	Message string `json:"message"`
+}
+
+func (v *UserConnectionResultNotFoundError) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *UserConnectionResultNotFoundError) __premarshalJSON() (*__premarshalUserConnectionResultNotFoundError, error) {
+	var retval __premarshalUserConnectionResultNotFoundError
+
+	retval.Message = v.NotFoundError.Message
+	return &retval, nil
+}
+
+// UserConnectionResult includes the GraphQL fields of PermissionDeniedError requested by the fragment UserConnectionResult.
+type UserConnectionResultPermissionDeniedError struct {
+	PermissionDeniedError `json:"-"`
+}
+
+// GetMessage returns UserConnectionResultPermissionDeniedError.Message, and is useful for accessing the field via an interface.
+func (v *UserConnectionResultPermissionDeniedError) GetMessage() string {
+	return v.PermissionDeniedError.Message
+}
+
+func (v *UserConnectionResultPermissionDeniedError) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*UserConnectionResultPermissionDeniedError
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.UserConnectionResultPermissionDeniedError = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.PermissionDeniedError)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalUserConnectionResultPermissionDeniedError struct {
+	Message string `json:"message"`
+}
+
+func (v *UserConnectionResultPermissionDeniedError) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *UserConnectionResultPermissionDeniedError) __premarshalJSON() (*__premarshalUserConnectionResultPermissionDeniedError, error) {
+	var retval __premarshalUserConnectionResultPermissionDeniedError
+
+	retval.Message = v.PermissionDeniedError.Message
+	return &retval, nil
+}
+
+// UserConnectionResult includes the GraphQL fields of UserConnection requested by the fragment UserConnectionResult.
+type UserConnectionResultUserConnection struct {
+	UserConnection `json:"-"`
+}
+
+// GetPageInfo returns UserConnectionResultUserConnection.PageInfo, and is useful for accessing the field via an interface.
+func (v *UserConnectionResultUserConnection) GetPageInfo() UserConnectionPageInfo {
+	return v.UserConnection.PageInfo
+}
+
+// GetEdges returns UserConnectionResultUserConnection.Edges, and is useful for accessing the field via an interface.
+func (v *UserConnectionResultUserConnection) GetEdges() []UserConnectionEdgesUserEdge {
+	return v.UserConnection.Edges
+}
+
+func (v *UserConnectionResultUserConnection) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*UserConnectionResultUserConnection
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.UserConnectionResultUserConnection = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.UserConnection)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalUserConnectionResultUserConnection struct {
+	PageInfo UserConnectionPageInfo `json:"pageInfo"`
+
+	Edges []UserConnectionEdgesUserEdge `json:"edges"`
+}
+
+func (v *UserConnectionResultUserConnection) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *UserConnectionResultUserConnection) __premarshalJSON() (*__premarshalUserConnectionResultUserConnection, error) {
+	var retval __premarshalUserConnectionResultUserConnection
+
+	retval.PageInfo = v.UserConnection.PageInfo
+	retval.Edges = v.UserConnection.Edges
+	return &retval, nil
+}
 
 // Defines the filter options for listing users.
 type UserFilterInput struct {
@@ -42681,6 +43124,22 @@ func (v *UserInput) GetDelegationStart() *time.Time { return v.DelegationStart }
 
 // GetDelegationEnd returns UserInput.DelegationEnd, and is useful for accessing the field via an interface.
 func (v *UserInput) GetDelegationEnd() *time.Time { return v.DelegationEnd }
+
+// Represents the sorting options when listing users.
+type UserOrderByInput struct {
+	Name       *Sort `json:"name,omitempty"`
+	Email      *Sort `json:"email,omitempty"`
+	LastActive *Sort `json:"lastActive,omitempty"`
+}
+
+// GetName returns UserOrderByInput.Name, and is useful for accessing the field via an interface.
+func (v *UserOrderByInput) GetName() *Sort { return v.Name }
+
+// GetEmail returns UserOrderByInput.Email, and is useful for accessing the field via an interface.
+func (v *UserOrderByInput) GetEmail() *Sort { return v.Email }
+
+// GetLastActive returns UserOrderByInput.LastActive, and is useful for accessing the field via an interface.
+func (v *UserOrderByInput) GetLastActive() *Sort { return v.LastActive }
 
 // The possible user types.
 type UserType string
@@ -43537,6 +43996,26 @@ func (v *__ListTasksOfJobInput) GetAfter() *string { return v.After }
 // GetLimit returns __ListTasksOfJobInput.Limit, and is useful for accessing the field via an interface.
 func (v *__ListTasksOfJobInput) GetLimit() *int { return v.Limit }
 
+// __ListUsersInput is used internally by genqlient
+type __ListUsersInput struct {
+	After  *string            `json:"after,omitempty"`
+	Limit  *int               `json:"limit,omitempty"`
+	Filter *UserFilterInput   `json:"filter,omitempty"`
+	Order  []UserOrderByInput `json:"order"`
+}
+
+// GetAfter returns __ListUsersInput.After, and is useful for accessing the field via an interface.
+func (v *__ListUsersInput) GetAfter() *string { return v.After }
+
+// GetLimit returns __ListUsersInput.Limit, and is useful for accessing the field via an interface.
+func (v *__ListUsersInput) GetLimit() *int { return v.Limit }
+
+// GetFilter returns __ListUsersInput.Filter, and is useful for accessing the field via an interface.
+func (v *__ListUsersInput) GetFilter() *UserFilterInput { return v.Filter }
+
+// GetOrder returns __ListUsersInput.Order, and is useful for accessing the field via an interface.
+func (v *__ListUsersInput) GetOrder() []UserOrderByInput { return v.Order }
+
 // __NextSyncJobForEdgeDataSourceInput is used internally by genqlient
 type __NextSyncJobForEdgeDataSourceInput struct {
 	SyncInput SyncJobForEdgeDataSourceInput `json:"syncInput"`
@@ -43546,22 +44025,6 @@ type __NextSyncJobForEdgeDataSourceInput struct {
 func (v *__NextSyncJobForEdgeDataSourceInput) GetSyncInput() SyncJobForEdgeDataSourceInput {
 	return v.SyncInput
 }
-
-// __SearchUsersInput is used internally by genqlient
-type __SearchUsersInput struct {
-	After  *string          `json:"after,omitempty"`
-	Limit  *int             `json:"limit,omitempty"`
-	Filter *UserFilterInput `json:"filter,omitempty"`
-}
-
-// GetAfter returns __SearchUsersInput.After, and is useful for accessing the field via an interface.
-func (v *__SearchUsersInput) GetAfter() *string { return v.After }
-
-// GetLimit returns __SearchUsersInput.Limit, and is useful for accessing the field via an interface.
-func (v *__SearchUsersInput) GetLimit() *int { return v.Limit }
-
-// GetFilter returns __SearchUsersInput.Filter, and is useful for accessing the field via an interface.
-func (v *__SearchUsersInput) GetFilter() *UserFilterInput { return v.Filter }
 
 // __SetDataSourceMetadataInput is used internally by genqlient
 type __SetDataSourceMetadataInput struct {
@@ -47701,6 +48164,83 @@ func ListTasksOfJob(
 	return data_, err_
 }
 
+// The query executed by ListUsers.
+const ListUsers_Operation = `
+query ListUsers ($after: String, $limit: Int, $filter: UserFilterInput, $order: [UserOrderByInput!]) {
+	users(after: $after, limit: $limit, filter: $filter, order: $order) {
+		__typename
+		... UserConnectionResult
+	}
+}
+fragment UserConnectionResult on UserConnectionResult {
+	... UserConnection
+	... PermissionDeniedError
+	... NotFoundError
+	... InvalidInputError
+}
+fragment UserConnection on UserConnection {
+	pageInfo {
+		... PageInfo
+	}
+	edges {
+		cursor
+		node {
+			... User
+		}
+	}
+}
+fragment PermissionDeniedError on PermissionDeniedError {
+	message
+}
+fragment NotFoundError on NotFoundError {
+	message
+}
+fragment InvalidInputError on InvalidInputError {
+	message
+}
+fragment PageInfo on PageInfo {
+	hasNextPage
+	startCursor
+}
+fragment User on User {
+	id
+	name
+	email
+	type
+}
+`
+
+func ListUsers(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	after *string,
+	limit *int,
+	filter *UserFilterInput,
+	order []UserOrderByInput,
+) (data_ *ListUsersResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "ListUsers",
+		Query:  ListUsers_Operation,
+		Variables: &__ListUsersInput{
+			After:  after,
+			Limit:  limit,
+			Filter: filter,
+			Order:  order,
+		},
+	}
+
+	data_ = &ListUsersResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
 // The query executed by NextSyncJobForEdgeDataSource.
 const NextSyncJobForEdgeDataSource_Operation = `
 query NextSyncJobForEdgeDataSource ($syncInput: SyncJobForEdgeDataSourceInput!) {
@@ -47790,71 +48330,6 @@ func NextSyncJobForEdgeDataSource(
 	}
 
 	data_ = &NextSyncJobForEdgeDataSourceResponse{}
-	resp_ := &graphql.Response{Data: data_}
-
-	err_ = client_.MakeRequest(
-		ctx_,
-		req_,
-		resp_,
-	)
-
-	return data_, err_
-}
-
-// The query executed by SearchUsers.
-const SearchUsers_Operation = `
-query SearchUsers ($after: String, $limit: Int, $filter: UserFilterInput) {
-	users(after: $after, limit: $limit, filter: $filter) {
-		__typename
-		... UserConnection
-		... PermissionDeniedError
-		... InvalidInputError
-	}
-}
-fragment UserConnection on UserConnection {
-	edges {
-		node {
-			... User
-		}
-		cursor
-	}
-	pageInfo {
-		startCursor
-		hasNextPage
-	}
-}
-fragment PermissionDeniedError on PermissionDeniedError {
-	message
-}
-fragment InvalidInputError on InvalidInputError {
-	message
-}
-fragment User on User {
-	id
-	name
-	email
-	type
-}
-`
-
-func SearchUsers(
-	ctx_ context.Context,
-	client_ graphql.Client,
-	after *string,
-	limit *int,
-	filter *UserFilterInput,
-) (data_ *SearchUsersResponse, err_ error) {
-	req_ := &graphql.Request{
-		OpName: "SearchUsers",
-		Query:  SearchUsers_Operation,
-		Variables: &__SearchUsersInput{
-			After:  after,
-			Limit:  limit,
-			Filter: filter,
-		},
-	}
-
-	data_ = &SearchUsersResponse{}
 	resp_ := &graphql.Response{Data: data_}
 
 	err_ = client_.MakeRequest(

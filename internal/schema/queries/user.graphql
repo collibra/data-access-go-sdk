@@ -44,24 +44,27 @@ mutation UpdateUser($uId: ID!, $input: UserInput!) {
     }
 }
 
-# MCP
 fragment UserConnection on UserConnection {
+    pageInfo {
+        ...PageInfo
+    }
     edges {
+        cursor
         node {
             ... User
         }
-        cursor
-    }
-    pageInfo {
-        startCursor
-        hasNextPage
     }
 }
 
-query SearchUsers($after: String, $limit: Int, $filter: UserFilterInput) {
-    users(after: $after, limit: $limit, filter: $filter) {
-        ... UserConnection
-        ... PermissionDeniedError
-        ... InvalidInputError
+fragment UserConnectionResult on UserConnectionResult {
+    ... UserConnection
+    ... PermissionDeniedError
+    ... NotFoundError
+    ... InvalidInputError
+}
+
+query ListUsers($after: String, $limit: Int, $filter: UserFilterInput, $order: [UserOrderByInput!]) {
+    users(after: $after, limit: $limit, filter: $filter, order: $order) {
+        ... UserConnectionResult
     }
 }

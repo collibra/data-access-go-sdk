@@ -170,10 +170,8 @@ func (a *AccessControlClient) GetAccessControl(ctx context.Context, id string) (
 }
 
 type AccessControlListOptions struct {
-	order    []types.AccessControlOrderByInput
-	filter   *types.AccessControlFilterInput
-	cursor   *string
-	pageSize int
+	order  []types.AccessControlOrderByInput
+	filter *types.AccessControlFilterInput
 }
 
 // WithAccessControlListOrder can be used to specify the order of the returned AccessControl.
@@ -187,21 +185,6 @@ func WithAccessControlListOrder(input ...types.AccessControlOrderByInput) func(o
 func WithAccessControlListFilter(input *types.AccessControlFilterInput) func(options *AccessControlListOptions) {
 	return func(options *AccessControlListOptions) {
 		options.filter = input
-	}
-}
-
-// WithAccessControlListCursor sets the cursor to start listing from (for cursor-based pagination).
-func WithAccessControlListCursor(cursor string) func(options *AccessControlListOptions) {
-	return func(options *AccessControlListOptions) {
-		options.cursor = &cursor
-	}
-}
-
-// WithAccessControlListPageSize sets the number of items to return per page (default: internal.MaxPageSize).
-// Returns ErrInvalidInput if size exceeds internal.MaxPageSize.
-func WithAccessControlListPageSize(size int) func(options *AccessControlListOptions) {
-	return func(options *AccessControlListOptions) {
-		options.pageSize = size
 	}
 }
 
@@ -241,58 +224,6 @@ func (a *AccessControlClient) ListAccessControls(ctx context.Context, ops ...fun
 	}
 
 	return internal.PaginationExecutor(ctx, loadPageFn, edgeFn)
-}
-
-// ListAccessControlsPage returns a single page of AccessControls.
-// Use WithAccessControlListCursor to continue from a previous page.
-// Use WithAccessControlListPageSize to override the default page size.
-// The returned cursor is non-nil when more pages are available and should be passed
-// to the next call via WithAccessControlListCursor.
-func (a *AccessControlClient) ListAccessControlsPage(ctx context.Context, ops ...func(*AccessControlListOptions)) ([]*types.AccessControl, *string, error) {
-	options := AccessControlListOptions{pageSize: internal.MaxPageSize}
-	for _, op := range ops {
-		op(&options)
-	}
-
-	if options.pageSize > internal.MaxPageSize {
-		return nil, nil, types.NewErrInvalidInput(fmt.Sprintf("page size %d exceeds maximum of %d", options.pageSize, internal.MaxPageSize))
-	}
-
-	pageSize := options.pageSize
-
-	output, err := schema.ListAccessControls(ctx, a.client, options.cursor, &pageSize, options.filter, options.order)
-	if err != nil {
-		return nil, nil, types.NewErrClient(err)
-	}
-
-	switch page := output.AccessControls.(type) {
-	case *schema.ListAccessControlsAccessControlsAccessControlConnection:
-		items := make([]*types.AccessControl, 0, len(page.Edges))
-		var lastCursor *string
-
-		for i := range page.Edges {
-			edge := &page.Edges[i]
-			if edge.Cursor != nil {
-				lastCursor = edge.Cursor
-			}
-
-			if edge.Node != nil {
-				ac := edge.Node.AccessControl
-				items = append(items, &ac)
-			}
-		}
-
-		var nextCursor *string
-		if page.PageInfo.HasNextPage != nil && *page.PageInfo.HasNextPage {
-			nextCursor = lastCursor
-		}
-
-		return items, nextCursor, nil
-	case *schema.ListAccessControlsAccessControlsPermissionDeniedError:
-		return nil, nil, types.NewErrPermissionDenied("listAccessControls", page.Message)
-	default:
-		return nil, nil, errors.New("unreachable")
-	}
 }
 
 type AccessControlWhoListOptions struct {

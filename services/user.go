@@ -3,9 +3,11 @@ package services
 import (
 	"context"
 	"fmt"
+	"iter"
 
 	"github.com/Khan/genqlient/graphql"
 
+	"github.com/collibra/data-access-go-sdk/internal"
 	"github.com/collibra/data-access-go-sdk/internal/schema"
 	"github.com/collibra/data-access-go-sdk/types"
 )
@@ -115,29 +117,63 @@ func (c *UserClient) UpdateUser(ctx context.Context, id string, userInput types.
 	}
 }
 
-func (c *UserClient) SearchUsers(ctx context.Context, after *string, limit *int, filter *types.UserFilterInput) ([]types.User, *string, error) {
-	result, err := schema.SearchUsers(ctx, c.client, after, limit, filter)
-	if err != nil {
-		return nil, nil, types.NewErrClient(err)
+type UserListOptions struct {
+	order  []types.UserOrderByInput
+	filter *types.UserFilterInput
+}
+
+// WithUserListOrder sets the order of the returned Users in the ListUsers call
+func WithUserListOrder(input ...types.UserOrderByInput) func(options *UserListOptions) {
+	return func(options *UserListOptions) {
+		options.order = append(options.order, input...)
+	}
+}
+
+// WithUserListFilter sets the filter of the returned Users in the ListUsers call
+func WithUserListFilter(input *types.UserFilterInput) func(options *UserListOptions) {
+	return func(options *UserListOptions) {
+		options.filter = input
+	}
+}
+
+// ListUsers returns a list of Users
+// The order of the list can be specified with WithUserListOrder
+// A filter can be specified with WithUserListFilter
+// An iterator is returned that can be used to receive the list of Users
+// To close the iterator ensure to cancel the context
+func (c *UserClient) ListUsers(ctx context.Context, ops ...func(options *UserListOptions)) iter.Seq2[*types.User, error] { //nolint:dupl
+	options := UserListOptions{}
+	for _, op := range ops {
+		op(&options)
 	}
 
-	users := []types.User{}
-
-	switch resultUsers := result.GetUsers().(type) {
-	case *schema.SearchUsersUsersUserConnection:
-		var cursor *string
-
-		for _, edge := range resultUsers.GetEdges() {
-			users = append(users, edge.GetNode().User)
-			cursor = edge.GetCursor()
+	loadPageFn := func(ctx context.Context, cursor *string) (*types.PageInfo, []types.UserConnectionEdgesUserEdge, error) { //nolint:dupl
+		output, err := schema.ListUsers(ctx, c.client, cursor, new(internal.MaxPageSize), options.filter, options.order)
+		if err != nil {
+			return nil, nil, types.NewErrClient(err)
 		}
 
-		return users, cursor, nil
-	case *schema.SearchUsersUsersInvalidInputError:
-		return nil, nil, types.NewErrInvalidInput(resultUsers.Message)
-	case *schema.SearchUsersUsersPermissionDeniedError:
-		return nil, nil, types.NewErrPermissionDenied("searchUsers", resultUsers.Message)
-	default:
-		return nil, nil, types.NewErrClient(fmt.Errorf("unexpected result type: %T", resultUsers))
+		switch response := (output.Users).(type) {
+		case *schema.ListUsersUsersUserConnection:
+			return &response.PageInfo.PageInfo, response.Edges, nil
+		case *schema.ListUsersUsersInvalidInputError:
+			return nil, nil, types.NewErrInvalidInput(response.Message)
+		case *schema.ListUsersUsersNotFoundError:
+			return nil, nil, types.NewErrNotFound("", response.Typename, response.Message)
+		case *schema.ListUsersUsersPermissionDeniedError:
+			return nil, nil, types.NewErrPermissionDenied("listUsers", response.Message)
+		default:
+			return nil, nil, fmt.Errorf("unexpected type '%T'", response)
+		}
 	}
+
+	edgeFn := func(edge *types.UserConnectionEdgesUserEdge) (*string, *schema.User, error) {
+		cursor := edge.Cursor
+		if edge.Node == nil {
+			return cursor, nil, nil
+		}
+		return cursor, &edge.Node.User, nil
+	}
+
+	return internal.PaginationExecutor(ctx, loadPageFn, edgeFn)
 }

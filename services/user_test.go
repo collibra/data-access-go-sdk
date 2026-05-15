@@ -1,6 +1,7 @@
 package services_test
 
 import (
+	"sort"
 	"testing"
 
 	"github.com/google/uuid"
@@ -206,4 +207,89 @@ func (suite *UserServiceTestSuite) TestUpdateNonExistentUser() {
 	suite.Require().Nil(updatedUser)
 	suite.Require().Error(err)
 	suite.Require().ErrorContains(err, "unexpected result type")
+}
+
+func (suite *UserServiceTestSuite) TestListUsers() {
+	t := suite.T()
+	ctx := t.Context()
+	userClient := suite.UserClient
+
+	uuidString := uuid.NewString()
+	userName := "SDK Automated Test User " + uuidString
+	userEmail := "sdk_automated_test_user_" + uuidString + "@collibra.com"
+	userType := schema.UserTypeHuman
+
+	createdUser, err := userClient.CreateUser(ctx, schema.UserInput{
+		Name:  &userName,
+		Email: &userEmail,
+		Type:  &userType,
+	})
+	suite.Require().NoError(err, "Failed to create user")
+	suite.Require().NotNil(createdUser)
+
+	printUser(t, "User Created", createdUser)
+
+	suite.Run("List Users Without Filters", func() {
+		response := userClient.ListUsers(ctx)
+
+		var listedIds []string
+
+		for user, err := range response {
+			suite.Require().NoError(err, "Error while iterating users")
+			suite.Require().NotNil(user, "User should not be nil")
+			listedIds = append(listedIds, user.Id)
+		}
+
+		suite.NotEmpty(listedIds, "Expected at least one user to be listed")
+		suite.Contains(listedIds, createdUser.Id, "Created user should be present in the list")
+	})
+
+	suite.Run("List Users With Search Filter", func() {
+		response := userClient.ListUsers(ctx, services.WithUserListFilter(&schema.UserFilterInput{
+			Search: &uuidString,
+		}))
+
+		var listedUsers []schema.User
+
+		for user, err := range response {
+			suite.Require().NoError(err, "Error while iterating users")
+			suite.Require().NotNil(user, "User should not be nil")
+			listedUsers = append(listedUsers, *user)
+		}
+
+		suite.Require().Len(listedUsers, 1, "Expected exactly one user matching the search filter")
+		suite.Equal(createdUser.Id, listedUsers[0].Id)
+		suite.Equal(userName, listedUsers[0].Name)
+	})
+
+	suite.Run("List Users With Type Filter and Name Asc Order", func() {
+		humanType := schema.UserTypeHuman
+		nameAsc := schema.SortAsc
+
+		response := userClient.ListUsers(ctx,
+			services.WithUserListFilter(&schema.UserFilterInput{
+				Type: &humanType,
+			}),
+			services.WithUserListOrder(schema.UserOrderByInput{
+				Name: &nameAsc,
+			}),
+		)
+
+		names := make([]string, 0)
+		foundCreatedUser := false
+
+		for user, err := range response {
+			suite.Require().NoError(err, "Error while iterating users")
+			suite.Require().NotNil(user, "User should not be nil")
+			suite.Equal(schema.UserTypeHuman, user.Type, "Filtered user should be of type human")
+			names = append(names, user.Name)
+
+			if user.Id == createdUser.Id {
+				foundCreatedUser = true
+			}
+		}
+
+		suite.True(foundCreatedUser, "Created user should be present in the filtered list")
+		suite.True(sort.StringsAreSorted(names), "Names should be sorted in ascending order")
+	})
 }
