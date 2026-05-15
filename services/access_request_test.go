@@ -82,7 +82,8 @@ func (suite *AccessRequestServiceTestSuite) TestCreateAccessRequest() {
 		What: []types.AccessRequestWhatInput{
 			{
 				DataObject: &types.AccessRequestDataObjectWhatInput{
-					Id: suite.dataObjectId,
+					Id:          suite.dataObjectId,
+					Permissions: []string{"SELECT"},
 				},
 			},
 		},

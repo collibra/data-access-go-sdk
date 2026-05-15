@@ -1,7 +1,8 @@
 package services_test
 
 import (
-	"sort"
+	"slices"
+	"strings"
 	"testing"
 
 	"github.com/google/uuid"
@@ -290,6 +291,8 @@ func (suite *UserServiceTestSuite) TestListUsers() {
 		}
 
 		suite.True(foundCreatedUser, "Created user should be present in the filtered list")
-		suite.True(sort.StringsAreSorted(names), "Names should be sorted in ascending order")
+		suite.True(slices.IsSortedFunc(names, func(a, b string) int {
+			return strings.Compare(strings.ToLower(a), strings.ToLower(b))
+		}), "Names should be sorted in ascending order (case-insensitive)")
 	})
 }
