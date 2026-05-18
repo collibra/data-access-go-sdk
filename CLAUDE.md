@@ -10,7 +10,7 @@ make test           # run tests with gotestsum
 make test-coverage  # run tests with coverage (output in .tests/)
 make lint           # run golangci-lint + go fmt check
 make fix-lint       # auto-fix lint issues
-make gql            # regenerate GraphQL code (genqlient + agen tool)
+make gql            # regenerate GraphQL code (genqlient + alias tool + doctags tool)
 make fetch-schema   # fetch GraphQL schema from Collibra server (needs COLLIBRA_USERNAME, COLLIBRA_PASSWORD)
 ```
 

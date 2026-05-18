@@ -1,3 +1,8 @@
+fragment Permission on Permission {
+    name
+    description
+}
+
 fragment DataObject on DataObject {
     id
     name
@@ -8,6 +13,9 @@ fragment DataObject on DataObject {
     description
     dataSource {
         id
+    }
+    applicablePermissions {
+        ... Permission
     }
 }
 
