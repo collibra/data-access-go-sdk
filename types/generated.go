@@ -721,6 +721,7 @@ type RoleAssignmentTo = schema.RoleAssignmentTo
 type RoleAssignmentToAccessControl = schema.RoleAssignmentToAccessControl
 type RoleAssignmentToUser = schema.RoleAssignmentToUser
 type RootParameterDefinitionInput = schema.RootParameterDefinitionInput
+type ScimAssignmentInput = schema.ScimAssignmentInput
 type SetDataSourceMetadataResponse = schema.SetDataSourceMetadataResponse
 type SetDataSourceMetadataSetDataSourceMetaDataAlreadyExistsError = schema.SetDataSourceMetadataSetDataSourceMetaDataAlreadyExistsError
 type SetDataSourceMetadataSetDataSourceMetaDataDataSource = schema.SetDataSourceMetadataSetDataSourceMetaDataDataSource
