@@ -12,7 +12,7 @@ gql:
 	go run github.com/collibra/data-access-go-sdk/cmd/doctags --schema internal/schema/schema.graphql --generated internal/schema/generated.go --output internal/schema/generated.go
 
 fetch-schema:
-	@ .script/fetch-schema.sh --output internal/schema/schema.graphql --login ${COLLIBRA_USERNAME} --password ${COLLIBRA_PASSWORD}
+	@ .script/fetch-schema.sh --output internal/schema/schema.graphql --login ${COLLIBRA_USERNAME} --password ${COLLIBRA_PASSWORD} --url ${COLLIBRA_URL}
 
 fetch-local-schema:
 	npx --yes @apollo/rover graph introspect http://localhost:8080/query --output internal/schema/schema.graphql

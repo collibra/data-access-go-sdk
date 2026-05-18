@@ -1155,32 +1155,33 @@ func (v *AccessControlFilterInput) GetDataObjectInWhat() *string { return v.Data
 func (v *AccessControlFilterInput) GetIsRoleAssignableOnly() bool { return v.IsRoleAssignableOnly }
 
 type AccessControlImport struct {
-	ExternalId              string              `json:"externalId"`
-	Name                    string              `json:"name"`
-	NamingHint              string              `json:"namingHint"`
-	Type                    *string             `json:"type,omitempty"`
-	Action                  AccessControlAction `json:"action"`
-	Policy                  *string             `json:"policy,omitempty"`
-	Who                     WhoItemImport       `json:"who"`
-	WhoUnknown              bool                `json:"whoUnknown"`
-	WhatUnknown             bool                `json:"whatUnknown"`
-	NotInternalizable       bool                `json:"notInternalizable"`
-	WhoLocked               bool                `json:"whoLocked"`
-	WhoLockedReason         *string             `json:"whoLockedReason,omitempty"`
-	InheritanceLocked       bool                `json:"inheritanceLocked"`
-	InheritanceLockedReason *string             `json:"inheritanceLockedReason,omitempty"`
-	WhatLocked              bool                `json:"whatLocked"`
-	WhatLockedReason        *string             `json:"whatLockedReason,omitempty"`
-	NameLocked              bool                `json:"nameLocked"`
-	NameLockedReason        *string             `json:"nameLockedReason,omitempty"`
-	DeleteLocked            bool                `json:"deleteLocked"`
-	DeleteLockedReason      *string             `json:"deleteLockedReason,omitempty"`
-	OwnersLocked            bool                `json:"ownersLocked"`
-	OwnersLockedReason      *string             `json:"ownersLockedReason,omitempty"`
-	ActualName              string              `json:"actualName"`
-	Incomplete              bool                `json:"incomplete"`
-	Tags                    []TagImport         `json:"tags"`
-	CommonWhatDataObject    *string             `json:"commonWhatDataObject,omitempty"`
+	ExternalId              string                `json:"externalId"`
+	Name                    string                `json:"name"`
+	NamingHint              string                `json:"namingHint"`
+	Type                    *string               `json:"type,omitempty"`
+	Action                  AccessControlAction   `json:"action"`
+	Policy                  *string               `json:"policy,omitempty"`
+	Who                     WhoItemImport         `json:"who"`
+	WhoUnknown              bool                  `json:"whoUnknown"`
+	WhatUnknown             bool                  `json:"whatUnknown"`
+	NotInternalizable       bool                  `json:"notInternalizable"`
+	WhoLocked               bool                  `json:"whoLocked"`
+	WhoLockedReason         *string               `json:"whoLockedReason,omitempty"`
+	InheritanceLocked       bool                  `json:"inheritanceLocked"`
+	InheritanceLockedReason *string               `json:"inheritanceLockedReason,omitempty"`
+	WhatLocked              bool                  `json:"whatLocked"`
+	WhatLockedReason        *string               `json:"whatLockedReason,omitempty"`
+	NameLocked              bool                  `json:"nameLocked"`
+	NameLockedReason        *string               `json:"nameLockedReason,omitempty"`
+	DeleteLocked            bool                  `json:"deleteLocked"`
+	DeleteLockedReason      *string               `json:"deleteLockedReason,omitempty"`
+	OwnersLocked            bool                  `json:"ownersLocked"`
+	OwnersLockedReason      *string               `json:"ownersLockedReason,omitempty"`
+	ActualName              string                `json:"actualName"`
+	Incomplete              bool                  `json:"incomplete"`
+	Tags                    []TagImport           `json:"tags"`
+	CommonWhatDataObject    *string               `json:"commonWhatDataObject,omitempty"`
+	ScimAssignments         []ScimAssignmentInput `json:"scimAssignments"`
 }
 
 // GetExternalId returns AccessControlImport.ExternalId, and is useful for accessing the field via an interface.
@@ -1260,6 +1261,9 @@ func (v *AccessControlImport) GetTags() []TagImport { return v.Tags }
 
 // GetCommonWhatDataObject returns AccessControlImport.CommonWhatDataObject, and is useful for accessing the field via an interface.
 func (v *AccessControlImport) GetCommonWhatDataObject() *string { return v.CommonWhatDataObject }
+
+// GetScimAssignments returns AccessControlImport.ScimAssignments, and is useful for accessing the field via an interface.
+func (v *AccessControlImport) GetScimAssignments() []ScimAssignmentInput { return v.ScimAssignments }
 
 // Input object for creating and updating access controls.
 type AccessControlInput struct {
@@ -33133,6 +33137,17 @@ func (v *RootParameterDefinitionInput) GetAccessFromTargetSync() []ParameterDefi
 
 // GetUsageSync returns RootParameterDefinitionInput.UsageSync, and is useful for accessing the field via an interface.
 func (v *RootParameterDefinitionInput) GetUsageSync() []ParameterDefinitionInput { return v.UsageSync }
+
+type ScimAssignmentInput struct {
+	DataSourceId string  `json:"dataSourceId"`
+	ActualName   *string `json:"actualName,omitempty"`
+}
+
+// GetDataSourceId returns ScimAssignmentInput.DataSourceId, and is useful for accessing the field via an interface.
+func (v *ScimAssignmentInput) GetDataSourceId() string { return v.DataSourceId }
+
+// GetActualName returns ScimAssignmentInput.ActualName, and is useful for accessing the field via an interface.
+func (v *ScimAssignmentInput) GetActualName() *string { return v.ActualName }
 
 // SetDataSourceMetadataResponse is returned by SetDataSourceMetadata on success.
 type SetDataSourceMetadataResponse struct {
