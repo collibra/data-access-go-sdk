@@ -8,6 +8,7 @@ import (
 
 	sdk "github.com/collibra/data-access-go-sdk"
 	"github.com/collibra/data-access-go-sdk/internal/schema"
+	"github.com/collibra/data-access-go-sdk/services"
 	"github.com/collibra/data-access-go-sdk/utils"
 	"github.com/stretchr/testify/suite"
 )
@@ -136,6 +137,62 @@ func (suite *ImporterServiceTestSuite) Test_SubmitImportObjects() {
 	suite.Require().NoError(err, "Failed to submit import objects")
 	suite.Require().NotNil(submittedCommands, "Submitted commands is nil")
 	suite.Require().Equal(len(commands), submittedCommands.Submitted, "Submitted commands length does not match")
+}
+
+func (suite *ImporterServiceTestSuite) Test_FinishImportFlow() {
+	ctx := suite.T().Context()
+	jobClient := suite.sdkClient.Job()
+	importerClient := suite.sdkClient.Importer()
+	dataSourceId := suite.createdDataSource.Id
+
+	startFlow := func(subtaskId string) *schema.Subtask {
+		job, err := jobClient.CreateJob(ctx, schema.JobInput{
+			DataSourceId: &dataSourceId,
+			EventTime:    time.Now(),
+		})
+		suite.Require().NoError(err, "Failed to create job")
+
+		task, err := jobClient.AddTaskEvent(ctx, schema.TaskEventInput{
+			DataSourceId: &dataSourceId,
+			JobId:        job.Id,
+			JobType:      suite.jobType,
+			Status:       schema.TaskStatusStarted,
+			EventTime:    time.Now(),
+		})
+		suite.Require().NoError(err, "Failed to add task event")
+
+		subtask, err := jobClient.AddSubtaskEvent(ctx, schema.SubtaskInput{
+			DataSourceId: &dataSourceId,
+			JobId:        job.Id,
+			JobType:      suite.jobType,
+			SubtaskId:    subtaskId,
+			Status:       schema.SubtaskStatusStarted,
+			EventTime:    time.Now(),
+		})
+		suite.Require().NoError(err, "Failed to add subtask event")
+
+		subtask, err = importerClient.StartImportFlow(ctx, schema.StartImportFlowInput{
+			JobId:     job.Id,
+			TaskId:    task.TaskType,
+			SubtaskId: subtask.SubtaskId,
+		})
+		suite.Require().NoError(err, "Failed to start import flow")
+		suite.Require().NotNil(subtask.FlowId, "Flow ID is nil after StartImportFlow")
+
+		return subtask
+	}
+
+	suite.Run("Finish Import Flow", func() {
+		subtask := startFlow("FinishFlowTest")
+		err := importerClient.FinishImportFlow(ctx, *subtask.FlowId)
+		suite.Require().NoError(err, "FinishImportFlow returned an unexpected error")
+	})
+
+	suite.Run("Finish Import Flow With Skip Cleanup", func() {
+		subtask := startFlow("FinishFlowSkipCleanupTest")
+		err := importerClient.FinishImportFlow(ctx, *subtask.FlowId, services.WithImporterFinishImportFlowSkipCleanup(true))
+		suite.Require().NoError(err, "FinishImportFlow with SkipCleanup returned an unexpected error")
+	})
 }
 
 func (suite *ImporterServiceTestSuite) TearDownSuite() {
