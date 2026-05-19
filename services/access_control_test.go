@@ -381,8 +381,123 @@ func (suite *AccessControlServiceTestSuite) TestAccessControlsGetWhatAccessContr
 	})
 }
 
+func (suite *AccessControlServiceTestSuite) TestCreateAccessControlWithWhoAbacRules() {
+	ctx := suite.T().Context()
+	accessControlClient := suite.sdkClient.AccessControl()
+
+	if suite.createdUser == nil {
+		suite.T().Skip("Skipping test because createdUser is nil")
+	}
+
+	name := "Test Access Control with WHO ABAC " + uuid.New().String()
+	action := schema.AccessControlActionGrant
+	dataSource := suite.createdDataSource.Id
+
+	emailDomain := "example.com"
+	whoAbacRule := schema.WhoAbacRuleInput{
+		Id:   new("who-rule1"),
+		Type: schema.AccessWhoItemTypeWhogrant,
+		Rule: schema.AbacComparisonExpressionInput{
+			Comparison: &schema.AbacComparisonExpressionComparisonInput{
+				Operator:    schema.AbacComparisonExpressionComparisonOperatorPropertycontains,
+				LeftOperand: "email",
+				RightOperand: schema.AbacComparisonExpressionOperandInput{
+					Literal: &schema.AbacComparisonExpressionLiteral{
+						String: &emailDomain,
+					},
+				},
+			},
+		},
+	}
+
+	accessControl, err := accessControlClient.CreateAccessControl(ctx, schema.AccessControlInput{
+		Name:   &name,
+		Action: &action,
+		DataSources: []schema.AccessControlDataSourceInput{
+			{DataSource: dataSource},
+		},
+		WhatDataObjects: []schema.AccessControlWhatInputDO{
+			{DataObjectByName: []schema.AccessControlWhatDoByNameInput{
+				{DataSource: dataSource, FullName: "RAITO_DBT.DEFAULT.CUSTOMER"},
+			}},
+		},
+		WhoAbacRules: []*schema.WhoAbacRuleInput{&whoAbacRule},
+	})
+	suite.Require().NoError(err, "Failed to create access control with WHO ABAC rules")
+	suite.Require().NotNil(accessControl, "Created access control is nil")
+	suite.Require().Len(accessControl.WhoAbacRules, 1, "Expected 1 WHO ABAC rule")
+	suite.Require().Equal("who-rule1", accessControl.WhoAbacRules[0].Id, "WHO ABAC rule ID mismatch")
+	suite.Require().Equal(schema.AccessWhoItemTypeWhogrant, accessControl.WhoAbacRules[0].Type, "WHO ABAC rule type mismatch")
+}
+
+func (suite *AccessControlServiceTestSuite) TestUpdateAccessControlAbacRules() {
+	ctx := suite.T().Context()
+	accessControlClient := suite.sdkClient.AccessControl()
+
+	name := "Test Access Control for ABAC Update " + uuid.New().String()
+	action := schema.AccessControlActionGrant
+	createdAccessControl, err := createTestAccessControl(suite, accessControlClient, suite.createdUser, &name, &action, &suite.createdDataSource.Id)
+	suite.Require().NoError(err)
+	suite.Require().NotNil(createdAccessControl)
+	suite.Require().Empty(createdAccessControl.WhatAbacRules, "Expected no WHAT ABAC rules on initial creation")
+	suite.Require().Empty(createdAccessControl.WhoAbacRules, "Expected no WHO ABAC rules on initial creation")
+
+	raitoDBTId, err := suite.sdkClient.DataObject().GetDataObjectIdByName(ctx, "RAITO_DBT", suite.createdDataSource.Id)
+	suite.Require().NoError(err, "Failed to get RAITO_DBT data object ID")
+
+	stringLiteral := "Stripe"
+	whatAbacRule := schema.WhatAbacRuleInput{
+		Id:          new("what-rule1"),
+		DoTypes:     []string{"schema"},
+		Permissions: []string{"READ"},
+		Scope:       []string{raitoDBTId},
+		Rule: schema.AbacComparisonExpressionInput{
+			Comparison: &schema.AbacComparisonExpressionComparisonInput{
+				Operator:    schema.AbacComparisonExpressionComparisonOperatorHastag,
+				LeftOperand: "source_system",
+				RightOperand: schema.AbacComparisonExpressionOperandInput{
+					Literal: &schema.AbacComparisonExpressionLiteral{
+						String: &stringLiteral,
+					},
+				},
+			},
+		},
+	}
+
+	emailDomain := "example.com"
+	whoAbacRule := schema.WhoAbacRuleInput{
+		Id:   new("who-rule1"),
+		Type: schema.AccessWhoItemTypeWhogrant,
+		Rule: schema.AbacComparisonExpressionInput{
+			Comparison: &schema.AbacComparisonExpressionComparisonInput{
+				Operator:    schema.AbacComparisonExpressionComparisonOperatorPropertycontains,
+				LeftOperand: "email",
+				RightOperand: schema.AbacComparisonExpressionOperandInput{
+					Literal: &schema.AbacComparisonExpressionLiteral{
+						String: &emailDomain,
+					},
+				},
+			},
+		},
+	}
+
+	updatedAccessControl, err := accessControlClient.UpdateAccessControl(ctx, createdAccessControl.Id, schema.AccessControlInput{
+		WhatAbacRules: []*schema.WhatAbacRuleInput{&whatAbacRule},
+		WhoAbacRules:  []*schema.WhoAbacRuleInput{&whoAbacRule},
+	})
+	suite.Require().NoError(err, "Failed to update access control with ABAC rules")
+	suite.Require().NotNil(updatedAccessControl, "Updated access control is nil")
+
+	suite.Require().Len(updatedAccessControl.WhatAbacRules, 1, "Expected 1 WHAT ABAC rule after update")
+	suite.Require().Equal("what-rule1", updatedAccessControl.WhatAbacRules[0].Id, "WHAT ABAC rule ID mismatch")
+	suite.Require().Equal([]string{"schema"}, updatedAccessControl.WhatAbacRules[0].DoTypes, "WHAT ABAC rule doTypes mismatch")
+
+	suite.Require().Len(updatedAccessControl.WhoAbacRules, 1, "Expected 1 WHO ABAC rule after update")
+	suite.Require().Equal("who-rule1", updatedAccessControl.WhoAbacRules[0].Id, "WHO ABAC rule ID mismatch")
+	suite.Require().Equal(schema.AccessWhoItemTypeWhogrant, updatedAccessControl.WhoAbacRules[0].Type, "WHO ABAC rule type mismatch")
+}
+
 func (suite *AccessControlServiceTestSuite) TestGetAccessControlABACWhatScope() {
-	suite.T().Skipf("Test not yet ready and not working properly")
 	ctx := suite.T().Context()
 	accessControlClient := suite.sdkClient.AccessControl()
 	createdUser := suite.createdUser
@@ -391,17 +506,20 @@ func (suite *AccessControlServiceTestSuite) TestGetAccessControlABACWhatScope() 
 		suite.T().Skip("Skipping test because createdUser is nil")
 	}
 
+	// RAITO_DBT (database) contains RAITO_DBT.DEFAULT (schema) which has tag source_system=Stripe
+	raitoDBTId, err := suite.sdkClient.DataObject().GetDataObjectIdByName(ctx, "RAITO_DBT", suite.createdDataSource.Id)
+	suite.Require().NoError(err, "Failed to get RAITO_DBT data object ID")
+
 	name := "Test Access Control for WhatAccessControlList " + uuid.New().String()
 	action := schema.AccessControlActionGrant
 	dataSource := suite.createdDataSource.Id
 
 	stringLiteral := "Stripe"
-	// TODO: adjust data here so the GetAccessControlAbacWhatScope response contains at least one item
 	whatAbacRule := schema.WhatAbacRuleInput{
 		Id:          new("rule1"),
 		DoTypes:     []string{"schema"},
 		Permissions: []string{"READ"},
-		Scope:       []string{"RAITO_DBT"},
+		Scope:       []string{raitoDBTId},
 		Rule: schema.AbacComparisonExpressionInput{
 			Comparison: &schema.AbacComparisonExpressionComparisonInput{Operator: schema.AbacComparisonExpressionComparisonOperatorHastag,
 				LeftOperand: "source_system",
@@ -427,12 +545,10 @@ func (suite *AccessControlServiceTestSuite) TestGetAccessControlABACWhatScope() 
 	suite.Require().NoError(err, "Failed to create access control with ABAC what scope")
 	suite.Require().NotNil(accessControl, "Created access control is nil")
 
-	// get WhatAbacRuleList for the created access control and verify that the rule is listed there
-	response := accessControlClient.GetAccessControlAbacWhatScope(ctx, accessControl.Id, "rule1") // Empty list here
+	response := accessControlClient.GetAccessControlAbacWhatScope(ctx, accessControl.Id, "rule1")
 	found := false
 
 	for item, err := range response {
-		// TODO: implement this comparison properly
 		suite.Require().NoError(err, "Error listing access control what ABAC rules")
 
 		if item != nil {
