@@ -30,8 +30,10 @@ func TestRoleServiceTestSuite(t *testing.T) {
 
 func (suite *RoleServiceTestSuite) SetupSuite() {
 	url, clientOptions := utils.GetEnvConfig(&suite.Suite)
+
 	sdkClient, err := sdk.NewClient(url, clientOptions...)
 	suite.Require().NoError(err)
+
 	suite.sdkClient = sdkClient
 	suite.roleClient = sdkClient.Role()
 
@@ -44,11 +46,13 @@ func (suite *RoleServiceTestSuite) SetupSuite() {
 	// recognised as valid role assignees until they are synced.
 	currentUser, err := sdkClient.User().GetCurrentUser(suite.T().Context())
 	suite.Require().NoError(err, "Failed to get current user")
+
 	suite.assigneeUserId = currentUser.Id
 
 	acName := "Test AC for Roles " + uuid.NewString()
 	acAction := schema.AccessControlActionGrant
 	dataSourceId := suite.createdDataSource.Id
+
 	accessControl, err := sdkClient.AccessControl().CreateAccessControl(suite.T().Context(), schema.AccessControlInput{
 		Name:   &acName,
 		Action: &acAction,
@@ -73,11 +77,13 @@ func (suite *RoleServiceTestSuite) SetupSuite() {
 	// Discover an existing role ID from global role assignments.
 	for ra, err := range suite.roleClient.ListRoleAssignments(suite.T().Context()) {
 		suite.Require().NoError(err, "Error listing role assignments during setup")
+
 		if ra != nil {
 			suite.roleId = ra.Role.Id
 			break
 		}
 	}
+
 	suite.Require().NotEmpty(suite.roleId, "No role assignments found in the system; cannot run role tests")
 }
 
@@ -99,20 +105,25 @@ func (suite *RoleServiceTestSuite) TestListRoleAssignments() {
 
 	suite.Run("List All Role Assignments", func() {
 		found := false
+
 		for ra, err := range suite.roleClient.ListRoleAssignments(ctx) {
 			suite.Require().NoError(err, "Error iterating role assignments")
+
 			if ra != nil {
 				found = true
 				break
 			}
 		}
+
 		suite.Require().True(found, "Expected at least one role assignment")
 	})
 
 	suite.Run("List Role Assignments Filtered By Role", func() {
 		filter := &schema.RoleAssignmentFilterInput{Role: &suite.roleId}
+
 		for ra, err := range suite.roleClient.ListRoleAssignments(ctx, services.WithRoleAssignmentListFilter(filter)) {
 			suite.Require().NoError(err, "Error iterating role assignments")
+
 			if ra != nil {
 				suite.Require().Equal(suite.roleId, ra.Role.Id, "Returned assignment has unexpected role ID")
 			}
@@ -122,16 +133,19 @@ func (suite *RoleServiceTestSuite) TestListRoleAssignments() {
 	suite.Run("List Role Assignments Ordered By UserName Asc", func() {
 		sortOrder := schema.SortAsc
 		var names []string
+
 		for ra, err := range suite.roleClient.ListRoleAssignments(ctx, services.WithRoleAssignmentListOrder(schema.RoleAssignmentOrderInput{
 			UserName: &sortOrder,
 		})) {
 			suite.Require().NoError(err, "Error iterating role assignments")
+
 			if ra != nil {
 				if to, ok := ra.To.(*schema.RoleAssignmentToUser); ok && to != nil {
 					names = append(names, to.Id)
 				}
 			}
 		}
+
 		// Just verify the call succeeds and returns results; strict ordering depends on server behaviour.
 		suite.Require().NotEmpty(names, "Expected at least one user-to-role assignment")
 	})
@@ -149,38 +163,45 @@ func (suite *RoleServiceTestSuite) TestUpdateAndListRoleAssigneesOnDataSource() 
 
 	suite.Run("List Role Assignments On Data Source", func() {
 		found := false
+
 		for ra, err := range suite.roleClient.ListRoleAssignmentsOnDataSource(ctx, suite.createdDataSource.Id) {
 			suite.Require().NoError(err, "Error iterating role assignments on data source")
+
 			if ra == nil {
 				continue
 			}
+
 			to, ok := ra.To.(*schema.RoleAssignmentToUser)
 			if ok && to.Id == suite.assigneeUserId {
 				found = true
 				break
 			}
 		}
+
 		suite.Require().True(found, "Test user not found in role assignments on data source")
 	})
 
 	suite.Run("List Role Assignments On Data Source Filtered By User", func() {
 		filter := &schema.RoleAssignmentFilterInput{User: &suite.assigneeUserId}
 		found := false
+
 		for ra, err := range suite.roleClient.ListRoleAssignmentsOnDataSource(ctx, suite.createdDataSource.Id,
 			services.WithRoleAssignmentListFilter(filter)) {
 			suite.Require().NoError(err, "Error iterating filtered role assignments on data source")
+
 			if ra == nil {
 				continue
 			}
+
 			to, ok := ra.To.(*schema.RoleAssignmentToUser)
 			if ok && to.Id == suite.assigneeUserId {
 				found = true
 				break
 			}
 		}
+
 		suite.Require().True(found, "Test user not found when filtering role assignments on data source by user")
 	})
-
 }
 
 func (suite *RoleServiceTestSuite) TestUpdateAndListRoleAssigneesOnDataObject() {
@@ -198,30 +219,37 @@ func (suite *RoleServiceTestSuite) TestUpdateAndListRoleAssigneesOnDataObject() 
 
 	suite.Run("List Role Assignments On Data Object", func() {
 		found := false
+
 		for ra, err := range suite.roleClient.ListRoleAssignmentsOnDataObject(ctx, dataObjectId) {
 			suite.Require().NoError(err, "Error iterating role assignments on data object")
+
 			if ra == nil {
 				continue
 			}
+
 			to, ok := ra.To.(*schema.RoleAssignmentToUser)
 			if ok && to.Id == suite.assigneeUserId {
 				found = true
 				break
 			}
 		}
+
 		suite.Require().True(found, "Test user not found in role assignments on data object")
 	})
 
 	suite.Run("List Role Assignments On Data Object Ordered By RoleName Desc", func() {
 		sortOrder := schema.SortDesc
 		var roleNames []string
+
 		for ra, err := range suite.roleClient.ListRoleAssignmentsOnDataObject(ctx, dataObjectId,
 			services.WithRoleAssignmentListOrder(schema.RoleAssignmentOrderInput{RoleName: &sortOrder})) {
 			suite.Require().NoError(err, "Error iterating ordered role assignments on data object")
+
 			if ra != nil {
 				roleNames = append(roleNames, ra.Role.Name)
 			}
 		}
+
 		suite.Require().NotEmpty(roleNames)
 		suite.True(sort.IsSorted(sort.Reverse(sort.StringSlice(roleNames))), "Role names are not sorted descending")
 	})
@@ -243,33 +271,41 @@ func (suite *RoleServiceTestSuite) TestUpdateAndListRoleAssigneesOnAccessControl
 
 	suite.Run("List Role Assignments On Access Control", func() {
 		found := false
+
 		for ra, err := range suite.roleClient.ListRoleAssignmentsOnAccessControl(ctx, suite.createdAccessControl.Id) {
 			suite.Require().NoError(err, "Error iterating role assignments on access control")
+
 			if ra == nil {
 				continue
 			}
+
 			to, ok := ra.To.(*schema.RoleAssignmentToUser)
 			if ok && to.Id == suite.assigneeUserId {
 				found = true
 				break
 			}
 		}
+
 		suite.Require().True(found, "Test user not found in role assignments on access control")
 	})
 
 	suite.Run("List Role Assignments On Access Control Filtered By Role", func() {
 		filter := &schema.RoleAssignmentFilterInput{Role: &suite.roleId}
 		found := false
+
 		for ra, err := range suite.roleClient.ListRoleAssignmentsOnAccessControl(ctx, suite.createdAccessControl.Id,
 			services.WithRoleAssignmentListFilter(filter)) {
 			suite.Require().NoError(err, "Error iterating filtered role assignments on access control")
+
 			if ra == nil {
 				continue
 			}
+
 			suite.Require().Equal(suite.roleId, ra.Role.Id, "Assignment has unexpected role ID")
 			found = true
 			break
 		}
+
 		suite.Require().True(found, "No role assignments found on access control after filtering by role")
 	})
 }
@@ -283,24 +319,30 @@ func (suite *RoleServiceTestSuite) TestListRoleAssignmentsOnUser() {
 
 	suite.Run("List Role Assignments On User", func() {
 		found := false
+
 		for ra, err := range suite.roleClient.ListRoleAssignmentsOnUser(ctx, suite.assigneeUserId) {
 			suite.Require().NoError(err, "Error iterating role assignments on user")
+
 			if ra == nil {
 				continue
 			}
+
 			if ra.Role.Id == suite.roleId {
 				found = true
 				break
 			}
 		}
+
 		suite.Require().True(found, "Expected role not found in assignments for user")
 	})
 
 	suite.Run("List Role Assignments On User Filtered By Role", func() {
 		filter := &schema.RoleAssignmentFilterInput{Role: &suite.roleId}
+
 		for ra, err := range suite.roleClient.ListRoleAssignmentsOnUser(ctx, suite.assigneeUserId,
 			services.WithRoleAssignmentListFilter(filter)) {
 			suite.Require().NoError(err, "Error iterating filtered role assignments on user")
+
 			if ra != nil {
 				suite.Require().Equal(suite.roleId, ra.Role.Id, "Assignment has unexpected role ID")
 			}

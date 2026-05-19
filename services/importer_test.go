@@ -171,12 +171,14 @@ func (suite *ImporterServiceTestSuite) Test_FinishImportFlow() {
 		})
 		suite.Require().NoError(err, "Failed to start import flow")
 		suite.Require().NotNil(subtask.FlowId, "Flow ID is nil after StartImportFlow")
+
 		return subtask, cleanup
 	}
 
 	suite.Run("Finish Import Flow", func() {
 		subtask, cleanup := startFlowOnFreshDataSource("FinishFlowTest")
 		defer cleanup()
+
 		err := importerClient.FinishImportFlow(ctx, *subtask.FlowId)
 		suite.Require().NoError(err, "FinishImportFlow returned an unexpected error")
 	})
@@ -184,6 +186,7 @@ func (suite *ImporterServiceTestSuite) Test_FinishImportFlow() {
 	suite.Run("Finish Import Flow With Skip Cleanup", func() {
 		subtask, cleanup := startFlowOnFreshDataSource("FinishFlowSkipCleanupTest")
 		defer cleanup()
+
 		err := importerClient.FinishImportFlow(ctx, *subtask.FlowId, services.WithImporterFinishImportFlowSkipCleanup(true))
 		suite.Require().NoError(err, "FinishImportFlow with SkipCleanup returned an unexpected error")
 	})
