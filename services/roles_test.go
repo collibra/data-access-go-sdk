@@ -302,7 +302,9 @@ func (suite *RoleServiceTestSuite) TestUpdateAndListRoleAssigneesOnAccessControl
 			}
 
 			suite.Require().Equal(suite.roleId, ra.Role.Id, "Assignment has unexpected role ID")
+
 			found = true
+
 			break
 		}
 
