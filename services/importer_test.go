@@ -143,53 +143,47 @@ func (suite *ImporterServiceTestSuite) Test_FinishImportFlow() {
 	ctx := suite.T().Context()
 	jobClient := suite.sdkClient.Job()
 	importerClient := suite.sdkClient.Importer()
-	dataSourceId := suite.createdDataSource.Id
 
-	startFlow := func(subtaskId string) *schema.Subtask {
-		job, err := jobClient.CreateJob(ctx, schema.JobInput{
-			DataSourceId: &dataSourceId,
-			EventTime:    time.Now(),
-		})
+	// Each sub-run needs its own data source: a finished flow leaves the job in a
+	// non-terminal state, so the server rejects new job creation on the same data source.
+	startFlowOnFreshDataSource := func(subtaskId string) (subtask *schema.Subtask, cleanup func()) {
+		ds := createDataSource(&suite.Suite, suite.sdkClient.DataSource(), nil)
+		dsId := ds.Id
+		cleanup = func() { _ = suite.sdkClient.DataSource().DeleteDataSource(ctx, dsId) }
+
+		job, err := jobClient.CreateJob(ctx, schema.JobInput{DataSourceId: &dsId, EventTime: time.Now()})
 		suite.Require().NoError(err, "Failed to create job")
 
 		task, err := jobClient.AddTaskEvent(ctx, schema.TaskEventInput{
-			DataSourceId: &dataSourceId,
-			JobId:        job.Id,
-			JobType:      suite.jobType,
-			Status:       schema.TaskStatusStarted,
-			EventTime:    time.Now(),
+			DataSourceId: &dsId, JobId: job.Id, JobType: suite.jobType,
+			Status: schema.TaskStatusStarted, EventTime: time.Now(),
 		})
 		suite.Require().NoError(err, "Failed to add task event")
 
-		subtask, err := jobClient.AddSubtaskEvent(ctx, schema.SubtaskInput{
-			DataSourceId: &dataSourceId,
-			JobId:        job.Id,
-			JobType:      suite.jobType,
-			SubtaskId:    subtaskId,
-			Status:       schema.SubtaskStatusStarted,
-			EventTime:    time.Now(),
+		subtask2, err := jobClient.AddSubtaskEvent(ctx, schema.SubtaskInput{
+			DataSourceId: &dsId, JobId: job.Id, JobType: suite.jobType,
+			SubtaskId: subtaskId, Status: schema.SubtaskStatusStarted, EventTime: time.Now(),
 		})
 		suite.Require().NoError(err, "Failed to add subtask event")
 
 		subtask, err = importerClient.StartImportFlow(ctx, schema.StartImportFlowInput{
-			JobId:     job.Id,
-			TaskId:    task.TaskType,
-			SubtaskId: subtask.SubtaskId,
+			JobId: job.Id, TaskId: task.TaskType, SubtaskId: subtask2.SubtaskId,
 		})
 		suite.Require().NoError(err, "Failed to start import flow")
 		suite.Require().NotNil(subtask.FlowId, "Flow ID is nil after StartImportFlow")
-
-		return subtask
+		return subtask, cleanup
 	}
 
 	suite.Run("Finish Import Flow", func() {
-		subtask := startFlow("FinishFlowTest")
+		subtask, cleanup := startFlowOnFreshDataSource("FinishFlowTest")
+		defer cleanup()
 		err := importerClient.FinishImportFlow(ctx, *subtask.FlowId)
 		suite.Require().NoError(err, "FinishImportFlow returned an unexpected error")
 	})
 
 	suite.Run("Finish Import Flow With Skip Cleanup", func() {
-		subtask := startFlow("FinishFlowSkipCleanupTest")
+		subtask, cleanup := startFlowOnFreshDataSource("FinishFlowSkipCleanupTest")
+		defer cleanup()
 		err := importerClient.FinishImportFlow(ctx, *subtask.FlowId, services.WithImporterFinishImportFlowSkipCleanup(true))
 		suite.Require().NoError(err, "FinishImportFlow with SkipCleanup returned an unexpected error")
 	})
