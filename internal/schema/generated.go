@@ -282,6 +282,8 @@ const (
 	// For grouping users or other groups. The access control doesn't have WHAT items in this case.
 	AccessControlActionGroup      AccessControlAction = "Group"
 	AccessControlActionFilterrule AccessControlAction = "FilterRule"
+	// For a per-access-request grant variation that accumulates approvals from the parent role, masks, and filter rules.
+	AccessControlActionGrantvariation AccessControlAction = "GrantVariation"
 )
 
 var AllAccessControlAction = []AccessControlAction{
@@ -291,6 +293,7 @@ var AllAccessControlAction = []AccessControlAction{
 	AccessControlActionShare,
 	AccessControlActionGroup,
 	AccessControlActionFilterrule,
+	AccessControlActionGrantvariation,
 }
 
 // AccessControlCategoryGrantCategory includes the requested fields of the GraphQL type GrantCategory.
@@ -1277,6 +1280,8 @@ type AccessControlInput struct {
 	Description *string `json:"description,omitempty" doc:"Detailed description of the access control."`
 	// In case the access control is a grant (action), this contains the grant category (determining the behavior of the grant).
 	Category *string `json:"category,omitempty" doc:"In case the access control is a grant (action), this contains the grant category (determining the behavior of the grant)."`
+	// State of the access control.
+	State *AccessControlState `json:"state,omitempty" doc:"State of the access control."`
 	// Source defines the source of the access control, if managed by third party tool.
 	Source *string `json:"source,omitempty" doc:"Source defines the source of the access control, if managed by third party tool."`
 	// The list of ABAC rules for calculating the WHO items dynamically.
@@ -1330,6 +1335,9 @@ func (v *AccessControlInput) GetDescription() *string { return v.Description }
 
 // GetCategory returns AccessControlInput.Category, and is useful for accessing the field via an interface.
 func (v *AccessControlInput) GetCategory() *string { return v.Category }
+
+// GetState returns AccessControlInput.State, and is useful for accessing the field via an interface.
+func (v *AccessControlInput) GetState() *AccessControlState { return v.State }
 
 // GetSource returns AccessControlInput.Source, and is useful for accessing the field via an interface.
 func (v *AccessControlInput) GetSource() *string { return v.Source }
@@ -31788,6 +31796,8 @@ type ParameterDefinitionInput struct {
 	DefaultValue *interface{}               `json:"defaultValue,omitempty"`
 	Parameters   []ParameterDefinitionInput `json:"parameters"`
 	IsAdvanced   bool                       `json:"isAdvanced"`
+	PlaceHolder  *string                    `json:"placeHolder,omitempty"`
+	Validations  []*interface{}             `json:"validations,omitempty"`
 }
 
 // GetType returns ParameterDefinitionInput.Type, and is useful for accessing the field via an interface.
@@ -31819,6 +31829,12 @@ func (v *ParameterDefinitionInput) GetParameters() []ParameterDefinitionInput { 
 
 // GetIsAdvanced returns ParameterDefinitionInput.IsAdvanced, and is useful for accessing the field via an interface.
 func (v *ParameterDefinitionInput) GetIsAdvanced() bool { return v.IsAdvanced }
+
+// GetPlaceHolder returns ParameterDefinitionInput.PlaceHolder, and is useful for accessing the field via an interface.
+func (v *ParameterDefinitionInput) GetPlaceHolder() *string { return v.PlaceHolder }
+
+// GetValidations returns ParameterDefinitionInput.Validations, and is useful for accessing the field via an interface.
+func (v *ParameterDefinitionInput) GetValidations() []*interface{} { return v.Validations }
 
 type ParameterSource string
 
