@@ -26,12 +26,13 @@ type AccessControl = schema.AccessControl
 type AccessControlAction = schema.AccessControlAction
 
 const (
-	AccessControlActionGrant      AccessControlAction = schema.AccessControlActionGrant
-	AccessControlActionMask       AccessControlAction = schema.AccessControlActionMask
-	AccessControlActionFilter     AccessControlAction = schema.AccessControlActionFilter
-	AccessControlActionShare      AccessControlAction = schema.AccessControlActionShare
-	AccessControlActionGroup      AccessControlAction = schema.AccessControlActionGroup
-	AccessControlActionFilterrule AccessControlAction = schema.AccessControlActionFilterrule
+	AccessControlActionGrant          AccessControlAction = schema.AccessControlActionGrant
+	AccessControlActionMask           AccessControlAction = schema.AccessControlActionMask
+	AccessControlActionFilter         AccessControlAction = schema.AccessControlActionFilter
+	AccessControlActionShare          AccessControlAction = schema.AccessControlActionShare
+	AccessControlActionGroup          AccessControlAction = schema.AccessControlActionGroup
+	AccessControlActionFilterrule     AccessControlAction = schema.AccessControlActionFilterrule
+	AccessControlActionGrantvariation AccessControlAction = schema.AccessControlActionGrantvariation
 )
 
 type AccessControlCategoryGrantCategory = schema.AccessControlCategoryGrantCategory
@@ -935,7 +936,7 @@ type WhoItemInput = schema.WhoItemInput
 type WhoItemRemoveInput = schema.WhoItemRemoveInput
 
 var AllAbacComparisonExpressionComparisonOperator = []AbacComparisonExpressionComparisonOperator{AbacComparisonExpressionComparisonOperatorPropertyequals, AbacComparisonExpressionComparisonOperatorPropertyin, AbacComparisonExpressionComparisonOperatorHastag, AbacComparisonExpressionComparisonOperatorContainstag, AbacComparisonExpressionComparisonOperatorPropertystartswith, AbacComparisonExpressionComparisonOperatorPropertyendswith, AbacComparisonExpressionComparisonOperatorPropertycontains}
-var AllAccessControlAction = []AccessControlAction{AccessControlActionGrant, AccessControlActionMask, AccessControlActionFilter, AccessControlActionShare, AccessControlActionGroup, AccessControlActionFilterrule}
+var AllAccessControlAction = []AccessControlAction{AccessControlActionGrant, AccessControlActionMask, AccessControlActionFilter, AccessControlActionShare, AccessControlActionGroup, AccessControlActionFilterrule, AccessControlActionGrantvariation}
 var AllAccessControlLock = []AccessControlLock{AccessControlLockWholock, AccessControlLockInheritancelock, AccessControlLockWhatlock, AccessControlLockNamelock, AccessControlLockDeletelock, AccessControlLockOwnerlock}
 var AllAccessControlLockType = []AccessControlLockType{AccessControlLockTypeImportexport, AccessControlLockTypeUseronly}
 var AllAccessControlState = []AccessControlState{AccessControlStateActive, AccessControlStateInactive, AccessControlStateDeleted}
