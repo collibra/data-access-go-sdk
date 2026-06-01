@@ -41,6 +41,7 @@ jobs:
           COLLIBRA_URL: ${{ secrets.COLLIBRA_URL }}
           COLLIBRA_USERNAME: ${{ secrets.COLLIBRA_USER }}
           COLLIBRA_PASSWORD: ${{ secrets.COLLIBRA_PASSWORD }}
+          GRAPHQL_PATH: "/query"
 
       - name: Regenerate GraphQL code
         run: make gql
