@@ -1917,6 +1917,8 @@ type AccessControlWhatAccessControlFilterInput struct {
 	Owners     []string              `json:"owners,omitempty"`
 	HasTags    []TagFilter           `json:"hasTags,omitempty"`
 	Search     *string               `json:"search,omitempty"`
+	// Narrow the list to inverse WHO links provisioned by a specific source. Pass `Internal` to return only Raito-managed inheritance, or `Scim` for SCIM-provisioned links.
+	WhoSource *AccessWhoSource `json:"whoSource,omitempty" doc:"Narrow the list to inverse WHO links provisioned by a specific source. Pass 'Internal' to return only Raito-managed inheritance, or 'Scim' for SCIM-provisioned links."`
 }
 
 // GetActions returns AccessControlWhatAccessControlFilterInput.Actions, and is useful for accessing the field via an interface.
@@ -1935,6 +1937,11 @@ func (v *AccessControlWhatAccessControlFilterInput) GetHasTags() []TagFilter { r
 
 // GetSearch returns AccessControlWhatAccessControlFilterInput.Search, and is useful for accessing the field via an interface.
 func (v *AccessControlWhatAccessControlFilterInput) GetSearch() *string { return v.Search }
+
+// GetWhoSource returns AccessControlWhatAccessControlFilterInput.WhoSource, and is useful for accessing the field via an interface.
+func (v *AccessControlWhatAccessControlFilterInput) GetWhoSource() *AccessWhoSource {
+	return v.WhoSource
+}
 
 // Input object to reference a data object by its `fullName`.
 type AccessControlWhatDoByNameInput struct {
@@ -2094,10 +2101,14 @@ type AccessControlWhoListFilter struct {
 	TargetAccessControl *string `json:"targetAccessControl,omitempty" doc:"Only get the WHO item for a specific access control."`
 	// Only get WHO items with a specific type (User or AccessControl)
 	EntityType *EntityType `json:"entityType,omitempty" doc:"Only get WHO items with a specific type (User or AccessControl)"`
+	// Only get AccessControl WHO items with this action (e.g. `GrantVariation` to list a role's variations). Deleted access controls are excluded when this filter is set. Only applicable to the non-unpacked who-list.
+	AccessControlAction *AccessControlAction `json:"accessControlAction,omitempty" doc:"Only get AccessControl WHO items with this action (e.g. 'GrantVariation' to list a role's variations). Deleted access controls are excluded when this filter is set. Only applicable to the non-unpacked who-list."`
 	// The search string to use (will do a case-insensitive 'contains').
 	Search *string `json:"search,omitempty" doc:"The search string to use (will do a case-insensitive 'contains')."`
 	// Optional ABAC rule to filter the who-list on. Only applicable when requesting users who-list without unpacking
 	AbacRule *string `json:"abacRule,omitempty" doc:"Optional ABAC rule to filter the who-list on. Only applicable when requesting users who-list without unpacking"`
+	// Narrow the list to WHO links provisioned by a specific source. Pass `Internal` to return only Raito-managed links, or `Scim` for SCIM-provisioned ones. Only applies when not unpacking.
+	WhoSource *AccessWhoSource `json:"whoSource,omitempty" doc:"Narrow the list to WHO links provisioned by a specific source. Pass 'Internal' to return only Raito-managed links, or 'Scim' for SCIM-provisioned ones. Only applies when not unpacking."`
 }
 
 // GetWhoType returns AccessControlWhoListFilter.WhoType, and is useful for accessing the field via an interface.
@@ -2112,11 +2123,19 @@ func (v *AccessControlWhoListFilter) GetTargetAccessControl() *string { return v
 // GetEntityType returns AccessControlWhoListFilter.EntityType, and is useful for accessing the field via an interface.
 func (v *AccessControlWhoListFilter) GetEntityType() *EntityType { return v.EntityType }
 
+// GetAccessControlAction returns AccessControlWhoListFilter.AccessControlAction, and is useful for accessing the field via an interface.
+func (v *AccessControlWhoListFilter) GetAccessControlAction() *AccessControlAction {
+	return v.AccessControlAction
+}
+
 // GetSearch returns AccessControlWhoListFilter.Search, and is useful for accessing the field via an interface.
 func (v *AccessControlWhoListFilter) GetSearch() *string { return v.Search }
 
 // GetAbacRule returns AccessControlWhoListFilter.AbacRule, and is useful for accessing the field via an interface.
 func (v *AccessControlWhoListFilter) GetAbacRule() *string { return v.AbacRule }
+
+// GetWhoSource returns AccessControlWhoListFilter.WhoSource, and is useful for accessing the field via an interface.
+func (v *AccessControlWhoListFilter) GetWhoSource() *AccessWhoSource { return v.WhoSource }
 
 // Defines the sorting configuration for the access control WHO list.
 type AccessControlWhoOrderByInput struct {
@@ -2222,6 +2241,15 @@ func (v *AccessRequestDataObjectWhatInput) GetGlobalPermissions() []string {
 	return v.GlobalPermissions
 }
 
+// Wraps a Mask or FilterRule AccessControl to be applied as an exception to the parent role in an AR with variations.
+type AccessRequestExceptionInput struct {
+	// The Mask or FilterRule AccessControl to apply as an exception to the parent role.
+	AccessControl string `json:"accessControl" doc:"The Mask or FilterRule AccessControl to apply as an exception to the parent role."`
+}
+
+// GetAccessControl returns AccessRequestExceptionInput.AccessControl, and is useful for accessing the field via an interface.
+func (v *AccessRequestExceptionInput) GetAccessControl() string { return v.AccessControl }
+
 // Input type for creating and updating access requests.
 type AccessRequestInput struct {
 	// The display name for the access request.
@@ -2240,6 +2268,8 @@ type AccessRequestInput struct {
 	WorkflowInstanceId    *string `json:"workflowInstanceId,omitempty"`
 	// The Collibra Catalog Asset that originated this access request.
 	CatalogAsset *CatalogAssetInput `json:"catalogAsset,omitempty" doc:"The Collibra Catalog Asset that originated this access request."`
+	// Optional list of Mask or FilterRule exceptions. When non-empty, a GrantVariation is created for the requester instead of the standard Grant flow.
+	Exceptions []AccessRequestExceptionInput `json:"exceptions,omitempty" doc:"Optional list of Mask or FilterRule exceptions. When non-empty, a GrantVariation is created for the requester instead of the standard Grant flow."`
 }
 
 // GetName returns AccessRequestInput.Name, and is useful for accessing the field via an interface.
@@ -2270,6 +2300,9 @@ func (v *AccessRequestInput) GetWorkflowInstanceId() *string { return v.Workflow
 
 // GetCatalogAsset returns AccessRequestInput.CatalogAsset, and is useful for accessing the field via an interface.
 func (v *AccessRequestInput) GetCatalogAsset() *CatalogAssetInput { return v.CatalogAsset }
+
+// GetExceptions returns AccessRequestInput.Exceptions, and is useful for accessing the field via an interface.
+func (v *AccessRequestInput) GetExceptions() []AccessRequestExceptionInput { return v.Exceptions }
 
 // The possible outcomes for an access request
 type AccessRequestOutcome string
@@ -3999,6 +4032,21 @@ const (
 var AllAccessWhoItemType = []AccessWhoItemType{
 	AccessWhoItemTypeWhogrant,
 	AccessWhoItemTypeWhopromise,
+}
+
+// Identifies the provisioning origin of a WHO relationship. Every WHO link carries a source; `Internal` is the default for user / import / DGC / UI-managed links.
+type AccessWhoSource string
+
+const (
+	// Managed by Raito's own paths: regular imports, DGC sync, UI/API edits, ABAC evaluation.
+	AccessWhoSourceInternal AccessWhoSource = "Internal"
+	// Provisioned by SCIM matching against the source access control's `scimAssignments`.
+	AccessWhoSourceScim AccessWhoSource = "Scim"
+)
+
+var AllAccessWhoSource = []AccessWhoSource{
+	AccessWhoSourceInternal,
+	AccessWhoSourceScim,
 }
 
 type ActionType string
