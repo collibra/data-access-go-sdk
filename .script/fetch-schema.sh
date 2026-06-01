@@ -46,19 +46,25 @@ if [ -z "${SERVICE_URL}" ] || [ -z "${LOGIN}" ] || [ -z "${PASSWORD}" ] || [ -z 
   exit 1
 fi
 
-# Ensure the URL has the correct GraphQL endpoint path
-GRAPHQL_PATH="/dataAccess/query"
+# Ensure the URL has the correct GraphQL endpoint path.
+# Overridable via the GRAPHQL_PATH env var (defaults to /dataAccess/query).
+GRAPHQL_PATH="${GRAPHQL_PATH:-/dataAccess/query}"
 if [[ ! "${SERVICE_URL}" =~ "${GRAPHQL_PATH}"$ ]]; then
   # Append the path if it's missing
   SERVICE_URL="${SERVICE_URL}${GRAPHQL_PATH}"
 fi
 
+echo "Introspecting GraphQL endpoint: ${SERVICE_URL}"
+
 # --- Downloading the File using GraphQL Introspection ---
 AUTH_HEADER="Authorization: Basic $(echo -n "${LOGIN}:${PASSWORD}" | base64)"
 
-npx --yes @apollo/rover graph introspect "${SERVICE_URL}" \
+if ! npx --yes @apollo/rover graph introspect "${SERVICE_URL}" \
   --header "${AUTH_HEADER}" \
-  --output "${OUTPUT_FILE}"
+  --output "${OUTPUT_FILE}"; then
+  echo "Error: failed to download GraphQL schema from ${SERVICE_URL}" >&2
+  exit 1
+fi
 
 # Add a success message
 echo "Successfully downloaded GraphQL schema to ${OUTPUT_FILE}"
