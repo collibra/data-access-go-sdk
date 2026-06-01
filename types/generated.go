@@ -99,6 +99,7 @@ type AccessControlWhoOrderByInput = schema.AccessControlWhoOrderByInput
 type AccessRequest = schema.AccessRequest
 type AccessRequestAccessControlWhatInput = schema.AccessRequestAccessControlWhatInput
 type AccessRequestDataObjectWhatInput = schema.AccessRequestDataObjectWhatInput
+type AccessRequestExceptionInput = schema.AccessRequestExceptionInput
 type AccessRequestInput = schema.AccessRequestInput
 type AccessRequestOutcome = schema.AccessRequestOutcome
 
@@ -161,6 +162,13 @@ type AccessWhoItemType = schema.AccessWhoItemType
 const (
 	AccessWhoItemTypeWhogrant   AccessWhoItemType = schema.AccessWhoItemTypeWhogrant
 	AccessWhoItemTypeWhopromise AccessWhoItemType = schema.AccessWhoItemTypeWhopromise
+)
+
+type AccessWhoSource = schema.AccessWhoSource
+
+const (
+	AccessWhoSourceInternal AccessWhoSource = schema.AccessWhoSourceInternal
+	AccessWhoSourceScim     AccessWhoSource = schema.AccessWhoSourceScim
 )
 
 type ActionType = schema.ActionType
@@ -944,6 +952,7 @@ var AllAccessControlState = []AccessControlState{AccessControlStateActive, Acces
 var AllAccessRequestOutcome = []AccessRequestOutcome{AccessRequestOutcomeNone, AccessRequestOutcomeRejected, AccessRequestOutcomeImplemented, AccessRequestOutcomePartiallyimplemented, AccessRequestOutcomeNotimplemented, AccessRequestOutcomeIncomplete, AccessRequestOutcomeCancelled}
 var AllAccessRequestStatus = []AccessRequestStatus{AccessRequestStatusCreated, AccessRequestStatusApproval, AccessRequestStatusImplementation, AccessRequestStatusClosed, AccessRequestStatusDatashareimplementation, AccessRequestStatusDatashareaccept}
 var AllAccessWhoItemType = []AccessWhoItemType{AccessWhoItemTypeWhogrant, AccessWhoItemTypeWhopromise}
+var AllAccessWhoSource = []AccessWhoSource{AccessWhoSourceInternal, AccessWhoSourceScim}
 var AllActionType = []ActionType{ActionTypeRead, ActionTypeWrite, ActionTypeAdmin}
 var AllBinaryExpressionAggregatorOperator = []BinaryExpressionAggregatorOperator{BinaryExpressionAggregatorOperatorAnd, BinaryExpressionAggregatorOperatorOr}
 var AllBinaryExpressionUnaryExpressionOperator = []BinaryExpressionUnaryExpressionOperator{BinaryExpressionUnaryExpressionOperatorNot}
