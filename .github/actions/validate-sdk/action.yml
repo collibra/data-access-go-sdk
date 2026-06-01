@@ -1,0 +1,40 @@
+name: Validate SDK
+description: >-
+  Build, lint and test the Collibra Data Access SDK against the current working
+  tree. Runs as inline steps (composite action) so it validates uncommitted
+  changes such as freshly regenerated GraphQL code.
+
+inputs:
+  collibra-url:
+    description: Collibra server URL used by the integration tests.
+    required: true
+  collibra-user:
+    description: Collibra username used by the integration tests.
+    required: true
+  collibra-password:
+    description: Collibra password used by the integration tests.
+    required: true
+  golangci-lint-version:
+    description: Version of golangci-lint to run.
+    required: false
+    default: v2.12.2
+
+runs:
+  using: composite
+  steps:
+    - name: Build
+      shell: bash
+      run: go build ./...
+
+    - name: Lint
+      uses: golangci/golangci-lint-action@v8
+      with:
+        version: ${{ inputs.golangci-lint-version }}
+
+    - name: Test
+      shell: bash
+      run: make test-coverage
+      env:
+        COLLIBRA_URL: ${{ inputs.collibra-url }}
+        COLLIBRA_USER: ${{ inputs.collibra-user }}
+        COLLIBRA_PASSWORD: ${{ inputs.collibra-password }}
