@@ -3,13 +3,12 @@ run-name: Nightly GQL schema update
 on:
   schedule:
     # Every night at 03:00 UTC
-    - cron: '0 3 * * *'
+    - cron: "0 3 * * *"
   # Allow manual triggering from the Actions tab
   workflow_dispatch:
 
 permissions:
   contents: write
-  pull-requests: write
 
 jobs:
   update-gql:
@@ -33,7 +32,7 @@ jobs:
       - name: Install Node (needed by @apollo/rover for fetch-schema)
         uses: actions/setup-node@v4
         with:
-          node-version: 'lts/*'
+          node-version: "lts/*"
 
       - name: Fetch GraphQL schema
         run: make fetch-schema
@@ -49,6 +48,22 @@ jobs:
       - name: Verify it still builds
         run: go build ./...
 
+      - name: Import GPG key
+        # Fails loud if either secret is empty. No unsigned-tag fallback.
+        uses: crazy-max/ghaction-import-gpg@v6.3.0
+        with:
+          gpg_private_key: ${{ secrets.CICD_GPG_PRIVATE_KEY }}
+          passphrase: ${{ secrets.CICD_GPG_PASSPHRASE }}
+          trust_level: 5
+          git_user_signingkey: true
+          git_tag_gpgsign: true
+
+      - name: Configure git identity
+        run: |
+          git config user.name collibra-cicd
+          git config user.email cicd@collibra.com
+        shell: bash
+
       - name: Create or update pull request
         uses: peter-evans/create-pull-request@v8.1.1
         with:
@@ -56,8 +71,8 @@ jobs:
           # A stable branch so an open PR is updated instead of duplicated
           branch: automation/update-gql-schema
           base: main
-          commit-message: 'chore(gql): update GraphQL schema and generated code'
-          title: 'chore(gql): update GraphQL schema'
+          commit-message: "chore(gql): update GraphQL schema and generated code"
+          title: "chore(gql): update GraphQL schema"
           body: |
             Automated update of the GraphQL schema and generated code.
 
