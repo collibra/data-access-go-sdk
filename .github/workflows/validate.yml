@@ -30,20 +30,12 @@ jobs:
       - name: Mod Tidy
         run: go mod tidy
 
-      - name: Lint
-        uses: golangci/golangci-lint-action@v8
+      - name: Build, lint and test
+        uses: ./.github/actions/validate-sdk
         with:
-          version: v2.12.2
-
-      - name: Build
-        run: go build ./...
-
-      - name: Test
-        run: make test-coverage
-        env:
-          COLLIBRA_URL: ${{ secrets.COLLIBRA_URL }}
-          COLLIBRA_USER: ${{ secrets.COLLIBRA_USER }}
-          COLLIBRA_PASSWORD: ${{ secrets.COLLIBRA_PASSWORD }}
+          collibra-url: ${{ secrets.COLLIBRA_URL }}
+          collibra-user: ${{ secrets.COLLIBRA_USER }}
+          collibra-password: ${{ secrets.COLLIBRA_PASSWORD }}
 
       - name: SonarQube Scan
         uses: sonarsource/sonarqube-scan-action@v5

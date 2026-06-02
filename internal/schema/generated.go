@@ -62,8 +62,10 @@ const (
 	AbacComparisonExpressionComparisonOperatorPropertyequals AbacComparisonExpressionComparisonOperator = "PropertyEquals"
 	// To check if the given value is in a list of values.
 	AbacComparisonExpressionComparisonOperatorPropertyin AbacComparisonExpressionComparisonOperator = "PropertyIn"
-	// To check if the object, or any of its ancestors, has a certain tag.
+	// To check if the object has the tag directly.
 	AbacComparisonExpressionComparisonOperatorHastag AbacComparisonExpressionComparisonOperator = "HasTag"
+	// To check if the object, or any of its ancestors, has a certain tag.
+	AbacComparisonExpressionComparisonOperatorInheritstag AbacComparisonExpressionComparisonOperator = "InheritsTag"
 	// To check if the object, or any of its descendants, has a certain tag.
 	AbacComparisonExpressionComparisonOperatorContainstag AbacComparisonExpressionComparisonOperator = "ContainsTag"
 	// To check if the value start with a certain string.
@@ -78,6 +80,7 @@ var AllAbacComparisonExpressionComparisonOperator = []AbacComparisonExpressionCo
 	AbacComparisonExpressionComparisonOperatorPropertyequals,
 	AbacComparisonExpressionComparisonOperatorPropertyin,
 	AbacComparisonExpressionComparisonOperatorHastag,
+	AbacComparisonExpressionComparisonOperatorInheritstag,
 	AbacComparisonExpressionComparisonOperatorContainstag,
 	AbacComparisonExpressionComparisonOperatorPropertystartswith,
 	AbacComparisonExpressionComparisonOperatorPropertyendswith,
@@ -282,6 +285,8 @@ const (
 	// For grouping users or other groups. The access control doesn't have WHAT items in this case.
 	AccessControlActionGroup      AccessControlAction = "Group"
 	AccessControlActionFilterrule AccessControlAction = "FilterRule"
+	// For a per-access-request grant variation that accumulates approvals from the parent role, masks, and filter rules.
+	AccessControlActionGrantvariation AccessControlAction = "GrantVariation"
 )
 
 var AllAccessControlAction = []AccessControlAction{
@@ -291,6 +296,7 @@ var AllAccessControlAction = []AccessControlAction{
 	AccessControlActionShare,
 	AccessControlActionGroup,
 	AccessControlActionFilterrule,
+	AccessControlActionGrantvariation,
 }
 
 // AccessControlCategoryGrantCategory includes the requested fields of the GraphQL type GrantCategory.
@@ -1155,32 +1161,33 @@ func (v *AccessControlFilterInput) GetDataObjectInWhat() *string { return v.Data
 func (v *AccessControlFilterInput) GetIsRoleAssignableOnly() bool { return v.IsRoleAssignableOnly }
 
 type AccessControlImport struct {
-	ExternalId              string              `json:"externalId"`
-	Name                    string              `json:"name"`
-	NamingHint              string              `json:"namingHint"`
-	Type                    *string             `json:"type,omitempty"`
-	Action                  AccessControlAction `json:"action"`
-	Policy                  *string             `json:"policy,omitempty"`
-	Who                     WhoItemImport       `json:"who"`
-	WhoUnknown              bool                `json:"whoUnknown"`
-	WhatUnknown             bool                `json:"whatUnknown"`
-	NotInternalizable       bool                `json:"notInternalizable"`
-	WhoLocked               bool                `json:"whoLocked"`
-	WhoLockedReason         *string             `json:"whoLockedReason,omitempty"`
-	InheritanceLocked       bool                `json:"inheritanceLocked"`
-	InheritanceLockedReason *string             `json:"inheritanceLockedReason,omitempty"`
-	WhatLocked              bool                `json:"whatLocked"`
-	WhatLockedReason        *string             `json:"whatLockedReason,omitempty"`
-	NameLocked              bool                `json:"nameLocked"`
-	NameLockedReason        *string             `json:"nameLockedReason,omitempty"`
-	DeleteLocked            bool                `json:"deleteLocked"`
-	DeleteLockedReason      *string             `json:"deleteLockedReason,omitempty"`
-	OwnersLocked            bool                `json:"ownersLocked"`
-	OwnersLockedReason      *string             `json:"ownersLockedReason,omitempty"`
-	ActualName              string              `json:"actualName"`
-	Incomplete              bool                `json:"incomplete"`
-	Tags                    []TagImport         `json:"tags,omitempty"`
-	CommonWhatDataObject    *string             `json:"commonWhatDataObject,omitempty"`
+	ExternalId              string                `json:"externalId"`
+	Name                    string                `json:"name"`
+	NamingHint              string                `json:"namingHint"`
+	Type                    *string               `json:"type,omitempty"`
+	Action                  AccessControlAction   `json:"action"`
+	Policy                  *string               `json:"policy,omitempty"`
+	Who                     WhoItemImport         `json:"who"`
+	WhoUnknown              bool                  `json:"whoUnknown"`
+	WhatUnknown             bool                  `json:"whatUnknown"`
+	NotInternalizable       bool                  `json:"notInternalizable"`
+	WhoLocked               bool                  `json:"whoLocked"`
+	WhoLockedReason         *string               `json:"whoLockedReason,omitempty"`
+	InheritanceLocked       bool                  `json:"inheritanceLocked"`
+	InheritanceLockedReason *string               `json:"inheritanceLockedReason,omitempty"`
+	WhatLocked              bool                  `json:"whatLocked"`
+	WhatLockedReason        *string               `json:"whatLockedReason,omitempty"`
+	NameLocked              bool                  `json:"nameLocked"`
+	NameLockedReason        *string               `json:"nameLockedReason,omitempty"`
+	DeleteLocked            bool                  `json:"deleteLocked"`
+	DeleteLockedReason      *string               `json:"deleteLockedReason,omitempty"`
+	OwnersLocked            bool                  `json:"ownersLocked"`
+	OwnersLockedReason      *string               `json:"ownersLockedReason,omitempty"`
+	ActualName              string                `json:"actualName"`
+	Incomplete              bool                  `json:"incomplete"`
+	Tags                    []TagImport           `json:"tags,omitempty"`
+	CommonWhatDataObject    *string               `json:"commonWhatDataObject,omitempty"`
+	ScimAssignments         []ScimAssignmentInput `json:"scimAssignments,omitempty"`
 }
 
 // GetExternalId returns AccessControlImport.ExternalId, and is useful for accessing the field via an interface.
@@ -1261,6 +1268,9 @@ func (v *AccessControlImport) GetTags() []TagImport { return v.Tags }
 // GetCommonWhatDataObject returns AccessControlImport.CommonWhatDataObject, and is useful for accessing the field via an interface.
 func (v *AccessControlImport) GetCommonWhatDataObject() *string { return v.CommonWhatDataObject }
 
+// GetScimAssignments returns AccessControlImport.ScimAssignments, and is useful for accessing the field via an interface.
+func (v *AccessControlImport) GetScimAssignments() []ScimAssignmentInput { return v.ScimAssignments }
+
 // Input object for creating and updating access controls.
 type AccessControlInput struct {
 	// Name of the access control.
@@ -1273,6 +1283,8 @@ type AccessControlInput struct {
 	Description *string `json:"description,omitempty" doc:"Detailed description of the access control."`
 	// In case the access control is a grant (action), this contains the grant category (determining the behavior of the grant).
 	Category *string `json:"category,omitempty" doc:"In case the access control is a grant (action), this contains the grant category (determining the behavior of the grant)."`
+	// State of the access control.
+	State *AccessControlState `json:"state,omitempty" doc:"State of the access control."`
 	// Source defines the source of the access control, if managed by third party tool.
 	Source *string `json:"source,omitempty" doc:"Source defines the source of the access control, if managed by third party tool."`
 	// The list of ABAC rules for calculating the WHO items dynamically.
@@ -1326,6 +1338,9 @@ func (v *AccessControlInput) GetDescription() *string { return v.Description }
 
 // GetCategory returns AccessControlInput.Category, and is useful for accessing the field via an interface.
 func (v *AccessControlInput) GetCategory() *string { return v.Category }
+
+// GetState returns AccessControlInput.State, and is useful for accessing the field via an interface.
+func (v *AccessControlInput) GetState() *AccessControlState { return v.State }
 
 // GetSource returns AccessControlInput.Source, and is useful for accessing the field via an interface.
 func (v *AccessControlInput) GetSource() *string { return v.Source }
@@ -1667,125 +1682,6 @@ var AllAccessControlState = []AccessControlState{
 	AccessControlStateDeleted,
 }
 
-// AccessControlSummary includes the GraphQL fields of AccessControl requested by the fragment AccessControlSummary.
-// The GraphQL type's documentation follows.
-//
-// Represents an access control object in the system. An access control is the abstract model representing grants, masks, filters and groups (determined by the `action` field).
-type AccessControlSummary struct {
-	// Unique identifier of the access control.
-	Id string `json:"id"`
-	// Name of the access control.
-	Name string `json:"name"`
-	// Action of the access control to determine if it is a grant, mask, filter or group.
-	Action AccessControlAction `json:"action"`
-	// State of the access control.
-	State AccessControlState `json:"state"`
-	// In case the access control is a grant (action), this contains the grant category (determining the behavior of the grant).
-	Category *AccessControlSummaryCategoryGrantCategory `json:"category"`
-}
-
-// GetId returns AccessControlSummary.Id, and is useful for accessing the field via an interface.
-func (v *AccessControlSummary) GetId() string { return v.Id }
-
-// GetName returns AccessControlSummary.Name, and is useful for accessing the field via an interface.
-func (v *AccessControlSummary) GetName() string { return v.Name }
-
-// GetAction returns AccessControlSummary.Action, and is useful for accessing the field via an interface.
-func (v *AccessControlSummary) GetAction() AccessControlAction { return v.Action }
-
-// GetState returns AccessControlSummary.State, and is useful for accessing the field via an interface.
-func (v *AccessControlSummary) GetState() AccessControlState { return v.State }
-
-// GetCategory returns AccessControlSummary.Category, and is useful for accessing the field via an interface.
-func (v *AccessControlSummary) GetCategory() *AccessControlSummaryCategoryGrantCategory {
-	return v.Category
-}
-
-// AccessControlSummaryCategoryGrantCategory includes the requested fields of the GraphQL type GrantCategory.
-// The GraphQL type's documentation follows.
-//
-// Represent a grant category. Grant categories are used to categorize access controls with `action=Grant` to allow structuring them better.
-type AccessControlSummaryCategoryGrantCategory struct {
-	GrantCategory `json:"-"`
-}
-
-// GetId returns AccessControlSummaryCategoryGrantCategory.Id, and is useful for accessing the field via an interface.
-func (v *AccessControlSummaryCategoryGrantCategory) GetId() string { return v.GrantCategory.Id }
-
-// GetName returns AccessControlSummaryCategoryGrantCategory.Name, and is useful for accessing the field via an interface.
-func (v *AccessControlSummaryCategoryGrantCategory) GetName() string { return v.GrantCategory.Name }
-
-// GetNamePlural returns AccessControlSummaryCategoryGrantCategory.NamePlural, and is useful for accessing the field via an interface.
-func (v *AccessControlSummaryCategoryGrantCategory) GetNamePlural() string {
-	return v.GrantCategory.NamePlural
-}
-
-// GetIsSystem returns AccessControlSummaryCategoryGrantCategory.IsSystem, and is useful for accessing the field via an interface.
-func (v *AccessControlSummaryCategoryGrantCategory) GetIsSystem() bool {
-	return v.GrantCategory.IsSystem
-}
-
-// GetIsDefault returns AccessControlSummaryCategoryGrantCategory.IsDefault, and is useful for accessing the field via an interface.
-func (v *AccessControlSummaryCategoryGrantCategory) GetIsDefault() bool {
-	return v.GrantCategory.IsDefault
-}
-
-func (v *AccessControlSummaryCategoryGrantCategory) UnmarshalJSON(b []byte) error {
-
-	if string(b) == "null" {
-		return nil
-	}
-
-	var firstPass struct {
-		*AccessControlSummaryCategoryGrantCategory
-		graphql.NoUnmarshalJSON
-	}
-	firstPass.AccessControlSummaryCategoryGrantCategory = v
-
-	err := json.Unmarshal(b, &firstPass)
-	if err != nil {
-		return err
-	}
-
-	err = json.Unmarshal(
-		b, &v.GrantCategory)
-	if err != nil {
-		return err
-	}
-	return nil
-}
-
-type __premarshalAccessControlSummaryCategoryGrantCategory struct {
-	Id string `json:"id"`
-
-	Name string `json:"name"`
-
-	NamePlural string `json:"namePlural"`
-
-	IsSystem bool `json:"isSystem"`
-
-	IsDefault bool `json:"isDefault"`
-}
-
-func (v *AccessControlSummaryCategoryGrantCategory) MarshalJSON() ([]byte, error) {
-	premarshaled, err := v.__premarshalJSON()
-	if err != nil {
-		return nil, err
-	}
-	return json.Marshal(premarshaled)
-}
-
-func (v *AccessControlSummaryCategoryGrantCategory) __premarshalJSON() (*__premarshalAccessControlSummaryCategoryGrantCategory, error) {
-	var retval __premarshalAccessControlSummaryCategoryGrantCategory
-
-	retval.Id = v.GrantCategory.Id
-	retval.Name = v.GrantCategory.Name
-	retval.NamePlural = v.GrantCategory.NamePlural
-	retval.IsSystem = v.GrantCategory.IsSystem
-	retval.IsDefault = v.GrantCategory.IsDefault
-	return &retval, nil
-}
-
 // AccessControlSyncData includes the requested fields of the GraphQL type SyncData.
 // The GraphQL type's documentation follows.
 //
@@ -2021,6 +1917,8 @@ type AccessControlWhatAccessControlFilterInput struct {
 	Owners     []string              `json:"owners,omitempty"`
 	HasTags    []TagFilter           `json:"hasTags,omitempty"`
 	Search     *string               `json:"search,omitempty"`
+	// Narrow the list to inverse WHO links provisioned by a specific source. Pass `Internal` to return only Raito-managed inheritance, or `Scim` for SCIM-provisioned links.
+	WhoSource *AccessWhoSource `json:"whoSource,omitempty" doc:"Narrow the list to inverse WHO links provisioned by a specific source. Pass 'Internal' to return only Raito-managed inheritance, or 'Scim' for SCIM-provisioned links."`
 }
 
 // GetActions returns AccessControlWhatAccessControlFilterInput.Actions, and is useful for accessing the field via an interface.
@@ -2039,6 +1937,11 @@ func (v *AccessControlWhatAccessControlFilterInput) GetHasTags() []TagFilter { r
 
 // GetSearch returns AccessControlWhatAccessControlFilterInput.Search, and is useful for accessing the field via an interface.
 func (v *AccessControlWhatAccessControlFilterInput) GetSearch() *string { return v.Search }
+
+// GetWhoSource returns AccessControlWhatAccessControlFilterInput.WhoSource, and is useful for accessing the field via an interface.
+func (v *AccessControlWhatAccessControlFilterInput) GetWhoSource() *AccessWhoSource {
+	return v.WhoSource
+}
 
 // Input object to reference a data object by its `fullName`.
 type AccessControlWhatDoByNameInput struct {
@@ -2198,10 +2101,14 @@ type AccessControlWhoListFilter struct {
 	TargetAccessControl *string `json:"targetAccessControl,omitempty" doc:"Only get the WHO item for a specific access control."`
 	// Only get WHO items with a specific type (User or AccessControl)
 	EntityType *EntityType `json:"entityType,omitempty" doc:"Only get WHO items with a specific type (User or AccessControl)"`
+	// Only get AccessControl WHO items with this action (e.g. `GrantVariation` to list a role's variations). Deleted access controls are excluded when this filter is set. Only applicable to the non-unpacked who-list.
+	AccessControlAction *AccessControlAction `json:"accessControlAction,omitempty" doc:"Only get AccessControl WHO items with this action (e.g. 'GrantVariation' to list a role's variations). Deleted access controls are excluded when this filter is set. Only applicable to the non-unpacked who-list."`
 	// The search string to use (will do a case-insensitive 'contains').
 	Search *string `json:"search,omitempty" doc:"The search string to use (will do a case-insensitive 'contains')."`
 	// Optional ABAC rule to filter the who-list on. Only applicable when requesting users who-list without unpacking
 	AbacRule *string `json:"abacRule,omitempty" doc:"Optional ABAC rule to filter the who-list on. Only applicable when requesting users who-list without unpacking"`
+	// Narrow the list to WHO links provisioned by a specific source. Pass `Internal` to return only Raito-managed links, or `Scim` for SCIM-provisioned ones. Only applies when not unpacking.
+	WhoSource *AccessWhoSource `json:"whoSource,omitempty" doc:"Narrow the list to WHO links provisioned by a specific source. Pass 'Internal' to return only Raito-managed links, or 'Scim' for SCIM-provisioned ones. Only applies when not unpacking."`
 }
 
 // GetWhoType returns AccessControlWhoListFilter.WhoType, and is useful for accessing the field via an interface.
@@ -2216,11 +2123,19 @@ func (v *AccessControlWhoListFilter) GetTargetAccessControl() *string { return v
 // GetEntityType returns AccessControlWhoListFilter.EntityType, and is useful for accessing the field via an interface.
 func (v *AccessControlWhoListFilter) GetEntityType() *EntityType { return v.EntityType }
 
+// GetAccessControlAction returns AccessControlWhoListFilter.AccessControlAction, and is useful for accessing the field via an interface.
+func (v *AccessControlWhoListFilter) GetAccessControlAction() *AccessControlAction {
+	return v.AccessControlAction
+}
+
 // GetSearch returns AccessControlWhoListFilter.Search, and is useful for accessing the field via an interface.
 func (v *AccessControlWhoListFilter) GetSearch() *string { return v.Search }
 
 // GetAbacRule returns AccessControlWhoListFilter.AbacRule, and is useful for accessing the field via an interface.
 func (v *AccessControlWhoListFilter) GetAbacRule() *string { return v.AbacRule }
+
+// GetWhoSource returns AccessControlWhoListFilter.WhoSource, and is useful for accessing the field via an interface.
+func (v *AccessControlWhoListFilter) GetWhoSource() *AccessWhoSource { return v.WhoSource }
 
 // Defines the sorting configuration for the access control WHO list.
 type AccessControlWhoOrderByInput struct {
@@ -2229,40 +2144,6 @@ type AccessControlWhoOrderByInput struct {
 
 // GetName returns AccessControlWhoOrderByInput.Name, and is useful for accessing the field via an interface.
 func (v *AccessControlWhoOrderByInput) GetName() *Sort { return v.Name }
-
-// For filtering access elements. When using multiple filter options, all these options need to apply to return the item.
-type AccessFilterInput struct {
-	// The actions the access controls should have.
-	Actions []AccessControlAction `json:"actions,omitempty" doc:"The actions the access controls should have."`
-	// The grant categories the access control should be in.
-	Categories []string `json:"categories,omitempty" doc:"The grant categories the access control should be in."`
-	// The states the access controls should be in.
-	States []AccessControlState `json:"states,omitempty" doc:"The states the access controls should be in."`
-	// The search string to use (will do a case-insensitive 'contains').
-	Search *string `json:"search,omitempty" doc:"The search string to use (will do a case-insensitive 'contains')."`
-	// The access control must have any of the given owners (by user ID).
-	Owners []string `json:"owners,omitempty" doc:"The access control must have any of the given owners (by user ID)."`
-	// Filter by which tags the access control needs to have.
-	HasTags []TagFilter `json:"hasTags,omitempty" doc:"Filter by which tags the access control needs to have."`
-}
-
-// GetActions returns AccessFilterInput.Actions, and is useful for accessing the field via an interface.
-func (v *AccessFilterInput) GetActions() []AccessControlAction { return v.Actions }
-
-// GetCategories returns AccessFilterInput.Categories, and is useful for accessing the field via an interface.
-func (v *AccessFilterInput) GetCategories() []string { return v.Categories }
-
-// GetStates returns AccessFilterInput.States, and is useful for accessing the field via an interface.
-func (v *AccessFilterInput) GetStates() []AccessControlState { return v.States }
-
-// GetSearch returns AccessFilterInput.Search, and is useful for accessing the field via an interface.
-func (v *AccessFilterInput) GetSearch() *string { return v.Search }
-
-// GetOwners returns AccessFilterInput.Owners, and is useful for accessing the field via an interface.
-func (v *AccessFilterInput) GetOwners() []string { return v.Owners }
-
-// GetHasTags returns AccessFilterInput.HasTags, and is useful for accessing the field via an interface.
-func (v *AccessFilterInput) GetHasTags() []TagFilter { return v.HasTags }
 
 // AccessRequest includes the GraphQL fields of AccessRequest requested by the fragment AccessRequest.
 // The GraphQL type's documentation follows.
@@ -2360,6 +2241,15 @@ func (v *AccessRequestDataObjectWhatInput) GetGlobalPermissions() []string {
 	return v.GlobalPermissions
 }
 
+// Wraps a Mask or FilterRule AccessControl to be applied as an exception to the parent role in an AR with variations.
+type AccessRequestExceptionInput struct {
+	// The Mask or FilterRule AccessControl to apply as an exception to the parent role.
+	AccessControl string `json:"accessControl" doc:"The Mask or FilterRule AccessControl to apply as an exception to the parent role."`
+}
+
+// GetAccessControl returns AccessRequestExceptionInput.AccessControl, and is useful for accessing the field via an interface.
+func (v *AccessRequestExceptionInput) GetAccessControl() string { return v.AccessControl }
+
 // Input type for creating and updating access requests.
 type AccessRequestInput struct {
 	// The display name for the access request.
@@ -2378,6 +2268,8 @@ type AccessRequestInput struct {
 	WorkflowInstanceId    *string `json:"workflowInstanceId,omitempty"`
 	// The Collibra Catalog Asset that originated this access request.
 	CatalogAsset *CatalogAssetInput `json:"catalogAsset,omitempty" doc:"The Collibra Catalog Asset that originated this access request."`
+	// Optional list of Mask or FilterRule exceptions. When non-empty, a GrantVariation is created for the requester instead of the standard Grant flow.
+	Exceptions []AccessRequestExceptionInput `json:"exceptions,omitempty" doc:"Optional list of Mask or FilterRule exceptions. When non-empty, a GrantVariation is created for the requester instead of the standard Grant flow."`
 }
 
 // GetName returns AccessRequestInput.Name, and is useful for accessing the field via an interface.
@@ -2408,6 +2300,9 @@ func (v *AccessRequestInput) GetWorkflowInstanceId() *string { return v.Workflow
 
 // GetCatalogAsset returns AccessRequestInput.CatalogAsset, and is useful for accessing the field via an interface.
 func (v *AccessRequestInput) GetCatalogAsset() *CatalogAssetInput { return v.CatalogAsset }
+
+// GetExceptions returns AccessRequestInput.Exceptions, and is useful for accessing the field via an interface.
+func (v *AccessRequestInput) GetExceptions() []AccessRequestExceptionInput { return v.Exceptions }
 
 // The possible outcomes for an access request
 type AccessRequestOutcome string
@@ -4137,6 +4032,21 @@ const (
 var AllAccessWhoItemType = []AccessWhoItemType{
 	AccessWhoItemTypeWhogrant,
 	AccessWhoItemTypeWhopromise,
+}
+
+// Identifies the provisioning origin of a WHO relationship. Every WHO link carries a source; `Internal` is the default for user / import / DGC / UI-managed links.
+type AccessWhoSource string
+
+const (
+	// Managed by Raito's own paths: regular imports, DGC sync, UI/API edits, ABAC evaluation.
+	AccessWhoSourceInternal AccessWhoSource = "Internal"
+	// Provisioned by SCIM matching against the source access control's `scimAssignments`.
+	AccessWhoSourceScim AccessWhoSource = "Scim"
+)
+
+var AllAccessWhoSource = []AccessWhoSource{
+	AccessWhoSourceInternal,
+	AccessWhoSourceScim,
 }
 
 type ActionType string
@@ -7989,20 +7899,6 @@ type CurrentUserResponse struct {
 // GetCurrentUser returns CurrentUserResponse.CurrentUser, and is useful for accessing the field via an interface.
 func (v *CurrentUserResponse) GetCurrentUser() *CurrentUserCurrentUser { return v.CurrentUser }
 
-// Specifies the sorting options for sorting the users that have access on a data object.
-type DataAccessReturnItemOrderByInput struct {
-	User          *UserOrderByInput          `json:"user,omitempty"`
-	AccessControl *AccessControlOrderByInput `json:"accessControl,omitempty"`
-}
-
-// GetUser returns DataAccessReturnItemOrderByInput.User, and is useful for accessing the field via an interface.
-func (v *DataAccessReturnItemOrderByInput) GetUser() *UserOrderByInput { return v.User }
-
-// GetAccessControl returns DataAccessReturnItemOrderByInput.AccessControl, and is useful for accessing the field via an interface.
-func (v *DataAccessReturnItemOrderByInput) GetAccessControl() *AccessControlOrderByInput {
-	return v.AccessControl
-}
-
 // Input object to create an aggregator expression (e.g. `X OR Y OR Z`).
 type DataComparisonExpressionAggregatorInput struct {
 	// The operator to use.
@@ -11057,6 +10953,10 @@ type DataSourceMetaDataInput struct {
 	DataObjectTypes []DataObjectTypeInput `json:"dataObjectTypes,omitempty" doc:"The list of data object types that are available in this data source."`
 	// The list of access control types that are available in this data source.
 	AccessControlTypes []AccessControlTypeInput `json:"accessControlTypes,omitempty" doc:"The list of access control types that are available in this data source."`
+	// The access control type used to represent SCIM-provisioned groups if it match with a action of the 'Grant'.
+	// Must match the `type` of one of the supplied `accessControlTypes`.
+	// If null, the current value is left unchanged. If an empty string, the access control action 'Group' is used.
+	ScimAccessControlType *string `json:"scimAccessControlType,omitempty" doc:"The access control type used to represent SCIM-provisioned groups if it match with a action of the 'Grant'. Must match the 'type' of one of the supplied 'accessControlTypes'. If null, the current value is left unchanged. If an empty string, the access control action 'Group' is used."`
 	// SupportedFeatures is a list of features supported by the data source
 	// Currently supported features: columnMasking, rowFiltering, columnFiltering, dataSharing
 	SupportedFeatures []string `json:"supportedFeatures,omitempty" doc:"SupportedFeatures is a list of features supported by the data source Currently supported features: columnMasking, rowFiltering, columnFiltering, dataSharing"`
@@ -11082,6 +10982,9 @@ func (v *DataSourceMetaDataInput) GetDataObjectTypes() []DataObjectTypeInput {
 func (v *DataSourceMetaDataInput) GetAccessControlTypes() []AccessControlTypeInput {
 	return v.AccessControlTypes
 }
+
+// GetScimAccessControlType returns DataSourceMetaDataInput.ScimAccessControlType, and is useful for accessing the field via an interface.
+func (v *DataSourceMetaDataInput) GetScimAccessControlType() *string { return v.ScimAccessControlType }
 
 // GetSupportedFeatures returns DataSourceMetaDataInput.SupportedFeatures, and is useful for accessing the field via an interface.
 func (v *DataSourceMetaDataInput) GetSupportedFeatures() []string { return v.SupportedFeatures }
@@ -19837,484 +19740,6 @@ func (v *GetAccessControlWhoListResponse) __premarshalJSON() (*__premarshalGetAc
 	return &retval, nil
 }
 
-// GetDataObjectAccessListDataObject includes the requested fields of the GraphQL type DataObject.
-// The GraphQL type's documentation follows.
-//
-// Represents a data object in Collibra Data Access. These represents all the data entities in a data source (e.g. database, schema, table, column, folder, file, ...).
-type GetDataObjectAccessListDataObject struct {
-	// List the users that have access to this data object, together with the permissions the user has and through which access controls these permissions are acquired.
-	DistinctAccess GetDataObjectAccessListDataObjectDistinctAccessGroupedDataAccessReturnItemConnectionResult `json:"-"`
-}
-
-// GetDistinctAccess returns GetDataObjectAccessListDataObject.DistinctAccess, and is useful for accessing the field via an interface.
-func (v *GetDataObjectAccessListDataObject) GetDistinctAccess() GetDataObjectAccessListDataObjectDistinctAccessGroupedDataAccessReturnItemConnectionResult {
-	return v.DistinctAccess
-}
-
-func (v *GetDataObjectAccessListDataObject) UnmarshalJSON(b []byte) error {
-
-	if string(b) == "null" {
-		return nil
-	}
-
-	var firstPass struct {
-		*GetDataObjectAccessListDataObject
-		DistinctAccess json.RawMessage `json:"distinctAccess"`
-		graphql.NoUnmarshalJSON
-	}
-	firstPass.GetDataObjectAccessListDataObject = v
-
-	err := json.Unmarshal(b, &firstPass)
-	if err != nil {
-		return err
-	}
-
-	{
-		dst := &v.DistinctAccess
-		src := firstPass.DistinctAccess
-		if len(src) != 0 && string(src) != "null" {
-			err = __unmarshalGetDataObjectAccessListDataObjectDistinctAccessGroupedDataAccessReturnItemConnectionResult(
-				src, dst)
-			if err != nil {
-				return fmt.Errorf(
-					"unable to unmarshal GetDataObjectAccessListDataObject.DistinctAccess: %w", err)
-			}
-		}
-	}
-	return nil
-}
-
-type __premarshalGetDataObjectAccessListDataObject struct {
-	DistinctAccess json.RawMessage `json:"distinctAccess"`
-}
-
-func (v *GetDataObjectAccessListDataObject) MarshalJSON() ([]byte, error) {
-	premarshaled, err := v.__premarshalJSON()
-	if err != nil {
-		return nil, err
-	}
-	return json.Marshal(premarshaled)
-}
-
-func (v *GetDataObjectAccessListDataObject) __premarshalJSON() (*__premarshalGetDataObjectAccessListDataObject, error) {
-	var retval __premarshalGetDataObjectAccessListDataObject
-
-	{
-
-		dst := &retval.DistinctAccess
-		src := v.DistinctAccess
-		var err error
-		*dst, err = __marshalGetDataObjectAccessListDataObjectDistinctAccessGroupedDataAccessReturnItemConnectionResult(
-			&src)
-		if err != nil {
-			return nil, fmt.Errorf(
-				"unable to marshal GetDataObjectAccessListDataObject.DistinctAccess: %w", err)
-		}
-	}
-	return &retval, nil
-}
-
-// GetDataObjectAccessListDataObjectDistinctAccessGroupedDataAccessReturnItemConnection includes the requested fields of the GraphQL type GroupedDataAccessReturnItemConnection.
-// The GraphQL type's documentation follows.
-//
-// The connection type for paginated lists of [GroupedDataAccessReturnItem]({{Types.GroupedDataAccessReturnItem}}).
-type GetDataObjectAccessListDataObjectDistinctAccessGroupedDataAccessReturnItemConnection struct {
-	Typename                                                                         *string `json:"__typename"`
-	GroupedDataAccessReturnItemConnectionResultGroupedDataAccessReturnItemConnection `json:"-"`
-}
-
-// GetTypename returns GetDataObjectAccessListDataObjectDistinctAccessGroupedDataAccessReturnItemConnection.Typename, and is useful for accessing the field via an interface.
-func (v *GetDataObjectAccessListDataObjectDistinctAccessGroupedDataAccessReturnItemConnection) GetTypename() *string {
-	return v.Typename
-}
-
-// GetPageInfo returns GetDataObjectAccessListDataObjectDistinctAccessGroupedDataAccessReturnItemConnection.PageInfo, and is useful for accessing the field via an interface.
-func (v *GetDataObjectAccessListDataObjectDistinctAccessGroupedDataAccessReturnItemConnection) GetPageInfo() GroupedDataAccessReturnItemConnectionPageInfo {
-	return v.GroupedDataAccessReturnItemConnectionResultGroupedDataAccessReturnItemConnection.GroupedDataAccessReturnItemConnection.PageInfo
-}
-
-// GetEdges returns GetDataObjectAccessListDataObjectDistinctAccessGroupedDataAccessReturnItemConnection.Edges, and is useful for accessing the field via an interface.
-func (v *GetDataObjectAccessListDataObjectDistinctAccessGroupedDataAccessReturnItemConnection) GetEdges() []GroupedDataAccessReturnItemConnectionEdgesGroupedDataAccessReturnItemEdge {
-	return v.GroupedDataAccessReturnItemConnectionResultGroupedDataAccessReturnItemConnection.GroupedDataAccessReturnItemConnection.Edges
-}
-
-func (v *GetDataObjectAccessListDataObjectDistinctAccessGroupedDataAccessReturnItemConnection) UnmarshalJSON(b []byte) error {
-
-	if string(b) == "null" {
-		return nil
-	}
-
-	var firstPass struct {
-		*GetDataObjectAccessListDataObjectDistinctAccessGroupedDataAccessReturnItemConnection
-		graphql.NoUnmarshalJSON
-	}
-	firstPass.GetDataObjectAccessListDataObjectDistinctAccessGroupedDataAccessReturnItemConnection = v
-
-	err := json.Unmarshal(b, &firstPass)
-	if err != nil {
-		return err
-	}
-
-	err = json.Unmarshal(
-		b, &v.GroupedDataAccessReturnItemConnectionResultGroupedDataAccessReturnItemConnection)
-	if err != nil {
-		return err
-	}
-	return nil
-}
-
-type __premarshalGetDataObjectAccessListDataObjectDistinctAccessGroupedDataAccessReturnItemConnection struct {
-	Typename *string `json:"__typename"`
-
-	PageInfo GroupedDataAccessReturnItemConnectionPageInfo `json:"pageInfo"`
-
-	Edges []GroupedDataAccessReturnItemConnectionEdgesGroupedDataAccessReturnItemEdge `json:"edges"`
-}
-
-func (v *GetDataObjectAccessListDataObjectDistinctAccessGroupedDataAccessReturnItemConnection) MarshalJSON() ([]byte, error) {
-	premarshaled, err := v.__premarshalJSON()
-	if err != nil {
-		return nil, err
-	}
-	return json.Marshal(premarshaled)
-}
-
-func (v *GetDataObjectAccessListDataObjectDistinctAccessGroupedDataAccessReturnItemConnection) __premarshalJSON() (*__premarshalGetDataObjectAccessListDataObjectDistinctAccessGroupedDataAccessReturnItemConnection, error) {
-	var retval __premarshalGetDataObjectAccessListDataObjectDistinctAccessGroupedDataAccessReturnItemConnection
-
-	retval.Typename = v.Typename
-	retval.PageInfo = v.GroupedDataAccessReturnItemConnectionResultGroupedDataAccessReturnItemConnection.GroupedDataAccessReturnItemConnection.PageInfo
-	retval.Edges = v.GroupedDataAccessReturnItemConnectionResultGroupedDataAccessReturnItemConnection.GroupedDataAccessReturnItemConnection.Edges
-	return &retval, nil
-}
-
-// GetDataObjectAccessListDataObjectDistinctAccessGroupedDataAccessReturnItemConnectionResult includes the requested fields of the GraphQL interface GroupedDataAccessReturnItemConnectionResult.
-//
-// GetDataObjectAccessListDataObjectDistinctAccessGroupedDataAccessReturnItemConnectionResult is implemented by the following types:
-// GetDataObjectAccessListDataObjectDistinctAccessGroupedDataAccessReturnItemConnection
-// GetDataObjectAccessListDataObjectDistinctAccessInvalidInputError
-// GetDataObjectAccessListDataObjectDistinctAccessNotFoundError
-// GetDataObjectAccessListDataObjectDistinctAccessPermissionDeniedError
-type GetDataObjectAccessListDataObjectDistinctAccessGroupedDataAccessReturnItemConnectionResult interface {
-	implementsGraphQLInterfaceGetDataObjectAccessListDataObjectDistinctAccessGroupedDataAccessReturnItemConnectionResult()
-	// GetTypename returns the receiver's concrete GraphQL type-name (see interface doc for possible values).
-	GetTypename() *string
-	GroupedDataAccessReturnItemConnectionResult
-}
-
-func (v *GetDataObjectAccessListDataObjectDistinctAccessGroupedDataAccessReturnItemConnection) implementsGraphQLInterfaceGetDataObjectAccessListDataObjectDistinctAccessGroupedDataAccessReturnItemConnectionResult() {
-}
-func (v *GetDataObjectAccessListDataObjectDistinctAccessInvalidInputError) implementsGraphQLInterfaceGetDataObjectAccessListDataObjectDistinctAccessGroupedDataAccessReturnItemConnectionResult() {
-}
-func (v *GetDataObjectAccessListDataObjectDistinctAccessNotFoundError) implementsGraphQLInterfaceGetDataObjectAccessListDataObjectDistinctAccessGroupedDataAccessReturnItemConnectionResult() {
-}
-func (v *GetDataObjectAccessListDataObjectDistinctAccessPermissionDeniedError) implementsGraphQLInterfaceGetDataObjectAccessListDataObjectDistinctAccessGroupedDataAccessReturnItemConnectionResult() {
-}
-
-func __unmarshalGetDataObjectAccessListDataObjectDistinctAccessGroupedDataAccessReturnItemConnectionResult(b []byte, v *GetDataObjectAccessListDataObjectDistinctAccessGroupedDataAccessReturnItemConnectionResult) error {
-	if string(b) == "null" {
-		return nil
-	}
-
-	var tn struct {
-		TypeName string `json:"__typename"`
-	}
-	err := json.Unmarshal(b, &tn)
-	if err != nil {
-		return err
-	}
-
-	switch tn.TypeName {
-	case "GroupedDataAccessReturnItemConnection":
-		*v = new(GetDataObjectAccessListDataObjectDistinctAccessGroupedDataAccessReturnItemConnection)
-		return json.Unmarshal(b, *v)
-	case "InvalidInputError":
-		*v = new(GetDataObjectAccessListDataObjectDistinctAccessInvalidInputError)
-		return json.Unmarshal(b, *v)
-	case "NotFoundError":
-		*v = new(GetDataObjectAccessListDataObjectDistinctAccessNotFoundError)
-		return json.Unmarshal(b, *v)
-	case "PermissionDeniedError":
-		*v = new(GetDataObjectAccessListDataObjectDistinctAccessPermissionDeniedError)
-		return json.Unmarshal(b, *v)
-	case "":
-		return fmt.Errorf(
-			"response was missing GroupedDataAccessReturnItemConnectionResult.__typename")
-	default:
-		return fmt.Errorf(
-			`unexpected concrete type for GetDataObjectAccessListDataObjectDistinctAccessGroupedDataAccessReturnItemConnectionResult: "%v"`, tn.TypeName)
-	}
-}
-
-func __marshalGetDataObjectAccessListDataObjectDistinctAccessGroupedDataAccessReturnItemConnectionResult(v *GetDataObjectAccessListDataObjectDistinctAccessGroupedDataAccessReturnItemConnectionResult) ([]byte, error) {
-
-	var typename string
-	switch v := (*v).(type) {
-	case *GetDataObjectAccessListDataObjectDistinctAccessGroupedDataAccessReturnItemConnection:
-		typename = "GroupedDataAccessReturnItemConnection"
-
-		premarshaled, err := v.__premarshalJSON()
-		if err != nil {
-			return nil, err
-		}
-		result := struct {
-			TypeName string `json:"__typename"`
-			*__premarshalGetDataObjectAccessListDataObjectDistinctAccessGroupedDataAccessReturnItemConnection
-		}{typename, premarshaled}
-		return json.Marshal(result)
-	case *GetDataObjectAccessListDataObjectDistinctAccessInvalidInputError:
-		typename = "InvalidInputError"
-
-		premarshaled, err := v.__premarshalJSON()
-		if err != nil {
-			return nil, err
-		}
-		result := struct {
-			TypeName string `json:"__typename"`
-			*__premarshalGetDataObjectAccessListDataObjectDistinctAccessInvalidInputError
-		}{typename, premarshaled}
-		return json.Marshal(result)
-	case *GetDataObjectAccessListDataObjectDistinctAccessNotFoundError:
-		typename = "NotFoundError"
-
-		premarshaled, err := v.__premarshalJSON()
-		if err != nil {
-			return nil, err
-		}
-		result := struct {
-			TypeName string `json:"__typename"`
-			*__premarshalGetDataObjectAccessListDataObjectDistinctAccessNotFoundError
-		}{typename, premarshaled}
-		return json.Marshal(result)
-	case *GetDataObjectAccessListDataObjectDistinctAccessPermissionDeniedError:
-		typename = "PermissionDeniedError"
-
-		premarshaled, err := v.__premarshalJSON()
-		if err != nil {
-			return nil, err
-		}
-		result := struct {
-			TypeName string `json:"__typename"`
-			*__premarshalGetDataObjectAccessListDataObjectDistinctAccessPermissionDeniedError
-		}{typename, premarshaled}
-		return json.Marshal(result)
-	case nil:
-		return []byte("null"), nil
-	default:
-		return nil, fmt.Errorf(
-			`unexpected concrete type for GetDataObjectAccessListDataObjectDistinctAccessGroupedDataAccessReturnItemConnectionResult: "%T"`, v)
-	}
-}
-
-// GetDataObjectAccessListDataObjectDistinctAccessInvalidInputError includes the requested fields of the GraphQL type InvalidInputError.
-// The GraphQL type's documentation follows.
-//
-// Error when some of the input parameters in the request are not valid.
-type GetDataObjectAccessListDataObjectDistinctAccessInvalidInputError struct {
-	Typename                                                     *string `json:"__typename"`
-	GroupedDataAccessReturnItemConnectionResultInvalidInputError `json:"-"`
-}
-
-// GetTypename returns GetDataObjectAccessListDataObjectDistinctAccessInvalidInputError.Typename, and is useful for accessing the field via an interface.
-func (v *GetDataObjectAccessListDataObjectDistinctAccessInvalidInputError) GetTypename() *string {
-	return v.Typename
-}
-
-// GetMessage returns GetDataObjectAccessListDataObjectDistinctAccessInvalidInputError.Message, and is useful for accessing the field via an interface.
-func (v *GetDataObjectAccessListDataObjectDistinctAccessInvalidInputError) GetMessage() string {
-	return v.GroupedDataAccessReturnItemConnectionResultInvalidInputError.InvalidInputError.Message
-}
-
-func (v *GetDataObjectAccessListDataObjectDistinctAccessInvalidInputError) UnmarshalJSON(b []byte) error {
-
-	if string(b) == "null" {
-		return nil
-	}
-
-	var firstPass struct {
-		*GetDataObjectAccessListDataObjectDistinctAccessInvalidInputError
-		graphql.NoUnmarshalJSON
-	}
-	firstPass.GetDataObjectAccessListDataObjectDistinctAccessInvalidInputError = v
-
-	err := json.Unmarshal(b, &firstPass)
-	if err != nil {
-		return err
-	}
-
-	err = json.Unmarshal(
-		b, &v.GroupedDataAccessReturnItemConnectionResultInvalidInputError)
-	if err != nil {
-		return err
-	}
-	return nil
-}
-
-type __premarshalGetDataObjectAccessListDataObjectDistinctAccessInvalidInputError struct {
-	Typename *string `json:"__typename"`
-
-	Message string `json:"message"`
-}
-
-func (v *GetDataObjectAccessListDataObjectDistinctAccessInvalidInputError) MarshalJSON() ([]byte, error) {
-	premarshaled, err := v.__premarshalJSON()
-	if err != nil {
-		return nil, err
-	}
-	return json.Marshal(premarshaled)
-}
-
-func (v *GetDataObjectAccessListDataObjectDistinctAccessInvalidInputError) __premarshalJSON() (*__premarshalGetDataObjectAccessListDataObjectDistinctAccessInvalidInputError, error) {
-	var retval __premarshalGetDataObjectAccessListDataObjectDistinctAccessInvalidInputError
-
-	retval.Typename = v.Typename
-	retval.Message = v.GroupedDataAccessReturnItemConnectionResultInvalidInputError.InvalidInputError.Message
-	return &retval, nil
-}
-
-// GetDataObjectAccessListDataObjectDistinctAccessNotFoundError includes the requested fields of the GraphQL type NotFoundError.
-// The GraphQL type's documentation follows.
-//
-// Error when the user is requesting a resource that does not exist.
-type GetDataObjectAccessListDataObjectDistinctAccessNotFoundError struct {
-	Typename                                                 *string `json:"__typename"`
-	GroupedDataAccessReturnItemConnectionResultNotFoundError `json:"-"`
-}
-
-// GetTypename returns GetDataObjectAccessListDataObjectDistinctAccessNotFoundError.Typename, and is useful for accessing the field via an interface.
-func (v *GetDataObjectAccessListDataObjectDistinctAccessNotFoundError) GetTypename() *string {
-	return v.Typename
-}
-
-// GetMessage returns GetDataObjectAccessListDataObjectDistinctAccessNotFoundError.Message, and is useful for accessing the field via an interface.
-func (v *GetDataObjectAccessListDataObjectDistinctAccessNotFoundError) GetMessage() string {
-	return v.GroupedDataAccessReturnItemConnectionResultNotFoundError.NotFoundError.Message
-}
-
-func (v *GetDataObjectAccessListDataObjectDistinctAccessNotFoundError) UnmarshalJSON(b []byte) error {
-
-	if string(b) == "null" {
-		return nil
-	}
-
-	var firstPass struct {
-		*GetDataObjectAccessListDataObjectDistinctAccessNotFoundError
-		graphql.NoUnmarshalJSON
-	}
-	firstPass.GetDataObjectAccessListDataObjectDistinctAccessNotFoundError = v
-
-	err := json.Unmarshal(b, &firstPass)
-	if err != nil {
-		return err
-	}
-
-	err = json.Unmarshal(
-		b, &v.GroupedDataAccessReturnItemConnectionResultNotFoundError)
-	if err != nil {
-		return err
-	}
-	return nil
-}
-
-type __premarshalGetDataObjectAccessListDataObjectDistinctAccessNotFoundError struct {
-	Typename *string `json:"__typename"`
-
-	Message string `json:"message"`
-}
-
-func (v *GetDataObjectAccessListDataObjectDistinctAccessNotFoundError) MarshalJSON() ([]byte, error) {
-	premarshaled, err := v.__premarshalJSON()
-	if err != nil {
-		return nil, err
-	}
-	return json.Marshal(premarshaled)
-}
-
-func (v *GetDataObjectAccessListDataObjectDistinctAccessNotFoundError) __premarshalJSON() (*__premarshalGetDataObjectAccessListDataObjectDistinctAccessNotFoundError, error) {
-	var retval __premarshalGetDataObjectAccessListDataObjectDistinctAccessNotFoundError
-
-	retval.Typename = v.Typename
-	retval.Message = v.GroupedDataAccessReturnItemConnectionResultNotFoundError.NotFoundError.Message
-	return &retval, nil
-}
-
-// GetDataObjectAccessListDataObjectDistinctAccessPermissionDeniedError includes the requested fields of the GraphQL type PermissionDeniedError.
-// The GraphQL type's documentation follows.
-//
-// Error when permission to the requested resource is denied.
-type GetDataObjectAccessListDataObjectDistinctAccessPermissionDeniedError struct {
-	Typename                                                         *string `json:"__typename"`
-	GroupedDataAccessReturnItemConnectionResultPermissionDeniedError `json:"-"`
-}
-
-// GetTypename returns GetDataObjectAccessListDataObjectDistinctAccessPermissionDeniedError.Typename, and is useful for accessing the field via an interface.
-func (v *GetDataObjectAccessListDataObjectDistinctAccessPermissionDeniedError) GetTypename() *string {
-	return v.Typename
-}
-
-// GetMessage returns GetDataObjectAccessListDataObjectDistinctAccessPermissionDeniedError.Message, and is useful for accessing the field via an interface.
-func (v *GetDataObjectAccessListDataObjectDistinctAccessPermissionDeniedError) GetMessage() string {
-	return v.GroupedDataAccessReturnItemConnectionResultPermissionDeniedError.PermissionDeniedError.Message
-}
-
-func (v *GetDataObjectAccessListDataObjectDistinctAccessPermissionDeniedError) UnmarshalJSON(b []byte) error {
-
-	if string(b) == "null" {
-		return nil
-	}
-
-	var firstPass struct {
-		*GetDataObjectAccessListDataObjectDistinctAccessPermissionDeniedError
-		graphql.NoUnmarshalJSON
-	}
-	firstPass.GetDataObjectAccessListDataObjectDistinctAccessPermissionDeniedError = v
-
-	err := json.Unmarshal(b, &firstPass)
-	if err != nil {
-		return err
-	}
-
-	err = json.Unmarshal(
-		b, &v.GroupedDataAccessReturnItemConnectionResultPermissionDeniedError)
-	if err != nil {
-		return err
-	}
-	return nil
-}
-
-type __premarshalGetDataObjectAccessListDataObjectDistinctAccessPermissionDeniedError struct {
-	Typename *string `json:"__typename"`
-
-	Message string `json:"message"`
-}
-
-func (v *GetDataObjectAccessListDataObjectDistinctAccessPermissionDeniedError) MarshalJSON() ([]byte, error) {
-	premarshaled, err := v.__premarshalJSON()
-	if err != nil {
-		return nil, err
-	}
-	return json.Marshal(premarshaled)
-}
-
-func (v *GetDataObjectAccessListDataObjectDistinctAccessPermissionDeniedError) __premarshalJSON() (*__premarshalGetDataObjectAccessListDataObjectDistinctAccessPermissionDeniedError, error) {
-	var retval __premarshalGetDataObjectAccessListDataObjectDistinctAccessPermissionDeniedError
-
-	retval.Typename = v.Typename
-	retval.Message = v.GroupedDataAccessReturnItemConnectionResultPermissionDeniedError.PermissionDeniedError.Message
-	return &retval, nil
-}
-
-// GetDataObjectAccessListResponse is returned by GetDataObjectAccessList on success.
-type GetDataObjectAccessListResponse struct {
-	// Retrieves a single data object by its ID.
-	DataObject GetDataObjectAccessListDataObject `json:"dataObject"`
-}
-
-// GetDataObject returns GetDataObjectAccessListResponse.DataObject, and is useful for accessing the field via an interface.
-func (v *GetDataObjectAccessListResponse) GetDataObject() GetDataObjectAccessListDataObject {
-	return v.DataObject
-}
-
 // GetDataObjectDataObject includes the requested fields of the GraphQL type DataObject.
 // The GraphQL type's documentation follows.
 //
@@ -23279,734 +22704,6 @@ func (v *GrantCategoryTypeForDataSourceInput) GetDataSource() string { return v.
 
 // GetType returns GrantCategoryTypeForDataSourceInput.Type, and is useful for accessing the field via an interface.
 func (v *GrantCategoryTypeForDataSourceInput) GetType() string { return v.Type }
-
-// GroupedDataAccessReturnItem includes the GraphQL fields of GroupedDataAccessReturnItem requested by the fragment GroupedDataAccessReturnItem.
-// The GraphQL type's documentation follows.
-//
-// Represents the information about the access a user has on a specific data object across one or more access controls.
-type GroupedDataAccessReturnItem struct {
-	// The permissions the user has on the data object.
-	Permissions []*string `json:"permissions" doc:"The permissions the user has on the data object."`
-	// The global permissions the user has on the data object.
-	GlobalPermissions []*string `json:"globalPermissions" doc:"The global permissions the user has on the data object."`
-	// The time the access for the user expires.
-	ExpiresAt *time.Time `json:"expiresAt" doc:"The time the access for the user expires."`
-	// The user that has the access on the data object.
-	User GroupedDataAccessReturnItemUser `json:"user" doc:"The user that has the access on the data object."`
-	// The access controls that provide the access to the data object for the user.
-	NearestAccessControls []*GroupedDataAccessReturnItemNearestAccessControlsAccessControl `json:"nearestAccessControls" doc:"The access controls that provide the access to the data object for the user."`
-}
-
-// GetPermissions returns GroupedDataAccessReturnItem.Permissions, and is useful for accessing the field via an interface.
-func (v *GroupedDataAccessReturnItem) GetPermissions() []*string { return v.Permissions }
-
-// GetGlobalPermissions returns GroupedDataAccessReturnItem.GlobalPermissions, and is useful for accessing the field via an interface.
-func (v *GroupedDataAccessReturnItem) GetGlobalPermissions() []*string { return v.GlobalPermissions }
-
-// GetExpiresAt returns GroupedDataAccessReturnItem.ExpiresAt, and is useful for accessing the field via an interface.
-func (v *GroupedDataAccessReturnItem) GetExpiresAt() *time.Time { return v.ExpiresAt }
-
-// GetUser returns GroupedDataAccessReturnItem.User, and is useful for accessing the field via an interface.
-func (v *GroupedDataAccessReturnItem) GetUser() GroupedDataAccessReturnItemUser { return v.User }
-
-// GetNearestAccessControls returns GroupedDataAccessReturnItem.NearestAccessControls, and is useful for accessing the field via an interface.
-func (v *GroupedDataAccessReturnItem) GetNearestAccessControls() []*GroupedDataAccessReturnItemNearestAccessControlsAccessControl {
-	return v.NearestAccessControls
-}
-
-// GroupedDataAccessReturnItemConnection includes the GraphQL fields of GroupedDataAccessReturnItemConnection requested by the fragment GroupedDataAccessReturnItemConnection.
-// The GraphQL type's documentation follows.
-//
-// The connection type for paginated lists of [GroupedDataAccessReturnItem]({{Types.GroupedDataAccessReturnItem}}).
-type GroupedDataAccessReturnItemConnection struct {
-	// Pagination information for the retrieved items.
-	PageInfo GroupedDataAccessReturnItemConnectionPageInfo `json:"pageInfo" doc:"Pagination information for the retrieved items."`
-	// The list of edges containing the actual queried items.
-	Edges []GroupedDataAccessReturnItemConnectionEdgesGroupedDataAccessReturnItemEdge `json:"edges" doc:"The list of edges containing the actual queried items."`
-}
-
-// GetPageInfo returns GroupedDataAccessReturnItemConnection.PageInfo, and is useful for accessing the field via an interface.
-func (v *GroupedDataAccessReturnItemConnection) GetPageInfo() GroupedDataAccessReturnItemConnectionPageInfo {
-	return v.PageInfo
-}
-
-// GetEdges returns GroupedDataAccessReturnItemConnection.Edges, and is useful for accessing the field via an interface.
-func (v *GroupedDataAccessReturnItemConnection) GetEdges() []GroupedDataAccessReturnItemConnectionEdgesGroupedDataAccessReturnItemEdge {
-	return v.Edges
-}
-
-// GroupedDataAccessReturnItemConnectionEdgesGroupedDataAccessReturnItemEdge includes the requested fields of the GraphQL type GroupedDataAccessReturnItemEdge.
-// The GraphQL type's documentation follows.
-//
-// The edge type for [GroupedDataAccessReturnItemConnection]({{Types.GroupedDataAccessReturnItemConnection}})
-type GroupedDataAccessReturnItemConnectionEdgesGroupedDataAccessReturnItemEdge struct {
-	// The cursor of this item for pagination.
-	Cursor *string `json:"cursor"`
-	// The actual item.
-	Node *GroupedDataAccessReturnItemConnectionEdgesGroupedDataAccessReturnItemEdgeNodeGroupedDataAccessReturnItem `json:"node"`
-}
-
-// GetCursor returns GroupedDataAccessReturnItemConnectionEdgesGroupedDataAccessReturnItemEdge.Cursor, and is useful for accessing the field via an interface.
-func (v *GroupedDataAccessReturnItemConnectionEdgesGroupedDataAccessReturnItemEdge) GetCursor() *string {
-	return v.Cursor
-}
-
-// GetNode returns GroupedDataAccessReturnItemConnectionEdgesGroupedDataAccessReturnItemEdge.Node, and is useful for accessing the field via an interface.
-func (v *GroupedDataAccessReturnItemConnectionEdgesGroupedDataAccessReturnItemEdge) GetNode() *GroupedDataAccessReturnItemConnectionEdgesGroupedDataAccessReturnItemEdgeNodeGroupedDataAccessReturnItem {
-	return v.Node
-}
-
-// GroupedDataAccessReturnItemConnectionEdgesGroupedDataAccessReturnItemEdgeNodeGroupedDataAccessReturnItem includes the requested fields of the GraphQL type GroupedDataAccessReturnItem.
-// The GraphQL type's documentation follows.
-//
-// Represents the information about the access a user has on a specific data object across one or more access controls.
-type GroupedDataAccessReturnItemConnectionEdgesGroupedDataAccessReturnItemEdgeNodeGroupedDataAccessReturnItem struct {
-	GroupedDataAccessReturnItem `json:"-"`
-}
-
-// GetPermissions returns GroupedDataAccessReturnItemConnectionEdgesGroupedDataAccessReturnItemEdgeNodeGroupedDataAccessReturnItem.Permissions, and is useful for accessing the field via an interface.
-func (v *GroupedDataAccessReturnItemConnectionEdgesGroupedDataAccessReturnItemEdgeNodeGroupedDataAccessReturnItem) GetPermissions() []*string {
-	return v.GroupedDataAccessReturnItem.Permissions
-}
-
-// GetGlobalPermissions returns GroupedDataAccessReturnItemConnectionEdgesGroupedDataAccessReturnItemEdgeNodeGroupedDataAccessReturnItem.GlobalPermissions, and is useful for accessing the field via an interface.
-func (v *GroupedDataAccessReturnItemConnectionEdgesGroupedDataAccessReturnItemEdgeNodeGroupedDataAccessReturnItem) GetGlobalPermissions() []*string {
-	return v.GroupedDataAccessReturnItem.GlobalPermissions
-}
-
-// GetExpiresAt returns GroupedDataAccessReturnItemConnectionEdgesGroupedDataAccessReturnItemEdgeNodeGroupedDataAccessReturnItem.ExpiresAt, and is useful for accessing the field via an interface.
-func (v *GroupedDataAccessReturnItemConnectionEdgesGroupedDataAccessReturnItemEdgeNodeGroupedDataAccessReturnItem) GetExpiresAt() *time.Time {
-	return v.GroupedDataAccessReturnItem.ExpiresAt
-}
-
-// GetUser returns GroupedDataAccessReturnItemConnectionEdgesGroupedDataAccessReturnItemEdgeNodeGroupedDataAccessReturnItem.User, and is useful for accessing the field via an interface.
-func (v *GroupedDataAccessReturnItemConnectionEdgesGroupedDataAccessReturnItemEdgeNodeGroupedDataAccessReturnItem) GetUser() GroupedDataAccessReturnItemUser {
-	return v.GroupedDataAccessReturnItem.User
-}
-
-// GetNearestAccessControls returns GroupedDataAccessReturnItemConnectionEdgesGroupedDataAccessReturnItemEdgeNodeGroupedDataAccessReturnItem.NearestAccessControls, and is useful for accessing the field via an interface.
-func (v *GroupedDataAccessReturnItemConnectionEdgesGroupedDataAccessReturnItemEdgeNodeGroupedDataAccessReturnItem) GetNearestAccessControls() []*GroupedDataAccessReturnItemNearestAccessControlsAccessControl {
-	return v.GroupedDataAccessReturnItem.NearestAccessControls
-}
-
-func (v *GroupedDataAccessReturnItemConnectionEdgesGroupedDataAccessReturnItemEdgeNodeGroupedDataAccessReturnItem) UnmarshalJSON(b []byte) error {
-
-	if string(b) == "null" {
-		return nil
-	}
-
-	var firstPass struct {
-		*GroupedDataAccessReturnItemConnectionEdgesGroupedDataAccessReturnItemEdgeNodeGroupedDataAccessReturnItem
-		graphql.NoUnmarshalJSON
-	}
-	firstPass.GroupedDataAccessReturnItemConnectionEdgesGroupedDataAccessReturnItemEdgeNodeGroupedDataAccessReturnItem = v
-
-	err := json.Unmarshal(b, &firstPass)
-	if err != nil {
-		return err
-	}
-
-	err = json.Unmarshal(
-		b, &v.GroupedDataAccessReturnItem)
-	if err != nil {
-		return err
-	}
-	return nil
-}
-
-type __premarshalGroupedDataAccessReturnItemConnectionEdgesGroupedDataAccessReturnItemEdgeNodeGroupedDataAccessReturnItem struct {
-	Permissions []*string `json:"permissions"`
-
-	GlobalPermissions []*string `json:"globalPermissions"`
-
-	ExpiresAt *time.Time `json:"expiresAt"`
-
-	User GroupedDataAccessReturnItemUser `json:"user"`
-
-	NearestAccessControls []*GroupedDataAccessReturnItemNearestAccessControlsAccessControl `json:"nearestAccessControls"`
-}
-
-func (v *GroupedDataAccessReturnItemConnectionEdgesGroupedDataAccessReturnItemEdgeNodeGroupedDataAccessReturnItem) MarshalJSON() ([]byte, error) {
-	premarshaled, err := v.__premarshalJSON()
-	if err != nil {
-		return nil, err
-	}
-	return json.Marshal(premarshaled)
-}
-
-func (v *GroupedDataAccessReturnItemConnectionEdgesGroupedDataAccessReturnItemEdgeNodeGroupedDataAccessReturnItem) __premarshalJSON() (*__premarshalGroupedDataAccessReturnItemConnectionEdgesGroupedDataAccessReturnItemEdgeNodeGroupedDataAccessReturnItem, error) {
-	var retval __premarshalGroupedDataAccessReturnItemConnectionEdgesGroupedDataAccessReturnItemEdgeNodeGroupedDataAccessReturnItem
-
-	retval.Permissions = v.GroupedDataAccessReturnItem.Permissions
-	retval.GlobalPermissions = v.GroupedDataAccessReturnItem.GlobalPermissions
-	retval.ExpiresAt = v.GroupedDataAccessReturnItem.ExpiresAt
-	retval.User = v.GroupedDataAccessReturnItem.User
-	retval.NearestAccessControls = v.GroupedDataAccessReturnItem.NearestAccessControls
-	return &retval, nil
-}
-
-// GroupedDataAccessReturnItemConnectionPageInfo includes the requested fields of the GraphQL type PageInfo.
-type GroupedDataAccessReturnItemConnectionPageInfo struct {
-	PageInfo `json:"-"`
-}
-
-// GetHasNextPage returns GroupedDataAccessReturnItemConnectionPageInfo.HasNextPage, and is useful for accessing the field via an interface.
-func (v *GroupedDataAccessReturnItemConnectionPageInfo) GetHasNextPage() *bool {
-	return v.PageInfo.HasNextPage
-}
-
-// GetStartCursor returns GroupedDataAccessReturnItemConnectionPageInfo.StartCursor, and is useful for accessing the field via an interface.
-func (v *GroupedDataAccessReturnItemConnectionPageInfo) GetStartCursor() *string {
-	return v.PageInfo.StartCursor
-}
-
-func (v *GroupedDataAccessReturnItemConnectionPageInfo) UnmarshalJSON(b []byte) error {
-
-	if string(b) == "null" {
-		return nil
-	}
-
-	var firstPass struct {
-		*GroupedDataAccessReturnItemConnectionPageInfo
-		graphql.NoUnmarshalJSON
-	}
-	firstPass.GroupedDataAccessReturnItemConnectionPageInfo = v
-
-	err := json.Unmarshal(b, &firstPass)
-	if err != nil {
-		return err
-	}
-
-	err = json.Unmarshal(
-		b, &v.PageInfo)
-	if err != nil {
-		return err
-	}
-	return nil
-}
-
-type __premarshalGroupedDataAccessReturnItemConnectionPageInfo struct {
-	HasNextPage *bool `json:"hasNextPage"`
-
-	StartCursor *string `json:"startCursor"`
-}
-
-func (v *GroupedDataAccessReturnItemConnectionPageInfo) MarshalJSON() ([]byte, error) {
-	premarshaled, err := v.__premarshalJSON()
-	if err != nil {
-		return nil, err
-	}
-	return json.Marshal(premarshaled)
-}
-
-func (v *GroupedDataAccessReturnItemConnectionPageInfo) __premarshalJSON() (*__premarshalGroupedDataAccessReturnItemConnectionPageInfo, error) {
-	var retval __premarshalGroupedDataAccessReturnItemConnectionPageInfo
-
-	retval.HasNextPage = v.PageInfo.HasNextPage
-	retval.StartCursor = v.PageInfo.StartCursor
-	return &retval, nil
-}
-
-// GroupedDataAccessReturnItemConnectionResult includes the GraphQL fields of GroupedDataAccessReturnItemConnectionResult requested by the fragment GroupedDataAccessReturnItemConnectionResult.
-//
-// GroupedDataAccessReturnItemConnectionResult is implemented by the following types:
-// GroupedDataAccessReturnItemConnectionResultGroupedDataAccessReturnItemConnection
-// GroupedDataAccessReturnItemConnectionResultInvalidInputError
-// GroupedDataAccessReturnItemConnectionResultNotFoundError
-// GroupedDataAccessReturnItemConnectionResultPermissionDeniedError
-type GroupedDataAccessReturnItemConnectionResult interface {
-	implementsGraphQLInterfaceGroupedDataAccessReturnItemConnectionResult()
-}
-
-func (v *GroupedDataAccessReturnItemConnectionResultGroupedDataAccessReturnItemConnection) implementsGraphQLInterfaceGroupedDataAccessReturnItemConnectionResult() {
-}
-func (v *GroupedDataAccessReturnItemConnectionResultInvalidInputError) implementsGraphQLInterfaceGroupedDataAccessReturnItemConnectionResult() {
-}
-func (v *GroupedDataAccessReturnItemConnectionResultNotFoundError) implementsGraphQLInterfaceGroupedDataAccessReturnItemConnectionResult() {
-}
-func (v *GroupedDataAccessReturnItemConnectionResultPermissionDeniedError) implementsGraphQLInterfaceGroupedDataAccessReturnItemConnectionResult() {
-}
-
-func __unmarshalGroupedDataAccessReturnItemConnectionResult(b []byte, v *GroupedDataAccessReturnItemConnectionResult) error {
-	if string(b) == "null" {
-		return nil
-	}
-
-	var tn struct {
-		TypeName string `json:"__typename"`
-	}
-	err := json.Unmarshal(b, &tn)
-	if err != nil {
-		return err
-	}
-
-	switch tn.TypeName {
-	case "GroupedDataAccessReturnItemConnection":
-		*v = new(GroupedDataAccessReturnItemConnectionResultGroupedDataAccessReturnItemConnection)
-		return json.Unmarshal(b, *v)
-	case "InvalidInputError":
-		*v = new(GroupedDataAccessReturnItemConnectionResultInvalidInputError)
-		return json.Unmarshal(b, *v)
-	case "NotFoundError":
-		*v = new(GroupedDataAccessReturnItemConnectionResultNotFoundError)
-		return json.Unmarshal(b, *v)
-	case "PermissionDeniedError":
-		*v = new(GroupedDataAccessReturnItemConnectionResultPermissionDeniedError)
-		return json.Unmarshal(b, *v)
-	case "":
-		return fmt.Errorf(
-			"response was missing GroupedDataAccessReturnItemConnectionResult.__typename")
-	default:
-		return fmt.Errorf(
-			`unexpected concrete type for GroupedDataAccessReturnItemConnectionResult: "%v"`, tn.TypeName)
-	}
-}
-
-func __marshalGroupedDataAccessReturnItemConnectionResult(v *GroupedDataAccessReturnItemConnectionResult) ([]byte, error) {
-
-	var typename string
-	switch v := (*v).(type) {
-	case *GroupedDataAccessReturnItemConnectionResultGroupedDataAccessReturnItemConnection:
-		typename = "GroupedDataAccessReturnItemConnection"
-
-		premarshaled, err := v.__premarshalJSON()
-		if err != nil {
-			return nil, err
-		}
-		result := struct {
-			TypeName string `json:"__typename"`
-			*__premarshalGroupedDataAccessReturnItemConnectionResultGroupedDataAccessReturnItemConnection
-		}{typename, premarshaled}
-		return json.Marshal(result)
-	case *GroupedDataAccessReturnItemConnectionResultInvalidInputError:
-		typename = "InvalidInputError"
-
-		premarshaled, err := v.__premarshalJSON()
-		if err != nil {
-			return nil, err
-		}
-		result := struct {
-			TypeName string `json:"__typename"`
-			*__premarshalGroupedDataAccessReturnItemConnectionResultInvalidInputError
-		}{typename, premarshaled}
-		return json.Marshal(result)
-	case *GroupedDataAccessReturnItemConnectionResultNotFoundError:
-		typename = "NotFoundError"
-
-		premarshaled, err := v.__premarshalJSON()
-		if err != nil {
-			return nil, err
-		}
-		result := struct {
-			TypeName string `json:"__typename"`
-			*__premarshalGroupedDataAccessReturnItemConnectionResultNotFoundError
-		}{typename, premarshaled}
-		return json.Marshal(result)
-	case *GroupedDataAccessReturnItemConnectionResultPermissionDeniedError:
-		typename = "PermissionDeniedError"
-
-		premarshaled, err := v.__premarshalJSON()
-		if err != nil {
-			return nil, err
-		}
-		result := struct {
-			TypeName string `json:"__typename"`
-			*__premarshalGroupedDataAccessReturnItemConnectionResultPermissionDeniedError
-		}{typename, premarshaled}
-		return json.Marshal(result)
-	case nil:
-		return []byte("null"), nil
-	default:
-		return nil, fmt.Errorf(
-			`unexpected concrete type for GroupedDataAccessReturnItemConnectionResult: "%T"`, v)
-	}
-}
-
-// GroupedDataAccessReturnItemConnectionResult includes the GraphQL fields of GroupedDataAccessReturnItemConnection requested by the fragment GroupedDataAccessReturnItemConnectionResult.
-type GroupedDataAccessReturnItemConnectionResultGroupedDataAccessReturnItemConnection struct {
-	GroupedDataAccessReturnItemConnection `json:"-"`
-}
-
-// GetPageInfo returns GroupedDataAccessReturnItemConnectionResultGroupedDataAccessReturnItemConnection.PageInfo, and is useful for accessing the field via an interface.
-func (v *GroupedDataAccessReturnItemConnectionResultGroupedDataAccessReturnItemConnection) GetPageInfo() GroupedDataAccessReturnItemConnectionPageInfo {
-	return v.GroupedDataAccessReturnItemConnection.PageInfo
-}
-
-// GetEdges returns GroupedDataAccessReturnItemConnectionResultGroupedDataAccessReturnItemConnection.Edges, and is useful for accessing the field via an interface.
-func (v *GroupedDataAccessReturnItemConnectionResultGroupedDataAccessReturnItemConnection) GetEdges() []GroupedDataAccessReturnItemConnectionEdgesGroupedDataAccessReturnItemEdge {
-	return v.GroupedDataAccessReturnItemConnection.Edges
-}
-
-func (v *GroupedDataAccessReturnItemConnectionResultGroupedDataAccessReturnItemConnection) UnmarshalJSON(b []byte) error {
-
-	if string(b) == "null" {
-		return nil
-	}
-
-	var firstPass struct {
-		*GroupedDataAccessReturnItemConnectionResultGroupedDataAccessReturnItemConnection
-		graphql.NoUnmarshalJSON
-	}
-	firstPass.GroupedDataAccessReturnItemConnectionResultGroupedDataAccessReturnItemConnection = v
-
-	err := json.Unmarshal(b, &firstPass)
-	if err != nil {
-		return err
-	}
-
-	err = json.Unmarshal(
-		b, &v.GroupedDataAccessReturnItemConnection)
-	if err != nil {
-		return err
-	}
-	return nil
-}
-
-type __premarshalGroupedDataAccessReturnItemConnectionResultGroupedDataAccessReturnItemConnection struct {
-	PageInfo GroupedDataAccessReturnItemConnectionPageInfo `json:"pageInfo"`
-
-	Edges []GroupedDataAccessReturnItemConnectionEdgesGroupedDataAccessReturnItemEdge `json:"edges"`
-}
-
-func (v *GroupedDataAccessReturnItemConnectionResultGroupedDataAccessReturnItemConnection) MarshalJSON() ([]byte, error) {
-	premarshaled, err := v.__premarshalJSON()
-	if err != nil {
-		return nil, err
-	}
-	return json.Marshal(premarshaled)
-}
-
-func (v *GroupedDataAccessReturnItemConnectionResultGroupedDataAccessReturnItemConnection) __premarshalJSON() (*__premarshalGroupedDataAccessReturnItemConnectionResultGroupedDataAccessReturnItemConnection, error) {
-	var retval __premarshalGroupedDataAccessReturnItemConnectionResultGroupedDataAccessReturnItemConnection
-
-	retval.PageInfo = v.GroupedDataAccessReturnItemConnection.PageInfo
-	retval.Edges = v.GroupedDataAccessReturnItemConnection.Edges
-	return &retval, nil
-}
-
-// GroupedDataAccessReturnItemConnectionResult includes the GraphQL fields of InvalidInputError requested by the fragment GroupedDataAccessReturnItemConnectionResult.
-type GroupedDataAccessReturnItemConnectionResultInvalidInputError struct {
-	InvalidInputError `json:"-"`
-}
-
-// GetMessage returns GroupedDataAccessReturnItemConnectionResultInvalidInputError.Message, and is useful for accessing the field via an interface.
-func (v *GroupedDataAccessReturnItemConnectionResultInvalidInputError) GetMessage() string {
-	return v.InvalidInputError.Message
-}
-
-func (v *GroupedDataAccessReturnItemConnectionResultInvalidInputError) UnmarshalJSON(b []byte) error {
-
-	if string(b) == "null" {
-		return nil
-	}
-
-	var firstPass struct {
-		*GroupedDataAccessReturnItemConnectionResultInvalidInputError
-		graphql.NoUnmarshalJSON
-	}
-	firstPass.GroupedDataAccessReturnItemConnectionResultInvalidInputError = v
-
-	err := json.Unmarshal(b, &firstPass)
-	if err != nil {
-		return err
-	}
-
-	err = json.Unmarshal(
-		b, &v.InvalidInputError)
-	if err != nil {
-		return err
-	}
-	return nil
-}
-
-type __premarshalGroupedDataAccessReturnItemConnectionResultInvalidInputError struct {
-	Message string `json:"message"`
-}
-
-func (v *GroupedDataAccessReturnItemConnectionResultInvalidInputError) MarshalJSON() ([]byte, error) {
-	premarshaled, err := v.__premarshalJSON()
-	if err != nil {
-		return nil, err
-	}
-	return json.Marshal(premarshaled)
-}
-
-func (v *GroupedDataAccessReturnItemConnectionResultInvalidInputError) __premarshalJSON() (*__premarshalGroupedDataAccessReturnItemConnectionResultInvalidInputError, error) {
-	var retval __premarshalGroupedDataAccessReturnItemConnectionResultInvalidInputError
-
-	retval.Message = v.InvalidInputError.Message
-	return &retval, nil
-}
-
-// GroupedDataAccessReturnItemConnectionResult includes the GraphQL fields of NotFoundError requested by the fragment GroupedDataAccessReturnItemConnectionResult.
-type GroupedDataAccessReturnItemConnectionResultNotFoundError struct {
-	NotFoundError `json:"-"`
-}
-
-// GetMessage returns GroupedDataAccessReturnItemConnectionResultNotFoundError.Message, and is useful for accessing the field via an interface.
-func (v *GroupedDataAccessReturnItemConnectionResultNotFoundError) GetMessage() string {
-	return v.NotFoundError.Message
-}
-
-func (v *GroupedDataAccessReturnItemConnectionResultNotFoundError) UnmarshalJSON(b []byte) error {
-
-	if string(b) == "null" {
-		return nil
-	}
-
-	var firstPass struct {
-		*GroupedDataAccessReturnItemConnectionResultNotFoundError
-		graphql.NoUnmarshalJSON
-	}
-	firstPass.GroupedDataAccessReturnItemConnectionResultNotFoundError = v
-
-	err := json.Unmarshal(b, &firstPass)
-	if err != nil {
-		return err
-	}
-
-	err = json.Unmarshal(
-		b, &v.NotFoundError)
-	if err != nil {
-		return err
-	}
-	return nil
-}
-
-type __premarshalGroupedDataAccessReturnItemConnectionResultNotFoundError struct {
-	Message string `json:"message"`
-}
-
-func (v *GroupedDataAccessReturnItemConnectionResultNotFoundError) MarshalJSON() ([]byte, error) {
-	premarshaled, err := v.__premarshalJSON()
-	if err != nil {
-		return nil, err
-	}
-	return json.Marshal(premarshaled)
-}
-
-func (v *GroupedDataAccessReturnItemConnectionResultNotFoundError) __premarshalJSON() (*__premarshalGroupedDataAccessReturnItemConnectionResultNotFoundError, error) {
-	var retval __premarshalGroupedDataAccessReturnItemConnectionResultNotFoundError
-
-	retval.Message = v.NotFoundError.Message
-	return &retval, nil
-}
-
-// GroupedDataAccessReturnItemConnectionResult includes the GraphQL fields of PermissionDeniedError requested by the fragment GroupedDataAccessReturnItemConnectionResult.
-type GroupedDataAccessReturnItemConnectionResultPermissionDeniedError struct {
-	PermissionDeniedError `json:"-"`
-}
-
-// GetMessage returns GroupedDataAccessReturnItemConnectionResultPermissionDeniedError.Message, and is useful for accessing the field via an interface.
-func (v *GroupedDataAccessReturnItemConnectionResultPermissionDeniedError) GetMessage() string {
-	return v.PermissionDeniedError.Message
-}
-
-func (v *GroupedDataAccessReturnItemConnectionResultPermissionDeniedError) UnmarshalJSON(b []byte) error {
-
-	if string(b) == "null" {
-		return nil
-	}
-
-	var firstPass struct {
-		*GroupedDataAccessReturnItemConnectionResultPermissionDeniedError
-		graphql.NoUnmarshalJSON
-	}
-	firstPass.GroupedDataAccessReturnItemConnectionResultPermissionDeniedError = v
-
-	err := json.Unmarshal(b, &firstPass)
-	if err != nil {
-		return err
-	}
-
-	err = json.Unmarshal(
-		b, &v.PermissionDeniedError)
-	if err != nil {
-		return err
-	}
-	return nil
-}
-
-type __premarshalGroupedDataAccessReturnItemConnectionResultPermissionDeniedError struct {
-	Message string `json:"message"`
-}
-
-func (v *GroupedDataAccessReturnItemConnectionResultPermissionDeniedError) MarshalJSON() ([]byte, error) {
-	premarshaled, err := v.__premarshalJSON()
-	if err != nil {
-		return nil, err
-	}
-	return json.Marshal(premarshaled)
-}
-
-func (v *GroupedDataAccessReturnItemConnectionResultPermissionDeniedError) __premarshalJSON() (*__premarshalGroupedDataAccessReturnItemConnectionResultPermissionDeniedError, error) {
-	var retval __premarshalGroupedDataAccessReturnItemConnectionResultPermissionDeniedError
-
-	retval.Message = v.PermissionDeniedError.Message
-	return &retval, nil
-}
-
-// GroupedDataAccessReturnItemNearestAccessControlsAccessControl includes the requested fields of the GraphQL type AccessControl.
-// The GraphQL type's documentation follows.
-//
-// Represents an access control object in the system. An access control is the abstract model representing grants, masks, filters and groups (determined by the `action` field).
-type GroupedDataAccessReturnItemNearestAccessControlsAccessControl struct {
-	AccessControlSummary `json:"-"`
-}
-
-// GetId returns GroupedDataAccessReturnItemNearestAccessControlsAccessControl.Id, and is useful for accessing the field via an interface.
-func (v *GroupedDataAccessReturnItemNearestAccessControlsAccessControl) GetId() string {
-	return v.AccessControlSummary.Id
-}
-
-// GetName returns GroupedDataAccessReturnItemNearestAccessControlsAccessControl.Name, and is useful for accessing the field via an interface.
-func (v *GroupedDataAccessReturnItemNearestAccessControlsAccessControl) GetName() string {
-	return v.AccessControlSummary.Name
-}
-
-// GetAction returns GroupedDataAccessReturnItemNearestAccessControlsAccessControl.Action, and is useful for accessing the field via an interface.
-func (v *GroupedDataAccessReturnItemNearestAccessControlsAccessControl) GetAction() AccessControlAction {
-	return v.AccessControlSummary.Action
-}
-
-// GetState returns GroupedDataAccessReturnItemNearestAccessControlsAccessControl.State, and is useful for accessing the field via an interface.
-func (v *GroupedDataAccessReturnItemNearestAccessControlsAccessControl) GetState() AccessControlState {
-	return v.AccessControlSummary.State
-}
-
-// GetCategory returns GroupedDataAccessReturnItemNearestAccessControlsAccessControl.Category, and is useful for accessing the field via an interface.
-func (v *GroupedDataAccessReturnItemNearestAccessControlsAccessControl) GetCategory() *AccessControlSummaryCategoryGrantCategory {
-	return v.AccessControlSummary.Category
-}
-
-func (v *GroupedDataAccessReturnItemNearestAccessControlsAccessControl) UnmarshalJSON(b []byte) error {
-
-	if string(b) == "null" {
-		return nil
-	}
-
-	var firstPass struct {
-		*GroupedDataAccessReturnItemNearestAccessControlsAccessControl
-		graphql.NoUnmarshalJSON
-	}
-	firstPass.GroupedDataAccessReturnItemNearestAccessControlsAccessControl = v
-
-	err := json.Unmarshal(b, &firstPass)
-	if err != nil {
-		return err
-	}
-
-	err = json.Unmarshal(
-		b, &v.AccessControlSummary)
-	if err != nil {
-		return err
-	}
-	return nil
-}
-
-type __premarshalGroupedDataAccessReturnItemNearestAccessControlsAccessControl struct {
-	Id string `json:"id"`
-
-	Name string `json:"name"`
-
-	Action AccessControlAction `json:"action"`
-
-	State AccessControlState `json:"state"`
-
-	Category *AccessControlSummaryCategoryGrantCategory `json:"category"`
-}
-
-func (v *GroupedDataAccessReturnItemNearestAccessControlsAccessControl) MarshalJSON() ([]byte, error) {
-	premarshaled, err := v.__premarshalJSON()
-	if err != nil {
-		return nil, err
-	}
-	return json.Marshal(premarshaled)
-}
-
-func (v *GroupedDataAccessReturnItemNearestAccessControlsAccessControl) __premarshalJSON() (*__premarshalGroupedDataAccessReturnItemNearestAccessControlsAccessControl, error) {
-	var retval __premarshalGroupedDataAccessReturnItemNearestAccessControlsAccessControl
-
-	retval.Id = v.AccessControlSummary.Id
-	retval.Name = v.AccessControlSummary.Name
-	retval.Action = v.AccessControlSummary.Action
-	retval.State = v.AccessControlSummary.State
-	retval.Category = v.AccessControlSummary.Category
-	return &retval, nil
-}
-
-// GroupedDataAccessReturnItemUser includes the requested fields of the GraphQL type User.
-// The GraphQL type's documentation follows.
-//
-// Represents a user in Collibra Data Access. It can be a human user or a machine user (service account) which groups accounts in different data sources.
-type GroupedDataAccessReturnItemUser struct {
-	User `json:"-"`
-}
-
-// GetId returns GroupedDataAccessReturnItemUser.Id, and is useful for accessing the field via an interface.
-func (v *GroupedDataAccessReturnItemUser) GetId() string { return v.User.Id }
-
-// GetName returns GroupedDataAccessReturnItemUser.Name, and is useful for accessing the field via an interface.
-func (v *GroupedDataAccessReturnItemUser) GetName() string { return v.User.Name }
-
-// GetEmail returns GroupedDataAccessReturnItemUser.Email, and is useful for accessing the field via an interface.
-func (v *GroupedDataAccessReturnItemUser) GetEmail() *string { return v.User.Email }
-
-// GetType returns GroupedDataAccessReturnItemUser.Type, and is useful for accessing the field via an interface.
-func (v *GroupedDataAccessReturnItemUser) GetType() UserType { return v.User.Type }
-
-func (v *GroupedDataAccessReturnItemUser) UnmarshalJSON(b []byte) error {
-
-	if string(b) == "null" {
-		return nil
-	}
-
-	var firstPass struct {
-		*GroupedDataAccessReturnItemUser
-		graphql.NoUnmarshalJSON
-	}
-	firstPass.GroupedDataAccessReturnItemUser = v
-
-	err := json.Unmarshal(b, &firstPass)
-	if err != nil {
-		return err
-	}
-
-	err = json.Unmarshal(
-		b, &v.User)
-	if err != nil {
-		return err
-	}
-	return nil
-}
-
-type __premarshalGroupedDataAccessReturnItemUser struct {
-	Id string `json:"id"`
-
-	Name string `json:"name"`
-
-	Email *string `json:"email"`
-
-	Type UserType `json:"type"`
-}
-
-func (v *GroupedDataAccessReturnItemUser) MarshalJSON() ([]byte, error) {
-	premarshaled, err := v.__premarshalJSON()
-	if err != nil {
-		return nil, err
-	}
-	return json.Marshal(premarshaled)
-}
-
-func (v *GroupedDataAccessReturnItemUser) __premarshalJSON() (*__premarshalGroupedDataAccessReturnItemUser, error) {
-	var retval __premarshalGroupedDataAccessReturnItemUser
-
-	retval.Id = v.User.Id
-	retval.Name = v.User.Name
-	retval.Email = v.User.Email
-	retval.Type = v.User.Type
-	return &retval, nil
-}
 
 type ImportCommand struct {
 	UpsertDataObject            *DataObjectImport            `json:"upsertDataObject,omitempty"`
@@ -33157,6 +31854,8 @@ type ParameterDefinitionInput struct {
 	DefaultValue *interface{}               `json:"defaultValue,omitempty"`
 	Parameters   []ParameterDefinitionInput `json:"parameters,omitempty"`
 	IsAdvanced   bool                       `json:"isAdvanced"`
+	PlaceHolder  *string                    `json:"placeHolder,omitempty"`
+	Validations  []*interface{}             `json:"validations,omitempty"`
 }
 
 // GetType returns ParameterDefinitionInput.Type, and is useful for accessing the field via an interface.
@@ -33188,6 +31887,12 @@ func (v *ParameterDefinitionInput) GetParameters() []ParameterDefinitionInput { 
 
 // GetIsAdvanced returns ParameterDefinitionInput.IsAdvanced, and is useful for accessing the field via an interface.
 func (v *ParameterDefinitionInput) GetIsAdvanced() bool { return v.IsAdvanced }
+
+// GetPlaceHolder returns ParameterDefinitionInput.PlaceHolder, and is useful for accessing the field via an interface.
+func (v *ParameterDefinitionInput) GetPlaceHolder() *string { return v.PlaceHolder }
+
+// GetValidations returns ParameterDefinitionInput.Validations, and is useful for accessing the field via an interface.
+func (v *ParameterDefinitionInput) GetValidations() []*interface{} { return v.Validations }
 
 type ParameterSource string
 
@@ -34506,6 +33211,17 @@ func (v *RootParameterDefinitionInput) GetAccessFromTargetSync() []ParameterDefi
 
 // GetUsageSync returns RootParameterDefinitionInput.UsageSync, and is useful for accessing the field via an interface.
 func (v *RootParameterDefinitionInput) GetUsageSync() []ParameterDefinitionInput { return v.UsageSync }
+
+type ScimAssignmentInput struct {
+	DataSourceId string  `json:"dataSourceId"`
+	ActualName   *string `json:"actualName,omitempty"`
+}
+
+// GetDataSourceId returns ScimAssignmentInput.DataSourceId, and is useful for accessing the field via an interface.
+func (v *ScimAssignmentInput) GetDataSourceId() string { return v.DataSourceId }
+
+// GetActualName returns ScimAssignmentInput.ActualName, and is useful for accessing the field via an interface.
+func (v *ScimAssignmentInput) GetActualName() *string { return v.ActualName }
 
 // SetDataSourceMetadataResponse is returned by SetDataSourceMetadata on success.
 type SetDataSourceMetadataResponse struct {
@@ -45029,32 +43745,6 @@ func (v *__GetAccessControlWhoListInput) GetFilter() *AccessControlWhoListFilter
 // GetOrder returns __GetAccessControlWhoListInput.Order, and is useful for accessing the field via an interface.
 func (v *__GetAccessControlWhoListInput) GetOrder() []AccessControlWhoOrderByInput { return v.Order }
 
-// __GetDataObjectAccessListInput is used internally by genqlient
-type __GetDataObjectAccessListInput struct {
-	DataObjectId string                             `json:"dataObjectId"`
-	After        *string                            `json:"after,omitempty"`
-	Limit        *int                               `json:"limit,omitempty"`
-	Filter       *AccessFilterInput                 `json:"filter,omitempty"`
-	Order        []DataAccessReturnItemOrderByInput `json:"order,omitempty"`
-}
-
-// GetDataObjectId returns __GetDataObjectAccessListInput.DataObjectId, and is useful for accessing the field via an interface.
-func (v *__GetDataObjectAccessListInput) GetDataObjectId() string { return v.DataObjectId }
-
-// GetAfter returns __GetDataObjectAccessListInput.After, and is useful for accessing the field via an interface.
-func (v *__GetDataObjectAccessListInput) GetAfter() *string { return v.After }
-
-// GetLimit returns __GetDataObjectAccessListInput.Limit, and is useful for accessing the field via an interface.
-func (v *__GetDataObjectAccessListInput) GetLimit() *int { return v.Limit }
-
-// GetFilter returns __GetDataObjectAccessListInput.Filter, and is useful for accessing the field via an interface.
-func (v *__GetDataObjectAccessListInput) GetFilter() *AccessFilterInput { return v.Filter }
-
-// GetOrder returns __GetDataObjectAccessListInput.Order, and is useful for accessing the field via an interface.
-func (v *__GetDataObjectAccessListInput) GetOrder() []DataAccessReturnItemOrderByInput {
-	return v.Order
-}
-
 // __GetDataObjectInput is used internally by genqlient
 type __GetDataObjectInput struct {
 	DataObjectId string `json:"dataObjectId"`
@@ -47775,114 +46465,6 @@ func GetDataObject(
 	}
 
 	data_ = &GetDataObjectResponse{}
-	resp_ := &graphql.Response{Data: data_}
-
-	err_ = client_.MakeRequest(
-		ctx_,
-		req_,
-		resp_,
-	)
-
-	return data_, err_
-}
-
-// The query executed by GetDataObjectAccessList.
-const GetDataObjectAccessList_Operation = `
-query GetDataObjectAccessList ($dataObjectId: ID!, $after: String, $limit: Int, $filter: AccessFilterInput, $order: [DataAccessReturnItemOrderByInput!]) {
-	dataObject(id: $dataObjectId) {
-		distinctAccess(after: $after, limit: $limit, filter: $filter, order: $order) {
-			__typename
-			... GroupedDataAccessReturnItemConnectionResult
-		}
-	}
-}
-fragment GroupedDataAccessReturnItemConnectionResult on GroupedDataAccessReturnItemConnectionResult {
-	... GroupedDataAccessReturnItemConnection
-	... PermissionDeniedError
-	... NotFoundError
-	... InvalidInputError
-}
-fragment GroupedDataAccessReturnItemConnection on GroupedDataAccessReturnItemConnection {
-	pageInfo {
-		... PageInfo
-	}
-	edges {
-		cursor
-		node {
-			... GroupedDataAccessReturnItem
-		}
-	}
-}
-fragment PermissionDeniedError on PermissionDeniedError {
-	message
-}
-fragment NotFoundError on NotFoundError {
-	message
-}
-fragment InvalidInputError on InvalidInputError {
-	message
-}
-fragment PageInfo on PageInfo {
-	hasNextPage
-	startCursor
-}
-fragment GroupedDataAccessReturnItem on GroupedDataAccessReturnItem {
-	permissions
-	globalPermissions
-	expiresAt
-	user {
-		... User
-	}
-	nearestAccessControls {
-		... AccessControlSummary
-	}
-}
-fragment User on User {
-	id
-	name
-	email
-	type
-}
-fragment AccessControlSummary on AccessControl {
-	id
-	name
-	action
-	state
-	category {
-		... GrantCategory
-	}
-}
-fragment GrantCategory on GrantCategory {
-	id
-	name
-	namePlural
-	isSystem
-	isDefault
-}
-`
-
-func GetDataObjectAccessList(
-	ctx_ context.Context,
-	client_ graphql.Client,
-	dataObjectId string,
-	after *string,
-	limit *int,
-	filter *AccessFilterInput,
-	order []DataAccessReturnItemOrderByInput,
-) (data_ *GetDataObjectAccessListResponse, err_ error) {
-	req_ := &graphql.Request{
-		OpName: "GetDataObjectAccessList",
-		Query:  GetDataObjectAccessList_Operation,
-		Variables: &__GetDataObjectAccessListInput{
-			DataObjectId: dataObjectId,
-			After:        after,
-			Limit:        limit,
-			Filter:       filter,
-			Order:        order,
-		},
-	}
-
-	data_ = &GetDataObjectAccessListResponse{}
 	resp_ := &graphql.Response{Data: data_}
 
 	err_ = client_.MakeRequest(
