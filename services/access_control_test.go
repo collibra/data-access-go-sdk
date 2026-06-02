@@ -559,3 +559,69 @@ func (suite *AccessControlServiceTestSuite) TestGetAccessControlABACWhatScope() 
 
 	suite.Require().True(found, "Expected ABAC what scope not found in access control")
 }
+
+func (suite *AccessControlServiceTestSuite) TestDataObjectAccessList() {
+	ctx := suite.T().Context()
+	accessControlClient := suite.sdkClient.AccessControl()
+	dataObjectClient := suite.sdkClient.DataObject()
+	createdUser := suite.createdUser
+	suite.Require().NotNil(createdUser, "createdUser must be set up by the suite")
+
+	name := "Test Access Control " + uuid.New().String()
+	action := schema.AccessControlActionGrant
+	createdAccessControl, err := createTestAccessControl(suite, accessControlClient, suite.createdUser, &name, &action, &suite.createdDataSource.Id)
+	suite.Require().NoError(err)
+	suite.Require().NotNil(createdAccessControl)
+
+	firstNameID, err := dataObjectClient.GetDataObjectIdByName(ctx, "RAITO_DBT.DEFAULT.CUSTOMER.FIRSTNAME", suite.createdDataSource.Id)
+	suite.Require().NoError(err, "Failed to resolve FIRSTNAME data object id")
+
+	suite.Run("GetDataObjectAccessList returns the granted user and AC", func() {
+		response := dataObjectClient.GetDataObjectAccessList(ctx, firstNameID)
+		foundUser := false
+		foundAC := false
+
+		for item, err := range response {
+			suite.Require().NoError(err, "Error iterating data object access list")
+			suite.Require().NotNil(item, "Access item should not be nil")
+
+			if item.User.Id != createdUser.Id {
+				continue
+			}
+
+			foundUser = true
+
+			for _, ac := range item.NearestAccessControls {
+				if ac != nil && ac.Id == createdAccessControl.Id {
+					foundAC = true
+					break
+				}
+			}
+		}
+
+		suite.Require().True(foundUser, "Expected created user %s in access list of FIRSTNAME data object", createdUser.Id)
+		suite.Require().True(foundAC, "Expected created AC %s among NearestAccessControls for user %s", createdAccessControl.Id, createdUser.Id)
+	})
+
+	suite.Run("GetUserAccessToDataObject finds granted user", func() {
+		item, err := dataObjectClient.GetUserAccessToDataObject(ctx, firstNameID, createdUser.Id)
+		suite.Require().NoError(err)
+		suite.Require().NotNil(item, "Expected non-nil access entry for granted user")
+		suite.Equal(createdUser.Id, item.User.Id)
+
+		acIDs := make([]string, 0, len(item.NearestAccessControls))
+		for _, ac := range item.NearestAccessControls {
+			if ac != nil {
+				acIDs = append(acIDs, ac.Id)
+			}
+		}
+
+		suite.Contains(acIDs, createdAccessControl.Id, "Expected created AC in NearestAccessControls")
+	})
+
+	suite.Run("GetUserAccessToDataObject returns nil for unrelated user id", func() {
+		item, err := dataObjectClient.GetUserAccessToDataObject(ctx, firstNameID, "nonexistent-user-id-"+uuid.NewString())
+		suite.Require().NoError(err)
+		suite.Nil(item, "Expected nil for user with no access")
+	})
+}
