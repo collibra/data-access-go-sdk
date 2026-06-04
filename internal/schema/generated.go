@@ -10414,12 +10414,14 @@ const (
 	DataSourceFeaturesColumnmasking DataSourceFeatures = "ColumnMasking"
 	DataSourceFeaturesRowfiltering  DataSourceFeatures = "RowFiltering"
 	DataSourceFeaturesDatasharing   DataSourceFeatures = "DataSharing"
+	DataSourceFeaturesGroupediting  DataSourceFeatures = "GroupEditing"
 )
 
 var AllDataSourceFeatures = []DataSourceFeatures{
 	DataSourceFeaturesColumnmasking,
 	DataSourceFeaturesRowfiltering,
 	DataSourceFeaturesDatasharing,
+	DataSourceFeaturesGroupediting,
 }
 
 // Represents the filter options for listing data sources.
