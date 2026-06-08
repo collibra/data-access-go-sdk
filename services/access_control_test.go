@@ -1,15 +1,12 @@
 package services_test
 
 import (
-	"context"
 	"sort"
 	"testing"
-	"time"
 
 	sdk "github.com/collibra/data-access-go-sdk"
 	"github.com/collibra/data-access-go-sdk/internal/schema"
 	"github.com/collibra/data-access-go-sdk/services"
-	"github.com/collibra/data-access-go-sdk/types"
 	"github.com/collibra/data-access-go-sdk/utils"
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/suite"
@@ -567,52 +564,6 @@ func (suite *AccessControlServiceTestSuite) TestGetAccessControlABACWhatScope() 
 	suite.Require().True(found, "Expected ABAC what scope not found in access control")
 }
 
-// waitForUserInDataObjectAccessList polls GetDataObjectAccessList until userID appears in the
-// access list of the given data object, returning the matching item. It returns nil if the user
-// does not appear within the timeout. Access grants are materialized asynchronously on the server,
-// so an immediate read after creating an access control can legitimately return an empty list.
-func waitForUserInDataObjectAccessList(
-	suite *AccessControlServiceTestSuite,
-	dataObjectClient *services.DataObjectClient,
-	dataObjectID string,
-	userID string,
-) *types.GroupedDataAccessReturnItem {
-	var (
-		timeout      = 2 * time.Minute
-		pollInterval = 5 * time.Second
-	)
-
-	ctx, cancel := context.WithTimeout(suite.T().Context(), timeout)
-	defer cancel()
-
-	ticker := time.NewTicker(pollInterval)
-	defer ticker.Stop()
-
-	for {
-		for item, err := range dataObjectClient.GetDataObjectAccessList(ctx, dataObjectID) {
-			if err != nil {
-				if ctx.Err() != nil {
-					return nil // timed out while polling
-				}
-
-				suite.Require().NoError(err, "Error iterating data object access list")
-			}
-
-			if item != nil && item.User.Id == userID {
-				return item
-			}
-		}
-
-		suite.T().Logf("Waiting for user %s to appear in access list of data object %s", userID, dataObjectID)
-
-		select {
-		case <-ctx.Done():
-			return nil
-		case <-ticker.C:
-		}
-	}
-}
-
 func (suite *AccessControlServiceTestSuite) TestDataObjectAccessList() {
 	ctx := suite.T().Context()
 	accessControlClient := suite.sdkClient.AccessControl()
@@ -630,20 +581,29 @@ func (suite *AccessControlServiceTestSuite) TestDataObjectAccessList() {
 	suite.Require().NoError(err, "Failed to resolve FIRSTNAME data object id")
 
 	suite.Run("GetDataObjectAccessList returns the granted user and AC", func() {
-		// Resolving an access control grant down to per-data-object access is materialized
-		// asynchronously on the server, so poll the access list until the granted user shows up.
-		item := waitForUserInDataObjectAccessList(suite, dataObjectClient, firstNameID, createdUser.Id)
-		suite.Require().NotNil(item, "Expected created user %s in access list of FIRSTNAME data object", createdUser.Id)
-
+		response := dataObjectClient.GetDataObjectAccessList(ctx, firstNameID)
+		foundUser := false
 		foundAC := false
 
-		for _, ac := range item.NearestAccessControls {
-			if ac != nil && ac.Id == createdAccessControl.Id {
-				foundAC = true
-				break
+		for item, err := range response {
+			suite.Require().NoError(err, "Error iterating data object access list")
+			suite.Require().NotNil(item, "Access item should not be nil")
+
+			if item.User.Id != createdUser.Id {
+				continue
+			}
+
+			foundUser = true
+
+			for _, ac := range item.NearestAccessControls {
+				if ac != nil && ac.Id == createdAccessControl.Id {
+					foundAC = true
+					break
+				}
 			}
 		}
 
+		suite.Require().True(foundUser, "Expected created user %s in access list of FIRSTNAME data object", createdUser.Id)
 		suite.Require().True(foundAC, "Expected created AC %s among NearestAccessControls for user %s", createdAccessControl.Id, createdUser.Id)
 	})
 
