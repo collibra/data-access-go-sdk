@@ -27,7 +27,11 @@ func createTestAccessControl(suite *AccessControlServiceTestSuite, accessControl
 	ctx := suite.T().Context()
 
 	fullNames := []string{"RAITO_DBT.DEFAULT.CUSTOMER.FIRSTNAME", "RAITO_DBT.DEFAULT.CUSTOMER.LASTNAME"}
+	readPermission := "READ"
 	whatDataObjects := schema.AccessControlWhatInputDO{
+		// Grant an actual permission so the access resolves and shows up in the data object's
+		// distinctAccess list; without permissions the WHO user is not considered to have access.
+		Permissions: []*string{&readPermission},
 		DataObjectByName: []schema.AccessControlWhatDoByNameInput{
 			{
 				DataSource: *dataSourceId,
