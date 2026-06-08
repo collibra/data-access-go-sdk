@@ -11069,10 +11069,14 @@ type DataSourceMetaDataInput struct {
 	// UsageMetaInfo describes the usage metadata for this data source.
 	UsageMetaInfo *UsageMetaInput `json:"usageMetaInfo,omitempty" doc:"UsageMetaInfo describes the usage metadata for this data source."`
 	// If true, access controls will not be unpacked at export time. Otherwise, access controls will be unpacked into native groups and users.
-	SupportsAccessControlInheritance *bool                 `json:"supportsAccessControlInheritance,omitempty" doc:"If true, access controls will not be unpacked at export time. Otherwise, access controls will be unpacked into native groups and users."`
-	MaskingMetadata                  *MaskingMetadataInput `json:"maskingMetadata,omitempty"`
-	FilterMetadata                   *FilterMetadataInput  `json:"filterMetadata,omitempty"`
-	ShareMetadata                    *ShareMetadataInput   `json:"shareMetadata,omitempty"`
+	SupportsAccessControlInheritance *bool `json:"supportsAccessControlInheritance,omitempty" doc:"If true, access controls will not be unpacked at export time. Otherwise, access controls will be unpacked into native groups and users."`
+	// Indicates whether the target system supports group inheritance (a group being a member of another group / nested groups).
+	// When false, nested groups are unpacked into their effective member users when exporting a group's membership, since the
+	// target cannot express group-in-group relationships. When null, the current value is left unchanged. Defaults to true.
+	SupportsGroupInheritance *bool                 `json:"supportsGroupInheritance,omitempty" doc:"Indicates whether the target system supports group inheritance (a group being a member of another group / nested groups). When false, nested groups are unpacked into their effective member users when exporting a group's membership, since the target cannot express group-in-group relationships. When null, the current value is left unchanged. Defaults to true."`
+	MaskingMetadata          *MaskingMetadataInput `json:"maskingMetadata,omitempty"`
+	FilterMetadata           *FilterMetadataInput  `json:"filterMetadata,omitempty"`
+	ShareMetadata            *ShareMetadataInput   `json:"shareMetadata,omitempty"`
 }
 
 // GetDataObjectTypes returns DataSourceMetaDataInput.DataObjectTypes, and is useful for accessing the field via an interface.
@@ -11100,6 +11104,11 @@ func (v *DataSourceMetaDataInput) GetUsageMetaInfo() *UsageMetaInput { return v.
 // GetSupportsAccessControlInheritance returns DataSourceMetaDataInput.SupportsAccessControlInheritance, and is useful for accessing the field via an interface.
 func (v *DataSourceMetaDataInput) GetSupportsAccessControlInheritance() *bool {
 	return v.SupportsAccessControlInheritance
+}
+
+// GetSupportsGroupInheritance returns DataSourceMetaDataInput.SupportsGroupInheritance, and is useful for accessing the field via an interface.
+func (v *DataSourceMetaDataInput) GetSupportsGroupInheritance() *bool {
+	return v.SupportsGroupInheritance
 }
 
 // GetMaskingMetadata returns DataSourceMetaDataInput.MaskingMetadata, and is useful for accessing the field via an interface.
