@@ -10411,6 +10411,7 @@ func (v *DataSourceEdgeSiteInfoPermissionDeniedError) GetTypename() *string { re
 type DataSourceFeatures string
 
 const (
+	DataSourceFeaturesGrants        DataSourceFeatures = "Grants"
 	DataSourceFeaturesColumnmasking DataSourceFeatures = "ColumnMasking"
 	DataSourceFeaturesRowfiltering  DataSourceFeatures = "RowFiltering"
 	DataSourceFeaturesDatasharing   DataSourceFeatures = "DataSharing"
@@ -10418,6 +10419,7 @@ const (
 )
 
 var AllDataSourceFeatures = []DataSourceFeatures{
+	DataSourceFeaturesGrants,
 	DataSourceFeaturesColumnmasking,
 	DataSourceFeaturesRowfiltering,
 	DataSourceFeaturesDatasharing,

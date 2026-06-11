@@ -311,6 +311,7 @@ type DataSourceEdgeSiteInfoPermissionDeniedError = schema.DataSourceEdgeSiteInfo
 type DataSourceFeatures = schema.DataSourceFeatures
 
 const (
+	DataSourceFeaturesGrants        DataSourceFeatures = schema.DataSourceFeaturesGrants
 	DataSourceFeaturesColumnmasking DataSourceFeatures = schema.DataSourceFeaturesColumnmasking
 	DataSourceFeaturesRowfiltering  DataSourceFeatures = schema.DataSourceFeaturesRowfiltering
 	DataSourceFeaturesDatasharing   DataSourceFeatures = schema.DataSourceFeaturesDatasharing
@@ -959,7 +960,7 @@ var AllBinaryExpressionAggregatorOperator = []BinaryExpressionAggregatorOperator
 var AllBinaryExpressionUnaryExpressionOperator = []BinaryExpressionUnaryExpressionOperator{BinaryExpressionUnaryExpressionOperatorNot}
 var AllDataComparisonExpressionComparisonOperator = []DataComparisonExpressionComparisonOperator{DataComparisonExpressionComparisonOperatorEqual, DataComparisonExpressionComparisonOperatorNotequal, DataComparisonExpressionComparisonOperatorLessthan, DataComparisonExpressionComparisonOperatorLessthanorequal, DataComparisonExpressionComparisonOperatorGreaterthan, DataComparisonExpressionComparisonOperatorGreaterthanorequal}
 var AllDataComparisonExpressionEntityType = []DataComparisonExpressionEntityType{DataComparisonExpressionEntityTypeDataobject, DataComparisonExpressionEntityTypeColumnreferencebyname}
-var AllDataSourceFeatures = []DataSourceFeatures{DataSourceFeaturesColumnmasking, DataSourceFeaturesRowfiltering, DataSourceFeaturesDatasharing, DataSourceFeaturesGroupediting}
+var AllDataSourceFeatures = []DataSourceFeatures{DataSourceFeaturesGrants, DataSourceFeaturesColumnmasking, DataSourceFeaturesRowfiltering, DataSourceFeaturesDatasharing, DataSourceFeaturesGroupediting}
 var AllDataTypeOrigin = []DataTypeOrigin{DataTypeOriginInternal, DataTypeOriginExternal, DataTypeOriginShared}
 var AllEntityType = []EntityType{EntityTypeAccesscontrol, EntityTypeAccess, EntityTypeAccessrequest, EntityTypeUser, EntityTypeDataobject, EntityTypeDatasource, EntityTypeDatausage, EntityTypeTag, EntityTypeRole, EntityTypeRoleassignment, EntityTypeAccount, EntityTypeDatasharerecipient}
 var AllJobStatus = []JobStatus{JobStatusStarted, JobStatusInprogress, JobStatusCompleted, JobStatusFailed, JobStatusTimedout}
