@@ -9,6 +9,7 @@ import (
 	sdk "github.com/collibra/data-access-go-sdk"
 	"github.com/collibra/data-access-go-sdk/internal/schema"
 	"github.com/collibra/data-access-go-sdk/services"
+	"github.com/collibra/data-access-go-sdk/types"
 	"github.com/collibra/data-access-go-sdk/utils"
 	"github.com/stretchr/testify/suite"
 )
@@ -133,5 +134,35 @@ func (suite *DataObjectServiceTestSuite) TestDataObjects() {
 
 		suite.Equal(dataObjectName, dataObjectDetails.FullName, "Data object name should match")
 		suite.Equal(suite.createdDataSource.Id, dataObjectDetails.DataSource.Id, "Data source ID should match")
+	})
+}
+
+func (suite *DataObjectServiceTestSuite) TestGetDataObjectAccessListNotFound() {
+	ctx := suite.T().Context()
+
+	var gotErr error
+	for _, err := range suite.dataObjectClient.GetDataObjectAccessList(ctx, "non-existent-id") {
+		gotErr = err
+	}
+
+	suite.Require().Error(gotErr)
+	var notFoundErr *types.ErrNotFound
+	suite.Require().ErrorAs(gotErr, &notFoundErr)
+}
+
+func (suite *DataObjectServiceTestSuite) TestGetDataObjectIdByNameErrors() {
+	ctx := suite.T().Context()
+
+	suite.Run("non-existent fullname returns not-found error", func() {
+		_, err := suite.dataObjectClient.GetDataObjectIdByName(ctx, "NON.EXISTENT.NAME", suite.createdDataSource.Id)
+		suite.Require().Error(err)
+		suite.Require().ErrorContains(err, "expected 1 data object but got 0")
+	})
+
+	suite.Run("non-existent data source ID returns ErrNotFound", func() {
+		_, err := suite.dataObjectClient.GetDataObjectIdByName(ctx, "RAITO_DBT.DEFAULT.CUSTOMER", "non-existent-id")
+		suite.Require().Error(err)
+		var notFoundErr *types.ErrNotFound
+		suite.Require().ErrorAs(err, &notFoundErr)
 	})
 }

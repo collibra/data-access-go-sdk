@@ -24,7 +24,9 @@ func createTestAccessControl(suite *AccessControlServiceTestSuite, accessControl
 	ctx := suite.T().Context()
 
 	fullNames := []string{"RAITO_DBT.DEFAULT.CUSTOMER.FIRSTNAME", "RAITO_DBT.DEFAULT.CUSTOMER.LASTNAME"}
+	selectPermission := "SELECT"
 	whatDataObjects := schema.AccessControlWhatInputDO{
+		Permissions: []*string{&selectPermission},
 		DataObjectByName: []schema.AccessControlWhatDoByNameInput{
 			{
 				DataSource: *dataSourceId,
@@ -558,4 +560,91 @@ func (suite *AccessControlServiceTestSuite) TestGetAccessControlABACWhatScope() 
 	}
 
 	suite.Require().True(found, "Expected ABAC what scope not found in access control")
+}
+
+func (suite *AccessControlServiceTestSuite) TestDataObjectAccessList() {
+	ctx := suite.T().Context()
+	accessControlClient := suite.sdkClient.AccessControl()
+	dataObjectClient := suite.sdkClient.DataObject()
+	createdUser := suite.createdUser
+	suite.Require().NotNil(createdUser, "createdUser must be set up by the suite")
+
+	// distinctAccess only surfaces a user when the granted permission intersects the queried
+	// data object type's applicable permissions. Columns have no applicable permissions, so a
+	// column's access list is always empty. Grant SELECT (a table permission) on the CUSTOMER
+	// table and query the table itself.
+	name := "Test Access Control " + uuid.New().String()
+	action := schema.AccessControlActionGrant
+	selectPermission := "SELECT"
+	tableFullName := "RAITO_DBT.DEFAULT.CUSTOMER"
+	createdAccessControl, err := accessControlClient.CreateAccessControl(ctx, schema.AccessControlInput{
+		Name:   &name,
+		Action: &action,
+		DataSources: []schema.AccessControlDataSourceInput{
+			{DataSource: suite.createdDataSource.Id},
+		},
+		WhoItems: []schema.WhoItemInput{
+			{User: &createdUser.Id},
+		},
+		WhatDataObjects: []schema.AccessControlWhatInputDO{{
+			Permissions: []*string{&selectPermission},
+			DataObjectByName: []schema.AccessControlWhatDoByNameInput{
+				{DataSource: suite.createdDataSource.Id, FullName: tableFullName},
+			},
+		}},
+	})
+	suite.Require().NoError(err)
+	suite.Require().NotNil(createdAccessControl)
+
+	tableID, err := dataObjectClient.GetDataObjectIdByName(ctx, tableFullName, suite.createdDataSource.Id)
+	suite.Require().NoError(err, "Failed to resolve CUSTOMER table data object id")
+
+	suite.Run("GetDataObjectAccessList returns the granted user and AC", func() {
+		response := dataObjectClient.GetDataObjectAccessList(ctx, tableID)
+		foundUser := false
+		foundAC := false
+
+		for item, err := range response {
+			suite.Require().NoError(err, "Error iterating data object access list")
+			suite.Require().NotNil(item, "Access item should not be nil")
+
+			if item.User.Id != createdUser.Id {
+				continue
+			}
+
+			foundUser = true
+
+			for _, ac := range item.NearestAccessControls {
+				if ac != nil && ac.Id == createdAccessControl.Id {
+					foundAC = true
+					break
+				}
+			}
+		}
+
+		suite.Require().True(foundUser, "Expected created user %s in access list of CUSTOMER data object", createdUser.Id)
+		suite.Require().True(foundAC, "Expected created AC %s among NearestAccessControls for user %s", createdAccessControl.Id, createdUser.Id)
+	})
+
+	suite.Run("GetUserAccessToDataObject finds granted user", func() {
+		item, err := dataObjectClient.GetUserAccessToDataObject(ctx, tableID, createdUser.Id)
+		suite.Require().NoError(err)
+		suite.Require().NotNil(item, "Expected non-nil access entry for granted user")
+		suite.Equal(createdUser.Id, item.User.Id)
+
+		acIDs := make([]string, 0, len(item.NearestAccessControls))
+		for _, ac := range item.NearestAccessControls {
+			if ac != nil {
+				acIDs = append(acIDs, ac.Id)
+			}
+		}
+
+		suite.Contains(acIDs, createdAccessControl.Id, "Expected created AC in NearestAccessControls")
+	})
+
+	suite.Run("GetUserAccessToDataObject returns nil for unrelated user id", func() {
+		item, err := dataObjectClient.GetUserAccessToDataObject(ctx, tableID, "nonexistent-user-id-"+uuid.NewString())
+		suite.Require().NoError(err)
+		suite.Nil(item, "Expected nil for user with no access")
+	})
 }
