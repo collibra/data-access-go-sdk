@@ -1105,7 +1105,9 @@ type AccessControlFilterInput struct {
 	// Filter by which tags the access control needs to have.
 	HasTags []TagFilter `json:"hasTags,omitempty" doc:"Filter by which tags the access control needs to have."`
 	// Only return the access controls that have the given data object in its WHAT list.
-	DataObjectInWhat     *string `json:"dataObjectInWhat,omitempty" doc:"Only return the access controls that have the given data object in its WHAT list."`
+	DataObjectInWhat *string `json:"dataObjectInWhat,omitempty" doc:"Only return the access controls that have the given data object in its WHAT list."`
+	// Only return the access controls that have the give access control as an incoming WHO list.
+	AccessControlInWhat  *string `json:"accessControlInWhat,omitempty" doc:"Only return the access controls that have the give access control as an incoming WHO list."`
 	IsRoleAssignableOnly bool    `json:"isRoleAssignableOnly"`
 }
 
@@ -1156,6 +1158,9 @@ func (v *AccessControlFilterInput) GetHasTags() []TagFilter { return v.HasTags }
 
 // GetDataObjectInWhat returns AccessControlFilterInput.DataObjectInWhat, and is useful for accessing the field via an interface.
 func (v *AccessControlFilterInput) GetDataObjectInWhat() *string { return v.DataObjectInWhat }
+
+// GetAccessControlInWhat returns AccessControlFilterInput.AccessControlInWhat, and is useful for accessing the field via an interface.
+func (v *AccessControlFilterInput) GetAccessControlInWhat() *string { return v.AccessControlInWhat }
 
 // GetIsRoleAssignableOnly returns AccessControlFilterInput.IsRoleAssignableOnly, and is useful for accessing the field via an interface.
 func (v *AccessControlFilterInput) GetIsRoleAssignableOnly() bool { return v.IsRoleAssignableOnly }
