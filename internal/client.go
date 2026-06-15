@@ -1,6 +1,7 @@
 package internal
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 	"runtime/debug"
@@ -66,7 +67,7 @@ func CreateHttpClient(options *ClientOptions) *http.Client {
 		RetryWaitMin: options.RetryWaitMin,
 		RetryWaitMax: options.RetryWaitMax,
 		RetryMax:     options.RetryMax,
-		CheckRetry:   retryablehttp.DefaultRetryPolicy,
+		CheckRetry:   RetryPolicy,
 		Backoff:      options.Backoff,
 	}
 
@@ -133,4 +134,22 @@ func (t *SdkHeaderTransport) GetVersion() string {
 	// If not found, it might be a local replace or other
 	// non-standard build.
 	return "unknown (not found in deps)"
+}
+
+func RetryPolicy(ctx context.Context, resp *http.Response, err error) (bool, error) {
+	if ctx.Err() != nil {
+		return false, ctx.Err() //nolint:wrapcheck
+	}
+
+	// 408 Request Timeout is recoverable.
+	if resp.StatusCode == http.StatusRequestTimeout {
+		return true, nil
+	}
+
+	result, err := retryablehttp.DefaultRetryPolicy(ctx, resp, err)
+	if err != nil {
+		return result, fmt.Errorf("retryable error: %w", err)
+	}
+
+	return result, nil
 }
