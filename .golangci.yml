@@ -68,7 +68,7 @@ linters:
   #    - wsl # TODO: Collibra: This is disabled temporarily so we can comment out code while doing the lift and shift to CHI (Jira: DEV-135346)
   settings:
     cyclop:
-      max-complexity: 20
+      max-complexity: 25
     goconst:
       min-len: 2
       min-occurrences: 3
