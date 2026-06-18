@@ -38,7 +38,7 @@ jobs:
           collibra-password: ${{ secrets.COLLIBRA_PASSWORD }}
 
       - name: SonarQube Scan
-        uses: sonarsource/sonarqube-scan-action@v5
+        uses: sonarsource/sonarqube-scan-action@2f77a1ec69fb1d595b06f35ab27e97605bdef703  # v5
         if: vars.SONAR_SKIP != 'TRUE' && (github.event_name == 'pull_request' || github.event_name == 'push')
         env:
           SONAR_TOKEN: ${{ secrets.SONARQUBE_PUBLIC_API_KEY }}
@@ -48,7 +48,7 @@ jobs:
             -Dsonar.pullrequest.github.repository=collibra/data-access-go-sdk
 
       - name: SonarQube Quality Gate
-        uses: sonarsource/sonarqube-quality-gate-action@v1.1.0
+        uses: sonarsource/sonarqube-quality-gate-action@d304d050d930b02a896b0f85935344f023928496  # v1.1.0
         if: vars.SONAR_SKIP != 'TRUE' && (github.event_name == 'pull_request' || github.event_name == 'push')
         timeout-minutes: 10
         continue-on-error: true
@@ -58,6 +58,6 @@ jobs:
 
       - name: FOSSA Scan
         if: github.event_name == 'pull_request' || github.event_name == 'push'
-        uses: fossas/fossa-action@v1
+        uses: fossas/fossa-action@ff70fe9fe17cbd2040648f1c45e8ec4e4884dcf3  # v1
         with:
           api-key: ${{ secrets.FOSSA_PUBLIC_API_KEY }}
