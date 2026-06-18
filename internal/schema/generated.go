@@ -3914,7 +3914,7 @@ func (v *AccessWhoItemItemDataShareRecipient) GetTypename() *string { return v.T
 // AccessWhoItemItemDataSource includes the requested fields of the GraphQL type DataSource.
 // The GraphQL type's documentation follows.
 //
-// Represents a data sourcein Collibra Data Access.
+// Represents a data source in Collibra Data Access.
 type AccessWhoItemItemDataSource struct {
 	Typename *string `json:"__typename"`
 }
@@ -6282,7 +6282,7 @@ func (v *CreateAccessRequestResponse) __premarshalJSON() (*__premarshalCreateAcc
 // CreateDataSourceCreateDataSource includes the requested fields of the GraphQL type DataSource.
 // The GraphQL type's documentation follows.
 //
-// Represents a data sourcein Collibra Data Access.
+// Represents a data source in Collibra Data Access.
 type CreateDataSourceCreateDataSource struct {
 	Typename   *string `json:"__typename"`
 	DataSource `json:"-"`
@@ -9302,7 +9302,7 @@ func (v *DataObjectConnectionResultPermissionDeniedError) __premarshalJSON() (*_
 // DataObjectDataSource includes the requested fields of the GraphQL type DataSource.
 // The GraphQL type's documentation follows.
 //
-// Represents a data sourcein Collibra Data Access.
+// Represents a data source in Collibra Data Access.
 type DataObjectDataSource struct {
 	// The unique identifier of the data source.
 	Id string `json:"id"`
@@ -9591,7 +9591,7 @@ func (v *DataObjectTypePermissionInput) GetCannotBeGranted() *bool { return v.Ca
 // DataSource includes the GraphQL fields of DataSource requested by the fragment DataSource.
 // The GraphQL type's documentation follows.
 //
-// Represents a data sourcein Collibra Data Access.
+// Represents a data source in Collibra Data Access.
 type DataSource struct {
 	// The unique identifier of the data source.
 	Id string `json:"id" doc:"The unique identifier of the data source."`
@@ -9763,7 +9763,7 @@ func (v *DataSourceConnectionEdgesDataSourceEdge) GetNode() *DataSourceConnectio
 // DataSourceConnectionEdgesDataSourceEdgeNodeDataSource includes the requested fields of the GraphQL type DataSource.
 // The GraphQL type's documentation follows.
 //
-// Represents a data sourcein Collibra Data Access.
+// Represents a data source in Collibra Data Access.
 type DataSourceConnectionEdgesDataSourceEdgeNodeDataSource struct {
 	DataSource `json:"-"`
 }
@@ -10524,7 +10524,7 @@ func (v *DataSourceInput) GetEdgeConnectionId() *string { return v.EdgeConnectio
 // DataSourceMaskInformationDataSource includes the requested fields of the GraphQL type DataSource.
 // The GraphQL type's documentation follows.
 //
-// Represents a data sourcein Collibra Data Access.
+// Represents a data source in Collibra Data Access.
 type DataSourceMaskInformationDataSource struct {
 	Typename *string `json:"__typename"`
 	// Contains meta data about how column masking works in this data source.
@@ -10984,6 +10984,9 @@ type DataSourceMetaDataInput struct {
 	MaskingMetadata          *MaskingMetadataInput `json:"maskingMetadata,omitempty"`
 	FilterMetadata           *FilterMetadataInput  `json:"filterMetadata,omitempty"`
 	ShareMetadata            *ShareMetadataInput   `json:"shareMetadata,omitempty"`
+	// The data object type that is a valid attach point for a Collibra catalog system asset (e.g. 'metastore' for Databricks).
+	// Must match the `type` of one of the supplied `dataObjectTypes`. If null, the current value is left unchanged. If an empty string, the value is cleared.
+	CatalogSystemDataObjectType *string `json:"catalogSystemDataObjectType,omitempty" doc:"The data object type that is a valid attach point for a Collibra catalog system asset (e.g. 'metastore' for Databricks). Must match the 'type' of one of the supplied 'dataObjectTypes'. If null, the current value is left unchanged. If an empty string, the value is cleared."`
 }
 
 // GetDataObjectTypes returns DataSourceMetaDataInput.DataObjectTypes, and is useful for accessing the field via an interface.
@@ -11032,6 +11035,11 @@ func (v *DataSourceMetaDataInput) GetFilterMetadata() *FilterMetadataInput { ret
 // GetShareMetadata returns DataSourceMetaDataInput.ShareMetadata, and is useful for accessing the field via an interface.
 func (v *DataSourceMetaDataInput) GetShareMetadata() *ShareMetadataInput { return v.ShareMetadata }
 
+// GetCatalogSystemDataObjectType returns DataSourceMetaDataInput.CatalogSystemDataObjectType, and is useful for accessing the field via an interface.
+func (v *DataSourceMetaDataInput) GetCatalogSystemDataObjectType() *string {
+	return v.CatalogSystemDataObjectType
+}
+
 // Defines the sorting options when listing data sources.
 type DataSourceOrderByInput struct {
 	Name *Sort `json:"name,omitempty"`
@@ -11043,7 +11051,7 @@ func (v *DataSourceOrderByInput) GetName() *Sort { return v.Name }
 // DataSourceParentDataSource includes the requested fields of the GraphQL type DataSource.
 // The GraphQL type's documentation follows.
 //
-// Represents a data sourcein Collibra Data Access.
+// Represents a data source in Collibra Data Access.
 type DataSourceParentDataSource struct {
 	// The unique identifier of the data source.
 	Id string `json:"id"`
@@ -19877,7 +19885,7 @@ func (v *GetDataObjectResponse) GetDataObject() GetDataObjectDataObject { return
 // GetDataSourceDataSource includes the requested fields of the GraphQL type DataSource.
 // The GraphQL type's documentation follows.
 //
-// Represents a data sourcein Collibra Data Access.
+// Represents a data source in Collibra Data Access.
 type GetDataSourceDataSource struct {
 	Typename   *string `json:"__typename"`
 	DataSource `json:"-"`
@@ -23902,7 +23910,7 @@ func (v *JobConnectionResultPermissionDeniedError) __premarshalJSON() (*__premar
 // JobDataSource includes the requested fields of the GraphQL type DataSource.
 // The GraphQL type's documentation follows.
 //
-// Represents a data sourcein Collibra Data Access.
+// Represents a data source in Collibra Data Access.
 type JobDataSource struct {
 	DataSource `json:"-"`
 }
@@ -28033,7 +28041,7 @@ func (v *ListRoleAssignmentsOnDataObjectResponse) GetDataObject() ListRoleAssign
 // ListRoleAssignmentsOnDataSourceDataSource includes the requested fields of the GraphQL type DataSource.
 // The GraphQL type's documentation follows.
 //
-// Represents a data sourcein Collibra Data Access.
+// Represents a data source in Collibra Data Access.
 type ListRoleAssignmentsOnDataSourceDataSource struct {
 	Typename        *string                                                                                `json:"__typename"`
 	RoleAssignments ListRoleAssignmentsOnDataSourceDataSourceRoleAssignmentsRoleAssignmentConnectionResult `json:"-"`
@@ -32906,7 +32914,7 @@ func (v *RoleAssignmentOnDataObject) GetId() string { return v.Id }
 // RoleAssignmentOnDataSource includes the requested fields of the GraphQL type DataSource.
 // The GraphQL type's documentation follows.
 //
-// Represents a data sourcein Collibra Data Access.
+// Represents a data source in Collibra Data Access.
 type RoleAssignmentOnDataSource struct {
 	Typename *string `json:"__typename"`
 	// The unique identifier of the data source.
@@ -33330,7 +33338,7 @@ func (v *SetDataSourceMetadataSetDataSourceMetaDataAlreadyExistsError) GetTypena
 // SetDataSourceMetadataSetDataSourceMetaDataDataSource includes the requested fields of the GraphQL type DataSource.
 // The GraphQL type's documentation follows.
 //
-// Represents a data sourcein Collibra Data Access.
+// Represents a data source in Collibra Data Access.
 type SetDataSourceMetadataSetDataSourceMetaDataDataSource struct {
 	Typename   *string `json:"__typename"`
 	DataSource `json:"-"`
@@ -33878,7 +33886,7 @@ func (v *SetSyncConfigurationParameterValuesSetSyncConfigurationParameterValuesA
 // SetSyncConfigurationParameterValuesSetSyncConfigurationParameterValuesDataSource includes the requested fields of the GraphQL type DataSource.
 // The GraphQL type's documentation follows.
 //
-// Represents a data sourcein Collibra Data Access.
+// Represents a data source in Collibra Data Access.
 type SetSyncConfigurationParameterValuesSetSyncConfigurationParameterValuesDataSource struct {
 	Typename   *string `json:"__typename"`
 	DataSource `json:"-"`
@@ -35656,7 +35664,7 @@ func (v *SyncDataAccessControlType) GetType() *string { return v.Type }
 // SyncDataDataSource includes the requested fields of the GraphQL type DataSource.
 // The GraphQL type's documentation follows.
 //
-// Represents a data sourcein Collibra Data Access.
+// Represents a data source in Collibra Data Access.
 type SyncDataDataSource struct {
 	DataSource `json:"-"`
 }
@@ -36003,7 +36011,7 @@ func (v *SyncJob) __premarshalJSON() (*__premarshalSyncJob, error) {
 // SyncJobDataSource includes the requested fields of the GraphQL type DataSource.
 // The GraphQL type's documentation follows.
 //
-// Represents a data sourcein Collibra Data Access.
+// Represents a data source in Collibra Data Access.
 type SyncJobDataSource struct {
 	Typename   *string `json:"__typename"`
 	DataSource `json:"-"`
@@ -37775,7 +37783,7 @@ func (v *TriggerDataSourceCliSyncTriggerDataSourceCliSyncAlreadyExistsError) Get
 // TriggerDataSourceCliSyncTriggerDataSourceCliSyncDataSource includes the requested fields of the GraphQL type DataSource.
 // The GraphQL type's documentation follows.
 //
-// Represents a data sourcein Collibra Data Access.
+// Represents a data source in Collibra Data Access.
 type TriggerDataSourceCliSyncTriggerDataSourceCliSyncDataSource struct {
 	Typename   *string `json:"__typename"`
 	DataSource `json:"-"`
@@ -39596,7 +39604,7 @@ func (v *UpdateDataSourceResponse) __premarshalJSON() (*__premarshalUpdateDataSo
 // UpdateDataSourceUpdateDataSource includes the requested fields of the GraphQL type DataSource.
 // The GraphQL type's documentation follows.
 //
-// Represents a data sourcein Collibra Data Access.
+// Represents a data source in Collibra Data Access.
 type UpdateDataSourceUpdateDataSource struct {
 	Typename   *string `json:"__typename"`
 	DataSource `json:"-"`
