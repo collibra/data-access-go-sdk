@@ -2108,6 +2108,8 @@ type AccessControlWhoListFilter struct {
 	EntityType *EntityType `json:"entityType,omitempty" doc:"Only get WHO items with a specific type (User or AccessControl)"`
 	// Only get AccessControl WHO items with this action (e.g. `GrantVariation` to list a role's variations). Deleted access controls are excluded when this filter is set. Only applicable to the non-unpacked who-list.
 	AccessControlAction *AccessControlAction `json:"accessControlAction,omitempty" doc:"Only get AccessControl WHO items with this action (e.g. 'GrantVariation' to list a role's variations). Deleted access controls are excluded when this filter is set. Only applicable to the non-unpacked who-list."`
+	// Only get AccessControl WHO items in one of these states. When omitted, members of every state are returned. Only applicable to the non-unpacked who-list.
+	States []AccessControlState `json:"states,omitempty" doc:"Only get AccessControl WHO items in one of these states. When omitted, members of every state are returned. Only applicable to the non-unpacked who-list."`
 	// The search string to use (will do a case-insensitive 'contains').
 	Search *string `json:"search,omitempty" doc:"The search string to use (will do a case-insensitive 'contains')."`
 	// Optional ABAC rule to filter the who-list on. Only applicable when requesting users who-list without unpacking
@@ -2132,6 +2134,9 @@ func (v *AccessControlWhoListFilter) GetEntityType() *EntityType { return v.Enti
 func (v *AccessControlWhoListFilter) GetAccessControlAction() *AccessControlAction {
 	return v.AccessControlAction
 }
+
+// GetStates returns AccessControlWhoListFilter.States, and is useful for accessing the field via an interface.
+func (v *AccessControlWhoListFilter) GetStates() []AccessControlState { return v.States }
 
 // GetSearch returns AccessControlWhoListFilter.Search, and is useful for accessing the field via an interface.
 func (v *AccessControlWhoListFilter) GetSearch() *string { return v.Search }
