@@ -43656,6 +43656,7 @@ func (v *__EndOfTargetsSyncInput) GetInput() EndOfTargetsSyncInput { return v.In
 type __FetchExportAccessControlsInput struct {
 	FlowId uuid.UUID `json:"flowId"`
 	After  *int      `json:"after,omitempty"`
+	Limit  int       `json:"limit"`
 }
 
 // GetFlowId returns __FetchExportAccessControlsInput.FlowId, and is useful for accessing the field via an interface.
@@ -43663,6 +43664,9 @@ func (v *__FetchExportAccessControlsInput) GetFlowId() uuid.UUID { return v.Flow
 
 // GetAfter returns __FetchExportAccessControlsInput.After, and is useful for accessing the field via an interface.
 func (v *__FetchExportAccessControlsInput) GetAfter() *int { return v.After }
+
+// GetLimit returns __FetchExportAccessControlsInput.Limit, and is useful for accessing the field via an interface.
+func (v *__FetchExportAccessControlsInput) GetLimit() int { return v.Limit }
 
 // __FinalizeExportFlowInput is used internally by genqlient
 type __FinalizeExportFlowInput struct {
@@ -45686,8 +45690,8 @@ func EndOfTargetsSync(
 
 // The query executed by FetchExportAccessControls.
 const FetchExportAccessControls_Operation = `
-query FetchExportAccessControls ($flowId: UUID!, $after: Int) {
-	fetchExportAccessControls(flowId: $flowId, after: $after) {
+query FetchExportAccessControls ($flowId: UUID!, $after: Int, $limit: Int!) {
+	fetchExportAccessControls(flowId: $flowId, after: $after, limit: $limit) {
 		__typename
 		... ExportAccessControls
 		... PermissionDeniedError
@@ -45843,6 +45847,7 @@ func FetchExportAccessControls(
 	client_ graphql.Client,
 	flowId uuid.UUID,
 	after *int,
+	limit int,
 ) (data_ *FetchExportAccessControlsResponse, err_ error) {
 	req_ := &graphql.Request{
 		OpName: "FetchExportAccessControls",
@@ -45850,6 +45855,7 @@ func FetchExportAccessControls(
 		Variables: &__FetchExportAccessControlsInput{
 			FlowId: flowId,
 			After:  after,
+			Limit:  limit,
 		},
 	}
 
