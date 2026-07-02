@@ -31875,18 +31875,21 @@ var AllParameterDataType = []ParameterDataType{
 }
 
 type ParameterDefinitionInput struct {
-	Type         ParameterType              `json:"type"`
-	Key          string                     `json:"key"`
-	DisplayName  string                     `json:"displayName"`
-	Description  *string                    `json:"description,omitempty"`
-	DataType     *ParameterDataType         `json:"dataType,omitempty"`
-	Required     *bool                      `json:"required,omitempty"`
-	Source       *ParameterSource           `json:"source,omitempty"`
-	DefaultValue *interface{}               `json:"defaultValue,omitempty"`
-	Parameters   []ParameterDefinitionInput `json:"parameters,omitempty"`
-	IsAdvanced   bool                       `json:"isAdvanced"`
-	PlaceHolder  *string                    `json:"placeHolder,omitempty"`
-	Validations  []*interface{}             `json:"validations,omitempty"`
+	Type               ParameterType              `json:"type"`
+	Key                string                     `json:"key"`
+	DisplayName        string                     `json:"displayName"`
+	Description        *string                    `json:"description,omitempty"`
+	DataType           *ParameterDataType         `json:"dataType,omitempty"`
+	Required           *bool                      `json:"required,omitempty"`
+	Source             *ParameterSource           `json:"source,omitempty"`
+	DefaultValue       *interface{}               `json:"defaultValue,omitempty"`
+	Parameters         []ParameterDefinitionInput `json:"parameters,omitempty"`
+	IsAdvanced         bool                       `json:"isAdvanced"`
+	PlaceHolder        *string                    `json:"placeHolder,omitempty"`
+	Validations        []*interface{}             `json:"validations,omitempty"`
+	MinimumDGCVersion  *string                    `json:"minimumDGCVersion,omitempty"`
+	Deprecated         bool                       `json:"deprecated"`
+	DeprecationMessage *string                    `json:"deprecationMessage,omitempty"`
 }
 
 // GetType returns ParameterDefinitionInput.Type, and is useful for accessing the field via an interface.
@@ -31924,6 +31927,15 @@ func (v *ParameterDefinitionInput) GetPlaceHolder() *string { return v.PlaceHold
 
 // GetValidations returns ParameterDefinitionInput.Validations, and is useful for accessing the field via an interface.
 func (v *ParameterDefinitionInput) GetValidations() []*interface{} { return v.Validations }
+
+// GetMinimumDGCVersion returns ParameterDefinitionInput.MinimumDGCVersion, and is useful for accessing the field via an interface.
+func (v *ParameterDefinitionInput) GetMinimumDGCVersion() *string { return v.MinimumDGCVersion }
+
+// GetDeprecated returns ParameterDefinitionInput.Deprecated, and is useful for accessing the field via an interface.
+func (v *ParameterDefinitionInput) GetDeprecated() bool { return v.Deprecated }
+
+// GetDeprecationMessage returns ParameterDefinitionInput.DeprecationMessage, and is useful for accessing the field via an interface.
+func (v *ParameterDefinitionInput) GetDeprecationMessage() *string { return v.DeprecationMessage }
 
 type ParameterSource string
 
