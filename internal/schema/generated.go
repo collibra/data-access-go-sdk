@@ -1039,6 +1039,8 @@ type AccessControlFeedbackImport struct {
 	Warnings           []string                    `json:"warnings,omitempty"`
 	State              *AccessControlFeedbackState `json:"state,omitempty"`
 	FilterRuleFeedback []FilterRuleFeedbackImport  `json:"filterRuleFeedback,omitempty"`
+	// Categorised errors sent alongside the free-text errors. The free-text errors remain as a fallback.
+	StructuredErrors []StructuredErrorInput `json:"structuredErrors,omitempty" doc:"Categorised errors sent alongside the free-text errors. The free-text errors remain as a fallback."`
 }
 
 // GetAccessControlId returns AccessControlFeedbackImport.AccessControlId, and is useful for accessing the field via an interface.
@@ -1065,6 +1067,11 @@ func (v *AccessControlFeedbackImport) GetState() *AccessControlFeedbackState { r
 // GetFilterRuleFeedback returns AccessControlFeedbackImport.FilterRuleFeedback, and is useful for accessing the field via an interface.
 func (v *AccessControlFeedbackImport) GetFilterRuleFeedback() []FilterRuleFeedbackImport {
 	return v.FilterRuleFeedback
+}
+
+// GetStructuredErrors returns AccessControlFeedbackImport.StructuredErrors, and is useful for accessing the field via an interface.
+func (v *AccessControlFeedbackImport) GetStructuredErrors() []StructuredErrorInput {
+	return v.StructuredErrors
 }
 
 type AccessControlFeedbackState struct {
@@ -14028,6 +14035,26 @@ var AllEntityType = []EntityType{
 	EntityTypeRoleassignment,
 	EntityTypeAccount,
 	EntityTypeDatasharerecipient,
+}
+
+type ErrorCategory string
+
+const (
+	ErrorCategoryPermissionDenied ErrorCategory = "PERMISSION_DENIED"
+	ErrorCategoryNotFound         ErrorCategory = "NOT_FOUND"
+	ErrorCategoryInvalidConfig    ErrorCategory = "INVALID_CONFIG"
+	ErrorCategorySourceError      ErrorCategory = "SOURCE_ERROR"
+	ErrorCategoryTransient        ErrorCategory = "TRANSIENT"
+	ErrorCategoryUnknown          ErrorCategory = "UNKNOWN"
+)
+
+var AllErrorCategory = []ErrorCategory{
+	ErrorCategoryPermissionDenied,
+	ErrorCategoryNotFound,
+	ErrorCategoryInvalidConfig,
+	ErrorCategorySourceError,
+	ErrorCategoryTransient,
+	ErrorCategoryUnknown,
 }
 
 // ExportAccessControl includes the GraphQL fields of ExportAccessControl requested by the fragment ExportAccessControl.
@@ -31982,6 +32009,37 @@ func (v *Permission) GetName() string { return v.Name }
 // GetDescription returns Permission.Description, and is useful for accessing the field via an interface.
 func (v *Permission) GetDescription() string { return v.Description }
 
+type PermissionCheckInput struct {
+	DisplayName string                    `json:"displayName"`
+	Status      PermissionStatus          `json:"status"`
+	Privilege   *string                   `json:"privilege,omitempty"`
+	Resource    *string                   `json:"resource,omitempty"`
+	Principal   *string                   `json:"principal,omitempty"`
+	Hint        *string                   `json:"hint,omitempty"`
+	Details     []PermissionKeyValueInput `json:"details,omitempty"`
+}
+
+// GetDisplayName returns PermissionCheckInput.DisplayName, and is useful for accessing the field via an interface.
+func (v *PermissionCheckInput) GetDisplayName() string { return v.DisplayName }
+
+// GetStatus returns PermissionCheckInput.Status, and is useful for accessing the field via an interface.
+func (v *PermissionCheckInput) GetStatus() PermissionStatus { return v.Status }
+
+// GetPrivilege returns PermissionCheckInput.Privilege, and is useful for accessing the field via an interface.
+func (v *PermissionCheckInput) GetPrivilege() *string { return v.Privilege }
+
+// GetResource returns PermissionCheckInput.Resource, and is useful for accessing the field via an interface.
+func (v *PermissionCheckInput) GetResource() *string { return v.Resource }
+
+// GetPrincipal returns PermissionCheckInput.Principal, and is useful for accessing the field via an interface.
+func (v *PermissionCheckInput) GetPrincipal() *string { return v.Principal }
+
+// GetHint returns PermissionCheckInput.Hint, and is useful for accessing the field via an interface.
+func (v *PermissionCheckInput) GetHint() *string { return v.Hint }
+
+// GetDetails returns PermissionCheckInput.Details, and is useful for accessing the field via an interface.
+func (v *PermissionCheckInput) GetDetails() []PermissionKeyValueInput { return v.Details }
+
 // PermissionDeniedError includes the GraphQL fields of PermissionDeniedError requested by the fragment PermissionDeniedError.
 // The GraphQL type's documentation follows.
 //
@@ -31992,6 +32050,35 @@ type PermissionDeniedError struct {
 
 // GetMessage returns PermissionDeniedError.Message, and is useful for accessing the field via an interface.
 func (v *PermissionDeniedError) GetMessage() string { return v.Message }
+
+type PermissionKeyValueInput struct {
+	Key   string `json:"key"`
+	Value string `json:"value"`
+}
+
+// GetKey returns PermissionKeyValueInput.Key, and is useful for accessing the field via an interface.
+func (v *PermissionKeyValueInput) GetKey() string { return v.Key }
+
+// GetValue returns PermissionKeyValueInput.Value, and is useful for accessing the field via an interface.
+func (v *PermissionKeyValueInput) GetValue() string { return v.Value }
+
+type PermissionStatus string
+
+const (
+	PermissionStatusGranted PermissionStatus = "GRANTED"
+	PermissionStatusMissing PermissionStatus = "MISSING"
+	// Could not be determined; treated as non-blocking.
+	PermissionStatusUnknown PermissionStatus = "UNKNOWN"
+	// Not needed for this configuration.
+	PermissionStatusNotRequired PermissionStatus = "NOT_REQUIRED"
+)
+
+var AllPermissionStatus = []PermissionStatus{
+	PermissionStatusGranted,
+	PermissionStatusMissing,
+	PermissionStatusUnknown,
+	PermissionStatusNotRequired,
+}
 
 type QueryStatementImport struct {
 	ExternalId          string                      `json:"externalId"`
@@ -34966,6 +35053,35 @@ func (v *StatementImportDataObject) GetFullName() string { return v.FullName }
 
 // GetType returns StatementImportDataObject.Type, and is useful for accessing the field via an interface.
 func (v *StatementImportDataObject) GetType() *string { return v.Type }
+
+type StructuredErrorInput struct {
+	Category           ErrorCategory             `json:"category"`
+	Message            string                    `json:"message"`
+	Hint               *string                   `json:"hint,omitempty"`
+	Resource           *string                   `json:"resource,omitempty"`
+	MissingPermissions []PermissionCheckInput    `json:"missingPermissions,omitempty"`
+	Details            []PermissionKeyValueInput `json:"details,omitempty"`
+}
+
+// GetCategory returns StructuredErrorInput.Category, and is useful for accessing the field via an interface.
+func (v *StructuredErrorInput) GetCategory() ErrorCategory { return v.Category }
+
+// GetMessage returns StructuredErrorInput.Message, and is useful for accessing the field via an interface.
+func (v *StructuredErrorInput) GetMessage() string { return v.Message }
+
+// GetHint returns StructuredErrorInput.Hint, and is useful for accessing the field via an interface.
+func (v *StructuredErrorInput) GetHint() *string { return v.Hint }
+
+// GetResource returns StructuredErrorInput.Resource, and is useful for accessing the field via an interface.
+func (v *StructuredErrorInput) GetResource() *string { return v.Resource }
+
+// GetMissingPermissions returns StructuredErrorInput.MissingPermissions, and is useful for accessing the field via an interface.
+func (v *StructuredErrorInput) GetMissingPermissions() []PermissionCheckInput {
+	return v.MissingPermissions
+}
+
+// GetDetails returns StructuredErrorInput.Details, and is useful for accessing the field via an interface.
+func (v *StructuredErrorInput) GetDetails() []PermissionKeyValueInput { return v.Details }
 
 // SubmitImportObjectsResponse is returned by SubmitImportObjects on success.
 type SubmitImportObjectsResponse struct {
