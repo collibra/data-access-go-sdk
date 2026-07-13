@@ -1039,6 +1039,8 @@ type AccessControlFeedbackImport struct {
 	Warnings           []string                    `json:"warnings,omitempty"`
 	State              *AccessControlFeedbackState `json:"state,omitempty"`
 	FilterRuleFeedback []FilterRuleFeedbackImport  `json:"filterRuleFeedback,omitempty"`
+	// Categorised errors sent alongside the free-text errors. The free-text errors remain as a fallback.
+	StructuredErrors []StructuredErrorInput `json:"structuredErrors,omitempty" doc:"Categorised errors sent alongside the free-text errors. The free-text errors remain as a fallback."`
 }
 
 // GetAccessControlId returns AccessControlFeedbackImport.AccessControlId, and is useful for accessing the field via an interface.
@@ -1065,6 +1067,11 @@ func (v *AccessControlFeedbackImport) GetState() *AccessControlFeedbackState { r
 // GetFilterRuleFeedback returns AccessControlFeedbackImport.FilterRuleFeedback, and is useful for accessing the field via an interface.
 func (v *AccessControlFeedbackImport) GetFilterRuleFeedback() []FilterRuleFeedbackImport {
 	return v.FilterRuleFeedback
+}
+
+// GetStructuredErrors returns AccessControlFeedbackImport.StructuredErrors, and is useful for accessing the field via an interface.
+func (v *AccessControlFeedbackImport) GetStructuredErrors() []StructuredErrorInput {
+	return v.StructuredErrors
 }
 
 type AccessControlFeedbackState struct {
@@ -2108,6 +2115,8 @@ type AccessControlWhoListFilter struct {
 	EntityType *EntityType `json:"entityType,omitempty" doc:"Only get WHO items with a specific type (User or AccessControl)"`
 	// Only get AccessControl WHO items with this action (e.g. `GrantVariation` to list a role's variations). Deleted access controls are excluded when this filter is set. Only applicable to the non-unpacked who-list.
 	AccessControlAction *AccessControlAction `json:"accessControlAction,omitempty" doc:"Only get AccessControl WHO items with this action (e.g. 'GrantVariation' to list a role's variations). Deleted access controls are excluded when this filter is set. Only applicable to the non-unpacked who-list."`
+	// Only get AccessControl WHO items in one of these states. When omitted, members of every state are returned. Only applicable to the non-unpacked who-list.
+	States []AccessControlState `json:"states,omitempty" doc:"Only get AccessControl WHO items in one of these states. When omitted, members of every state are returned. Only applicable to the non-unpacked who-list."`
 	// The search string to use (will do a case-insensitive 'contains').
 	Search *string `json:"search,omitempty" doc:"The search string to use (will do a case-insensitive 'contains')."`
 	// Optional ABAC rule to filter the who-list on. Only applicable when requesting users who-list without unpacking
@@ -2132,6 +2141,9 @@ func (v *AccessControlWhoListFilter) GetEntityType() *EntityType { return v.Enti
 func (v *AccessControlWhoListFilter) GetAccessControlAction() *AccessControlAction {
 	return v.AccessControlAction
 }
+
+// GetStates returns AccessControlWhoListFilter.States, and is useful for accessing the field via an interface.
+func (v *AccessControlWhoListFilter) GetStates() []AccessControlState { return v.States }
 
 // GetSearch returns AccessControlWhoListFilter.Search, and is useful for accessing the field via an interface.
 func (v *AccessControlWhoListFilter) GetSearch() *string { return v.Search }
@@ -3914,7 +3926,7 @@ func (v *AccessWhoItemItemDataShareRecipient) GetTypename() *string { return v.T
 // AccessWhoItemItemDataSource includes the requested fields of the GraphQL type DataSource.
 // The GraphQL type's documentation follows.
 //
-// Represents a data sourcein Collibra Data Access.
+// Represents a data source in Collibra Data Access.
 type AccessWhoItemItemDataSource struct {
 	Typename *string `json:"__typename"`
 }
@@ -6282,7 +6294,7 @@ func (v *CreateAccessRequestResponse) __premarshalJSON() (*__premarshalCreateAcc
 // CreateDataSourceCreateDataSource includes the requested fields of the GraphQL type DataSource.
 // The GraphQL type's documentation follows.
 //
-// Represents a data sourcein Collibra Data Access.
+// Represents a data source in Collibra Data Access.
 type CreateDataSourceCreateDataSource struct {
 	Typename   *string `json:"__typename"`
 	DataSource `json:"-"`
@@ -9302,7 +9314,7 @@ func (v *DataObjectConnectionResultPermissionDeniedError) __premarshalJSON() (*_
 // DataObjectDataSource includes the requested fields of the GraphQL type DataSource.
 // The GraphQL type's documentation follows.
 //
-// Represents a data sourcein Collibra Data Access.
+// Represents a data source in Collibra Data Access.
 type DataObjectDataSource struct {
 	// The unique identifier of the data source.
 	Id string `json:"id"`
@@ -9591,7 +9603,7 @@ func (v *DataObjectTypePermissionInput) GetCannotBeGranted() *bool { return v.Ca
 // DataSource includes the GraphQL fields of DataSource requested by the fragment DataSource.
 // The GraphQL type's documentation follows.
 //
-// Represents a data sourcein Collibra Data Access.
+// Represents a data source in Collibra Data Access.
 type DataSource struct {
 	// The unique identifier of the data source.
 	Id string `json:"id" doc:"The unique identifier of the data source."`
@@ -9763,7 +9775,7 @@ func (v *DataSourceConnectionEdgesDataSourceEdge) GetNode() *DataSourceConnectio
 // DataSourceConnectionEdgesDataSourceEdgeNodeDataSource includes the requested fields of the GraphQL type DataSource.
 // The GraphQL type's documentation follows.
 //
-// Represents a data sourcein Collibra Data Access.
+// Represents a data source in Collibra Data Access.
 type DataSourceConnectionEdgesDataSourceEdgeNodeDataSource struct {
 	DataSource `json:"-"`
 }
@@ -10524,7 +10536,7 @@ func (v *DataSourceInput) GetEdgeConnectionId() *string { return v.EdgeConnectio
 // DataSourceMaskInformationDataSource includes the requested fields of the GraphQL type DataSource.
 // The GraphQL type's documentation follows.
 //
-// Represents a data sourcein Collibra Data Access.
+// Represents a data source in Collibra Data Access.
 type DataSourceMaskInformationDataSource struct {
 	Typename *string `json:"__typename"`
 	// Contains meta data about how column masking works in this data source.
@@ -10984,6 +10996,9 @@ type DataSourceMetaDataInput struct {
 	MaskingMetadata          *MaskingMetadataInput `json:"maskingMetadata,omitempty"`
 	FilterMetadata           *FilterMetadataInput  `json:"filterMetadata,omitempty"`
 	ShareMetadata            *ShareMetadataInput   `json:"shareMetadata,omitempty"`
+	// The data object type that is a valid attach point for a Collibra catalog system asset (e.g. 'metastore' for Databricks).
+	// Must match the `type` of one of the supplied `dataObjectTypes`. If null, the current value is left unchanged. If an empty string, the value is cleared.
+	CatalogSystemDataObjectType *string `json:"catalogSystemDataObjectType,omitempty" doc:"The data object type that is a valid attach point for a Collibra catalog system asset (e.g. 'metastore' for Databricks). Must match the 'type' of one of the supplied 'dataObjectTypes'. If null, the current value is left unchanged. If an empty string, the value is cleared."`
 }
 
 // GetDataObjectTypes returns DataSourceMetaDataInput.DataObjectTypes, and is useful for accessing the field via an interface.
@@ -11032,6 +11047,11 @@ func (v *DataSourceMetaDataInput) GetFilterMetadata() *FilterMetadataInput { ret
 // GetShareMetadata returns DataSourceMetaDataInput.ShareMetadata, and is useful for accessing the field via an interface.
 func (v *DataSourceMetaDataInput) GetShareMetadata() *ShareMetadataInput { return v.ShareMetadata }
 
+// GetCatalogSystemDataObjectType returns DataSourceMetaDataInput.CatalogSystemDataObjectType, and is useful for accessing the field via an interface.
+func (v *DataSourceMetaDataInput) GetCatalogSystemDataObjectType() *string {
+	return v.CatalogSystemDataObjectType
+}
+
 // Defines the sorting options when listing data sources.
 type DataSourceOrderByInput struct {
 	Name *Sort `json:"name,omitempty"`
@@ -11043,7 +11063,7 @@ func (v *DataSourceOrderByInput) GetName() *Sort { return v.Name }
 // DataSourceParentDataSource includes the requested fields of the GraphQL type DataSource.
 // The GraphQL type's documentation follows.
 //
-// Represents a data sourcein Collibra Data Access.
+// Represents a data source in Collibra Data Access.
 type DataSourceParentDataSource struct {
 	// The unique identifier of the data source.
 	Id string `json:"id"`
@@ -14015,6 +14035,26 @@ var AllEntityType = []EntityType{
 	EntityTypeRoleassignment,
 	EntityTypeAccount,
 	EntityTypeDatasharerecipient,
+}
+
+type ErrorCategory string
+
+const (
+	ErrorCategoryPermissionDenied ErrorCategory = "PERMISSION_DENIED"
+	ErrorCategoryNotFound         ErrorCategory = "NOT_FOUND"
+	ErrorCategoryInvalidConfig    ErrorCategory = "INVALID_CONFIG"
+	ErrorCategorySourceError      ErrorCategory = "SOURCE_ERROR"
+	ErrorCategoryTransient        ErrorCategory = "TRANSIENT"
+	ErrorCategoryUnknown          ErrorCategory = "UNKNOWN"
+)
+
+var AllErrorCategory = []ErrorCategory{
+	ErrorCategoryPermissionDenied,
+	ErrorCategoryNotFound,
+	ErrorCategoryInvalidConfig,
+	ErrorCategorySourceError,
+	ErrorCategoryTransient,
+	ErrorCategoryUnknown,
 }
 
 // ExportAccessControl includes the GraphQL fields of ExportAccessControl requested by the fragment ExportAccessControl.
@@ -19877,7 +19917,7 @@ func (v *GetDataObjectResponse) GetDataObject() GetDataObjectDataObject { return
 // GetDataSourceDataSource includes the requested fields of the GraphQL type DataSource.
 // The GraphQL type's documentation follows.
 //
-// Represents a data sourcein Collibra Data Access.
+// Represents a data source in Collibra Data Access.
 type GetDataSourceDataSource struct {
 	Typename   *string `json:"__typename"`
 	DataSource `json:"-"`
@@ -23902,7 +23942,7 @@ func (v *JobConnectionResultPermissionDeniedError) __premarshalJSON() (*__premar
 // JobDataSource includes the requested fields of the GraphQL type DataSource.
 // The GraphQL type's documentation follows.
 //
-// Represents a data sourcein Collibra Data Access.
+// Represents a data source in Collibra Data Access.
 type JobDataSource struct {
 	DataSource `json:"-"`
 }
@@ -28033,7 +28073,7 @@ func (v *ListRoleAssignmentsOnDataObjectResponse) GetDataObject() ListRoleAssign
 // ListRoleAssignmentsOnDataSourceDataSource includes the requested fields of the GraphQL type DataSource.
 // The GraphQL type's documentation follows.
 //
-// Represents a data sourcein Collibra Data Access.
+// Represents a data source in Collibra Data Access.
 type ListRoleAssignmentsOnDataSourceDataSource struct {
 	Typename        *string                                                                                `json:"__typename"`
 	RoleAssignments ListRoleAssignmentsOnDataSourceDataSourceRoleAssignmentsRoleAssignmentConnectionResult `json:"-"`
@@ -31862,18 +31902,21 @@ var AllParameterDataType = []ParameterDataType{
 }
 
 type ParameterDefinitionInput struct {
-	Type         ParameterType              `json:"type"`
-	Key          string                     `json:"key"`
-	DisplayName  string                     `json:"displayName"`
-	Description  *string                    `json:"description,omitempty"`
-	DataType     *ParameterDataType         `json:"dataType,omitempty"`
-	Required     *bool                      `json:"required,omitempty"`
-	Source       *ParameterSource           `json:"source,omitempty"`
-	DefaultValue *interface{}               `json:"defaultValue,omitempty"`
-	Parameters   []ParameterDefinitionInput `json:"parameters,omitempty"`
-	IsAdvanced   bool                       `json:"isAdvanced"`
-	PlaceHolder  *string                    `json:"placeHolder,omitempty"`
-	Validations  []*interface{}             `json:"validations,omitempty"`
+	Type               ParameterType              `json:"type"`
+	Key                string                     `json:"key"`
+	DisplayName        string                     `json:"displayName"`
+	Description        *string                    `json:"description,omitempty"`
+	DataType           *ParameterDataType         `json:"dataType,omitempty"`
+	Required           *bool                      `json:"required,omitempty"`
+	Source             *ParameterSource           `json:"source,omitempty"`
+	DefaultValue       *interface{}               `json:"defaultValue,omitempty"`
+	Parameters         []ParameterDefinitionInput `json:"parameters,omitempty"`
+	IsAdvanced         bool                       `json:"isAdvanced"`
+	PlaceHolder        *string                    `json:"placeHolder,omitempty"`
+	Validations        []*interface{}             `json:"validations,omitempty"`
+	MinimumDGCVersion  *string                    `json:"minimumDGCVersion,omitempty"`
+	Deprecated         bool                       `json:"deprecated"`
+	DeprecationMessage *string                    `json:"deprecationMessage,omitempty"`
 }
 
 // GetType returns ParameterDefinitionInput.Type, and is useful for accessing the field via an interface.
@@ -31911,6 +31954,15 @@ func (v *ParameterDefinitionInput) GetPlaceHolder() *string { return v.PlaceHold
 
 // GetValidations returns ParameterDefinitionInput.Validations, and is useful for accessing the field via an interface.
 func (v *ParameterDefinitionInput) GetValidations() []*interface{} { return v.Validations }
+
+// GetMinimumDGCVersion returns ParameterDefinitionInput.MinimumDGCVersion, and is useful for accessing the field via an interface.
+func (v *ParameterDefinitionInput) GetMinimumDGCVersion() *string { return v.MinimumDGCVersion }
+
+// GetDeprecated returns ParameterDefinitionInput.Deprecated, and is useful for accessing the field via an interface.
+func (v *ParameterDefinitionInput) GetDeprecated() bool { return v.Deprecated }
+
+// GetDeprecationMessage returns ParameterDefinitionInput.DeprecationMessage, and is useful for accessing the field via an interface.
+func (v *ParameterDefinitionInput) GetDeprecationMessage() *string { return v.DeprecationMessage }
 
 type ParameterSource string
 
@@ -31957,6 +32009,37 @@ func (v *Permission) GetName() string { return v.Name }
 // GetDescription returns Permission.Description, and is useful for accessing the field via an interface.
 func (v *Permission) GetDescription() string { return v.Description }
 
+type PermissionCheckInput struct {
+	DisplayName string                    `json:"displayName"`
+	Status      PermissionStatus          `json:"status"`
+	Privilege   *string                   `json:"privilege,omitempty"`
+	Resource    *string                   `json:"resource,omitempty"`
+	Principal   *string                   `json:"principal,omitempty"`
+	Hint        *string                   `json:"hint,omitempty"`
+	Details     []PermissionKeyValueInput `json:"details,omitempty"`
+}
+
+// GetDisplayName returns PermissionCheckInput.DisplayName, and is useful for accessing the field via an interface.
+func (v *PermissionCheckInput) GetDisplayName() string { return v.DisplayName }
+
+// GetStatus returns PermissionCheckInput.Status, and is useful for accessing the field via an interface.
+func (v *PermissionCheckInput) GetStatus() PermissionStatus { return v.Status }
+
+// GetPrivilege returns PermissionCheckInput.Privilege, and is useful for accessing the field via an interface.
+func (v *PermissionCheckInput) GetPrivilege() *string { return v.Privilege }
+
+// GetResource returns PermissionCheckInput.Resource, and is useful for accessing the field via an interface.
+func (v *PermissionCheckInput) GetResource() *string { return v.Resource }
+
+// GetPrincipal returns PermissionCheckInput.Principal, and is useful for accessing the field via an interface.
+func (v *PermissionCheckInput) GetPrincipal() *string { return v.Principal }
+
+// GetHint returns PermissionCheckInput.Hint, and is useful for accessing the field via an interface.
+func (v *PermissionCheckInput) GetHint() *string { return v.Hint }
+
+// GetDetails returns PermissionCheckInput.Details, and is useful for accessing the field via an interface.
+func (v *PermissionCheckInput) GetDetails() []PermissionKeyValueInput { return v.Details }
+
 // PermissionDeniedError includes the GraphQL fields of PermissionDeniedError requested by the fragment PermissionDeniedError.
 // The GraphQL type's documentation follows.
 //
@@ -31967,6 +32050,35 @@ type PermissionDeniedError struct {
 
 // GetMessage returns PermissionDeniedError.Message, and is useful for accessing the field via an interface.
 func (v *PermissionDeniedError) GetMessage() string { return v.Message }
+
+type PermissionKeyValueInput struct {
+	Key   string `json:"key"`
+	Value string `json:"value"`
+}
+
+// GetKey returns PermissionKeyValueInput.Key, and is useful for accessing the field via an interface.
+func (v *PermissionKeyValueInput) GetKey() string { return v.Key }
+
+// GetValue returns PermissionKeyValueInput.Value, and is useful for accessing the field via an interface.
+func (v *PermissionKeyValueInput) GetValue() string { return v.Value }
+
+type PermissionStatus string
+
+const (
+	PermissionStatusGranted PermissionStatus = "GRANTED"
+	PermissionStatusMissing PermissionStatus = "MISSING"
+	// Could not be determined; treated as non-blocking.
+	PermissionStatusUnknown PermissionStatus = "UNKNOWN"
+	// Not needed for this configuration.
+	PermissionStatusNotRequired PermissionStatus = "NOT_REQUIRED"
+)
+
+var AllPermissionStatus = []PermissionStatus{
+	PermissionStatusGranted,
+	PermissionStatusMissing,
+	PermissionStatusUnknown,
+	PermissionStatusNotRequired,
+}
 
 type QueryStatementImport struct {
 	ExternalId          string                      `json:"externalId"`
@@ -32906,7 +33018,7 @@ func (v *RoleAssignmentOnDataObject) GetId() string { return v.Id }
 // RoleAssignmentOnDataSource includes the requested fields of the GraphQL type DataSource.
 // The GraphQL type's documentation follows.
 //
-// Represents a data sourcein Collibra Data Access.
+// Represents a data source in Collibra Data Access.
 type RoleAssignmentOnDataSource struct {
 	Typename *string `json:"__typename"`
 	// The unique identifier of the data source.
@@ -33330,7 +33442,7 @@ func (v *SetDataSourceMetadataSetDataSourceMetaDataAlreadyExistsError) GetTypena
 // SetDataSourceMetadataSetDataSourceMetaDataDataSource includes the requested fields of the GraphQL type DataSource.
 // The GraphQL type's documentation follows.
 //
-// Represents a data sourcein Collibra Data Access.
+// Represents a data source in Collibra Data Access.
 type SetDataSourceMetadataSetDataSourceMetaDataDataSource struct {
 	Typename   *string `json:"__typename"`
 	DataSource `json:"-"`
@@ -33878,7 +33990,7 @@ func (v *SetSyncConfigurationParameterValuesSetSyncConfigurationParameterValuesA
 // SetSyncConfigurationParameterValuesSetSyncConfigurationParameterValuesDataSource includes the requested fields of the GraphQL type DataSource.
 // The GraphQL type's documentation follows.
 //
-// Represents a data sourcein Collibra Data Access.
+// Represents a data source in Collibra Data Access.
 type SetSyncConfigurationParameterValuesSetSyncConfigurationParameterValuesDataSource struct {
 	Typename   *string `json:"__typename"`
 	DataSource `json:"-"`
@@ -34942,6 +35054,35 @@ func (v *StatementImportDataObject) GetFullName() string { return v.FullName }
 // GetType returns StatementImportDataObject.Type, and is useful for accessing the field via an interface.
 func (v *StatementImportDataObject) GetType() *string { return v.Type }
 
+type StructuredErrorInput struct {
+	Category           ErrorCategory             `json:"category"`
+	Message            string                    `json:"message"`
+	Hint               *string                   `json:"hint,omitempty"`
+	Resource           *string                   `json:"resource,omitempty"`
+	MissingPermissions []PermissionCheckInput    `json:"missingPermissions,omitempty"`
+	Details            []PermissionKeyValueInput `json:"details,omitempty"`
+}
+
+// GetCategory returns StructuredErrorInput.Category, and is useful for accessing the field via an interface.
+func (v *StructuredErrorInput) GetCategory() ErrorCategory { return v.Category }
+
+// GetMessage returns StructuredErrorInput.Message, and is useful for accessing the field via an interface.
+func (v *StructuredErrorInput) GetMessage() string { return v.Message }
+
+// GetHint returns StructuredErrorInput.Hint, and is useful for accessing the field via an interface.
+func (v *StructuredErrorInput) GetHint() *string { return v.Hint }
+
+// GetResource returns StructuredErrorInput.Resource, and is useful for accessing the field via an interface.
+func (v *StructuredErrorInput) GetResource() *string { return v.Resource }
+
+// GetMissingPermissions returns StructuredErrorInput.MissingPermissions, and is useful for accessing the field via an interface.
+func (v *StructuredErrorInput) GetMissingPermissions() []PermissionCheckInput {
+	return v.MissingPermissions
+}
+
+// GetDetails returns StructuredErrorInput.Details, and is useful for accessing the field via an interface.
+func (v *StructuredErrorInput) GetDetails() []PermissionKeyValueInput { return v.Details }
+
 // SubmitImportObjectsResponse is returned by SubmitImportObjects on success.
 type SubmitImportObjectsResponse struct {
 	SubmitImportObjects SubmitImportObjectsSubmitImportObjectsSubmittedCommandsResult `json:"-"`
@@ -35656,7 +35797,7 @@ func (v *SyncDataAccessControlType) GetType() *string { return v.Type }
 // SyncDataDataSource includes the requested fields of the GraphQL type DataSource.
 // The GraphQL type's documentation follows.
 //
-// Represents a data sourcein Collibra Data Access.
+// Represents a data source in Collibra Data Access.
 type SyncDataDataSource struct {
 	DataSource `json:"-"`
 }
@@ -36003,7 +36144,7 @@ func (v *SyncJob) __premarshalJSON() (*__premarshalSyncJob, error) {
 // SyncJobDataSource includes the requested fields of the GraphQL type DataSource.
 // The GraphQL type's documentation follows.
 //
-// Represents a data sourcein Collibra Data Access.
+// Represents a data source in Collibra Data Access.
 type SyncJobDataSource struct {
 	Typename   *string `json:"__typename"`
 	DataSource `json:"-"`
@@ -37775,7 +37916,7 @@ func (v *TriggerDataSourceCliSyncTriggerDataSourceCliSyncAlreadyExistsError) Get
 // TriggerDataSourceCliSyncTriggerDataSourceCliSyncDataSource includes the requested fields of the GraphQL type DataSource.
 // The GraphQL type's documentation follows.
 //
-// Represents a data sourcein Collibra Data Access.
+// Represents a data source in Collibra Data Access.
 type TriggerDataSourceCliSyncTriggerDataSourceCliSyncDataSource struct {
 	Typename   *string `json:"__typename"`
 	DataSource `json:"-"`
@@ -39596,7 +39737,7 @@ func (v *UpdateDataSourceResponse) __premarshalJSON() (*__premarshalUpdateDataSo
 // UpdateDataSourceUpdateDataSource includes the requested fields of the GraphQL type DataSource.
 // The GraphQL type's documentation follows.
 //
-// Represents a data sourcein Collibra Data Access.
+// Represents a data source in Collibra Data Access.
 type UpdateDataSourceUpdateDataSource struct {
 	Typename   *string `json:"__typename"`
 	DataSource `json:"-"`

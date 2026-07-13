@@ -399,6 +399,17 @@ const (
 	EntityTypeDatasharerecipient EntityType = schema.EntityTypeDatasharerecipient
 )
 
+type ErrorCategory = schema.ErrorCategory
+
+const (
+	ErrorCategoryPermissionDenied ErrorCategory = schema.ErrorCategoryPermissionDenied
+	ErrorCategoryNotFound         ErrorCategory = schema.ErrorCategoryNotFound
+	ErrorCategoryInvalidConfig    ErrorCategory = schema.ErrorCategoryInvalidConfig
+	ErrorCategorySourceError      ErrorCategory = schema.ErrorCategorySourceError
+	ErrorCategoryTransient        ErrorCategory = schema.ErrorCategoryTransient
+	ErrorCategoryUnknown          ErrorCategory = schema.ErrorCategoryUnknown
+)
+
 type ExportAccessControl = schema.ExportAccessControl
 type ExportAccessControlDeleteWhatExportWhatItem = schema.ExportAccessControlDeleteWhatExportWhatItem
 type ExportAccessControlDeletedWhoExportWhoItem = schema.ExportAccessControlDeletedWhoExportWhoItem
@@ -706,7 +717,18 @@ const (
 )
 
 type Permission = schema.Permission
+type PermissionCheckInput = schema.PermissionCheckInput
 type PermissionDeniedError = schema.PermissionDeniedError
+type PermissionKeyValueInput = schema.PermissionKeyValueInput
+type PermissionStatus = schema.PermissionStatus
+
+const (
+	PermissionStatusGranted     PermissionStatus = schema.PermissionStatusGranted
+	PermissionStatusMissing     PermissionStatus = schema.PermissionStatusMissing
+	PermissionStatusUnknown     PermissionStatus = schema.PermissionStatusUnknown
+	PermissionStatusNotRequired PermissionStatus = schema.PermissionStatusNotRequired
+)
+
 type QueryStatementImport = schema.QueryStatementImport
 type Role = schema.Role
 type RoleAssignment = schema.RoleAssignment
@@ -765,6 +787,7 @@ type StartImportFlowStartImportFlowPermissionDeniedError = schema.StartImportFlo
 type StartImportFlowStartImportFlowSubtask = schema.StartImportFlowStartImportFlowSubtask
 type StartImportFlowStartImportFlowSubtaskReturnResult = schema.StartImportFlowStartImportFlowSubtaskReturnResult
 type StatementImportDataObject = schema.StatementImportDataObject
+type StructuredErrorInput = schema.StructuredErrorInput
 type SubmitImportObjectsResponse = schema.SubmitImportObjectsResponse
 type SubmitImportObjectsSubmitImportObjectsInvalidInputError = schema.SubmitImportObjectsSubmitImportObjectsInvalidInputError
 type SubmitImportObjectsSubmitImportObjectsNotFoundError = schema.SubmitImportObjectsSubmitImportObjectsNotFoundError
@@ -963,10 +986,12 @@ var AllDataComparisonExpressionEntityType = []DataComparisonExpressionEntityType
 var AllDataSourceFeatures = []DataSourceFeatures{DataSourceFeaturesGrants, DataSourceFeaturesColumnmasking, DataSourceFeaturesRowfiltering, DataSourceFeaturesDatasharing, DataSourceFeaturesGroupediting}
 var AllDataTypeOrigin = []DataTypeOrigin{DataTypeOriginInternal, DataTypeOriginExternal, DataTypeOriginShared}
 var AllEntityType = []EntityType{EntityTypeAccesscontrol, EntityTypeAccess, EntityTypeAccessrequest, EntityTypeUser, EntityTypeDataobject, EntityTypeDatasource, EntityTypeDatausage, EntityTypeTag, EntityTypeRole, EntityTypeRoleassignment, EntityTypeAccount, EntityTypeDatasharerecipient}
+var AllErrorCategory = []ErrorCategory{ErrorCategoryPermissionDenied, ErrorCategoryNotFound, ErrorCategoryInvalidConfig, ErrorCategorySourceError, ErrorCategoryTransient, ErrorCategoryUnknown}
 var AllJobStatus = []JobStatus{JobStatusStarted, JobStatusInprogress, JobStatusCompleted, JobStatusFailed, JobStatusTimedout}
 var AllParameterDataType = []ParameterDataType{ParameterDataTypeString, ParameterDataTypeInteger, ParameterDataTypeFloat, ParameterDataTypeBoolean, ParameterDataTypeTimestamp, ParameterDataTypeObject}
 var AllParameterSource = []ParameterSource{ParameterSourceAgent, ParameterSourceAgentruntime, ParameterSourceConnector, ParameterSourceConnectorsecure}
 var AllParameterType = []ParameterType{ParameterTypeParameter, ParameterTypeArray}
+var AllPermissionStatus = []PermissionStatus{PermissionStatusGranted, PermissionStatusMissing, PermissionStatusUnknown, PermissionStatusNotRequired}
 var AllSort = []Sort{SortAsc, SortDesc}
 var AllSubtaskStatus = []SubtaskStatus{SubtaskStatusStarted, SubtaskStatusQueued, SubtaskStatusDataretrieve, SubtaskStatusInprogress, SubtaskStatusCompleted, SubtaskStatusFailed, SubtaskStatusTimedout}
 var AllSyncStatus = []SyncStatus{SyncStatusNotconnected, SyncStatusFailed, SyncStatusOutofdate, SyncStatusInprogress, SyncStatusSynced, SyncStatusOutofsync}
