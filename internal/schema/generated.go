@@ -24090,10 +24090,15 @@ var AllJobStatus = []JobStatus{
 
 type JobsFilter struct {
 	DataSource *string `json:"dataSource,omitempty"`
+	// Limit to jobs that ran any of the given task types, using the same codes as Task.jobType (DS, IS, DA, DAF, DU, RP, TAG).
+	TaskTypes []string `json:"taskTypes,omitempty" doc:"Limit to jobs that ran any of the given task types, using the same codes as Task.jobType (DS, IS, DA, DAF, DU, RP, TAG)."`
 }
 
 // GetDataSource returns JobsFilter.DataSource, and is useful for accessing the field via an interface.
 func (v *JobsFilter) GetDataSource() *string { return v.DataSource }
+
+// GetTaskTypes returns JobsFilter.TaskTypes, and is useful for accessing the field via an interface.
+func (v *JobsFilter) GetTaskTypes() []string { return v.TaskTypes }
 
 // ListAccessControlAbacWhatScopeAccessControl includes the requested fields of the GraphQL type AccessControl.
 // The GraphQL type's documentation follows.
