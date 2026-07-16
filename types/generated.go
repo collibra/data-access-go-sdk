@@ -12,6 +12,7 @@ const (
 	AbacComparisonExpressionComparisonOperatorPropertyequals     AbacComparisonExpressionComparisonOperator = schema.AbacComparisonExpressionComparisonOperatorPropertyequals
 	AbacComparisonExpressionComparisonOperatorPropertyin         AbacComparisonExpressionComparisonOperator = schema.AbacComparisonExpressionComparisonOperatorPropertyin
 	AbacComparisonExpressionComparisonOperatorHastag             AbacComparisonExpressionComparisonOperator = schema.AbacComparisonExpressionComparisonOperatorHastag
+	AbacComparisonExpressionComparisonOperatorInheritstag        AbacComparisonExpressionComparisonOperator = schema.AbacComparisonExpressionComparisonOperatorInheritstag
 	AbacComparisonExpressionComparisonOperatorContainstag        AbacComparisonExpressionComparisonOperator = schema.AbacComparisonExpressionComparisonOperatorContainstag
 	AbacComparisonExpressionComparisonOperatorPropertystartswith AbacComparisonExpressionComparisonOperator = schema.AbacComparisonExpressionComparisonOperatorPropertystartswith
 	AbacComparisonExpressionComparisonOperatorPropertyendswith   AbacComparisonExpressionComparisonOperator = schema.AbacComparisonExpressionComparisonOperatorPropertyendswith
@@ -26,12 +27,13 @@ type AccessControl = schema.AccessControl
 type AccessControlAction = schema.AccessControlAction
 
 const (
-	AccessControlActionGrant      AccessControlAction = schema.AccessControlActionGrant
-	AccessControlActionMask       AccessControlAction = schema.AccessControlActionMask
-	AccessControlActionFilter     AccessControlAction = schema.AccessControlActionFilter
-	AccessControlActionShare      AccessControlAction = schema.AccessControlActionShare
-	AccessControlActionGroup      AccessControlAction = schema.AccessControlActionGroup
-	AccessControlActionFilterrule AccessControlAction = schema.AccessControlActionFilterrule
+	AccessControlActionGrant          AccessControlAction = schema.AccessControlActionGrant
+	AccessControlActionMask           AccessControlAction = schema.AccessControlActionMask
+	AccessControlActionFilter         AccessControlAction = schema.AccessControlActionFilter
+	AccessControlActionShare          AccessControlAction = schema.AccessControlActionShare
+	AccessControlActionGroup          AccessControlAction = schema.AccessControlActionGroup
+	AccessControlActionFilterrule     AccessControlAction = schema.AccessControlActionFilterrule
+	AccessControlActionGrantvariation AccessControlAction = schema.AccessControlActionGrantvariation
 )
 
 type AccessControlCategoryGrantCategory = schema.AccessControlCategoryGrantCategory
@@ -100,6 +102,7 @@ type AccessFilterInput = schema.AccessFilterInput
 type AccessRequest = schema.AccessRequest
 type AccessRequestAccessControlWhatInput = schema.AccessRequestAccessControlWhatInput
 type AccessRequestDataObjectWhatInput = schema.AccessRequestDataObjectWhatInput
+type AccessRequestExceptionInput = schema.AccessRequestExceptionInput
 type AccessRequestInput = schema.AccessRequestInput
 type AccessRequestOutcome = schema.AccessRequestOutcome
 
@@ -162,6 +165,13 @@ type AccessWhoItemType = schema.AccessWhoItemType
 const (
 	AccessWhoItemTypeWhogrant   AccessWhoItemType = schema.AccessWhoItemTypeWhogrant
 	AccessWhoItemTypeWhopromise AccessWhoItemType = schema.AccessWhoItemTypeWhopromise
+)
+
+type AccessWhoSource = schema.AccessWhoSource
+
+const (
+	AccessWhoSourceInternal AccessWhoSource = schema.AccessWhoSourceInternal
+	AccessWhoSourceScim     AccessWhoSource = schema.AccessWhoSourceScim
 )
 
 type ActionType = schema.ActionType
@@ -768,6 +778,7 @@ type RoleAssignmentTo = schema.RoleAssignmentTo
 type RoleAssignmentToAccessControl = schema.RoleAssignmentToAccessControl
 type RoleAssignmentToUser = schema.RoleAssignmentToUser
 type RootParameterDefinitionInput = schema.RootParameterDefinitionInput
+type ScimAssignmentInput = schema.ScimAssignmentInput
 type SetDataSourceMetadataResponse = schema.SetDataSourceMetadataResponse
 type SetDataSourceMetadataSetDataSourceMetaDataAlreadyExistsError = schema.SetDataSourceMetadataSetDataSourceMetaDataAlreadyExistsError
 type SetDataSourceMetadataSetDataSourceMetaDataDataSource = schema.SetDataSourceMetadataSetDataSourceMetaDataDataSource
@@ -981,14 +992,15 @@ type WhoItemImport = schema.WhoItemImport
 type WhoItemInput = schema.WhoItemInput
 type WhoItemRemoveInput = schema.WhoItemRemoveInput
 
-var AllAbacComparisonExpressionComparisonOperator = []AbacComparisonExpressionComparisonOperator{AbacComparisonExpressionComparisonOperatorPropertyequals, AbacComparisonExpressionComparisonOperatorPropertyin, AbacComparisonExpressionComparisonOperatorHastag, AbacComparisonExpressionComparisonOperatorContainstag, AbacComparisonExpressionComparisonOperatorPropertystartswith, AbacComparisonExpressionComparisonOperatorPropertyendswith, AbacComparisonExpressionComparisonOperatorPropertycontains}
-var AllAccessControlAction = []AccessControlAction{AccessControlActionGrant, AccessControlActionMask, AccessControlActionFilter, AccessControlActionShare, AccessControlActionGroup, AccessControlActionFilterrule}
+var AllAbacComparisonExpressionComparisonOperator = []AbacComparisonExpressionComparisonOperator{AbacComparisonExpressionComparisonOperatorPropertyequals, AbacComparisonExpressionComparisonOperatorPropertyin, AbacComparisonExpressionComparisonOperatorHastag, AbacComparisonExpressionComparisonOperatorInheritstag, AbacComparisonExpressionComparisonOperatorContainstag, AbacComparisonExpressionComparisonOperatorPropertystartswith, AbacComparisonExpressionComparisonOperatorPropertyendswith, AbacComparisonExpressionComparisonOperatorPropertycontains}
+var AllAccessControlAction = []AccessControlAction{AccessControlActionGrant, AccessControlActionMask, AccessControlActionFilter, AccessControlActionShare, AccessControlActionGroup, AccessControlActionFilterrule, AccessControlActionGrantvariation}
 var AllAccessControlLock = []AccessControlLock{AccessControlLockWholock, AccessControlLockInheritancelock, AccessControlLockWhatlock, AccessControlLockNamelock, AccessControlLockDeletelock, AccessControlLockOwnerlock}
 var AllAccessControlLockType = []AccessControlLockType{AccessControlLockTypeImportexport, AccessControlLockTypeUseronly}
 var AllAccessControlState = []AccessControlState{AccessControlStateActive, AccessControlStateInactive, AccessControlStateDeleted}
 var AllAccessRequestOutcome = []AccessRequestOutcome{AccessRequestOutcomeNone, AccessRequestOutcomeRejected, AccessRequestOutcomeImplemented, AccessRequestOutcomePartiallyimplemented, AccessRequestOutcomeNotimplemented, AccessRequestOutcomeIncomplete, AccessRequestOutcomeCancelled}
 var AllAccessRequestStatus = []AccessRequestStatus{AccessRequestStatusCreated, AccessRequestStatusApproval, AccessRequestStatusImplementation, AccessRequestStatusClosed, AccessRequestStatusDatashareimplementation, AccessRequestStatusDatashareaccept}
 var AllAccessWhoItemType = []AccessWhoItemType{AccessWhoItemTypeWhogrant, AccessWhoItemTypeWhopromise}
+var AllAccessWhoSource = []AccessWhoSource{AccessWhoSourceInternal, AccessWhoSourceScim}
 var AllActionType = []ActionType{ActionTypeRead, ActionTypeWrite, ActionTypeAdmin}
 var AllBinaryExpressionAggregatorOperator = []BinaryExpressionAggregatorOperator{BinaryExpressionAggregatorOperatorAnd, BinaryExpressionAggregatorOperatorOr}
 var AllBinaryExpressionUnaryExpressionOperator = []BinaryExpressionUnaryExpressionOperator{BinaryExpressionUnaryExpressionOperatorNot}
