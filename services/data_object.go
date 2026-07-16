@@ -2,15 +2,20 @@ package services
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"iter"
+	"strings"
 
 	"github.com/Khan/genqlient/graphql"
+	"github.com/vektah/gqlparser/v2/gqlerror"
 
 	"github.com/collibra/data-access-go-sdk/internal"
 	"github.com/collibra/data-access-go-sdk/internal/schema"
 	"github.com/collibra/data-access-go-sdk/types"
 )
+
+const notFoundCode = string(schema.ErrorCategoryNotFound)
 
 type DataObjectClient struct {
 	client graphql.Client
@@ -147,7 +152,7 @@ func (c *DataObjectClient) GetDataObjectAccessList(
 	loadPageFn := func(ctx context.Context, cursor *string) (*types.PageInfo, []schema.GroupedDataAccessReturnItemConnectionEdgesGroupedDataAccessReturnItemEdge, error) {
 		output, err := schema.GetDataObjectAccessList(ctx, c.client, dataObjectID, cursor, new(internal.MaxPageSize), options.filter, options.order)
 		if err != nil {
-			if msg, ok := internal.NotFoundGraphQLMessage(err); ok {
+			if msg, ok := notFoundGraphQLMessage(err); ok {
 				notFoundTypename := "NotFoundError"
 				return nil, nil, types.NewErrNotFound(dataObjectID, &notFoundTypename, msg)
 			}
@@ -255,4 +260,25 @@ func (c *DataObjectClient) findMissingDataSource(ctx context.Context, dataSource
 	}
 
 	return nil
+}
+
+// notFoundGraphQLMessage inspects err for a raw GraphQL error signaling that the requested
+// entity does not exist, and returns its server message.
+func notFoundGraphQLMessage(err error) (string, bool) {
+	var gqlErrs gqlerror.List
+	if !errors.As(err, &gqlErrs) {
+		return "", false
+	}
+
+	for _, gqlErr := range gqlErrs {
+		if code, ok := gqlErr.Extensions["code"].(string); ok && strings.EqualFold(code, notFoundCode) {
+			return gqlErr.Message, true
+		}
+
+		if strings.HasSuffix(gqlErr.Message, "("+notFoundCode+")") {
+			return gqlErr.Message, true
+		}
+	}
+
+	return "", false
 }
