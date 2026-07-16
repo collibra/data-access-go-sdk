@@ -147,6 +147,11 @@ func (c *DataObjectClient) GetDataObjectAccessList(
 	loadPageFn := func(ctx context.Context, cursor *string) (*types.PageInfo, []schema.GroupedDataAccessReturnItemConnectionEdgesGroupedDataAccessReturnItemEdge, error) {
 		output, err := schema.GetDataObjectAccessList(ctx, c.client, dataObjectID, cursor, new(internal.MaxPageSize), options.filter, options.order)
 		if err != nil {
+			if msg, ok := internal.NotFoundGraphQLMessage(err); ok {
+				notFoundTypename := "NotFoundError"
+				return nil, nil, types.NewErrNotFound(dataObjectID, &notFoundTypename, msg)
+			}
+
 			return nil, nil, types.NewErrClient(err)
 		}
 
@@ -217,8 +222,13 @@ func (c *DataObjectClient) GetDataObjectIdByName(ctx context.Context, fullName s
 	switch response := (result.DataObjects).(type) {
 	case *schema.DataObjectByExternalIdDataObjectsDataObjectConnection:
 		if len(response.Edges) != 1 || response.Edges[0].Node == nil {
+			if notFoundErr := c.findMissingDataSource(ctx, dataSource); notFoundErr != nil {
+				return "", notFoundErr
+			}
+
 			return "", fmt.Errorf("expected 1 data object but got %d", len(response.Edges))
 		}
+
 		return response.Edges[0].Node.Id, nil
 	case *schema.DataObjectByExternalIdDataObjectsInvalidInputError:
 		return "", types.NewErrInvalidInput(response.Message)
@@ -229,4 +239,20 @@ func (c *DataObjectClient) GetDataObjectIdByName(ctx context.Context, fullName s
 	default:
 		return "", fmt.Errorf("unexpected type '%T'", response)
 	}
+}
+
+// findMissingDataSource checks whether dataSourceID refers to an existing DataSource, returning
+// a *types.ErrNotFound if it does not. It returns nil if the DataSource exists or if the
+// existence check itself fails, so callers can fall back to their own error in that case.
+func (c *DataObjectClient) findMissingDataSource(ctx context.Context, dataSourceID string) *types.ErrNotFound {
+	result, err := schema.GetDataSource(ctx, c.client, dataSourceID)
+	if err != nil {
+		return nil //nolint:nilerr // existence check is best-effort; caller falls back to its own error
+	}
+
+	if notFound, ok := result.DataSource.(*schema.GetDataSourceDataSourceNotFoundError); ok {
+		return types.NewErrNotFound(dataSourceID, notFound.Typename, notFound.Message)
+	}
+
+	return nil
 }
