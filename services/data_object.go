@@ -2,15 +2,20 @@ package services
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"iter"
+	"strings"
 
 	"github.com/Khan/genqlient/graphql"
+	"github.com/vektah/gqlparser/v2/gqlerror"
 
 	"github.com/collibra/data-access-go-sdk/internal"
 	"github.com/collibra/data-access-go-sdk/internal/schema"
 	"github.com/collibra/data-access-go-sdk/types"
 )
+
+const notFoundCode = string(schema.ErrorCategoryNotFound)
 
 type DataObjectClient struct {
 	client graphql.Client
@@ -103,6 +108,110 @@ func WithDataObjectByExternalIdIncludeDataSource() func(options *DataObjectByExt
 	}
 }
 
+type DataObjectAccessListOptions struct {
+	order  []types.DataAccessReturnItemOrderByInput
+	filter *types.AccessFilterInput
+}
+
+// WithDataObjectAccessListOrder sets the order of the items returned by GetDataObjectAccessList.
+func WithDataObjectAccessListOrder(input ...types.DataAccessReturnItemOrderByInput) func(*DataObjectAccessListOptions) {
+	return func(options *DataObjectAccessListOptions) {
+		options.order = append(options.order, input...)
+	}
+}
+
+// WithDataObjectAccessListFilter sets the filter applied by GetDataObjectAccessList.
+func WithDataObjectAccessListFilter(input *types.AccessFilterInput) func(*DataObjectAccessListOptions) {
+	return func(options *DataObjectAccessListOptions) {
+		options.filter = input
+	}
+}
+
+// GetDataObjectAccessList returns the access grants on the data object, one item per user
+// that has access. Each item carries the permissions granted and the AccessControls
+// that grant them (in trimmed form: id, name, action, state, category).
+//
+// To answer "does user Y have access to this data object and through which roles?", iterate
+// the result and match item.User.Id against Y. For the current caller, resolve Y via
+// UserClient.GetCurrentUser first. The convenience helper GetUserAccessToDataObject wraps
+// this pattern.
+//
+// Note on ExpiresAt: the field on each item is only filled in when there is exactly one
+// item in NearestAccessControls. When access is granted through multiple ACs, ExpiresAt
+// will be nil and per-AC expirations are not surfaced by this query.
+func (c *DataObjectClient) GetDataObjectAccessList(
+	ctx context.Context,
+	dataObjectID string,
+	ops ...func(*DataObjectAccessListOptions),
+) iter.Seq2[*types.GroupedDataAccessReturnItem, error] {
+	options := DataObjectAccessListOptions{}
+	for _, op := range ops {
+		op(&options)
+	}
+
+	loadPageFn := func(ctx context.Context, cursor *string) (*types.PageInfo, []schema.GroupedDataAccessReturnItemConnectionEdgesGroupedDataAccessReturnItemEdge, error) {
+		output, err := schema.GetDataObjectAccessList(ctx, c.client, dataObjectID, cursor, new(internal.MaxPageSize), options.filter, options.order)
+		if err != nil {
+			if msg, ok := notFoundGraphQLMessage(err); ok {
+				notFoundTypename := "NotFoundError"
+				return nil, nil, types.NewErrNotFound(dataObjectID, &notFoundTypename, msg)
+			}
+
+			return nil, nil, types.NewErrClient(err)
+		}
+
+		switch page := output.DataObject.DistinctAccess.(type) {
+		case *schema.GetDataObjectAccessListDataObjectDistinctAccessGroupedDataAccessReturnItemConnection:
+			return &page.PageInfo.PageInfo, page.Edges, nil
+		case *schema.GetDataObjectAccessListDataObjectDistinctAccessPermissionDeniedError:
+			return nil, nil, types.NewErrPermissionDenied("getDataObjectAccessList", page.Message)
+		case *schema.GetDataObjectAccessListDataObjectDistinctAccessNotFoundError:
+			return nil, nil, types.NewErrNotFound(dataObjectID, page.Typename, page.Message)
+		case *schema.GetDataObjectAccessListDataObjectDistinctAccessInvalidInputError:
+			return nil, nil, types.NewErrInvalidInput(page.Message)
+		default:
+			return nil, nil, fmt.Errorf("unexpected type '%T': %w", page, types.ErrUnknownType)
+		}
+	}
+
+	edgeFn := func(edge *schema.GroupedDataAccessReturnItemConnectionEdgesGroupedDataAccessReturnItemEdge) (*string, *schema.GroupedDataAccessReturnItem, error) {
+		cursor := edge.Cursor
+		if edge.Node == nil {
+			return cursor, nil, nil
+		}
+		return cursor, &edge.Node.GroupedDataAccessReturnItem, nil
+	}
+
+	return internal.PaginationExecutor(ctx, loadPageFn, edgeFn)
+}
+
+// GetUserAccessToDataObject returns the access (permissions and granting AccessControls)
+// that user userID has on the given data object, or nil if the user has no access.
+//
+// This is a convenience wrapper around GetDataObjectAccessList that iterates the result and
+// matches on item.User.Id. Filter and ordering options are forwarded to the underlying call.
+//
+// Note on ExpiresAt: see GetDataObjectAccessList — the field is only populated when access
+// is granted through a single AccessControl.
+func (c *DataObjectClient) GetUserAccessToDataObject(
+	ctx context.Context,
+	dataObjectID string,
+	userID string,
+	ops ...func(*DataObjectAccessListOptions),
+) (*types.GroupedDataAccessReturnItem, error) {
+	for item, err := range c.GetDataObjectAccessList(ctx, dataObjectID, ops...) {
+		if err != nil {
+			return nil, err
+		}
+
+		if item != nil && item.User.Id == userID {
+			return item, nil
+		}
+	}
+
+	return nil, nil
+}
+
 // GetDataObjectIdByName returns the ID of the DataObject with the given name and dataSource.
 func (c *DataObjectClient) GetDataObjectIdByName(ctx context.Context, fullName string, dataSource string, ops ...func(options *DataObjectByExternalIdOptions)) (string, error) {
 	options := DataObjectByExternalIdOptions{}
@@ -118,8 +227,13 @@ func (c *DataObjectClient) GetDataObjectIdByName(ctx context.Context, fullName s
 	switch response := (result.DataObjects).(type) {
 	case *schema.DataObjectByExternalIdDataObjectsDataObjectConnection:
 		if len(response.Edges) != 1 || response.Edges[0].Node == nil {
+			if notFoundErr := c.findMissingDataSource(ctx, dataSource); notFoundErr != nil {
+				return "", notFoundErr
+			}
+
 			return "", fmt.Errorf("expected 1 data object but got %d", len(response.Edges))
 		}
+
 		return response.Edges[0].Node.Id, nil
 	case *schema.DataObjectByExternalIdDataObjectsInvalidInputError:
 		return "", types.NewErrInvalidInput(response.Message)
@@ -130,4 +244,41 @@ func (c *DataObjectClient) GetDataObjectIdByName(ctx context.Context, fullName s
 	default:
 		return "", fmt.Errorf("unexpected type '%T'", response)
 	}
+}
+
+// findMissingDataSource checks whether dataSourceID refers to an existing DataSource, returning
+// a *types.ErrNotFound if it does not. It returns nil if the DataSource exists or if the
+// existence check itself fails, so callers can fall back to their own error in that case.
+func (c *DataObjectClient) findMissingDataSource(ctx context.Context, dataSourceID string) *types.ErrNotFound {
+	result, err := schema.GetDataSource(ctx, c.client, dataSourceID)
+	if err != nil {
+		return nil //nolint:nilerr // existence check is best-effort; caller falls back to its own error
+	}
+
+	if notFound, ok := result.DataSource.(*schema.GetDataSourceDataSourceNotFoundError); ok {
+		return types.NewErrNotFound(dataSourceID, notFound.Typename, notFound.Message)
+	}
+
+	return nil
+}
+
+// notFoundGraphQLMessage inspects err for a raw GraphQL error signaling that the requested
+// entity does not exist, and returns its server message.
+func notFoundGraphQLMessage(err error) (string, bool) {
+	var gqlErrs gqlerror.List
+	if !errors.As(err, &gqlErrs) {
+		return "", false
+	}
+
+	for _, gqlErr := range gqlErrs {
+		if code, ok := gqlErr.Extensions["code"].(string); ok && strings.EqualFold(code, notFoundCode) {
+			return gqlErr.Message, true
+		}
+
+		if strings.HasSuffix(gqlErr.Message, "("+notFoundCode+")") {
+			return gqlErr.Message, true
+		}
+	}
+
+	return "", false
 }
