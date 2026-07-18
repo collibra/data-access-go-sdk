@@ -1334,6 +1334,8 @@ type AccessControlInput struct {
 	External *bool `json:"external,omitempty" doc:"Indicates whether the access control is managed externally (in the Data Source) or internally (in the Collibra Data Access application)."`
 	// Marks this access control as volatile. Cannot be set on Mask or Filter actions.
 	Volatile *bool `json:"volatile,omitempty" doc:"Marks this access control as volatile. Cannot be set on Mask or Filter actions."`
+	// When provided on creation, a role asset link to this Collibra asset is created atomically together with the access control. Only valid for Roles (action=Grant).
+	LinkedAssetId *string `json:"linkedAssetId,omitempty" doc:"When provided on creation, a role asset link to this Collibra asset is created atomically together with the access control. Only valid for Roles (action=Grant)."`
 }
 
 // GetName returns AccessControlInput.Name, and is useful for accessing the field via an interface.
@@ -1424,6 +1426,9 @@ func (v *AccessControlInput) GetExternal() *bool { return v.External }
 
 // GetVolatile returns AccessControlInput.Volatile, and is useful for accessing the field via an interface.
 func (v *AccessControlInput) GetVolatile() *bool { return v.Volatile }
+
+// GetLinkedAssetId returns AccessControlInput.LinkedAssetId, and is useful for accessing the field via an interface.
+func (v *AccessControlInput) GetLinkedAssetId() *string { return v.LinkedAssetId }
 
 // The parts that can possibly be locked on an access control.
 type AccessControlLock string
