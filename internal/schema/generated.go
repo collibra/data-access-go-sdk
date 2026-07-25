@@ -9640,6 +9640,8 @@ type DataObjectOrderByInput struct {
 	Name     *Sort `json:"name,omitempty"`
 	FullName *Sort `json:"fullName,omitempty"`
 	Type     *Sort `json:"type,omitempty"`
+	// Sort by the full path, comparing it segment by segment so parents sort immediately before their children (depth-first tree order). Case-insensitive.
+	FullPath *Sort `json:"fullPath,omitempty" doc:"Sort by the full path, comparing it segment by segment so parents sort immediately before their children (depth-first tree order). Case-insensitive."`
 }
 
 // GetName returns DataObjectOrderByInput.Name, and is useful for accessing the field via an interface.
@@ -9650,6 +9652,9 @@ func (v *DataObjectOrderByInput) GetFullName() *Sort { return v.FullName }
 
 // GetType returns DataObjectOrderByInput.Type, and is useful for accessing the field via an interface.
 func (v *DataObjectOrderByInput) GetType() *Sort { return v.Type }
+
+// GetFullPath returns DataObjectOrderByInput.FullPath, and is useful for accessing the field via an interface.
+func (v *DataObjectOrderByInput) GetFullPath() *Sort { return v.FullPath }
 
 type DataObjectReferenceImport struct {
 	FullName string `json:"fullName"`
