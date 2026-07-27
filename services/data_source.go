@@ -234,25 +234,25 @@ func marshalSyncParameterValues(input types.SyncParameterValuesInput) (types.Syn
 	return types.SyncParameterValuesInput{DataSourceId: input.DataSourceId, Values: values}, nil
 }
 
-// TriggerDataSourceCliSync manually triggers a CLI synchronization for a DataSource.
+// TriggerDataSourceAgentSync manually triggers an agent synchronization for a DataSource.
 // Returns the updated DataSource if successful, otherwise returns an error.
-func (c *DataSourceClient) TriggerDataSourceCliSync(ctx context.Context, request types.DataSourceSyncRequest) (*types.DataSource, error) {
-	result, err := schema.TriggerDataSourceCliSync(ctx, c.client, request)
+func (c *DataSourceClient) TriggerDataSourceAgentSync(ctx context.Context, request types.DataSourceSyncRequest) (*types.DataSource, error) {
+	result, err := schema.TriggerDataSourceAgentSync(ctx, c.client, request)
 	if err != nil {
 		return nil, types.NewErrClient(err)
 	}
 
-	switch response := result.TriggerDataSourceCliSync.(type) {
-	case *schema.TriggerDataSourceCliSyncTriggerDataSourceCliSyncDataSource:
+	switch response := result.TriggerDataSourceAgentSync.(type) {
+	case *schema.TriggerDataSourceAgentSyncTriggerDataSourceAgentSyncDataSource:
 		return &response.DataSource, nil
-	case *schema.TriggerDataSourceCliSyncTriggerDataSourceCliSyncNotFoundError:
+	case *schema.TriggerDataSourceAgentSyncTriggerDataSourceAgentSyncNotFoundError:
 		return nil, types.NewErrNotFound(request.DataSourceId, response.Typename, response.Message)
-	case *schema.TriggerDataSourceCliSyncTriggerDataSourceCliSyncPermissionDeniedError:
-		return nil, types.NewErrPermissionDenied("triggerDataSourceCliSync", response.Message)
-	case *schema.TriggerDataSourceCliSyncTriggerDataSourceCliSyncInvalidInputError:
+	case *schema.TriggerDataSourceAgentSyncTriggerDataSourceAgentSyncPermissionDeniedError:
+		return nil, types.NewErrPermissionDenied("triggerDataSourceAgentSync", response.Message)
+	case *schema.TriggerDataSourceAgentSyncTriggerDataSourceAgentSyncInvalidInputError:
 		return nil, types.NewErrInvalidInput(response.Message)
 	default:
-		return nil, fmt.Errorf("unexpected response type: %T", result.TriggerDataSourceCliSync)
+		return nil, fmt.Errorf("unexpected response type: %T", result.TriggerDataSourceAgentSync)
 	}
 }
 

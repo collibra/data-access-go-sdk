@@ -1,4 +1,4 @@
-fragment SupportedCliVersion on SupportedCLIVersion {
+fragment SupportedAgentVersion on SupportedCLIVersion {
     deprecatedVersions {
         deprecatedVersions
         msg
@@ -42,8 +42,8 @@ mutation SubmitImportObjects($input: ImportCommands!) {
     }
 }
 
-query SupportedCLIVersion {
-    supportedCliVersion {
-        ... SupportedCliVersion
+query GetSupportedAgentVersion {
+    supportedAgentVersion: supportedCliVersion {
+        ... SupportedAgentVersion
     }
 }
