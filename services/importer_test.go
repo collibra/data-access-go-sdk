@@ -116,13 +116,13 @@ func (suite *ImporterServiceTestSuite) Test_ImportHeartbeat() {
 	suite.Equal(subtask, importHeartBeatSubtask, "Import heartbeat subtask does not match original subtask")
 }
 
-func (suite *ImporterServiceTestSuite) Test_SupportedCliVersions() {
+func (suite *ImporterServiceTestSuite) Test_SupportedAgentVersions() {
 	ctx := suite.T().Context()
 	importerClient := suite.sdkClient.Importer()
 
-	versions, err := importerClient.SupportedCliVersion(ctx)
-	suite.Require().NoError(err, "Failed to get supported CLI versions")
-	suite.Require().NotEmpty(versions.SupportedVersions, "Supported CLI versions is empty")
+	versions, err := importerClient.SupportedAgentVersion(ctx)
+	suite.Require().NoError(err, "Failed to get supported agent versions")
+	suite.Require().NotEmpty(versions.SupportedVersions, "Supported agent versions is empty")
 }
 
 func (suite *ImporterServiceTestSuite) Test_SubmitImportObjects() {

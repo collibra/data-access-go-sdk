@@ -119,8 +119,8 @@ mutation SetSyncConfigurationParameterValues($input: SyncParameterValuesInput!) 
     }
 }
 
-mutation TriggerDataSourceCliSync($request: DataSourceSyncRequest!) {
-    triggerDataSourceCliSync(request: $request) {
+mutation TriggerDataSourceAgentSync($request: DataSourceSyncRequest!) {
+    triggerDataSourceAgentSync: triggerDataSourceCliSync(request: $request) {
         ... DataSource
         ... PermissionDeniedError
         ... NotFoundError
