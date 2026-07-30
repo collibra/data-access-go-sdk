@@ -1093,8 +1093,10 @@ type AccessControlFilterInput struct {
 	External *bool `json:"external,omitempty" doc:"To filter on only internal or external access controls."`
 	// The search string to use (will do a case-insensitive 'contains').
 	Search *string `json:"search,omitempty" doc:"The search string to use (will do a case-insensitive 'contains')."`
-	// To filter access controls which are linked to a specific data source.
-	DataSource *string `json:"dataSource,omitempty" doc:"To filter access controls which are linked to a specific data source."`
+	// To filter access controls which are linked to a specific data source. Merged with `dataSources` when both are set.
+	DataSource *string `json:"dataSource,omitempty" doc:"To filter access controls which are linked to a specific data source. Merged with 'dataSources' when both are set."`
+	// To filter access controls which are linked to any of the given data sources. Merged with `dataSource` when both are set.
+	DataSources []string `json:"dataSources,omitempty" doc:"To filter access controls which are linked to any of the given data sources. Merged with 'dataSource' when both are set."`
 	// Only return access controls where the WHO is editable.
 	CanEditWho *bool `json:"canEditWho,omitempty" doc:"Only return access controls where the WHO is editable."`
 	// Only return access controls where the inheritance (= linking to other access controls) is editable.
@@ -1135,6 +1137,9 @@ func (v *AccessControlFilterInput) GetSearch() *string { return v.Search }
 
 // GetDataSource returns AccessControlFilterInput.DataSource, and is useful for accessing the field via an interface.
 func (v *AccessControlFilterInput) GetDataSource() *string { return v.DataSource }
+
+// GetDataSources returns AccessControlFilterInput.DataSources, and is useful for accessing the field via an interface.
+func (v *AccessControlFilterInput) GetDataSources() []string { return v.DataSources }
 
 // GetCanEditWho returns AccessControlFilterInput.CanEditWho, and is useful for accessing the field via an interface.
 func (v *AccessControlFilterInput) GetCanEditWho() *bool { return v.CanEditWho }
@@ -25511,6 +25516,7 @@ type JobInput struct {
 	EventTime    time.Time  `json:"eventTime"`
 	Status       *JobStatus `json:"status,omitempty"`
 	Errors       []string   `json:"errors,omitempty"`
+	EdgeJobId    *uuid.UUID `json:"edgeJobId,omitempty"`
 }
 
 // GetDataSourceId returns JobInput.DataSourceId, and is useful for accessing the field via an interface.
@@ -25524,6 +25530,9 @@ func (v *JobInput) GetStatus() *JobStatus { return v.Status }
 
 // GetErrors returns JobInput.Errors, and is useful for accessing the field via an interface.
 func (v *JobInput) GetErrors() []string { return v.Errors }
+
+// GetEdgeJobId returns JobInput.EdgeJobId, and is useful for accessing the field via an interface.
+func (v *JobInput) GetEdgeJobId() *uuid.UUID { return v.EdgeJobId }
 
 type JobStatus string
 
@@ -44149,8 +44158,8 @@ type User struct {
 	Name string `json:"name" doc:"The display name for the user."`
 	// The email address for the user. This will be used to match new accounts. If the email address matches, the new accounts will be automatically added to the user.
 	Email *string `json:"email" doc:"The email address for the user. This will be used to match new accounts. If the email address matches, the new accounts will be automatically added to the user."`
-	// Whether this user is a human or machine user.
-	Type UserType `json:"type" doc:"Whether this user is a human or machine user."`
+	// Whether this user is a human user, a machine user (service account), or an internal DGC system account. System users are excluded from user lists and search by default.
+	Type UserType `json:"type" doc:"Whether this user is a human user, a machine user (service account), or an internal DGC system account. System users are excluded from user lists and search by default."`
 }
 
 // GetId returns User.Id, and is useful for accessing the field via an interface.
@@ -44671,8 +44680,8 @@ type UserFilterInput struct {
 	AccessControl *string  `json:"accessControl,omitempty"`
 	// The search string to use (will do a case-insensitive 'contains').
 	Search *string `json:"search,omitempty" doc:"The search string to use (will do a case-insensitive 'contains')."`
-	// Only return human or machine users.
-	Type *UserType `json:"type,omitempty" doc:"Only return human or machine users."`
+	// Only return users of the given type. System users are excluded unless this is explicitly set to System.
+	Type *UserType `json:"type,omitempty" doc:"Only return users of the given type. System users are excluded unless this is explicitly set to System."`
 	// Exclude a specific fixed list of users.
 	Exclude []string `json:"exclude,omitempty" doc:"Exclude a specific fixed list of users."`
 	// Only return users that have certain tags.
@@ -44783,11 +44792,14 @@ type UserType string
 const (
 	UserTypeHuman   UserType = "Human"
 	UserTypeMachine UserType = "Machine"
+	// An internal DGC system account. Excluded from user lists and search by default.
+	UserTypeSystem UserType = "System"
 )
 
 var AllUserType = []UserType{
 	UserTypeHuman,
 	UserTypeMachine,
+	UserTypeSystem,
 }
 
 // WhatAbacRule includes the GraphQL fields of WhatAbacRule requested by the fragment WhatAbacRule.
