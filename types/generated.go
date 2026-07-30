@@ -980,6 +980,7 @@ type UserType = schema.UserType
 const (
 	UserTypeHuman   UserType = schema.UserTypeHuman
 	UserTypeMachine UserType = schema.UserTypeMachine
+	UserTypeSystem  UserType = schema.UserTypeSystem
 )
 
 type WhatAbacRule = schema.WhatAbacRule
@@ -1019,4 +1020,4 @@ var AllSort = []Sort{SortAsc, SortDesc}
 var AllSubtaskStatus = []SubtaskStatus{SubtaskStatusStarted, SubtaskStatusQueued, SubtaskStatusDataretrieve, SubtaskStatusInprogress, SubtaskStatusCompleted, SubtaskStatusFailed, SubtaskStatusTimedout}
 var AllSyncStatus = []SyncStatus{SyncStatusNotconnected, SyncStatusFailed, SyncStatusOutofdate, SyncStatusInprogress, SyncStatusSynced, SyncStatusOutofsync}
 var AllTaskStatus = []TaskStatus{TaskStatusStarted, TaskStatusDataretrieve, TaskStatusDataupload, TaskStatusQueued, TaskStatusDataprocessing, TaskStatusCompleted, TaskStatusFailed, TaskStatusSkipped, TaskStatusTimedout}
-var AllUserType = []UserType{UserTypeHuman, UserTypeMachine}
+var AllUserType = []UserType{UserTypeHuman, UserTypeMachine, UserTypeSystem}
