@@ -268,6 +268,17 @@ func (suite *DataSourceServiceTestSuite) TestDataSources() {
 		suite.Equal(*suite.metadata.MaskingMetadata.DefaultMaskExternalName, *retrievedMaskingMetaData.DefaultMaskExternalName, "Default mask external name should match")
 	})
 
+	suite.Run("Get Usage Metadata", func() {
+		if createdDataSource == nil {
+			suite.T().Log("Skipping Get Usage Metadata as no data sources were created")
+			suite.T().SkipNow()
+		}
+
+		usageMetadata, err := dataSourceClient.GetUsageMetadata(ctx, createdDataSource.Id)
+		suite.Require().NoError(err, "Failed to get usage metadata")
+		suite.Require().NotNil(usageMetadata, "Retrieved usage metadata is nil")
+	})
+
 	suite.Run("Set Sync Configuration Parameter Values", func() {
 		if createdDataSource == nil {
 			suite.T().Log("Skipping SetSyncConfigurationParameterValues as no data source was created")

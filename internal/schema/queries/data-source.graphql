@@ -50,6 +50,11 @@ fragment DataSourceConnectionResult on DataSourceConnectionResult {
     ... InvalidInputError
 }
 
+fragment UsageMetadataDataSource on DataSource {
+    usageFirstUsed
+    usageLastUsed
+}
+
 query GetDataSource($id: ID!) {
     dataSource(id: $id) {
         ... DataSource
@@ -73,6 +78,15 @@ query DataSourceMaskInformation($id: ID!) {
         }
         ... PermissionDeniedError
         ... NotFoundError
+    }
+}
+
+query DataSourceUsageMetadata($dataSourceId: ID!) {
+    dataSource(id: $dataSourceId) {
+        ...UsageMetadataDataSource
+        ...InvalidInputError
+        ...NotFoundError
+        ...PermissionDeniedError
     }
 }
 
