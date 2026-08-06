@@ -126,6 +126,27 @@ func (c *DataSourceClient) GetMaskingMetadata(ctx context.Context, id string) (*
 	}
 }
 
+// GetUsageMetadata returns the first and last usage timestamps of a DataSource.
+func (c *DataSourceClient) GetUsageMetadata(ctx context.Context, id string) (*types.UsageMetadataDataSource, error) {
+	result, err := schema.DataSourceUsageMetadata(ctx, c.client, id)
+	if err != nil {
+		return nil, types.NewErrClient(err)
+	}
+
+	switch ds := result.DataSource.(type) {
+	case *schema.DataSourceUsageMetadataDataSource:
+		return &ds.UsageMetadataDataSource, nil
+	case *schema.DataSourceUsageMetadataDataSourcePermissionDeniedError:
+		return nil, types.NewErrPermissionDenied("dataSource", ds.Message)
+	case *schema.DataSourceUsageMetadataDataSourceNotFoundError:
+		return nil, types.NewErrNotFound(id, ds.Typename, ds.Message)
+	case *schema.DataSourceUsageMetadataDataSourceInvalidInputError:
+		return nil, types.NewErrInvalidInput(ds.Message)
+	default:
+		return nil, fmt.Errorf("unexpected response type: %T", result.DataSource)
+	}
+}
+
 // DataSourceListOptions list options for listing DataSources.
 type DataSourceListOptions struct {
 	order  []types.DataSourceOrderByInput

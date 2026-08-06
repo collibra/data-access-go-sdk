@@ -11346,6 +11346,490 @@ func (v *DataSourceTypeInfo) GetDataSource() string { return v.DataSource }
 // GetAccessControlType returns DataSourceTypeInfo.AccessControlType, and is useful for accessing the field via an interface.
 func (v *DataSourceTypeInfo) GetAccessControlType() *string { return v.AccessControlType }
 
+// DataSourceUsageMetadataDataSource includes the requested fields of the GraphQL type DataSource.
+// The GraphQL type's documentation follows.
+//
+// Represents a data source in Collibra Data Access.
+type DataSourceUsageMetadataDataSource struct {
+	Typename                *string `json:"__typename"`
+	UsageMetadataDataSource `json:"-"`
+}
+
+// GetTypename returns DataSourceUsageMetadataDataSource.Typename, and is useful for accessing the field via an interface.
+func (v *DataSourceUsageMetadataDataSource) GetTypename() *string { return v.Typename }
+
+// GetUsageFirstUsed returns DataSourceUsageMetadataDataSource.UsageFirstUsed, and is useful for accessing the field via an interface.
+func (v *DataSourceUsageMetadataDataSource) GetUsageFirstUsed() *time.Time {
+	return v.UsageMetadataDataSource.UsageFirstUsed
+}
+
+// GetUsageLastUsed returns DataSourceUsageMetadataDataSource.UsageLastUsed, and is useful for accessing the field via an interface.
+func (v *DataSourceUsageMetadataDataSource) GetUsageLastUsed() *time.Time {
+	return v.UsageMetadataDataSource.UsageLastUsed
+}
+
+func (v *DataSourceUsageMetadataDataSource) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*DataSourceUsageMetadataDataSource
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.DataSourceUsageMetadataDataSource = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.UsageMetadataDataSource)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalDataSourceUsageMetadataDataSource struct {
+	Typename *string `json:"__typename"`
+
+	UsageFirstUsed *time.Time `json:"usageFirstUsed"`
+
+	UsageLastUsed *time.Time `json:"usageLastUsed"`
+}
+
+func (v *DataSourceUsageMetadataDataSource) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *DataSourceUsageMetadataDataSource) __premarshalJSON() (*__premarshalDataSourceUsageMetadataDataSource, error) {
+	var retval __premarshalDataSourceUsageMetadataDataSource
+
+	retval.Typename = v.Typename
+	retval.UsageFirstUsed = v.UsageMetadataDataSource.UsageFirstUsed
+	retval.UsageLastUsed = v.UsageMetadataDataSource.UsageLastUsed
+	return &retval, nil
+}
+
+// DataSourceUsageMetadataDataSourceAlreadyExistsError includes the requested fields of the GraphQL type AlreadyExistsError.
+// The GraphQL type's documentation follows.
+//
+// Error when the user tries to create a resource that already exists.
+type DataSourceUsageMetadataDataSourceAlreadyExistsError struct {
+	Typename *string `json:"__typename"`
+}
+
+// GetTypename returns DataSourceUsageMetadataDataSourceAlreadyExistsError.Typename, and is useful for accessing the field via an interface.
+func (v *DataSourceUsageMetadataDataSourceAlreadyExistsError) GetTypename() *string {
+	return v.Typename
+}
+
+// DataSourceUsageMetadataDataSourceDataSourceResult includes the requested fields of the GraphQL interface DataSourceResult.
+//
+// DataSourceUsageMetadataDataSourceDataSourceResult is implemented by the following types:
+// DataSourceUsageMetadataDataSourceAlreadyExistsError
+// DataSourceUsageMetadataDataSource
+// DataSourceUsageMetadataDataSourceInvalidInputError
+// DataSourceUsageMetadataDataSourceNotFoundError
+// DataSourceUsageMetadataDataSourcePermissionDeniedError
+type DataSourceUsageMetadataDataSourceDataSourceResult interface {
+	implementsGraphQLInterfaceDataSourceUsageMetadataDataSourceDataSourceResult()
+	// GetTypename returns the receiver's concrete GraphQL type-name (see interface doc for possible values).
+	GetTypename() *string
+}
+
+func (v *DataSourceUsageMetadataDataSourceAlreadyExistsError) implementsGraphQLInterfaceDataSourceUsageMetadataDataSourceDataSourceResult() {
+}
+func (v *DataSourceUsageMetadataDataSource) implementsGraphQLInterfaceDataSourceUsageMetadataDataSourceDataSourceResult() {
+}
+func (v *DataSourceUsageMetadataDataSourceInvalidInputError) implementsGraphQLInterfaceDataSourceUsageMetadataDataSourceDataSourceResult() {
+}
+func (v *DataSourceUsageMetadataDataSourceNotFoundError) implementsGraphQLInterfaceDataSourceUsageMetadataDataSourceDataSourceResult() {
+}
+func (v *DataSourceUsageMetadataDataSourcePermissionDeniedError) implementsGraphQLInterfaceDataSourceUsageMetadataDataSourceDataSourceResult() {
+}
+
+func __unmarshalDataSourceUsageMetadataDataSourceDataSourceResult(b []byte, v *DataSourceUsageMetadataDataSourceDataSourceResult) error {
+	if string(b) == "null" {
+		return nil
+	}
+
+	var tn struct {
+		TypeName string `json:"__typename"`
+	}
+	err := json.Unmarshal(b, &tn)
+	if err != nil {
+		return err
+	}
+
+	switch tn.TypeName {
+	case "AlreadyExistsError":
+		*v = new(DataSourceUsageMetadataDataSourceAlreadyExistsError)
+		return json.Unmarshal(b, *v)
+	case "DataSource":
+		*v = new(DataSourceUsageMetadataDataSource)
+		return json.Unmarshal(b, *v)
+	case "InvalidInputError":
+		*v = new(DataSourceUsageMetadataDataSourceInvalidInputError)
+		return json.Unmarshal(b, *v)
+	case "NotFoundError":
+		*v = new(DataSourceUsageMetadataDataSourceNotFoundError)
+		return json.Unmarshal(b, *v)
+	case "PermissionDeniedError":
+		*v = new(DataSourceUsageMetadataDataSourcePermissionDeniedError)
+		return json.Unmarshal(b, *v)
+	case "":
+		return fmt.Errorf(
+			"response was missing DataSourceResult.__typename")
+	default:
+		return fmt.Errorf(
+			`unexpected concrete type for DataSourceUsageMetadataDataSourceDataSourceResult: "%v"`, tn.TypeName)
+	}
+}
+
+func __marshalDataSourceUsageMetadataDataSourceDataSourceResult(v *DataSourceUsageMetadataDataSourceDataSourceResult) ([]byte, error) {
+
+	var typename string
+	switch v := (*v).(type) {
+	case *DataSourceUsageMetadataDataSourceAlreadyExistsError:
+		typename = "AlreadyExistsError"
+
+		result := struct {
+			TypeName string `json:"__typename"`
+			*DataSourceUsageMetadataDataSourceAlreadyExistsError
+		}{typename, v}
+		return json.Marshal(result)
+	case *DataSourceUsageMetadataDataSource:
+		typename = "DataSource"
+
+		premarshaled, err := v.__premarshalJSON()
+		if err != nil {
+			return nil, err
+		}
+		result := struct {
+			TypeName string `json:"__typename"`
+			*__premarshalDataSourceUsageMetadataDataSource
+		}{typename, premarshaled}
+		return json.Marshal(result)
+	case *DataSourceUsageMetadataDataSourceInvalidInputError:
+		typename = "InvalidInputError"
+
+		premarshaled, err := v.__premarshalJSON()
+		if err != nil {
+			return nil, err
+		}
+		result := struct {
+			TypeName string `json:"__typename"`
+			*__premarshalDataSourceUsageMetadataDataSourceInvalidInputError
+		}{typename, premarshaled}
+		return json.Marshal(result)
+	case *DataSourceUsageMetadataDataSourceNotFoundError:
+		typename = "NotFoundError"
+
+		premarshaled, err := v.__premarshalJSON()
+		if err != nil {
+			return nil, err
+		}
+		result := struct {
+			TypeName string `json:"__typename"`
+			*__premarshalDataSourceUsageMetadataDataSourceNotFoundError
+		}{typename, premarshaled}
+		return json.Marshal(result)
+	case *DataSourceUsageMetadataDataSourcePermissionDeniedError:
+		typename = "PermissionDeniedError"
+
+		premarshaled, err := v.__premarshalJSON()
+		if err != nil {
+			return nil, err
+		}
+		result := struct {
+			TypeName string `json:"__typename"`
+			*__premarshalDataSourceUsageMetadataDataSourcePermissionDeniedError
+		}{typename, premarshaled}
+		return json.Marshal(result)
+	case nil:
+		return []byte("null"), nil
+	default:
+		return nil, fmt.Errorf(
+			`unexpected concrete type for DataSourceUsageMetadataDataSourceDataSourceResult: "%T"`, v)
+	}
+}
+
+// DataSourceUsageMetadataDataSourceInvalidInputError includes the requested fields of the GraphQL type InvalidInputError.
+// The GraphQL type's documentation follows.
+//
+// Error when some of the input parameters in the request are not valid.
+type DataSourceUsageMetadataDataSourceInvalidInputError struct {
+	Typename          *string `json:"__typename"`
+	InvalidInputError `json:"-"`
+}
+
+// GetTypename returns DataSourceUsageMetadataDataSourceInvalidInputError.Typename, and is useful for accessing the field via an interface.
+func (v *DataSourceUsageMetadataDataSourceInvalidInputError) GetTypename() *string { return v.Typename }
+
+// GetMessage returns DataSourceUsageMetadataDataSourceInvalidInputError.Message, and is useful for accessing the field via an interface.
+func (v *DataSourceUsageMetadataDataSourceInvalidInputError) GetMessage() string {
+	return v.InvalidInputError.Message
+}
+
+func (v *DataSourceUsageMetadataDataSourceInvalidInputError) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*DataSourceUsageMetadataDataSourceInvalidInputError
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.DataSourceUsageMetadataDataSourceInvalidInputError = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.InvalidInputError)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalDataSourceUsageMetadataDataSourceInvalidInputError struct {
+	Typename *string `json:"__typename"`
+
+	Message string `json:"message"`
+}
+
+func (v *DataSourceUsageMetadataDataSourceInvalidInputError) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *DataSourceUsageMetadataDataSourceInvalidInputError) __premarshalJSON() (*__premarshalDataSourceUsageMetadataDataSourceInvalidInputError, error) {
+	var retval __premarshalDataSourceUsageMetadataDataSourceInvalidInputError
+
+	retval.Typename = v.Typename
+	retval.Message = v.InvalidInputError.Message
+	return &retval, nil
+}
+
+// DataSourceUsageMetadataDataSourceNotFoundError includes the requested fields of the GraphQL type NotFoundError.
+// The GraphQL type's documentation follows.
+//
+// Error when the user is requesting a resource that does not exist.
+type DataSourceUsageMetadataDataSourceNotFoundError struct {
+	Typename      *string `json:"__typename"`
+	NotFoundError `json:"-"`
+}
+
+// GetTypename returns DataSourceUsageMetadataDataSourceNotFoundError.Typename, and is useful for accessing the field via an interface.
+func (v *DataSourceUsageMetadataDataSourceNotFoundError) GetTypename() *string { return v.Typename }
+
+// GetMessage returns DataSourceUsageMetadataDataSourceNotFoundError.Message, and is useful for accessing the field via an interface.
+func (v *DataSourceUsageMetadataDataSourceNotFoundError) GetMessage() string {
+	return v.NotFoundError.Message
+}
+
+func (v *DataSourceUsageMetadataDataSourceNotFoundError) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*DataSourceUsageMetadataDataSourceNotFoundError
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.DataSourceUsageMetadataDataSourceNotFoundError = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.NotFoundError)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalDataSourceUsageMetadataDataSourceNotFoundError struct {
+	Typename *string `json:"__typename"`
+
+	Message string `json:"message"`
+}
+
+func (v *DataSourceUsageMetadataDataSourceNotFoundError) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *DataSourceUsageMetadataDataSourceNotFoundError) __premarshalJSON() (*__premarshalDataSourceUsageMetadataDataSourceNotFoundError, error) {
+	var retval __premarshalDataSourceUsageMetadataDataSourceNotFoundError
+
+	retval.Typename = v.Typename
+	retval.Message = v.NotFoundError.Message
+	return &retval, nil
+}
+
+// DataSourceUsageMetadataDataSourcePermissionDeniedError includes the requested fields of the GraphQL type PermissionDeniedError.
+// The GraphQL type's documentation follows.
+//
+// Error when permission to the requested resource is denied.
+type DataSourceUsageMetadataDataSourcePermissionDeniedError struct {
+	Typename              *string `json:"__typename"`
+	PermissionDeniedError `json:"-"`
+}
+
+// GetTypename returns DataSourceUsageMetadataDataSourcePermissionDeniedError.Typename, and is useful for accessing the field via an interface.
+func (v *DataSourceUsageMetadataDataSourcePermissionDeniedError) GetTypename() *string {
+	return v.Typename
+}
+
+// GetMessage returns DataSourceUsageMetadataDataSourcePermissionDeniedError.Message, and is useful for accessing the field via an interface.
+func (v *DataSourceUsageMetadataDataSourcePermissionDeniedError) GetMessage() string {
+	return v.PermissionDeniedError.Message
+}
+
+func (v *DataSourceUsageMetadataDataSourcePermissionDeniedError) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*DataSourceUsageMetadataDataSourcePermissionDeniedError
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.DataSourceUsageMetadataDataSourcePermissionDeniedError = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.PermissionDeniedError)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalDataSourceUsageMetadataDataSourcePermissionDeniedError struct {
+	Typename *string `json:"__typename"`
+
+	Message string `json:"message"`
+}
+
+func (v *DataSourceUsageMetadataDataSourcePermissionDeniedError) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *DataSourceUsageMetadataDataSourcePermissionDeniedError) __premarshalJSON() (*__premarshalDataSourceUsageMetadataDataSourcePermissionDeniedError, error) {
+	var retval __premarshalDataSourceUsageMetadataDataSourcePermissionDeniedError
+
+	retval.Typename = v.Typename
+	retval.Message = v.PermissionDeniedError.Message
+	return &retval, nil
+}
+
+// DataSourceUsageMetadataResponse is returned by DataSourceUsageMetadata on success.
+type DataSourceUsageMetadataResponse struct {
+	// Retrieves a single data source by its ID.
+	DataSource DataSourceUsageMetadataDataSourceDataSourceResult `json:"-"`
+}
+
+// GetDataSource returns DataSourceUsageMetadataResponse.DataSource, and is useful for accessing the field via an interface.
+func (v *DataSourceUsageMetadataResponse) GetDataSource() DataSourceUsageMetadataDataSourceDataSourceResult {
+	return v.DataSource
+}
+
+func (v *DataSourceUsageMetadataResponse) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*DataSourceUsageMetadataResponse
+		DataSource json.RawMessage `json:"dataSource"`
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.DataSourceUsageMetadataResponse = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	{
+		dst := &v.DataSource
+		src := firstPass.DataSource
+		if len(src) != 0 && string(src) != "null" {
+			err = __unmarshalDataSourceUsageMetadataDataSourceDataSourceResult(
+				src, dst)
+			if err != nil {
+				return fmt.Errorf(
+					"unable to unmarshal DataSourceUsageMetadataResponse.DataSource: %w", err)
+			}
+		}
+	}
+	return nil
+}
+
+type __premarshalDataSourceUsageMetadataResponse struct {
+	DataSource json.RawMessage `json:"dataSource"`
+}
+
+func (v *DataSourceUsageMetadataResponse) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *DataSourceUsageMetadataResponse) __premarshalJSON() (*__premarshalDataSourceUsageMetadataResponse, error) {
+	var retval __premarshalDataSourceUsageMetadataResponse
+
+	{
+
+		dst := &retval.DataSource
+		src := v.DataSource
+		var err error
+		*dst, err = __marshalDataSourceUsageMetadataDataSourceDataSourceResult(
+			&src)
+		if err != nil {
+			return nil, fmt.Errorf(
+				"unable to marshal DataSourceUsageMetadataResponse.DataSource: %w", err)
+		}
+	}
+	return &retval, nil
+}
+
 type DataTypeOrigin string
 
 const (
@@ -33562,6 +34046,7 @@ type QueryStatementImport struct {
 	Bytes               *int                        `json:"bytes,omitempty"`
 	Rows                *int                        `json:"rows,omitempty"`
 	Credits             *float64                    `json:"credits,omitempty"`
+	Executions          int                         `json:"executions"`
 }
 
 // GetExternalId returns QueryStatementImport.ExternalId, and is useful for accessing the field via an interface.
@@ -33601,6 +34086,9 @@ func (v *QueryStatementImport) GetRows() *int { return v.Rows }
 
 // GetCredits returns QueryStatementImport.Credits, and is useful for accessing the field via an interface.
 func (v *QueryStatementImport) GetCredits() *float64 { return v.Credits }
+
+// GetExecutions returns QueryStatementImport.Executions, and is useful for accessing the field via an interface.
+func (v *QueryStatementImport) GetExecutions() int { return v.Executions }
 
 // Role includes the GraphQL fields of Role requested by the fragment Role.
 // The GraphQL type's documentation follows.
@@ -44147,6 +44635,21 @@ func (v *UsageMetaInputDetail) GetName() string { return v.Name }
 // GetDataObjectTypes returns UsageMetaInputDetail.DataObjectTypes, and is useful for accessing the field via an interface.
 func (v *UsageMetaInputDetail) GetDataObjectTypes() []string { return v.DataObjectTypes }
 
+// UsageMetadataDataSource includes the GraphQL fields of DataSource requested by the fragment UsageMetadataDataSource.
+// The GraphQL type's documentation follows.
+//
+// Represents a data source in Collibra Data Access.
+type UsageMetadataDataSource struct {
+	UsageFirstUsed *time.Time `json:"usageFirstUsed"`
+	UsageLastUsed  *time.Time `json:"usageLastUsed"`
+}
+
+// GetUsageFirstUsed returns UsageMetadataDataSource.UsageFirstUsed, and is useful for accessing the field via an interface.
+func (v *UsageMetadataDataSource) GetUsageFirstUsed() *time.Time { return v.UsageFirstUsed }
+
+// GetUsageLastUsed returns UsageMetadataDataSource.UsageLastUsed, and is useful for accessing the field via an interface.
+func (v *UsageMetadataDataSource) GetUsageLastUsed() *time.Time { return v.UsageLastUsed }
+
 // User includes the GraphQL fields of User requested by the fragment User.
 // The GraphQL type's documentation follows.
 //
@@ -45127,6 +45630,14 @@ type __DataSourceMaskInformationInput struct {
 
 // GetId returns __DataSourceMaskInformationInput.Id, and is useful for accessing the field via an interface.
 func (v *__DataSourceMaskInformationInput) GetId() string { return v.Id }
+
+// __DataSourceUsageMetadataInput is used internally by genqlient
+type __DataSourceUsageMetadataInput struct {
+	DataSourceId string `json:"dataSourceId"`
+}
+
+// GetDataSourceId returns __DataSourceUsageMetadataInput.DataSourceId, and is useful for accessing the field via an interface.
+func (v *__DataSourceUsageMetadataInput) GetDataSourceId() string { return v.DataSourceId }
 
 // __DeactivateAccessControlInput is used internally by genqlient
 type __DeactivateAccessControlInput struct {
@@ -46756,6 +47267,57 @@ func DataSourceMaskInformation(
 	}
 
 	data_ = &DataSourceMaskInformationResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
+// The query executed by DataSourceUsageMetadata.
+const DataSourceUsageMetadata_Operation = `
+query DataSourceUsageMetadata ($dataSourceId: ID!) {
+	dataSource(id: $dataSourceId) {
+		__typename
+		... UsageMetadataDataSource
+		... InvalidInputError
+		... NotFoundError
+		... PermissionDeniedError
+	}
+}
+fragment UsageMetadataDataSource on DataSource {
+	usageFirstUsed
+	usageLastUsed
+}
+fragment InvalidInputError on InvalidInputError {
+	message
+}
+fragment NotFoundError on NotFoundError {
+	message
+}
+fragment PermissionDeniedError on PermissionDeniedError {
+	message
+}
+`
+
+func DataSourceUsageMetadata(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	dataSourceId string,
+) (data_ *DataSourceUsageMetadataResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "DataSourceUsageMetadata",
+		Query:  DataSourceUsageMetadata_Operation,
+		Variables: &__DataSourceUsageMetadataInput{
+			DataSourceId: dataSourceId,
+		},
+	}
+
+	data_ = &DataSourceUsageMetadataResponse{}
 	resp_ := &graphql.Response{Data: data_}
 
 	err_ = client_.MakeRequest(

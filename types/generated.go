@@ -338,6 +338,13 @@ type DataSourceParentDataSource = schema.DataSourceParentDataSource
 type DataSourceSyncRequest = schema.DataSourceSyncRequest
 type DataSourceSyncScheduleInput = schema.DataSourceSyncScheduleInput
 type DataSourceTypeInfo = schema.DataSourceTypeInfo
+type DataSourceUsageMetadataDataSource = schema.DataSourceUsageMetadataDataSource
+type DataSourceUsageMetadataDataSourceAlreadyExistsError = schema.DataSourceUsageMetadataDataSourceAlreadyExistsError
+type DataSourceUsageMetadataDataSourceDataSourceResult = schema.DataSourceUsageMetadataDataSourceDataSourceResult
+type DataSourceUsageMetadataDataSourceInvalidInputError = schema.DataSourceUsageMetadataDataSourceInvalidInputError
+type DataSourceUsageMetadataDataSourceNotFoundError = schema.DataSourceUsageMetadataDataSourceNotFoundError
+type DataSourceUsageMetadataDataSourcePermissionDeniedError = schema.DataSourceUsageMetadataDataSourcePermissionDeniedError
+type DataSourceUsageMetadataResponse = schema.DataSourceUsageMetadataResponse
 type DataTypeOrigin = schema.DataTypeOrigin
 
 const (
@@ -961,6 +968,7 @@ type UpdateUserUpdateUserPermissionDeniedError = schema.UpdateUserUpdateUserPerm
 type UpdateUserUpdateUserUserResult = schema.UpdateUserUpdateUserUserResult
 type UsageMetaInput = schema.UsageMetaInput
 type UsageMetaInputDetail = schema.UsageMetaInputDetail
+type UsageMetadataDataSource = schema.UsageMetadataDataSource
 type User = schema.User
 type UserConnection = schema.UserConnection
 type UserConnectionEdgesUserEdge = schema.UserConnectionEdgesUserEdge
