@@ -7,7 +7,7 @@ tool github.com/Khan/genqlient
 // This is a temporary pseudo-version used because an official release
 // containing a necessary fix is not yet available. It will be replaced
 // with an official version once it is released.
-require github.com/Khan/genqlient v0.8.2-0.20260527022710-6bbde3684dd6
+require github.com/Khan/genqlient v0.8.2-0.20260808220311-f53a04c8e9d2
 
 require (
 	github.com/Masterminds/semver/v3 v3.5.0
@@ -28,8 +28,8 @@ require (
 	github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc // indirect
 	github.com/kr/pretty v0.3.1 // indirect
 	github.com/pmezard/go-difflib v1.0.1-0.20181226105442-5d4384ee4fb2 // indirect
+	go.yaml.in/yaml/v3 v3.0.4 // indirect
 	golang.org/x/mod v0.38.0 // indirect
 	golang.org/x/sync v0.22.0 // indirect
 	gopkg.in/check.v1 v1.0.0-20201130134442-10cb98267c6c // indirect
-	gopkg.in/yaml.v2 v2.4.0 // indirect
 )

@@ -1,5 +1,5 @@
-github.com/Khan/genqlient v0.8.2-0.20260527022710-6bbde3684dd6 h1:Y+TbviEJfdsIS2jwgSLkSK2t0O1eVaRsvtW5oPQ9it4=
-github.com/Khan/genqlient v0.8.2-0.20260527022710-6bbde3684dd6/go.mod h1:guUHwMi8ByjIvs3TyAPM+V9ryaW305CtK7+aCeP2Jzc=
+github.com/Khan/genqlient v0.8.2-0.20260808220311-f53a04c8e9d2 h1:tv7rKDHFzOpTYT9Bk41SGIsY5pDfeGSF9wLujrC6ODQ=
+github.com/Khan/genqlient v0.8.2-0.20260808220311-f53a04c8e9d2/go.mod h1:HuVYDAR/PKai9Kw/hdHmMznLVOjNvwzQkaFSImkTK9Y=
 github.com/Masterminds/semver/v3 v3.5.0 h1:kQceYJfbupGfZOKZQg0kou0DgAKhzDg2NZPAwZ/2OOE=
 github.com/Masterminds/semver/v3 v3.5.0/go.mod h1:4V+yj/TJE1HU9XfppCwVMZq3I84lprf4nC11bSS5beM=
 github.com/agnivade/levenshtein v1.2.1 h1:EHBY3UOn1gwdy/VbFwgo4cxecRznFk7fKWN1KOX7eoM=
@@ -69,7 +69,5 @@ golang.org/x/tools v0.48.0/go.mod h1:08xX0orndb/F7jJxGDicx061tyd5pcMto75YMAXr6lk
 gopkg.in/check.v1 v0.0.0-20161208181325-20d25e280405/go.mod h1:Co6ibVJAznAaIkqp8huTwlJQCZ016jof/cbN4VW5Yz0=
 gopkg.in/check.v1 v1.0.0-20201130134442-10cb98267c6c h1:Hei/4ADfdWqJk1ZMxUNpqntNwaWcugrBjAiHlqqRiVk=
 gopkg.in/check.v1 v1.0.0-20201130134442-10cb98267c6c/go.mod h1:JHkPIbrfpd72SG/EVd6muEfDQjcINNoR0C8j2r3qZ4Q=
-gopkg.in/yaml.v2 v2.4.0 h1:D8xgwECY7CYvx+Y2n4sBz93Jn9JRvxdiyyo8CTfuKaY=
-gopkg.in/yaml.v2 v2.4.0/go.mod h1:RDklbk79AGWmwhnvt/jBztapEOGDOx6ZbXqjP6csGnQ=
 gopkg.in/yaml.v3 v3.0.1 h1:fxVm/GzAzEWqLHuvctI91KS9hhNmmWOoWu0XTYJS7CA=
 gopkg.in/yaml.v3 v3.0.1/go.mod h1:K4uyk7z7BCEPqu6E+C64Yfv1cQ7kz7rIZviUmN+EgEM=
