@@ -3611,8 +3611,10 @@ type AccessWhatFilterInput struct {
 	// List of user IDs to filter on who owns the WHAT items.
 	Owners []string `json:"owners,omitempty" doc:"List of user IDs to filter on who owns the WHAT items."`
 	// Filter by which tags the WHAT item needs to have.
-	HasTags          []TagFilter `json:"hasTags,omitempty" doc:"Filter by which tags the WHAT item needs to have."`
-	TargetDataObject *string     `json:"targetDataObject,omitempty"`
+	HasTags []TagFilter `json:"hasTags,omitempty" doc:"Filter by which tags the WHAT item needs to have."`
+	// Limit only to data objects in specific data sources.
+	DataSources      []string `json:"dataSources,omitempty" doc:"Limit only to data objects in specific data sources."`
+	TargetDataObject *string  `json:"targetDataObject,omitempty"`
 	// Optional ABAC rule to filter the what-list on. Only applicable when requesting data objects WHAT list without unpacking
 	AbacRule *string `json:"abacRule,omitempty" doc:"Optional ABAC rule to filter the what-list on. Only applicable when requesting data objects WHAT list without unpacking"`
 }
@@ -3628,6 +3630,9 @@ func (v *AccessWhatFilterInput) GetOwners() []string { return v.Owners }
 
 // GetHasTags returns AccessWhatFilterInput.HasTags, and is useful for accessing the field via an interface.
 func (v *AccessWhatFilterInput) GetHasTags() []TagFilter { return v.HasTags }
+
+// GetDataSources returns AccessWhatFilterInput.DataSources, and is useful for accessing the field via an interface.
+func (v *AccessWhatFilterInput) GetDataSources() []string { return v.DataSources }
 
 // GetTargetDataObject returns AccessWhatFilterInput.TargetDataObject, and is useful for accessing the field via an interface.
 func (v *AccessWhatFilterInput) GetTargetDataObject() *string { return v.TargetDataObject }
@@ -10633,9 +10638,8 @@ type DataSourceFilterInput struct {
 	// Only show data sources with a specific parent data source.
 	Parent *string `json:"parent,omitempty" doc:"Only show data sources with a specific parent data source."`
 	// List of user IDs to filter on who owns the data source.
-	Owners                []string              `json:"owners,omitempty" doc:"List of user IDs to filter on who owns the data source."`
-	IncompleteDataWarning *bool                 `json:"incompleteDataWarning,omitempty"`
-	SupportedFeatures     []*DataSourceFeatures `json:"supportedFeatures,omitempty"`
+	Owners            []string              `json:"owners,omitempty" doc:"List of user IDs to filter on who owns the data source."`
+	SupportedFeatures []*DataSourceFeatures `json:"supportedFeatures,omitempty"`
 	// If false, system data sources are excluded from the results. By default, system data sources are included.
 	IncludeSystem *bool `json:"includeSystem,omitempty" doc:"If false, system data sources are excluded from the results. By default, system data sources are included."`
 }
@@ -10651,9 +10655,6 @@ func (v *DataSourceFilterInput) GetParent() *string { return v.Parent }
 
 // GetOwners returns DataSourceFilterInput.Owners, and is useful for accessing the field via an interface.
 func (v *DataSourceFilterInput) GetOwners() []string { return v.Owners }
-
-// GetIncompleteDataWarning returns DataSourceFilterInput.IncompleteDataWarning, and is useful for accessing the field via an interface.
-func (v *DataSourceFilterInput) GetIncompleteDataWarning() *bool { return v.IncompleteDataWarning }
 
 // GetSupportedFeatures returns DataSourceFilterInput.SupportedFeatures, and is useful for accessing the field via an interface.
 func (v *DataSourceFilterInput) GetSupportedFeatures() []*DataSourceFeatures {
@@ -44640,8 +44641,10 @@ func (v *UsageMetaInputDetail) GetDataObjectTypes() []string { return v.DataObje
 //
 // Represents a data source in Collibra Data Access.
 type UsageMetadataDataSource struct {
+	// The oldest query start time in the retained query history of this data source, or null when none is retained. Bounded by usage retention, so this is the start of the window that can still be inspected rather than the first use ever recorded.
 	UsageFirstUsed *time.Time `json:"usageFirstUsed"`
-	UsageLastUsed  *time.Time `json:"usageLastUsed"`
+	// The most recent query start time in the retained query history of this data source, or null when none is retained.
+	UsageLastUsed *time.Time `json:"usageLastUsed"`
 }
 
 // GetUsageFirstUsed returns UsageMetadataDataSource.UsageFirstUsed, and is useful for accessing the field via an interface.
