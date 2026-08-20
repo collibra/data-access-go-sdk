@@ -4,7 +4,8 @@ import (
 	"encoding/json"
 	"iter"
 	"os"
-	"sort"
+	"slices"
+	"strings"
 	"testing"
 
 	sdk "github.com/collibra/data-access-go-sdk"
@@ -164,32 +165,45 @@ func (suite *DataSourceServiceTestSuite) TestDataSources() {
 	})
 
 	suite.Run("List Data Sources With Data Source List Search And With Data Source List Order", func() {
-		if createdDataSource == nil || parentDataSource == nil {
-			suite.T().Log("Skipping List Data Sources With Data Source List Search And With Data Source List Order as no data sources were created")
-			suite.T().SkipNow()
+		// A token unique to this run limits the search, and therefore the ordering assertion, to the data
+		// sources created here. Otherwise the assertion depends on whatever else lives in the environment,
+		// which is sorted by the server with a collation that does not match a plain Go string comparison.
+		searchToken := "SortTest" + strings.ReplaceAll(uuid.New().String(), "-", "")
+		// The names only differ in the first letter following the token, so any collation orders them equally.
+		namePrefix := "Test Data Source " + searchToken
+		names := []string{namePrefix + "Alpha", namePrefix + "Bravo", namePrefix + "Charlie"}
+
+		for _, name := range names {
+			description := name + " Description"
+			dataSource := createDataSource(&suite.Suite, dataSourceClient, &schema.DataSourceInput{
+				Name:        &name,
+				Description: &description,
+			})
+			suite.T().Cleanup(func() {
+				suite.NoErrorf(dataSourceClient.DeleteDataSource(ctx, dataSource.Id), "Failed to delete data source %q", name)
+			})
 		}
 
-		searchString := "Test"
 		listOrder := schema.SortDesc
 		listOrderInput := schema.DataSourceOrderByInput{
 			Name: &listOrder,
 		}
 
 		response := suite.dataSourceClient.ListDataSources(ctx,
-			services.WithDataSourceListSearch(&searchString),
+			services.WithDataSourceListSearch(&searchToken),
 			services.WithDataSourceListOrder(listOrderInput),
 		)
-		availableNames := make([]string, 0)
+		availableNames := make([]string, 0, len(names))
 
 		for ds, err := range response {
 			suite.Require().NoError(err, "Error while listing data sources with search and order")
-			suite.NotNil(ds, "Data source is nil")
+			suite.Require().NotNil(ds, "Data source is nil")
 			availableNames = append(availableNames, ds.Name)
 		}
 
-		suite.Contains(availableNames, createdDataSource.Name, "Created data source name not found in the list")
-		suite.Contains(availableNames, parentDataSource.Name, "Parent data source name not found in the list")
-		suite.True(sort.IsSorted(sort.Reverse(sort.StringSlice(availableNames))), "Data source names are not sorted in descending order")
+		expectedNames := slices.Clone(names)
+		slices.Reverse(expectedNames)
+		suite.Equal(expectedNames, availableNames, "Data sources are not filtered by search and sorted in descending order")
 	})
 
 	suite.Run("Update Data Source", func() {

@@ -169,25 +169,53 @@ func WithDataSourceListFilter(input *types.DataSourceFilterInput) func(options *
 }
 
 // WithDataSourceListSearch sets the search query of the returned DataSources in the ListDataSources call.
+// The search is a case-insensitive 'contains' and takes precedence over the search set through
+// WithDataSourceListFilter.
 func WithDataSourceListSearch(input *string) func(options *DataSourceListOptions) {
 	return func(options *DataSourceListOptions) {
 		options.search = input
 	}
 }
 
-// ListDataSources return a list of DataSources
-// The order of the list can be specified with WithDataSourceListOrder.
-// A filter can be specified with WithDataSourceListFilter.
-// A channel is returned that can be used to receive the list of DataSourceListItem.
-// To close the channel ensure to cancel the context.
-func (c *DataSourceClient) ListDataSources(ctx context.Context, ops ...func(*DataSourceListOptions)) iter.Seq2[*types.DataSource, error] { //nolint:dupl
+// newDataSourceListOptions applies the given options on top of the defaults.
+func newDataSourceListOptions(ops ...func(*DataSourceListOptions)) DataSourceListOptions {
 	options := DataSourceListOptions{}
 	for _, op := range ops {
 		op(&options)
 	}
 
+	return options
+}
+
+// listFilter returns the filter to send to the server, with the search option folded into it.
+// The filter provided through WithDataSourceListFilter is copied so it is not modified.
+func (o *DataSourceListOptions) listFilter() *types.DataSourceFilterInput {
+	if o.search == nil {
+		return o.filter
+	}
+
+	filter := types.DataSourceFilterInput{}
+	if o.filter != nil {
+		filter = *o.filter
+	}
+
+	filter.Search = o.search
+
+	return &filter
+}
+
+// ListDataSources return a list of DataSources
+// The order of the list can be specified with WithDataSourceListOrder.
+// A filter can be specified with WithDataSourceListFilter.
+// A search can be specified with WithDataSourceListSearch.
+// A channel is returned that can be used to receive the list of DataSourceListItem.
+// To close the channel ensure to cancel the context.
+func (c *DataSourceClient) ListDataSources(ctx context.Context, ops ...func(*DataSourceListOptions)) iter.Seq2[*types.DataSource, error] { //nolint:dupl
+	options := newDataSourceListOptions(ops...)
+	filter := options.listFilter()
+
 	loadPageFn := func(ctx context.Context, cursor *string) (*types.PageInfo, []types.DataSourceConnectionEdgesDataSourceEdge, error) {
-		output, err := schema.ListDataSources(ctx, c.client, cursor, new(internal.MaxPageSize), options.filter, options.order)
+		output, err := schema.ListDataSources(ctx, c.client, cursor, new(internal.MaxPageSize), filter, options.order)
 		if err != nil {
 			return nil, nil, types.NewErrClient(err)
 		}
