@@ -1116,8 +1116,10 @@ type AccessControlFilterInput struct {
 	// Only return the access controls that have the given data object in its WHAT list.
 	DataObjectInWhat *string `json:"dataObjectInWhat,omitempty" doc:"Only return the access controls that have the given data object in its WHAT list."`
 	// Only return the access controls that have the give access control as an incoming WHO list.
-	AccessControlInWhat  *string `json:"accessControlInWhat,omitempty" doc:"Only return the access controls that have the give access control as an incoming WHO list."`
-	IsRoleAssignableOnly bool    `json:"isRoleAssignableOnly"`
+	AccessControlInWhat *string `json:"accessControlInWhat,omitempty" doc:"Only return the access controls that have the give access control as an incoming WHO list."`
+	// Only return the access controls linked to any of the given Collibra asset IDs.
+	AssetIds             []string `json:"assetIds,omitempty" doc:"Only return the access controls linked to any of the given Collibra asset IDs."`
+	IsRoleAssignableOnly bool     `json:"isRoleAssignableOnly"`
 }
 
 // GetActions returns AccessControlFilterInput.Actions, and is useful for accessing the field via an interface.
@@ -1173,6 +1175,9 @@ func (v *AccessControlFilterInput) GetDataObjectInWhat() *string { return v.Data
 
 // GetAccessControlInWhat returns AccessControlFilterInput.AccessControlInWhat, and is useful for accessing the field via an interface.
 func (v *AccessControlFilterInput) GetAccessControlInWhat() *string { return v.AccessControlInWhat }
+
+// GetAssetIds returns AccessControlFilterInput.AssetIds, and is useful for accessing the field via an interface.
+func (v *AccessControlFilterInput) GetAssetIds() []string { return v.AssetIds }
 
 // GetIsRoleAssignableOnly returns AccessControlFilterInput.IsRoleAssignableOnly, and is useful for accessing the field via an interface.
 func (v *AccessControlFilterInput) GetIsRoleAssignableOnly() bool { return v.IsRoleAssignableOnly }
