@@ -1309,16 +1309,24 @@ type AccessControlInput struct {
 	State *AccessControlState `json:"state,omitempty" doc:"State of the access control."`
 	// Source defines the source of the access control, if managed by third party tool.
 	Source *string `json:"source,omitempty" doc:"Source defines the source of the access control, if managed by third party tool."`
-	// The list of ABAC rules for calculating the WHO items dynamically.
-	WhoAbacRules []*WhoAbacRuleInput `json:"whoAbacRules,omitempty" doc:"The list of ABAC rules for calculating the WHO items dynamically."`
+	// The list of ABAC rules for calculating the WHO items dynamically. Cannot be used together with whoAbacRulesToAdd or whoAbacRulesToRemove.
+	WhoAbacRules []*WhoAbacRuleInput `json:"whoAbacRules,omitempty" doc:"The list of ABAC rules for calculating the WHO items dynamically. Cannot be used together with whoAbacRulesToAdd or whoAbacRulesToRemove."`
+	// The list of WHO ABAC rules to add to this access control (diff-based update). When the id of an existing WHO ABAC rule is given, that rule is updated in place. Cannot be used together with whoAbacRules.
+	WhoAbacRulesToAdd []WhoAbacRuleInput `json:"whoAbacRulesToAdd,omitempty" doc:"The list of WHO ABAC rules to add to this access control (diff-based update). When the id of an existing WHO ABAC rule is given, that rule is updated in place. Cannot be used together with whoAbacRules."`
+	// The list of WHO ABAC rule ids to remove from this access control (diff-based update). Cannot be used together with whoAbacRules.
+	WhoAbacRulesToRemove []string `json:"whoAbacRulesToRemove,omitempty" doc:"The list of WHO ABAC rule ids to remove from this access control (diff-based update). Cannot be used together with whoAbacRules."`
 	// The list of static WHO items for this access control. Cannot be used together with whoItemsToAdd or whoItemsToRemove.
 	WhoItems []WhoItemInput `json:"whoItems,omitempty" doc:"The list of static WHO items for this access control. Cannot be used together with whoItemsToAdd or whoItemsToRemove."`
 	// The list of static WHO items to add to this access control (diff-based update). Cannot be used together with whoItems.
 	WhoItemsToAdd []WhoItemInput `json:"whoItemsToAdd,omitempty" doc:"The list of static WHO items to add to this access control (diff-based update). Cannot be used together with whoItems."`
 	// The list of static WHO items to remove from this access control (diff-based update). Cannot be used together with whoItems.
 	WhoItemsToRemove []WhoItemRemoveInput `json:"whoItemsToRemove,omitempty" doc:"The list of static WHO items to remove from this access control (diff-based update). Cannot be used together with whoItems."`
-	// The list of ABAC rules for calculating the WHAT items dynamically.
-	WhatAbacRules []*WhatAbacRuleInput `json:"whatAbacRules,omitempty" doc:"The list of ABAC rules for calculating the WHAT items dynamically."`
+	// The list of ABAC rules for calculating the WHAT items dynamically. Cannot be used together with whatAbacRulesToAdd or whatAbacRulesToRemove.
+	WhatAbacRules []*WhatAbacRuleInput `json:"whatAbacRules,omitempty" doc:"The list of ABAC rules for calculating the WHAT items dynamically. Cannot be used together with whatAbacRulesToAdd or whatAbacRulesToRemove."`
+	// The list of WHAT ABAC rules to add to this access control (diff-based update). When the id of an existing WHAT ABAC rule is given, that rule is updated in place. Cannot be used together with whatAbacRules.
+	WhatAbacRulesToAdd []WhatAbacRuleInput `json:"whatAbacRulesToAdd,omitempty" doc:"The list of WHAT ABAC rules to add to this access control (diff-based update). When the id of an existing WHAT ABAC rule is given, that rule is updated in place. Cannot be used together with whatAbacRules."`
+	// The list of WHAT ABAC rule ids to remove from this access control (diff-based update). Cannot be used together with whatAbacRules.
+	WhatAbacRulesToRemove []string `json:"whatAbacRulesToRemove,omitempty" doc:"The list of WHAT ABAC rule ids to remove from this access control (diff-based update). Cannot be used together with whatAbacRules."`
 	// The list of static WHAT data object items for this access control. Cannot be used together with whatDataObjectsToAdd or whatDataObjectsToRemove.
 	WhatDataObjects []AccessControlWhatInputDO `json:"whatDataObjects,omitempty" doc:"The list of static WHAT data object items for this access control. Cannot be used together with whatDataObjectsToAdd or whatDataObjectsToRemove."`
 	// The list of static WHAT access controls for this access control. Cannot be used together with whatAccessControlsToAdd or whatAccessControlsToRemove.
@@ -1335,9 +1343,13 @@ type AccessControlInput struct {
 	PolicyRule *string `json:"policyRule,omitempty" doc:"The policy rule as a string. This is used only for certain cases, like imported row-level filters and column masks or for row-level filters that are implemented like this."`
 	// For access controls with `action=Filter`, this contains the boolean expression determining the filter criteria.
 	FilterCriteria *DataComparisonExpressionInput `json:"filterCriteria,omitempty" doc:"For access controls with 'action=Filter', this contains the boolean expression determining the filter criteria."`
-	// The data sources that this access control will get deployed to.
-	DataSources            []AccessControlDataSourceInput `json:"dataSources,omitempty" doc:"The data sources that this access control will get deployed to."`
-	CommonWhatDataObjectId *string                        `json:"commonWhatDataObjectId,omitempty"`
+	// The data sources that this access control will get deployed to. Cannot be used together with dataSourcesToAdd or dataSourcesToRemove.
+	DataSources []AccessControlDataSourceInput `json:"dataSources,omitempty" doc:"The data sources that this access control will get deployed to. Cannot be used together with dataSourcesToAdd or dataSourcesToRemove."`
+	// The list of data sources to add to this access control (diff-based update). Cannot be used together with dataSources.
+	DataSourcesToAdd []AccessControlDataSourceInput `json:"dataSourcesToAdd,omitempty" doc:"The list of data sources to add to this access control (diff-based update). Cannot be used together with dataSources."`
+	// The list of data source IDs to remove from this access control (diff-based update). Cannot be used together with dataSources. Removing a data source also removes the WHAT data objects and WHAT access controls that reside on that data source.
+	DataSourcesToRemove    []string `json:"dataSourcesToRemove,omitempty" doc:"The list of data source IDs to remove from this access control (diff-based update). Cannot be used together with dataSources. Removing a data source also removes the WHAT data objects and WHAT access controls that reside on that data source."`
+	CommonWhatDataObjectId *string  `json:"commonWhatDataObjectId,omitempty"`
 	// The locks that should apply to this access control.
 	Locks []AccessControlLockDataInput `json:"locks,omitempty" doc:"The locks that should apply to this access control."`
 	// Indicates whether the access control is managed externally (in the Data Source) or internally (in the Collibra Data Access application).
@@ -1372,6 +1384,12 @@ func (v *AccessControlInput) GetSource() *string { return v.Source }
 // GetWhoAbacRules returns AccessControlInput.WhoAbacRules, and is useful for accessing the field via an interface.
 func (v *AccessControlInput) GetWhoAbacRules() []*WhoAbacRuleInput { return v.WhoAbacRules }
 
+// GetWhoAbacRulesToAdd returns AccessControlInput.WhoAbacRulesToAdd, and is useful for accessing the field via an interface.
+func (v *AccessControlInput) GetWhoAbacRulesToAdd() []WhoAbacRuleInput { return v.WhoAbacRulesToAdd }
+
+// GetWhoAbacRulesToRemove returns AccessControlInput.WhoAbacRulesToRemove, and is useful for accessing the field via an interface.
+func (v *AccessControlInput) GetWhoAbacRulesToRemove() []string { return v.WhoAbacRulesToRemove }
+
 // GetWhoItems returns AccessControlInput.WhoItems, and is useful for accessing the field via an interface.
 func (v *AccessControlInput) GetWhoItems() []WhoItemInput { return v.WhoItems }
 
@@ -1383,6 +1401,12 @@ func (v *AccessControlInput) GetWhoItemsToRemove() []WhoItemRemoveInput { return
 
 // GetWhatAbacRules returns AccessControlInput.WhatAbacRules, and is useful for accessing the field via an interface.
 func (v *AccessControlInput) GetWhatAbacRules() []*WhatAbacRuleInput { return v.WhatAbacRules }
+
+// GetWhatAbacRulesToAdd returns AccessControlInput.WhatAbacRulesToAdd, and is useful for accessing the field via an interface.
+func (v *AccessControlInput) GetWhatAbacRulesToAdd() []WhatAbacRuleInput { return v.WhatAbacRulesToAdd }
+
+// GetWhatAbacRulesToRemove returns AccessControlInput.WhatAbacRulesToRemove, and is useful for accessing the field via an interface.
+func (v *AccessControlInput) GetWhatAbacRulesToRemove() []string { return v.WhatAbacRulesToRemove }
 
 // GetWhatDataObjects returns AccessControlInput.WhatDataObjects, and is useful for accessing the field via an interface.
 func (v *AccessControlInput) GetWhatDataObjects() []AccessControlWhatInputDO {
@@ -1424,6 +1448,14 @@ func (v *AccessControlInput) GetFilterCriteria() *DataComparisonExpressionInput 
 
 // GetDataSources returns AccessControlInput.DataSources, and is useful for accessing the field via an interface.
 func (v *AccessControlInput) GetDataSources() []AccessControlDataSourceInput { return v.DataSources }
+
+// GetDataSourcesToAdd returns AccessControlInput.DataSourcesToAdd, and is useful for accessing the field via an interface.
+func (v *AccessControlInput) GetDataSourcesToAdd() []AccessControlDataSourceInput {
+	return v.DataSourcesToAdd
+}
+
+// GetDataSourcesToRemove returns AccessControlInput.DataSourcesToRemove, and is useful for accessing the field via an interface.
+func (v *AccessControlInput) GetDataSourcesToRemove() []string { return v.DataSourcesToRemove }
 
 // GetCommonWhatDataObjectId returns AccessControlInput.CommonWhatDataObjectId, and is useful for accessing the field via an interface.
 func (v *AccessControlInput) GetCommonWhatDataObjectId() *string { return v.CommonWhatDataObjectId }
@@ -2063,6 +2095,8 @@ type AccessControlWhatAccessControlFilterInput struct {
 	Owners     []string              `json:"owners,omitempty"`
 	HasTags    []TagFilter           `json:"hasTags,omitempty"`
 	Search     *string               `json:"search,omitempty"`
+	// Limit only to access controls linked to any of the given data sources.
+	DataSources []string `json:"dataSources,omitempty" doc:"Limit only to access controls linked to any of the given data sources."`
 	// Narrow the list to inverse WHO links provisioned by a specific source. Pass `Internal` to return only Raito-managed inheritance, or `Scim` for SCIM-provisioned links.
 	WhoSource *AccessWhoSource `json:"whoSource,omitempty" doc:"Narrow the list to inverse WHO links provisioned by a specific source. Pass 'Internal' to return only Raito-managed inheritance, or 'Scim' for SCIM-provisioned links."`
 }
@@ -2083,6 +2117,9 @@ func (v *AccessControlWhatAccessControlFilterInput) GetHasTags() []TagFilter { r
 
 // GetSearch returns AccessControlWhatAccessControlFilterInput.Search, and is useful for accessing the field via an interface.
 func (v *AccessControlWhatAccessControlFilterInput) GetSearch() *string { return v.Search }
+
+// GetDataSources returns AccessControlWhatAccessControlFilterInput.DataSources, and is useful for accessing the field via an interface.
+func (v *AccessControlWhatAccessControlFilterInput) GetDataSources() []string { return v.DataSources }
 
 // GetWhoSource returns AccessControlWhatAccessControlFilterInput.WhoSource, and is useful for accessing the field via an interface.
 func (v *AccessControlWhatAccessControlFilterInput) GetWhoSource() *AccessWhoSource {
