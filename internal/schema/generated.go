@@ -1102,9 +1102,11 @@ type AccessControlFilterInput struct {
 	// Only return access controls where the inheritance (= linking to other access controls) is editable.
 	CanEditInheritance *bool `json:"canEditInheritance,omitempty" doc:"Only return access controls where the inheritance (= linking to other access controls) is editable."`
 	// Only return access controls where the WHAT is editable.
-	CanEditWhat *bool          `json:"canEditWhat,omitempty" doc:"Only return access controls where the WHAT is editable."`
-	CanLinkFrom *CanLinkFilter `json:"canLinkFrom,omitempty"`
-	CanLinkTo   *CanLinkFilter `json:"canLinkTo,omitempty"`
+	CanEditWhat *bool `json:"canEditWhat,omitempty" doc:"Only return access controls where the WHAT is editable."`
+	// Only return access controls that can receive access requests — either the WHO is directly editable, or the role is SCIM-linked to a controlling group that Data Access can manage.
+	CanReceiveAccessRequests *bool          `json:"canReceiveAccessRequests,omitempty" doc:"Only return access controls that can receive access requests — either the WHO is directly editable, or the role is SCIM-linked to a controlling group that Data Access can manage."`
+	CanLinkFrom              *CanLinkFilter `json:"canLinkFrom,omitempty"`
+	CanLinkTo                *CanLinkFilter `json:"canLinkTo,omitempty"`
 	// Exclude this explicit list of access controls.
 	Exclude []string `json:"exclude,omitempty" doc:"Exclude this explicit list of access controls."`
 	// The source of the access control
@@ -1151,6 +1153,11 @@ func (v *AccessControlFilterInput) GetCanEditInheritance() *bool { return v.CanE
 
 // GetCanEditWhat returns AccessControlFilterInput.CanEditWhat, and is useful for accessing the field via an interface.
 func (v *AccessControlFilterInput) GetCanEditWhat() *bool { return v.CanEditWhat }
+
+// GetCanReceiveAccessRequests returns AccessControlFilterInput.CanReceiveAccessRequests, and is useful for accessing the field via an interface.
+func (v *AccessControlFilterInput) GetCanReceiveAccessRequests() *bool {
+	return v.CanReceiveAccessRequests
+}
 
 // GetCanLinkFrom returns AccessControlFilterInput.CanLinkFrom, and is useful for accessing the field via an interface.
 func (v *AccessControlFilterInput) GetCanLinkFrom() *CanLinkFilter { return v.CanLinkFrom }
@@ -1623,11 +1630,14 @@ const (
 	AccessControlLockTypeImportexport AccessControlLockType = "ImportExport"
 	// The data can still be updated through the API, but not in the UI.
 	AccessControlLockTypeUseronly AccessControlLockType = "UserOnly"
+	// The lock was set by SCIM matching. It is cleared automatically once no SCIM WHO link references the access control anymore.
+	AccessControlLockTypeScim AccessControlLockType = "Scim"
 )
 
 var AllAccessControlLockType = []AccessControlLockType{
 	AccessControlLockTypeImportexport,
 	AccessControlLockTypeUseronly,
+	AccessControlLockTypeScim,
 }
 
 // AccessControlLocksAccessControlLockData includes the requested fields of the GraphQL type AccessControlLockData.
