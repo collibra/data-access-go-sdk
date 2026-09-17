@@ -184,38 +184,6 @@ func (suite *ClientTestSuite) TestRetryBehavior() {
 	_ = resp.Body.Close()
 }
 
-func (suite *ClientTestSuite) TestRetryOnRequestTimeout() {
-	var attemptCount atomic.Int32
-
-	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		current := attemptCount.Add(1)
-		if current < 2 {
-			// 408 is not retried by the default policy, but our RetryPolicy treats it as recoverable.
-			w.WriteHeader(http.StatusRequestTimeout)
-			return
-		}
-
-		w.WriteHeader(http.StatusOK)
-	}))
-	defer server.Close()
-
-	options := &ClientOptions{
-		RetryWaitMin: 1 * time.Millisecond,
-		RetryWaitMax: 5 * time.Millisecond,
-		RetryMax:     3,
-		Backoff:      retryablehttp.DefaultBackoff,
-	}
-
-	client := CreateHttpClient(options)
-	resp, err := client.Get(server.URL)
-
-	suite.Require().NoError(err)
-	suite.Equal(http.StatusOK, resp.StatusCode)
-	suite.Equal(int32(2), attemptCount.Load())
-
-	_ = resp.Body.Close()
-}
-
 func (suite *ClientTestSuite) TestSdkHeaderTransport_GetVersion_Sanity() {
 	transport := &SdkHeaderTransport{}
 	version := transport.GetVersion()

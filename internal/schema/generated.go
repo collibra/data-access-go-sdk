@@ -1093,16 +1093,20 @@ type AccessControlFilterInput struct {
 	External *bool `json:"external,omitempty" doc:"To filter on only internal or external access controls."`
 	// The search string to use (will do a case-insensitive 'contains').
 	Search *string `json:"search,omitempty" doc:"The search string to use (will do a case-insensitive 'contains')."`
-	// To filter access controls which are linked to a specific data source.
-	DataSource *string `json:"dataSource,omitempty" doc:"To filter access controls which are linked to a specific data source."`
+	// To filter access controls which are linked to a specific data source. Merged with `dataSources` when both are set.
+	DataSource *string `json:"dataSource,omitempty" doc:"To filter access controls which are linked to a specific data source. Merged with 'dataSources' when both are set."`
+	// To filter access controls which are linked to any of the given data sources. Merged with `dataSource` when both are set.
+	DataSources []string `json:"dataSources,omitempty" doc:"To filter access controls which are linked to any of the given data sources. Merged with 'dataSource' when both are set."`
 	// Only return access controls where the WHO is editable.
 	CanEditWho *bool `json:"canEditWho,omitempty" doc:"Only return access controls where the WHO is editable."`
 	// Only return access controls where the inheritance (= linking to other access controls) is editable.
 	CanEditInheritance *bool `json:"canEditInheritance,omitempty" doc:"Only return access controls where the inheritance (= linking to other access controls) is editable."`
 	// Only return access controls where the WHAT is editable.
-	CanEditWhat *bool          `json:"canEditWhat,omitempty" doc:"Only return access controls where the WHAT is editable."`
-	CanLinkFrom *CanLinkFilter `json:"canLinkFrom,omitempty"`
-	CanLinkTo   *CanLinkFilter `json:"canLinkTo,omitempty"`
+	CanEditWhat *bool `json:"canEditWhat,omitempty" doc:"Only return access controls where the WHAT is editable."`
+	// Only return access controls that can receive access requests — either the WHO is directly editable, or the role is SCIM-linked to a controlling group that Data Access can manage.
+	CanReceiveAccessRequests *bool          `json:"canReceiveAccessRequests,omitempty" doc:"Only return access controls that can receive access requests — either the WHO is directly editable, or the role is SCIM-linked to a controlling group that Data Access can manage."`
+	CanLinkFrom              *CanLinkFilter `json:"canLinkFrom,omitempty"`
+	CanLinkTo                *CanLinkFilter `json:"canLinkTo,omitempty"`
 	// Exclude this explicit list of access controls.
 	Exclude []string `json:"exclude,omitempty" doc:"Exclude this explicit list of access controls."`
 	// The source of the access control
@@ -1114,8 +1118,10 @@ type AccessControlFilterInput struct {
 	// Only return the access controls that have the given data object in its WHAT list.
 	DataObjectInWhat *string `json:"dataObjectInWhat,omitempty" doc:"Only return the access controls that have the given data object in its WHAT list."`
 	// Only return the access controls that have the give access control as an incoming WHO list.
-	AccessControlInWhat  *string `json:"accessControlInWhat,omitempty" doc:"Only return the access controls that have the give access control as an incoming WHO list."`
-	IsRoleAssignableOnly bool    `json:"isRoleAssignableOnly"`
+	AccessControlInWhat *string `json:"accessControlInWhat,omitempty" doc:"Only return the access controls that have the give access control as an incoming WHO list."`
+	// Only return the access controls linked to any of the given Collibra asset IDs.
+	AssetIds             []string `json:"assetIds,omitempty" doc:"Only return the access controls linked to any of the given Collibra asset IDs."`
+	IsRoleAssignableOnly bool     `json:"isRoleAssignableOnly"`
 }
 
 // GetActions returns AccessControlFilterInput.Actions, and is useful for accessing the field via an interface.
@@ -1136,6 +1142,9 @@ func (v *AccessControlFilterInput) GetSearch() *string { return v.Search }
 // GetDataSource returns AccessControlFilterInput.DataSource, and is useful for accessing the field via an interface.
 func (v *AccessControlFilterInput) GetDataSource() *string { return v.DataSource }
 
+// GetDataSources returns AccessControlFilterInput.DataSources, and is useful for accessing the field via an interface.
+func (v *AccessControlFilterInput) GetDataSources() []string { return v.DataSources }
+
 // GetCanEditWho returns AccessControlFilterInput.CanEditWho, and is useful for accessing the field via an interface.
 func (v *AccessControlFilterInput) GetCanEditWho() *bool { return v.CanEditWho }
 
@@ -1144,6 +1153,11 @@ func (v *AccessControlFilterInput) GetCanEditInheritance() *bool { return v.CanE
 
 // GetCanEditWhat returns AccessControlFilterInput.CanEditWhat, and is useful for accessing the field via an interface.
 func (v *AccessControlFilterInput) GetCanEditWhat() *bool { return v.CanEditWhat }
+
+// GetCanReceiveAccessRequests returns AccessControlFilterInput.CanReceiveAccessRequests, and is useful for accessing the field via an interface.
+func (v *AccessControlFilterInput) GetCanReceiveAccessRequests() *bool {
+	return v.CanReceiveAccessRequests
+}
 
 // GetCanLinkFrom returns AccessControlFilterInput.CanLinkFrom, and is useful for accessing the field via an interface.
 func (v *AccessControlFilterInput) GetCanLinkFrom() *CanLinkFilter { return v.CanLinkFrom }
@@ -1168,6 +1182,9 @@ func (v *AccessControlFilterInput) GetDataObjectInWhat() *string { return v.Data
 
 // GetAccessControlInWhat returns AccessControlFilterInput.AccessControlInWhat, and is useful for accessing the field via an interface.
 func (v *AccessControlFilterInput) GetAccessControlInWhat() *string { return v.AccessControlInWhat }
+
+// GetAssetIds returns AccessControlFilterInput.AssetIds, and is useful for accessing the field via an interface.
+func (v *AccessControlFilterInput) GetAssetIds() []string { return v.AssetIds }
 
 // GetIsRoleAssignableOnly returns AccessControlFilterInput.IsRoleAssignableOnly, and is useful for accessing the field via an interface.
 func (v *AccessControlFilterInput) GetIsRoleAssignableOnly() bool { return v.IsRoleAssignableOnly }
@@ -1299,16 +1316,24 @@ type AccessControlInput struct {
 	State *AccessControlState `json:"state,omitempty" doc:"State of the access control."`
 	// Source defines the source of the access control, if managed by third party tool.
 	Source *string `json:"source,omitempty" doc:"Source defines the source of the access control, if managed by third party tool."`
-	// The list of ABAC rules for calculating the WHO items dynamically.
-	WhoAbacRules []*WhoAbacRuleInput `json:"whoAbacRules,omitempty" doc:"The list of ABAC rules for calculating the WHO items dynamically."`
+	// The list of ABAC rules for calculating the WHO items dynamically. Cannot be used together with whoAbacRulesToAdd or whoAbacRulesToRemove.
+	WhoAbacRules []*WhoAbacRuleInput `json:"whoAbacRules,omitempty" doc:"The list of ABAC rules for calculating the WHO items dynamically. Cannot be used together with whoAbacRulesToAdd or whoAbacRulesToRemove."`
+	// The list of WHO ABAC rules to add to this access control (diff-based update). When the id of an existing WHO ABAC rule is given, that rule is updated in place. Cannot be used together with whoAbacRules.
+	WhoAbacRulesToAdd []WhoAbacRuleInput `json:"whoAbacRulesToAdd,omitempty" doc:"The list of WHO ABAC rules to add to this access control (diff-based update). When the id of an existing WHO ABAC rule is given, that rule is updated in place. Cannot be used together with whoAbacRules."`
+	// The list of WHO ABAC rule ids to remove from this access control (diff-based update). Cannot be used together with whoAbacRules.
+	WhoAbacRulesToRemove []string `json:"whoAbacRulesToRemove,omitempty" doc:"The list of WHO ABAC rule ids to remove from this access control (diff-based update). Cannot be used together with whoAbacRules."`
 	// The list of static WHO items for this access control. Cannot be used together with whoItemsToAdd or whoItemsToRemove.
 	WhoItems []WhoItemInput `json:"whoItems,omitempty" doc:"The list of static WHO items for this access control. Cannot be used together with whoItemsToAdd or whoItemsToRemove."`
 	// The list of static WHO items to add to this access control (diff-based update). Cannot be used together with whoItems.
 	WhoItemsToAdd []WhoItemInput `json:"whoItemsToAdd,omitempty" doc:"The list of static WHO items to add to this access control (diff-based update). Cannot be used together with whoItems."`
 	// The list of static WHO items to remove from this access control (diff-based update). Cannot be used together with whoItems.
 	WhoItemsToRemove []WhoItemRemoveInput `json:"whoItemsToRemove,omitempty" doc:"The list of static WHO items to remove from this access control (diff-based update). Cannot be used together with whoItems."`
-	// The list of ABAC rules for calculating the WHAT items dynamically.
-	WhatAbacRules []*WhatAbacRuleInput `json:"whatAbacRules,omitempty" doc:"The list of ABAC rules for calculating the WHAT items dynamically."`
+	// The list of ABAC rules for calculating the WHAT items dynamically. Cannot be used together with whatAbacRulesToAdd or whatAbacRulesToRemove.
+	WhatAbacRules []*WhatAbacRuleInput `json:"whatAbacRules,omitempty" doc:"The list of ABAC rules for calculating the WHAT items dynamically. Cannot be used together with whatAbacRulesToAdd or whatAbacRulesToRemove."`
+	// The list of WHAT ABAC rules to add to this access control (diff-based update). When the id of an existing WHAT ABAC rule is given, that rule is updated in place. Cannot be used together with whatAbacRules.
+	WhatAbacRulesToAdd []WhatAbacRuleInput `json:"whatAbacRulesToAdd,omitempty" doc:"The list of WHAT ABAC rules to add to this access control (diff-based update). When the id of an existing WHAT ABAC rule is given, that rule is updated in place. Cannot be used together with whatAbacRules."`
+	// The list of WHAT ABAC rule ids to remove from this access control (diff-based update). Cannot be used together with whatAbacRules.
+	WhatAbacRulesToRemove []string `json:"whatAbacRulesToRemove,omitempty" doc:"The list of WHAT ABAC rule ids to remove from this access control (diff-based update). Cannot be used together with whatAbacRules."`
 	// The list of static WHAT data object items for this access control. Cannot be used together with whatDataObjectsToAdd or whatDataObjectsToRemove.
 	WhatDataObjects []AccessControlWhatInputDO `json:"whatDataObjects,omitempty" doc:"The list of static WHAT data object items for this access control. Cannot be used together with whatDataObjectsToAdd or whatDataObjectsToRemove."`
 	// The list of static WHAT access controls for this access control. Cannot be used together with whatAccessControlsToAdd or whatAccessControlsToRemove.
@@ -1325,15 +1350,21 @@ type AccessControlInput struct {
 	PolicyRule *string `json:"policyRule,omitempty" doc:"The policy rule as a string. This is used only for certain cases, like imported row-level filters and column masks or for row-level filters that are implemented like this."`
 	// For access controls with `action=Filter`, this contains the boolean expression determining the filter criteria.
 	FilterCriteria *DataComparisonExpressionInput `json:"filterCriteria,omitempty" doc:"For access controls with 'action=Filter', this contains the boolean expression determining the filter criteria."`
-	// The data sources that this access control will get deployed to.
-	DataSources            []AccessControlDataSourceInput `json:"dataSources,omitempty" doc:"The data sources that this access control will get deployed to."`
-	CommonWhatDataObjectId *string                        `json:"commonWhatDataObjectId,omitempty"`
+	// The data sources that this access control will get deployed to. Cannot be used together with dataSourcesToAdd or dataSourcesToRemove.
+	DataSources []AccessControlDataSourceInput `json:"dataSources,omitempty" doc:"The data sources that this access control will get deployed to. Cannot be used together with dataSourcesToAdd or dataSourcesToRemove."`
+	// The list of data sources to add to this access control (diff-based update). Cannot be used together with dataSources.
+	DataSourcesToAdd []AccessControlDataSourceInput `json:"dataSourcesToAdd,omitempty" doc:"The list of data sources to add to this access control (diff-based update). Cannot be used together with dataSources."`
+	// The list of data source IDs to remove from this access control (diff-based update). Cannot be used together with dataSources. Removing a data source also removes the WHAT data objects and WHAT access controls that reside on that data source.
+	DataSourcesToRemove    []string `json:"dataSourcesToRemove,omitempty" doc:"The list of data source IDs to remove from this access control (diff-based update). Cannot be used together with dataSources. Removing a data source also removes the WHAT data objects and WHAT access controls that reside on that data source."`
+	CommonWhatDataObjectId *string  `json:"commonWhatDataObjectId,omitempty"`
 	// The locks that should apply to this access control.
 	Locks []AccessControlLockDataInput `json:"locks,omitempty" doc:"The locks that should apply to this access control."`
 	// Indicates whether the access control is managed externally (in the Data Source) or internally (in the Collibra Data Access application).
 	External *bool `json:"external,omitempty" doc:"Indicates whether the access control is managed externally (in the Data Source) or internally (in the Collibra Data Access application)."`
 	// Marks this access control as volatile. Cannot be set on Mask or Filter actions.
 	Volatile *bool `json:"volatile,omitempty" doc:"Marks this access control as volatile. Cannot be set on Mask or Filter actions."`
+	// When provided on creation, a role asset link to this Collibra asset is created atomically together with the access control. Only valid for Roles (action=Grant).
+	LinkedAssetId *string `json:"linkedAssetId,omitempty" doc:"When provided on creation, a role asset link to this Collibra asset is created atomically together with the access control. Only valid for Roles (action=Grant)."`
 }
 
 // GetName returns AccessControlInput.Name, and is useful for accessing the field via an interface.
@@ -1360,6 +1391,12 @@ func (v *AccessControlInput) GetSource() *string { return v.Source }
 // GetWhoAbacRules returns AccessControlInput.WhoAbacRules, and is useful for accessing the field via an interface.
 func (v *AccessControlInput) GetWhoAbacRules() []*WhoAbacRuleInput { return v.WhoAbacRules }
 
+// GetWhoAbacRulesToAdd returns AccessControlInput.WhoAbacRulesToAdd, and is useful for accessing the field via an interface.
+func (v *AccessControlInput) GetWhoAbacRulesToAdd() []WhoAbacRuleInput { return v.WhoAbacRulesToAdd }
+
+// GetWhoAbacRulesToRemove returns AccessControlInput.WhoAbacRulesToRemove, and is useful for accessing the field via an interface.
+func (v *AccessControlInput) GetWhoAbacRulesToRemove() []string { return v.WhoAbacRulesToRemove }
+
 // GetWhoItems returns AccessControlInput.WhoItems, and is useful for accessing the field via an interface.
 func (v *AccessControlInput) GetWhoItems() []WhoItemInput { return v.WhoItems }
 
@@ -1371,6 +1408,12 @@ func (v *AccessControlInput) GetWhoItemsToRemove() []WhoItemRemoveInput { return
 
 // GetWhatAbacRules returns AccessControlInput.WhatAbacRules, and is useful for accessing the field via an interface.
 func (v *AccessControlInput) GetWhatAbacRules() []*WhatAbacRuleInput { return v.WhatAbacRules }
+
+// GetWhatAbacRulesToAdd returns AccessControlInput.WhatAbacRulesToAdd, and is useful for accessing the field via an interface.
+func (v *AccessControlInput) GetWhatAbacRulesToAdd() []WhatAbacRuleInput { return v.WhatAbacRulesToAdd }
+
+// GetWhatAbacRulesToRemove returns AccessControlInput.WhatAbacRulesToRemove, and is useful for accessing the field via an interface.
+func (v *AccessControlInput) GetWhatAbacRulesToRemove() []string { return v.WhatAbacRulesToRemove }
 
 // GetWhatDataObjects returns AccessControlInput.WhatDataObjects, and is useful for accessing the field via an interface.
 func (v *AccessControlInput) GetWhatDataObjects() []AccessControlWhatInputDO {
@@ -1413,6 +1456,14 @@ func (v *AccessControlInput) GetFilterCriteria() *DataComparisonExpressionInput 
 // GetDataSources returns AccessControlInput.DataSources, and is useful for accessing the field via an interface.
 func (v *AccessControlInput) GetDataSources() []AccessControlDataSourceInput { return v.DataSources }
 
+// GetDataSourcesToAdd returns AccessControlInput.DataSourcesToAdd, and is useful for accessing the field via an interface.
+func (v *AccessControlInput) GetDataSourcesToAdd() []AccessControlDataSourceInput {
+	return v.DataSourcesToAdd
+}
+
+// GetDataSourcesToRemove returns AccessControlInput.DataSourcesToRemove, and is useful for accessing the field via an interface.
+func (v *AccessControlInput) GetDataSourcesToRemove() []string { return v.DataSourcesToRemove }
+
 // GetCommonWhatDataObjectId returns AccessControlInput.CommonWhatDataObjectId, and is useful for accessing the field via an interface.
 func (v *AccessControlInput) GetCommonWhatDataObjectId() *string { return v.CommonWhatDataObjectId }
 
@@ -1424,6 +1475,9 @@ func (v *AccessControlInput) GetExternal() *bool { return v.External }
 
 // GetVolatile returns AccessControlInput.Volatile, and is useful for accessing the field via an interface.
 func (v *AccessControlInput) GetVolatile() *bool { return v.Volatile }
+
+// GetLinkedAssetId returns AccessControlInput.LinkedAssetId, and is useful for accessing the field via an interface.
+func (v *AccessControlInput) GetLinkedAssetId() *string { return v.LinkedAssetId }
 
 // The parts that can possibly be locked on an access control.
 type AccessControlLock string
@@ -1576,11 +1630,14 @@ const (
 	AccessControlLockTypeImportexport AccessControlLockType = "ImportExport"
 	// The data can still be updated through the API, but not in the UI.
 	AccessControlLockTypeUseronly AccessControlLockType = "UserOnly"
+	// The lock was set by SCIM matching. It is cleared automatically once no SCIM WHO link references the access control anymore.
+	AccessControlLockTypeScim AccessControlLockType = "Scim"
 )
 
 var AllAccessControlLockType = []AccessControlLockType{
 	AccessControlLockTypeImportexport,
 	AccessControlLockTypeUseronly,
+	AccessControlLockTypeScim,
 }
 
 // AccessControlLocksAccessControlLockData includes the requested fields of the GraphQL type AccessControlLockData.
@@ -1692,6 +1749,125 @@ var AllAccessControlState = []AccessControlState{
 	AccessControlStateActive,
 	AccessControlStateInactive,
 	AccessControlStateDeleted,
+}
+
+// AccessControlSummary includes the GraphQL fields of AccessControl requested by the fragment AccessControlSummary.
+// The GraphQL type's documentation follows.
+//
+// Represents an access control object in the system. An access control is the abstract model representing grants, masks, filters and groups (determined by the `action` field).
+type AccessControlSummary struct {
+	// Unique identifier of the access control.
+	Id string `json:"id"`
+	// Name of the access control.
+	Name string `json:"name"`
+	// Action of the access control to determine if it is a grant, mask, filter or group.
+	Action AccessControlAction `json:"action"`
+	// State of the access control.
+	State AccessControlState `json:"state"`
+	// In case the access control is a grant (action), this contains the grant category (determining the behavior of the grant).
+	Category *AccessControlSummaryCategoryGrantCategory `json:"category"`
+}
+
+// GetId returns AccessControlSummary.Id, and is useful for accessing the field via an interface.
+func (v *AccessControlSummary) GetId() string { return v.Id }
+
+// GetName returns AccessControlSummary.Name, and is useful for accessing the field via an interface.
+func (v *AccessControlSummary) GetName() string { return v.Name }
+
+// GetAction returns AccessControlSummary.Action, and is useful for accessing the field via an interface.
+func (v *AccessControlSummary) GetAction() AccessControlAction { return v.Action }
+
+// GetState returns AccessControlSummary.State, and is useful for accessing the field via an interface.
+func (v *AccessControlSummary) GetState() AccessControlState { return v.State }
+
+// GetCategory returns AccessControlSummary.Category, and is useful for accessing the field via an interface.
+func (v *AccessControlSummary) GetCategory() *AccessControlSummaryCategoryGrantCategory {
+	return v.Category
+}
+
+// AccessControlSummaryCategoryGrantCategory includes the requested fields of the GraphQL type GrantCategory.
+// The GraphQL type's documentation follows.
+//
+// Represent a grant category. Grant categories are used to categorize access controls with `action=Grant` to allow structuring them better.
+type AccessControlSummaryCategoryGrantCategory struct {
+	GrantCategory `json:"-"`
+}
+
+// GetId returns AccessControlSummaryCategoryGrantCategory.Id, and is useful for accessing the field via an interface.
+func (v *AccessControlSummaryCategoryGrantCategory) GetId() string { return v.GrantCategory.Id }
+
+// GetName returns AccessControlSummaryCategoryGrantCategory.Name, and is useful for accessing the field via an interface.
+func (v *AccessControlSummaryCategoryGrantCategory) GetName() string { return v.GrantCategory.Name }
+
+// GetNamePlural returns AccessControlSummaryCategoryGrantCategory.NamePlural, and is useful for accessing the field via an interface.
+func (v *AccessControlSummaryCategoryGrantCategory) GetNamePlural() string {
+	return v.GrantCategory.NamePlural
+}
+
+// GetIsSystem returns AccessControlSummaryCategoryGrantCategory.IsSystem, and is useful for accessing the field via an interface.
+func (v *AccessControlSummaryCategoryGrantCategory) GetIsSystem() bool {
+	return v.GrantCategory.IsSystem
+}
+
+// GetIsDefault returns AccessControlSummaryCategoryGrantCategory.IsDefault, and is useful for accessing the field via an interface.
+func (v *AccessControlSummaryCategoryGrantCategory) GetIsDefault() bool {
+	return v.GrantCategory.IsDefault
+}
+
+func (v *AccessControlSummaryCategoryGrantCategory) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*AccessControlSummaryCategoryGrantCategory
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.AccessControlSummaryCategoryGrantCategory = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.GrantCategory)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalAccessControlSummaryCategoryGrantCategory struct {
+	Id string `json:"id"`
+
+	Name string `json:"name"`
+
+	NamePlural string `json:"namePlural"`
+
+	IsSystem bool `json:"isSystem"`
+
+	IsDefault bool `json:"isDefault"`
+}
+
+func (v *AccessControlSummaryCategoryGrantCategory) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *AccessControlSummaryCategoryGrantCategory) __premarshalJSON() (*__premarshalAccessControlSummaryCategoryGrantCategory, error) {
+	var retval __premarshalAccessControlSummaryCategoryGrantCategory
+
+	retval.Id = v.GrantCategory.Id
+	retval.Name = v.GrantCategory.Name
+	retval.NamePlural = v.GrantCategory.NamePlural
+	retval.IsSystem = v.GrantCategory.IsSystem
+	retval.IsDefault = v.GrantCategory.IsDefault
+	return &retval, nil
 }
 
 // AccessControlSyncData includes the requested fields of the GraphQL type SyncData.
@@ -1929,6 +2105,8 @@ type AccessControlWhatAccessControlFilterInput struct {
 	Owners     []string              `json:"owners,omitempty"`
 	HasTags    []TagFilter           `json:"hasTags,omitempty"`
 	Search     *string               `json:"search,omitempty"`
+	// Limit only to access controls linked to any of the given data sources.
+	DataSources []string `json:"dataSources,omitempty" doc:"Limit only to access controls linked to any of the given data sources."`
 	// Narrow the list to inverse WHO links provisioned by a specific source. Pass `Internal` to return only Raito-managed inheritance, or `Scim` for SCIM-provisioned links.
 	WhoSource *AccessWhoSource `json:"whoSource,omitempty" doc:"Narrow the list to inverse WHO links provisioned by a specific source. Pass 'Internal' to return only Raito-managed inheritance, or 'Scim' for SCIM-provisioned links."`
 }
@@ -1949,6 +2127,9 @@ func (v *AccessControlWhatAccessControlFilterInput) GetHasTags() []TagFilter { r
 
 // GetSearch returns AccessControlWhatAccessControlFilterInput.Search, and is useful for accessing the field via an interface.
 func (v *AccessControlWhatAccessControlFilterInput) GetSearch() *string { return v.Search }
+
+// GetDataSources returns AccessControlWhatAccessControlFilterInput.DataSources, and is useful for accessing the field via an interface.
+func (v *AccessControlWhatAccessControlFilterInput) GetDataSources() []string { return v.DataSources }
 
 // GetWhoSource returns AccessControlWhatAccessControlFilterInput.WhoSource, and is useful for accessing the field via an interface.
 func (v *AccessControlWhatAccessControlFilterInput) GetWhoSource() *AccessWhoSource {
@@ -2161,6 +2342,40 @@ type AccessControlWhoOrderByInput struct {
 
 // GetName returns AccessControlWhoOrderByInput.Name, and is useful for accessing the field via an interface.
 func (v *AccessControlWhoOrderByInput) GetName() *Sort { return v.Name }
+
+// For filtering access elements. When using multiple filter options, all these options need to apply to return the item.
+type AccessFilterInput struct {
+	// The actions the access controls should have.
+	Actions []AccessControlAction `json:"actions,omitempty" doc:"The actions the access controls should have."`
+	// The grant categories the access control should be in.
+	Categories []string `json:"categories,omitempty" doc:"The grant categories the access control should be in."`
+	// The states the access controls should be in.
+	States []AccessControlState `json:"states,omitempty" doc:"The states the access controls should be in."`
+	// The search string to use (will do a case-insensitive 'contains').
+	Search *string `json:"search,omitempty" doc:"The search string to use (will do a case-insensitive 'contains')."`
+	// The access control must have any of the given owners (by user ID).
+	Owners []string `json:"owners,omitempty" doc:"The access control must have any of the given owners (by user ID)."`
+	// Filter by which tags the access control needs to have.
+	HasTags []TagFilter `json:"hasTags,omitempty" doc:"Filter by which tags the access control needs to have."`
+}
+
+// GetActions returns AccessFilterInput.Actions, and is useful for accessing the field via an interface.
+func (v *AccessFilterInput) GetActions() []AccessControlAction { return v.Actions }
+
+// GetCategories returns AccessFilterInput.Categories, and is useful for accessing the field via an interface.
+func (v *AccessFilterInput) GetCategories() []string { return v.Categories }
+
+// GetStates returns AccessFilterInput.States, and is useful for accessing the field via an interface.
+func (v *AccessFilterInput) GetStates() []AccessControlState { return v.States }
+
+// GetSearch returns AccessFilterInput.Search, and is useful for accessing the field via an interface.
+func (v *AccessFilterInput) GetSearch() *string { return v.Search }
+
+// GetOwners returns AccessFilterInput.Owners, and is useful for accessing the field via an interface.
+func (v *AccessFilterInput) GetOwners() []string { return v.Owners }
+
+// GetHasTags returns AccessFilterInput.HasTags, and is useful for accessing the field via an interface.
+func (v *AccessFilterInput) GetHasTags() []TagFilter { return v.HasTags }
 
 // AccessRequest includes the GraphQL fields of AccessRequest requested by the fragment AccessRequest.
 // The GraphQL type's documentation follows.
@@ -3448,8 +3663,10 @@ type AccessWhatFilterInput struct {
 	// List of user IDs to filter on who owns the WHAT items.
 	Owners []string `json:"owners,omitempty" doc:"List of user IDs to filter on who owns the WHAT items."`
 	// Filter by which tags the WHAT item needs to have.
-	HasTags          []TagFilter `json:"hasTags,omitempty" doc:"Filter by which tags the WHAT item needs to have."`
-	TargetDataObject *string     `json:"targetDataObject,omitempty"`
+	HasTags []TagFilter `json:"hasTags,omitempty" doc:"Filter by which tags the WHAT item needs to have."`
+	// Limit only to data objects in specific data sources.
+	DataSources      []string `json:"dataSources,omitempty" doc:"Limit only to data objects in specific data sources."`
+	TargetDataObject *string  `json:"targetDataObject,omitempty"`
 	// Optional ABAC rule to filter the what-list on. Only applicable when requesting data objects WHAT list without unpacking
 	AbacRule *string `json:"abacRule,omitempty" doc:"Optional ABAC rule to filter the what-list on. Only applicable when requesting data objects WHAT list without unpacking"`
 }
@@ -3465,6 +3682,9 @@ func (v *AccessWhatFilterInput) GetOwners() []string { return v.Owners }
 
 // GetHasTags returns AccessWhatFilterInput.HasTags, and is useful for accessing the field via an interface.
 func (v *AccessWhatFilterInput) GetHasTags() []TagFilter { return v.HasTags }
+
+// GetDataSources returns AccessWhatFilterInput.DataSources, and is useful for accessing the field via an interface.
+func (v *AccessWhatFilterInput) GetDataSources() []string { return v.DataSources }
 
 // GetTargetDataObject returns AccessWhatFilterInput.TargetDataObject, and is useful for accessing the field via an interface.
 func (v *AccessWhatFilterInput) GetTargetDataObject() *string { return v.TargetDataObject }
@@ -7916,6 +8136,20 @@ type CurrentUserResponse struct {
 // GetCurrentUser returns CurrentUserResponse.CurrentUser, and is useful for accessing the field via an interface.
 func (v *CurrentUserResponse) GetCurrentUser() *CurrentUserCurrentUser { return v.CurrentUser }
 
+// Specifies the sorting options for sorting the users that have access on a data object.
+type DataAccessReturnItemOrderByInput struct {
+	User          *UserOrderByInput          `json:"user,omitempty"`
+	AccessControl *AccessControlOrderByInput `json:"accessControl,omitempty"`
+}
+
+// GetUser returns DataAccessReturnItemOrderByInput.User, and is useful for accessing the field via an interface.
+func (v *DataAccessReturnItemOrderByInput) GetUser() *UserOrderByInput { return v.User }
+
+// GetAccessControl returns DataAccessReturnItemOrderByInput.AccessControl, and is useful for accessing the field via an interface.
+func (v *DataAccessReturnItemOrderByInput) GetAccessControl() *AccessControlOrderByInput {
+	return v.AccessControl
+}
+
 // Input object to create an aggregator expression (e.g. `X OR Y OR Z`).
 type DataComparisonExpressionAggregatorInput struct {
 	// The operator to use.
@@ -9468,6 +9702,8 @@ type DataObjectOrderByInput struct {
 	Name     *Sort `json:"name,omitempty"`
 	FullName *Sort `json:"fullName,omitempty"`
 	Type     *Sort `json:"type,omitempty"`
+	// Sort by the full path, comparing it segment by segment so parents sort immediately before their children (depth-first tree order). Case-insensitive.
+	FullPath *Sort `json:"fullPath,omitempty" doc:"Sort by the full path, comparing it segment by segment so parents sort immediately before their children (depth-first tree order). Case-insensitive."`
 }
 
 // GetName returns DataObjectOrderByInput.Name, and is useful for accessing the field via an interface.
@@ -9478,6 +9714,9 @@ func (v *DataObjectOrderByInput) GetFullName() *Sort { return v.FullName }
 
 // GetType returns DataObjectOrderByInput.Type, and is useful for accessing the field via an interface.
 func (v *DataObjectOrderByInput) GetType() *Sort { return v.Type }
+
+// GetFullPath returns DataObjectOrderByInput.FullPath, and is useful for accessing the field via an interface.
+func (v *DataObjectOrderByInput) GetFullPath() *Sort { return v.FullPath }
 
 type DataObjectReferenceImport struct {
 	FullName string `json:"fullName"`
@@ -10451,9 +10690,8 @@ type DataSourceFilterInput struct {
 	// Only show data sources with a specific parent data source.
 	Parent *string `json:"parent,omitempty" doc:"Only show data sources with a specific parent data source."`
 	// List of user IDs to filter on who owns the data source.
-	Owners                []string              `json:"owners,omitempty" doc:"List of user IDs to filter on who owns the data source."`
-	IncompleteDataWarning *bool                 `json:"incompleteDataWarning,omitempty"`
-	SupportedFeatures     []*DataSourceFeatures `json:"supportedFeatures,omitempty"`
+	Owners            []string              `json:"owners,omitempty" doc:"List of user IDs to filter on who owns the data source."`
+	SupportedFeatures []*DataSourceFeatures `json:"supportedFeatures,omitempty"`
 	// If false, system data sources are excluded from the results. By default, system data sources are included.
 	IncludeSystem *bool `json:"includeSystem,omitempty" doc:"If false, system data sources are excluded from the results. By default, system data sources are included."`
 }
@@ -10469,9 +10707,6 @@ func (v *DataSourceFilterInput) GetParent() *string { return v.Parent }
 
 // GetOwners returns DataSourceFilterInput.Owners, and is useful for accessing the field via an interface.
 func (v *DataSourceFilterInput) GetOwners() []string { return v.Owners }
-
-// GetIncompleteDataWarning returns DataSourceFilterInput.IncompleteDataWarning, and is useful for accessing the field via an interface.
-func (v *DataSourceFilterInput) GetIncompleteDataWarning() *bool { return v.IncompleteDataWarning }
 
 // GetSupportedFeatures returns DataSourceFilterInput.SupportedFeatures, and is useful for accessing the field via an interface.
 func (v *DataSourceFilterInput) GetSupportedFeatures() []*DataSourceFeatures {
@@ -11163,6 +11398,490 @@ func (v *DataSourceTypeInfo) GetDataSource() string { return v.DataSource }
 
 // GetAccessControlType returns DataSourceTypeInfo.AccessControlType, and is useful for accessing the field via an interface.
 func (v *DataSourceTypeInfo) GetAccessControlType() *string { return v.AccessControlType }
+
+// DataSourceUsageMetadataDataSource includes the requested fields of the GraphQL type DataSource.
+// The GraphQL type's documentation follows.
+//
+// Represents a data source in Collibra Data Access.
+type DataSourceUsageMetadataDataSource struct {
+	Typename                *string `json:"__typename"`
+	UsageMetadataDataSource `json:"-"`
+}
+
+// GetTypename returns DataSourceUsageMetadataDataSource.Typename, and is useful for accessing the field via an interface.
+func (v *DataSourceUsageMetadataDataSource) GetTypename() *string { return v.Typename }
+
+// GetUsageFirstUsed returns DataSourceUsageMetadataDataSource.UsageFirstUsed, and is useful for accessing the field via an interface.
+func (v *DataSourceUsageMetadataDataSource) GetUsageFirstUsed() *time.Time {
+	return v.UsageMetadataDataSource.UsageFirstUsed
+}
+
+// GetUsageLastUsed returns DataSourceUsageMetadataDataSource.UsageLastUsed, and is useful for accessing the field via an interface.
+func (v *DataSourceUsageMetadataDataSource) GetUsageLastUsed() *time.Time {
+	return v.UsageMetadataDataSource.UsageLastUsed
+}
+
+func (v *DataSourceUsageMetadataDataSource) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*DataSourceUsageMetadataDataSource
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.DataSourceUsageMetadataDataSource = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.UsageMetadataDataSource)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalDataSourceUsageMetadataDataSource struct {
+	Typename *string `json:"__typename"`
+
+	UsageFirstUsed *time.Time `json:"usageFirstUsed"`
+
+	UsageLastUsed *time.Time `json:"usageLastUsed"`
+}
+
+func (v *DataSourceUsageMetadataDataSource) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *DataSourceUsageMetadataDataSource) __premarshalJSON() (*__premarshalDataSourceUsageMetadataDataSource, error) {
+	var retval __premarshalDataSourceUsageMetadataDataSource
+
+	retval.Typename = v.Typename
+	retval.UsageFirstUsed = v.UsageMetadataDataSource.UsageFirstUsed
+	retval.UsageLastUsed = v.UsageMetadataDataSource.UsageLastUsed
+	return &retval, nil
+}
+
+// DataSourceUsageMetadataDataSourceAlreadyExistsError includes the requested fields of the GraphQL type AlreadyExistsError.
+// The GraphQL type's documentation follows.
+//
+// Error when the user tries to create a resource that already exists.
+type DataSourceUsageMetadataDataSourceAlreadyExistsError struct {
+	Typename *string `json:"__typename"`
+}
+
+// GetTypename returns DataSourceUsageMetadataDataSourceAlreadyExistsError.Typename, and is useful for accessing the field via an interface.
+func (v *DataSourceUsageMetadataDataSourceAlreadyExistsError) GetTypename() *string {
+	return v.Typename
+}
+
+// DataSourceUsageMetadataDataSourceDataSourceResult includes the requested fields of the GraphQL interface DataSourceResult.
+//
+// DataSourceUsageMetadataDataSourceDataSourceResult is implemented by the following types:
+// DataSourceUsageMetadataDataSourceAlreadyExistsError
+// DataSourceUsageMetadataDataSource
+// DataSourceUsageMetadataDataSourceInvalidInputError
+// DataSourceUsageMetadataDataSourceNotFoundError
+// DataSourceUsageMetadataDataSourcePermissionDeniedError
+type DataSourceUsageMetadataDataSourceDataSourceResult interface {
+	implementsGraphQLInterfaceDataSourceUsageMetadataDataSourceDataSourceResult()
+	// GetTypename returns the receiver's concrete GraphQL type-name (see interface doc for possible values).
+	GetTypename() *string
+}
+
+func (v *DataSourceUsageMetadataDataSourceAlreadyExistsError) implementsGraphQLInterfaceDataSourceUsageMetadataDataSourceDataSourceResult() {
+}
+func (v *DataSourceUsageMetadataDataSource) implementsGraphQLInterfaceDataSourceUsageMetadataDataSourceDataSourceResult() {
+}
+func (v *DataSourceUsageMetadataDataSourceInvalidInputError) implementsGraphQLInterfaceDataSourceUsageMetadataDataSourceDataSourceResult() {
+}
+func (v *DataSourceUsageMetadataDataSourceNotFoundError) implementsGraphQLInterfaceDataSourceUsageMetadataDataSourceDataSourceResult() {
+}
+func (v *DataSourceUsageMetadataDataSourcePermissionDeniedError) implementsGraphQLInterfaceDataSourceUsageMetadataDataSourceDataSourceResult() {
+}
+
+func __unmarshalDataSourceUsageMetadataDataSourceDataSourceResult(b []byte, v *DataSourceUsageMetadataDataSourceDataSourceResult) error {
+	if string(b) == "null" {
+		return nil
+	}
+
+	var tn struct {
+		TypeName string `json:"__typename"`
+	}
+	err := json.Unmarshal(b, &tn)
+	if err != nil {
+		return err
+	}
+
+	switch tn.TypeName {
+	case "AlreadyExistsError":
+		*v = new(DataSourceUsageMetadataDataSourceAlreadyExistsError)
+		return json.Unmarshal(b, *v)
+	case "DataSource":
+		*v = new(DataSourceUsageMetadataDataSource)
+		return json.Unmarshal(b, *v)
+	case "InvalidInputError":
+		*v = new(DataSourceUsageMetadataDataSourceInvalidInputError)
+		return json.Unmarshal(b, *v)
+	case "NotFoundError":
+		*v = new(DataSourceUsageMetadataDataSourceNotFoundError)
+		return json.Unmarshal(b, *v)
+	case "PermissionDeniedError":
+		*v = new(DataSourceUsageMetadataDataSourcePermissionDeniedError)
+		return json.Unmarshal(b, *v)
+	case "":
+		return fmt.Errorf(
+			"response was missing DataSourceResult.__typename")
+	default:
+		return fmt.Errorf(
+			`unexpected concrete type for DataSourceUsageMetadataDataSourceDataSourceResult: "%v"`, tn.TypeName)
+	}
+}
+
+func __marshalDataSourceUsageMetadataDataSourceDataSourceResult(v *DataSourceUsageMetadataDataSourceDataSourceResult) ([]byte, error) {
+
+	var typename string
+	switch v := (*v).(type) {
+	case *DataSourceUsageMetadataDataSourceAlreadyExistsError:
+		typename = "AlreadyExistsError"
+
+		result := struct {
+			TypeName string `json:"__typename"`
+			*DataSourceUsageMetadataDataSourceAlreadyExistsError
+		}{typename, v}
+		return json.Marshal(result)
+	case *DataSourceUsageMetadataDataSource:
+		typename = "DataSource"
+
+		premarshaled, err := v.__premarshalJSON()
+		if err != nil {
+			return nil, err
+		}
+		result := struct {
+			TypeName string `json:"__typename"`
+			*__premarshalDataSourceUsageMetadataDataSource
+		}{typename, premarshaled}
+		return json.Marshal(result)
+	case *DataSourceUsageMetadataDataSourceInvalidInputError:
+		typename = "InvalidInputError"
+
+		premarshaled, err := v.__premarshalJSON()
+		if err != nil {
+			return nil, err
+		}
+		result := struct {
+			TypeName string `json:"__typename"`
+			*__premarshalDataSourceUsageMetadataDataSourceInvalidInputError
+		}{typename, premarshaled}
+		return json.Marshal(result)
+	case *DataSourceUsageMetadataDataSourceNotFoundError:
+		typename = "NotFoundError"
+
+		premarshaled, err := v.__premarshalJSON()
+		if err != nil {
+			return nil, err
+		}
+		result := struct {
+			TypeName string `json:"__typename"`
+			*__premarshalDataSourceUsageMetadataDataSourceNotFoundError
+		}{typename, premarshaled}
+		return json.Marshal(result)
+	case *DataSourceUsageMetadataDataSourcePermissionDeniedError:
+		typename = "PermissionDeniedError"
+
+		premarshaled, err := v.__premarshalJSON()
+		if err != nil {
+			return nil, err
+		}
+		result := struct {
+			TypeName string `json:"__typename"`
+			*__premarshalDataSourceUsageMetadataDataSourcePermissionDeniedError
+		}{typename, premarshaled}
+		return json.Marshal(result)
+	case nil:
+		return []byte("null"), nil
+	default:
+		return nil, fmt.Errorf(
+			`unexpected concrete type for DataSourceUsageMetadataDataSourceDataSourceResult: "%T"`, v)
+	}
+}
+
+// DataSourceUsageMetadataDataSourceInvalidInputError includes the requested fields of the GraphQL type InvalidInputError.
+// The GraphQL type's documentation follows.
+//
+// Error when some of the input parameters in the request are not valid.
+type DataSourceUsageMetadataDataSourceInvalidInputError struct {
+	Typename          *string `json:"__typename"`
+	InvalidInputError `json:"-"`
+}
+
+// GetTypename returns DataSourceUsageMetadataDataSourceInvalidInputError.Typename, and is useful for accessing the field via an interface.
+func (v *DataSourceUsageMetadataDataSourceInvalidInputError) GetTypename() *string { return v.Typename }
+
+// GetMessage returns DataSourceUsageMetadataDataSourceInvalidInputError.Message, and is useful for accessing the field via an interface.
+func (v *DataSourceUsageMetadataDataSourceInvalidInputError) GetMessage() string {
+	return v.InvalidInputError.Message
+}
+
+func (v *DataSourceUsageMetadataDataSourceInvalidInputError) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*DataSourceUsageMetadataDataSourceInvalidInputError
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.DataSourceUsageMetadataDataSourceInvalidInputError = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.InvalidInputError)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalDataSourceUsageMetadataDataSourceInvalidInputError struct {
+	Typename *string `json:"__typename"`
+
+	Message string `json:"message"`
+}
+
+func (v *DataSourceUsageMetadataDataSourceInvalidInputError) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *DataSourceUsageMetadataDataSourceInvalidInputError) __premarshalJSON() (*__premarshalDataSourceUsageMetadataDataSourceInvalidInputError, error) {
+	var retval __premarshalDataSourceUsageMetadataDataSourceInvalidInputError
+
+	retval.Typename = v.Typename
+	retval.Message = v.InvalidInputError.Message
+	return &retval, nil
+}
+
+// DataSourceUsageMetadataDataSourceNotFoundError includes the requested fields of the GraphQL type NotFoundError.
+// The GraphQL type's documentation follows.
+//
+// Error when the user is requesting a resource that does not exist.
+type DataSourceUsageMetadataDataSourceNotFoundError struct {
+	Typename      *string `json:"__typename"`
+	NotFoundError `json:"-"`
+}
+
+// GetTypename returns DataSourceUsageMetadataDataSourceNotFoundError.Typename, and is useful for accessing the field via an interface.
+func (v *DataSourceUsageMetadataDataSourceNotFoundError) GetTypename() *string { return v.Typename }
+
+// GetMessage returns DataSourceUsageMetadataDataSourceNotFoundError.Message, and is useful for accessing the field via an interface.
+func (v *DataSourceUsageMetadataDataSourceNotFoundError) GetMessage() string {
+	return v.NotFoundError.Message
+}
+
+func (v *DataSourceUsageMetadataDataSourceNotFoundError) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*DataSourceUsageMetadataDataSourceNotFoundError
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.DataSourceUsageMetadataDataSourceNotFoundError = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.NotFoundError)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalDataSourceUsageMetadataDataSourceNotFoundError struct {
+	Typename *string `json:"__typename"`
+
+	Message string `json:"message"`
+}
+
+func (v *DataSourceUsageMetadataDataSourceNotFoundError) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *DataSourceUsageMetadataDataSourceNotFoundError) __premarshalJSON() (*__premarshalDataSourceUsageMetadataDataSourceNotFoundError, error) {
+	var retval __premarshalDataSourceUsageMetadataDataSourceNotFoundError
+
+	retval.Typename = v.Typename
+	retval.Message = v.NotFoundError.Message
+	return &retval, nil
+}
+
+// DataSourceUsageMetadataDataSourcePermissionDeniedError includes the requested fields of the GraphQL type PermissionDeniedError.
+// The GraphQL type's documentation follows.
+//
+// Error when permission to the requested resource is denied.
+type DataSourceUsageMetadataDataSourcePermissionDeniedError struct {
+	Typename              *string `json:"__typename"`
+	PermissionDeniedError `json:"-"`
+}
+
+// GetTypename returns DataSourceUsageMetadataDataSourcePermissionDeniedError.Typename, and is useful for accessing the field via an interface.
+func (v *DataSourceUsageMetadataDataSourcePermissionDeniedError) GetTypename() *string {
+	return v.Typename
+}
+
+// GetMessage returns DataSourceUsageMetadataDataSourcePermissionDeniedError.Message, and is useful for accessing the field via an interface.
+func (v *DataSourceUsageMetadataDataSourcePermissionDeniedError) GetMessage() string {
+	return v.PermissionDeniedError.Message
+}
+
+func (v *DataSourceUsageMetadataDataSourcePermissionDeniedError) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*DataSourceUsageMetadataDataSourcePermissionDeniedError
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.DataSourceUsageMetadataDataSourcePermissionDeniedError = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.PermissionDeniedError)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalDataSourceUsageMetadataDataSourcePermissionDeniedError struct {
+	Typename *string `json:"__typename"`
+
+	Message string `json:"message"`
+}
+
+func (v *DataSourceUsageMetadataDataSourcePermissionDeniedError) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *DataSourceUsageMetadataDataSourcePermissionDeniedError) __premarshalJSON() (*__premarshalDataSourceUsageMetadataDataSourcePermissionDeniedError, error) {
+	var retval __premarshalDataSourceUsageMetadataDataSourcePermissionDeniedError
+
+	retval.Typename = v.Typename
+	retval.Message = v.PermissionDeniedError.Message
+	return &retval, nil
+}
+
+// DataSourceUsageMetadataResponse is returned by DataSourceUsageMetadata on success.
+type DataSourceUsageMetadataResponse struct {
+	// Retrieves a single data source by its ID.
+	DataSource DataSourceUsageMetadataDataSourceDataSourceResult `json:"-"`
+}
+
+// GetDataSource returns DataSourceUsageMetadataResponse.DataSource, and is useful for accessing the field via an interface.
+func (v *DataSourceUsageMetadataResponse) GetDataSource() DataSourceUsageMetadataDataSourceDataSourceResult {
+	return v.DataSource
+}
+
+func (v *DataSourceUsageMetadataResponse) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*DataSourceUsageMetadataResponse
+		DataSource json.RawMessage `json:"dataSource"`
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.DataSourceUsageMetadataResponse = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	{
+		dst := &v.DataSource
+		src := firstPass.DataSource
+		if len(src) != 0 && string(src) != "null" {
+			err = __unmarshalDataSourceUsageMetadataDataSourceDataSourceResult(
+				src, dst)
+			if err != nil {
+				return fmt.Errorf(
+					"unable to unmarshal DataSourceUsageMetadataResponse.DataSource: %w", err)
+			}
+		}
+	}
+	return nil
+}
+
+type __premarshalDataSourceUsageMetadataResponse struct {
+	DataSource json.RawMessage `json:"dataSource"`
+}
+
+func (v *DataSourceUsageMetadataResponse) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *DataSourceUsageMetadataResponse) __premarshalJSON() (*__premarshalDataSourceUsageMetadataResponse, error) {
+	var retval __premarshalDataSourceUsageMetadataResponse
+
+	{
+
+		dst := &retval.DataSource
+		src := v.DataSource
+		var err error
+		*dst, err = __marshalDataSourceUsageMetadataDataSourceDataSourceResult(
+			&src)
+		if err != nil {
+			return nil, fmt.Errorf(
+				"unable to marshal DataSourceUsageMetadataResponse.DataSource: %w", err)
+		}
+	}
+	return &retval, nil
+}
 
 type DataTypeOrigin string
 
@@ -19798,6 +20517,484 @@ func (v *GetAccessControlWhoListResponse) __premarshalJSON() (*__premarshalGetAc
 	return &retval, nil
 }
 
+// GetDataObjectAccessListDataObject includes the requested fields of the GraphQL type DataObject.
+// The GraphQL type's documentation follows.
+//
+// Represents a data object in Collibra Data Access. These represents all the data entities in a data source (e.g. database, schema, table, column, folder, file, ...).
+type GetDataObjectAccessListDataObject struct {
+	// List the users that have access to this data object, together with the permissions the user has and through which access controls these permissions are acquired. Access acquired only through deleted/inactive access controls, or through access controls whose type is not Grant, GrantVariation or Group, is not returned.
+	DistinctAccess GetDataObjectAccessListDataObjectDistinctAccessGroupedDataAccessReturnItemConnectionResult `json:"-"`
+}
+
+// GetDistinctAccess returns GetDataObjectAccessListDataObject.DistinctAccess, and is useful for accessing the field via an interface.
+func (v *GetDataObjectAccessListDataObject) GetDistinctAccess() GetDataObjectAccessListDataObjectDistinctAccessGroupedDataAccessReturnItemConnectionResult {
+	return v.DistinctAccess
+}
+
+func (v *GetDataObjectAccessListDataObject) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*GetDataObjectAccessListDataObject
+		DistinctAccess json.RawMessage `json:"distinctAccess"`
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.GetDataObjectAccessListDataObject = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	{
+		dst := &v.DistinctAccess
+		src := firstPass.DistinctAccess
+		if len(src) != 0 && string(src) != "null" {
+			err = __unmarshalGetDataObjectAccessListDataObjectDistinctAccessGroupedDataAccessReturnItemConnectionResult(
+				src, dst)
+			if err != nil {
+				return fmt.Errorf(
+					"unable to unmarshal GetDataObjectAccessListDataObject.DistinctAccess: %w", err)
+			}
+		}
+	}
+	return nil
+}
+
+type __premarshalGetDataObjectAccessListDataObject struct {
+	DistinctAccess json.RawMessage `json:"distinctAccess"`
+}
+
+func (v *GetDataObjectAccessListDataObject) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *GetDataObjectAccessListDataObject) __premarshalJSON() (*__premarshalGetDataObjectAccessListDataObject, error) {
+	var retval __premarshalGetDataObjectAccessListDataObject
+
+	{
+
+		dst := &retval.DistinctAccess
+		src := v.DistinctAccess
+		var err error
+		*dst, err = __marshalGetDataObjectAccessListDataObjectDistinctAccessGroupedDataAccessReturnItemConnectionResult(
+			&src)
+		if err != nil {
+			return nil, fmt.Errorf(
+				"unable to marshal GetDataObjectAccessListDataObject.DistinctAccess: %w", err)
+		}
+	}
+	return &retval, nil
+}
+
+// GetDataObjectAccessListDataObjectDistinctAccessGroupedDataAccessReturnItemConnection includes the requested fields of the GraphQL type GroupedDataAccessReturnItemConnection.
+// The GraphQL type's documentation follows.
+//
+// The connection type for paginated lists of [GroupedDataAccessReturnItem]({{Types.GroupedDataAccessReturnItem}}).
+type GetDataObjectAccessListDataObjectDistinctAccessGroupedDataAccessReturnItemConnection struct {
+	Typename                                                                         *string `json:"__typename"`
+	GroupedDataAccessReturnItemConnectionResultGroupedDataAccessReturnItemConnection `json:"-"`
+}
+
+// GetTypename returns GetDataObjectAccessListDataObjectDistinctAccessGroupedDataAccessReturnItemConnection.Typename, and is useful for accessing the field via an interface.
+func (v *GetDataObjectAccessListDataObjectDistinctAccessGroupedDataAccessReturnItemConnection) GetTypename() *string {
+	return v.Typename
+}
+
+// GetPageInfo returns GetDataObjectAccessListDataObjectDistinctAccessGroupedDataAccessReturnItemConnection.PageInfo, and is useful for accessing the field via an interface.
+func (v *GetDataObjectAccessListDataObjectDistinctAccessGroupedDataAccessReturnItemConnection) GetPageInfo() GroupedDataAccessReturnItemConnectionPageInfo {
+	return v.GroupedDataAccessReturnItemConnectionResultGroupedDataAccessReturnItemConnection.GroupedDataAccessReturnItemConnection.PageInfo
+}
+
+// GetEdges returns GetDataObjectAccessListDataObjectDistinctAccessGroupedDataAccessReturnItemConnection.Edges, and is useful for accessing the field via an interface.
+func (v *GetDataObjectAccessListDataObjectDistinctAccessGroupedDataAccessReturnItemConnection) GetEdges() []GroupedDataAccessReturnItemConnectionEdgesGroupedDataAccessReturnItemEdge {
+	return v.GroupedDataAccessReturnItemConnectionResultGroupedDataAccessReturnItemConnection.GroupedDataAccessReturnItemConnection.Edges
+}
+
+func (v *GetDataObjectAccessListDataObjectDistinctAccessGroupedDataAccessReturnItemConnection) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*GetDataObjectAccessListDataObjectDistinctAccessGroupedDataAccessReturnItemConnection
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.GetDataObjectAccessListDataObjectDistinctAccessGroupedDataAccessReturnItemConnection = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.GroupedDataAccessReturnItemConnectionResultGroupedDataAccessReturnItemConnection)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalGetDataObjectAccessListDataObjectDistinctAccessGroupedDataAccessReturnItemConnection struct {
+	Typename *string `json:"__typename"`
+
+	PageInfo GroupedDataAccessReturnItemConnectionPageInfo `json:"pageInfo"`
+
+	Edges []GroupedDataAccessReturnItemConnectionEdgesGroupedDataAccessReturnItemEdge `json:"edges"`
+}
+
+func (v *GetDataObjectAccessListDataObjectDistinctAccessGroupedDataAccessReturnItemConnection) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *GetDataObjectAccessListDataObjectDistinctAccessGroupedDataAccessReturnItemConnection) __premarshalJSON() (*__premarshalGetDataObjectAccessListDataObjectDistinctAccessGroupedDataAccessReturnItemConnection, error) {
+	var retval __premarshalGetDataObjectAccessListDataObjectDistinctAccessGroupedDataAccessReturnItemConnection
+
+	retval.Typename = v.Typename
+	retval.PageInfo = v.GroupedDataAccessReturnItemConnectionResultGroupedDataAccessReturnItemConnection.GroupedDataAccessReturnItemConnection.PageInfo
+	retval.Edges = v.GroupedDataAccessReturnItemConnectionResultGroupedDataAccessReturnItemConnection.GroupedDataAccessReturnItemConnection.Edges
+	return &retval, nil
+}
+
+// GetDataObjectAccessListDataObjectDistinctAccessGroupedDataAccessReturnItemConnectionResult includes the requested fields of the GraphQL interface GroupedDataAccessReturnItemConnectionResult.
+//
+// GetDataObjectAccessListDataObjectDistinctAccessGroupedDataAccessReturnItemConnectionResult is implemented by the following types:
+// GetDataObjectAccessListDataObjectDistinctAccessGroupedDataAccessReturnItemConnection
+// GetDataObjectAccessListDataObjectDistinctAccessInvalidInputError
+// GetDataObjectAccessListDataObjectDistinctAccessNotFoundError
+// GetDataObjectAccessListDataObjectDistinctAccessPermissionDeniedError
+type GetDataObjectAccessListDataObjectDistinctAccessGroupedDataAccessReturnItemConnectionResult interface {
+	implementsGraphQLInterfaceGetDataObjectAccessListDataObjectDistinctAccessGroupedDataAccessReturnItemConnectionResult()
+	// GetTypename returns the receiver's concrete GraphQL type-name (see interface doc for possible values).
+	GetTypename() *string
+	GroupedDataAccessReturnItemConnectionResult
+}
+
+func (v *GetDataObjectAccessListDataObjectDistinctAccessGroupedDataAccessReturnItemConnection) implementsGraphQLInterfaceGetDataObjectAccessListDataObjectDistinctAccessGroupedDataAccessReturnItemConnectionResult() {
+}
+func (v *GetDataObjectAccessListDataObjectDistinctAccessInvalidInputError) implementsGraphQLInterfaceGetDataObjectAccessListDataObjectDistinctAccessGroupedDataAccessReturnItemConnectionResult() {
+}
+func (v *GetDataObjectAccessListDataObjectDistinctAccessNotFoundError) implementsGraphQLInterfaceGetDataObjectAccessListDataObjectDistinctAccessGroupedDataAccessReturnItemConnectionResult() {
+}
+func (v *GetDataObjectAccessListDataObjectDistinctAccessPermissionDeniedError) implementsGraphQLInterfaceGetDataObjectAccessListDataObjectDistinctAccessGroupedDataAccessReturnItemConnectionResult() {
+}
+
+func __unmarshalGetDataObjectAccessListDataObjectDistinctAccessGroupedDataAccessReturnItemConnectionResult(b []byte, v *GetDataObjectAccessListDataObjectDistinctAccessGroupedDataAccessReturnItemConnectionResult) error {
+	if string(b) == "null" {
+		return nil
+	}
+
+	var tn struct {
+		TypeName string `json:"__typename"`
+	}
+	err := json.Unmarshal(b, &tn)
+	if err != nil {
+		return err
+	}
+
+	switch tn.TypeName {
+	case "GroupedDataAccessReturnItemConnection":
+		*v = new(GetDataObjectAccessListDataObjectDistinctAccessGroupedDataAccessReturnItemConnection)
+		return json.Unmarshal(b, *v)
+	case "InvalidInputError":
+		*v = new(GetDataObjectAccessListDataObjectDistinctAccessInvalidInputError)
+		return json.Unmarshal(b, *v)
+	case "NotFoundError":
+		*v = new(GetDataObjectAccessListDataObjectDistinctAccessNotFoundError)
+		return json.Unmarshal(b, *v)
+	case "PermissionDeniedError":
+		*v = new(GetDataObjectAccessListDataObjectDistinctAccessPermissionDeniedError)
+		return json.Unmarshal(b, *v)
+	case "":
+		return fmt.Errorf(
+			"response was missing GroupedDataAccessReturnItemConnectionResult.__typename")
+	default:
+		return fmt.Errorf(
+			`unexpected concrete type for GetDataObjectAccessListDataObjectDistinctAccessGroupedDataAccessReturnItemConnectionResult: "%v"`, tn.TypeName)
+	}
+}
+
+func __marshalGetDataObjectAccessListDataObjectDistinctAccessGroupedDataAccessReturnItemConnectionResult(v *GetDataObjectAccessListDataObjectDistinctAccessGroupedDataAccessReturnItemConnectionResult) ([]byte, error) {
+
+	var typename string
+	switch v := (*v).(type) {
+	case *GetDataObjectAccessListDataObjectDistinctAccessGroupedDataAccessReturnItemConnection:
+		typename = "GroupedDataAccessReturnItemConnection"
+
+		premarshaled, err := v.__premarshalJSON()
+		if err != nil {
+			return nil, err
+		}
+		result := struct {
+			TypeName string `json:"__typename"`
+			*__premarshalGetDataObjectAccessListDataObjectDistinctAccessGroupedDataAccessReturnItemConnection
+		}{typename, premarshaled}
+		return json.Marshal(result)
+	case *GetDataObjectAccessListDataObjectDistinctAccessInvalidInputError:
+		typename = "InvalidInputError"
+
+		premarshaled, err := v.__premarshalJSON()
+		if err != nil {
+			return nil, err
+		}
+		result := struct {
+			TypeName string `json:"__typename"`
+			*__premarshalGetDataObjectAccessListDataObjectDistinctAccessInvalidInputError
+		}{typename, premarshaled}
+		return json.Marshal(result)
+	case *GetDataObjectAccessListDataObjectDistinctAccessNotFoundError:
+		typename = "NotFoundError"
+
+		premarshaled, err := v.__premarshalJSON()
+		if err != nil {
+			return nil, err
+		}
+		result := struct {
+			TypeName string `json:"__typename"`
+			*__premarshalGetDataObjectAccessListDataObjectDistinctAccessNotFoundError
+		}{typename, premarshaled}
+		return json.Marshal(result)
+	case *GetDataObjectAccessListDataObjectDistinctAccessPermissionDeniedError:
+		typename = "PermissionDeniedError"
+
+		premarshaled, err := v.__premarshalJSON()
+		if err != nil {
+			return nil, err
+		}
+		result := struct {
+			TypeName string `json:"__typename"`
+			*__premarshalGetDataObjectAccessListDataObjectDistinctAccessPermissionDeniedError
+		}{typename, premarshaled}
+		return json.Marshal(result)
+	case nil:
+		return []byte("null"), nil
+	default:
+		return nil, fmt.Errorf(
+			`unexpected concrete type for GetDataObjectAccessListDataObjectDistinctAccessGroupedDataAccessReturnItemConnectionResult: "%T"`, v)
+	}
+}
+
+// GetDataObjectAccessListDataObjectDistinctAccessInvalidInputError includes the requested fields of the GraphQL type InvalidInputError.
+// The GraphQL type's documentation follows.
+//
+// Error when some of the input parameters in the request are not valid.
+type GetDataObjectAccessListDataObjectDistinctAccessInvalidInputError struct {
+	Typename                                                     *string `json:"__typename"`
+	GroupedDataAccessReturnItemConnectionResultInvalidInputError `json:"-"`
+}
+
+// GetTypename returns GetDataObjectAccessListDataObjectDistinctAccessInvalidInputError.Typename, and is useful for accessing the field via an interface.
+func (v *GetDataObjectAccessListDataObjectDistinctAccessInvalidInputError) GetTypename() *string {
+	return v.Typename
+}
+
+// GetMessage returns GetDataObjectAccessListDataObjectDistinctAccessInvalidInputError.Message, and is useful for accessing the field via an interface.
+func (v *GetDataObjectAccessListDataObjectDistinctAccessInvalidInputError) GetMessage() string {
+	return v.GroupedDataAccessReturnItemConnectionResultInvalidInputError.InvalidInputError.Message
+}
+
+func (v *GetDataObjectAccessListDataObjectDistinctAccessInvalidInputError) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*GetDataObjectAccessListDataObjectDistinctAccessInvalidInputError
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.GetDataObjectAccessListDataObjectDistinctAccessInvalidInputError = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.GroupedDataAccessReturnItemConnectionResultInvalidInputError)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalGetDataObjectAccessListDataObjectDistinctAccessInvalidInputError struct {
+	Typename *string `json:"__typename"`
+
+	Message string `json:"message"`
+}
+
+func (v *GetDataObjectAccessListDataObjectDistinctAccessInvalidInputError) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *GetDataObjectAccessListDataObjectDistinctAccessInvalidInputError) __premarshalJSON() (*__premarshalGetDataObjectAccessListDataObjectDistinctAccessInvalidInputError, error) {
+	var retval __premarshalGetDataObjectAccessListDataObjectDistinctAccessInvalidInputError
+
+	retval.Typename = v.Typename
+	retval.Message = v.GroupedDataAccessReturnItemConnectionResultInvalidInputError.InvalidInputError.Message
+	return &retval, nil
+}
+
+// GetDataObjectAccessListDataObjectDistinctAccessNotFoundError includes the requested fields of the GraphQL type NotFoundError.
+// The GraphQL type's documentation follows.
+//
+// Error when the user is requesting a resource that does not exist.
+type GetDataObjectAccessListDataObjectDistinctAccessNotFoundError struct {
+	Typename                                                 *string `json:"__typename"`
+	GroupedDataAccessReturnItemConnectionResultNotFoundError `json:"-"`
+}
+
+// GetTypename returns GetDataObjectAccessListDataObjectDistinctAccessNotFoundError.Typename, and is useful for accessing the field via an interface.
+func (v *GetDataObjectAccessListDataObjectDistinctAccessNotFoundError) GetTypename() *string {
+	return v.Typename
+}
+
+// GetMessage returns GetDataObjectAccessListDataObjectDistinctAccessNotFoundError.Message, and is useful for accessing the field via an interface.
+func (v *GetDataObjectAccessListDataObjectDistinctAccessNotFoundError) GetMessage() string {
+	return v.GroupedDataAccessReturnItemConnectionResultNotFoundError.NotFoundError.Message
+}
+
+func (v *GetDataObjectAccessListDataObjectDistinctAccessNotFoundError) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*GetDataObjectAccessListDataObjectDistinctAccessNotFoundError
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.GetDataObjectAccessListDataObjectDistinctAccessNotFoundError = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.GroupedDataAccessReturnItemConnectionResultNotFoundError)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalGetDataObjectAccessListDataObjectDistinctAccessNotFoundError struct {
+	Typename *string `json:"__typename"`
+
+	Message string `json:"message"`
+}
+
+func (v *GetDataObjectAccessListDataObjectDistinctAccessNotFoundError) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *GetDataObjectAccessListDataObjectDistinctAccessNotFoundError) __premarshalJSON() (*__premarshalGetDataObjectAccessListDataObjectDistinctAccessNotFoundError, error) {
+	var retval __premarshalGetDataObjectAccessListDataObjectDistinctAccessNotFoundError
+
+	retval.Typename = v.Typename
+	retval.Message = v.GroupedDataAccessReturnItemConnectionResultNotFoundError.NotFoundError.Message
+	return &retval, nil
+}
+
+// GetDataObjectAccessListDataObjectDistinctAccessPermissionDeniedError includes the requested fields of the GraphQL type PermissionDeniedError.
+// The GraphQL type's documentation follows.
+//
+// Error when permission to the requested resource is denied.
+type GetDataObjectAccessListDataObjectDistinctAccessPermissionDeniedError struct {
+	Typename                                                         *string `json:"__typename"`
+	GroupedDataAccessReturnItemConnectionResultPermissionDeniedError `json:"-"`
+}
+
+// GetTypename returns GetDataObjectAccessListDataObjectDistinctAccessPermissionDeniedError.Typename, and is useful for accessing the field via an interface.
+func (v *GetDataObjectAccessListDataObjectDistinctAccessPermissionDeniedError) GetTypename() *string {
+	return v.Typename
+}
+
+// GetMessage returns GetDataObjectAccessListDataObjectDistinctAccessPermissionDeniedError.Message, and is useful for accessing the field via an interface.
+func (v *GetDataObjectAccessListDataObjectDistinctAccessPermissionDeniedError) GetMessage() string {
+	return v.GroupedDataAccessReturnItemConnectionResultPermissionDeniedError.PermissionDeniedError.Message
+}
+
+func (v *GetDataObjectAccessListDataObjectDistinctAccessPermissionDeniedError) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*GetDataObjectAccessListDataObjectDistinctAccessPermissionDeniedError
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.GetDataObjectAccessListDataObjectDistinctAccessPermissionDeniedError = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.GroupedDataAccessReturnItemConnectionResultPermissionDeniedError)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalGetDataObjectAccessListDataObjectDistinctAccessPermissionDeniedError struct {
+	Typename *string `json:"__typename"`
+
+	Message string `json:"message"`
+}
+
+func (v *GetDataObjectAccessListDataObjectDistinctAccessPermissionDeniedError) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *GetDataObjectAccessListDataObjectDistinctAccessPermissionDeniedError) __premarshalJSON() (*__premarshalGetDataObjectAccessListDataObjectDistinctAccessPermissionDeniedError, error) {
+	var retval __premarshalGetDataObjectAccessListDataObjectDistinctAccessPermissionDeniedError
+
+	retval.Typename = v.Typename
+	retval.Message = v.GroupedDataAccessReturnItemConnectionResultPermissionDeniedError.PermissionDeniedError.Message
+	return &retval, nil
+}
+
+// GetDataObjectAccessListResponse is returned by GetDataObjectAccessList on success.
+type GetDataObjectAccessListResponse struct {
+	// Retrieves a single data object by its ID.
+	DataObject GetDataObjectAccessListDataObject `json:"dataObject"`
+}
+
+// GetDataObject returns GetDataObjectAccessListResponse.DataObject, and is useful for accessing the field via an interface.
+func (v *GetDataObjectAccessListResponse) GetDataObject() GetDataObjectAccessListDataObject {
+	return v.DataObject
+}
+
 // GetDataObjectDataObject includes the requested fields of the GraphQL type DataObject.
 // The GraphQL type's documentation follows.
 //
@@ -21247,6 +22444,78 @@ type GetSubtaskOfTaskResponse struct {
 
 // GetJobSubtask returns GetSubtaskOfTaskResponse.JobSubtask, and is useful for accessing the field via an interface.
 func (v *GetSubtaskOfTaskResponse) GetJobSubtask() GetSubtaskOfTaskJobSubtask { return v.JobSubtask }
+
+// GetSupportedAgentVersionResponse is returned by GetSupportedAgentVersion on success.
+type GetSupportedAgentVersionResponse struct {
+	SupportedAgentVersion GetSupportedAgentVersionSupportedAgentVersionSupportedCLIVersion `json:"supportedAgentVersion"`
+}
+
+// GetSupportedAgentVersion returns GetSupportedAgentVersionResponse.SupportedAgentVersion, and is useful for accessing the field via an interface.
+func (v *GetSupportedAgentVersionResponse) GetSupportedAgentVersion() GetSupportedAgentVersionSupportedAgentVersionSupportedCLIVersion {
+	return v.SupportedAgentVersion
+}
+
+// GetSupportedAgentVersionSupportedAgentVersionSupportedCLIVersion includes the requested fields of the GraphQL type SupportedCLIVersion.
+type GetSupportedAgentVersionSupportedAgentVersionSupportedCLIVersion struct {
+	SupportedAgentVersion `json:"-"`
+}
+
+// GetDeprecatedVersions returns GetSupportedAgentVersionSupportedAgentVersionSupportedCLIVersion.DeprecatedVersions, and is useful for accessing the field via an interface.
+func (v *GetSupportedAgentVersionSupportedAgentVersionSupportedCLIVersion) GetDeprecatedVersions() *SupportedAgentVersionDeprecatedVersionsDeprecatedCLIVersion {
+	return v.SupportedAgentVersion.DeprecatedVersions
+}
+
+// GetSupportedVersions returns GetSupportedAgentVersionSupportedAgentVersionSupportedCLIVersion.SupportedVersions, and is useful for accessing the field via an interface.
+func (v *GetSupportedAgentVersionSupportedAgentVersionSupportedCLIVersion) GetSupportedVersions() string {
+	return v.SupportedAgentVersion.SupportedVersions
+}
+
+func (v *GetSupportedAgentVersionSupportedAgentVersionSupportedCLIVersion) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*GetSupportedAgentVersionSupportedAgentVersionSupportedCLIVersion
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.GetSupportedAgentVersionSupportedAgentVersionSupportedCLIVersion = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.SupportedAgentVersion)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalGetSupportedAgentVersionSupportedAgentVersionSupportedCLIVersion struct {
+	DeprecatedVersions *SupportedAgentVersionDeprecatedVersionsDeprecatedCLIVersion `json:"deprecatedVersions"`
+
+	SupportedVersions string `json:"supportedVersions"`
+}
+
+func (v *GetSupportedAgentVersionSupportedAgentVersionSupportedCLIVersion) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *GetSupportedAgentVersionSupportedAgentVersionSupportedCLIVersion) __premarshalJSON() (*__premarshalGetSupportedAgentVersionSupportedAgentVersionSupportedCLIVersion, error) {
+	var retval __premarshalGetSupportedAgentVersionSupportedAgentVersionSupportedCLIVersion
+
+	retval.DeprecatedVersions = v.SupportedAgentVersion.DeprecatedVersions
+	retval.SupportedVersions = v.SupportedAgentVersion.SupportedVersions
+	return &retval, nil
+}
 
 // GetTaskJobTask includes the requested fields of the GraphQL type Task.
 // The GraphQL type's documentation follows.
@@ -22763,6 +24032,734 @@ func (v *GrantCategoryTypeForDataSourceInput) GetDataSource() string { return v.
 // GetType returns GrantCategoryTypeForDataSourceInput.Type, and is useful for accessing the field via an interface.
 func (v *GrantCategoryTypeForDataSourceInput) GetType() string { return v.Type }
 
+// GroupedDataAccessReturnItem includes the GraphQL fields of GroupedDataAccessReturnItem requested by the fragment GroupedDataAccessReturnItem.
+// The GraphQL type's documentation follows.
+//
+// Represents the information about the access a user has on a specific data object across one or more access controls.
+type GroupedDataAccessReturnItem struct {
+	// The permissions the user has on the data object.
+	Permissions []*string `json:"permissions" doc:"The permissions the user has on the data object."`
+	// The global permissions the user has on the data object.
+	GlobalPermissions []*string `json:"globalPermissions" doc:"The global permissions the user has on the data object."`
+	// The time the access for the user expires.
+	ExpiresAt *time.Time `json:"expiresAt" doc:"The time the access for the user expires."`
+	// The user that has the access on the data object.
+	User GroupedDataAccessReturnItemUser `json:"user" doc:"The user that has the access on the data object."`
+	// The access controls that provide the access to the data object for the user.
+	NearestAccessControls []*GroupedDataAccessReturnItemNearestAccessControlsAccessControl `json:"nearestAccessControls" doc:"The access controls that provide the access to the data object for the user."`
+}
+
+// GetPermissions returns GroupedDataAccessReturnItem.Permissions, and is useful for accessing the field via an interface.
+func (v *GroupedDataAccessReturnItem) GetPermissions() []*string { return v.Permissions }
+
+// GetGlobalPermissions returns GroupedDataAccessReturnItem.GlobalPermissions, and is useful for accessing the field via an interface.
+func (v *GroupedDataAccessReturnItem) GetGlobalPermissions() []*string { return v.GlobalPermissions }
+
+// GetExpiresAt returns GroupedDataAccessReturnItem.ExpiresAt, and is useful for accessing the field via an interface.
+func (v *GroupedDataAccessReturnItem) GetExpiresAt() *time.Time { return v.ExpiresAt }
+
+// GetUser returns GroupedDataAccessReturnItem.User, and is useful for accessing the field via an interface.
+func (v *GroupedDataAccessReturnItem) GetUser() GroupedDataAccessReturnItemUser { return v.User }
+
+// GetNearestAccessControls returns GroupedDataAccessReturnItem.NearestAccessControls, and is useful for accessing the field via an interface.
+func (v *GroupedDataAccessReturnItem) GetNearestAccessControls() []*GroupedDataAccessReturnItemNearestAccessControlsAccessControl {
+	return v.NearestAccessControls
+}
+
+// GroupedDataAccessReturnItemConnection includes the GraphQL fields of GroupedDataAccessReturnItemConnection requested by the fragment GroupedDataAccessReturnItemConnection.
+// The GraphQL type's documentation follows.
+//
+// The connection type for paginated lists of [GroupedDataAccessReturnItem]({{Types.GroupedDataAccessReturnItem}}).
+type GroupedDataAccessReturnItemConnection struct {
+	// Pagination information for the retrieved items.
+	PageInfo GroupedDataAccessReturnItemConnectionPageInfo `json:"pageInfo" doc:"Pagination information for the retrieved items."`
+	// The list of edges containing the actual queried items.
+	Edges []GroupedDataAccessReturnItemConnectionEdgesGroupedDataAccessReturnItemEdge `json:"edges" doc:"The list of edges containing the actual queried items."`
+}
+
+// GetPageInfo returns GroupedDataAccessReturnItemConnection.PageInfo, and is useful for accessing the field via an interface.
+func (v *GroupedDataAccessReturnItemConnection) GetPageInfo() GroupedDataAccessReturnItemConnectionPageInfo {
+	return v.PageInfo
+}
+
+// GetEdges returns GroupedDataAccessReturnItemConnection.Edges, and is useful for accessing the field via an interface.
+func (v *GroupedDataAccessReturnItemConnection) GetEdges() []GroupedDataAccessReturnItemConnectionEdgesGroupedDataAccessReturnItemEdge {
+	return v.Edges
+}
+
+// GroupedDataAccessReturnItemConnectionEdgesGroupedDataAccessReturnItemEdge includes the requested fields of the GraphQL type GroupedDataAccessReturnItemEdge.
+// The GraphQL type's documentation follows.
+//
+// The edge type for [GroupedDataAccessReturnItemConnection]({{Types.GroupedDataAccessReturnItemConnection}})
+type GroupedDataAccessReturnItemConnectionEdgesGroupedDataAccessReturnItemEdge struct {
+	// The cursor of this item for pagination.
+	Cursor *string `json:"cursor"`
+	// The actual item.
+	Node *GroupedDataAccessReturnItemConnectionEdgesGroupedDataAccessReturnItemEdgeNodeGroupedDataAccessReturnItem `json:"node"`
+}
+
+// GetCursor returns GroupedDataAccessReturnItemConnectionEdgesGroupedDataAccessReturnItemEdge.Cursor, and is useful for accessing the field via an interface.
+func (v *GroupedDataAccessReturnItemConnectionEdgesGroupedDataAccessReturnItemEdge) GetCursor() *string {
+	return v.Cursor
+}
+
+// GetNode returns GroupedDataAccessReturnItemConnectionEdgesGroupedDataAccessReturnItemEdge.Node, and is useful for accessing the field via an interface.
+func (v *GroupedDataAccessReturnItemConnectionEdgesGroupedDataAccessReturnItemEdge) GetNode() *GroupedDataAccessReturnItemConnectionEdgesGroupedDataAccessReturnItemEdgeNodeGroupedDataAccessReturnItem {
+	return v.Node
+}
+
+// GroupedDataAccessReturnItemConnectionEdgesGroupedDataAccessReturnItemEdgeNodeGroupedDataAccessReturnItem includes the requested fields of the GraphQL type GroupedDataAccessReturnItem.
+// The GraphQL type's documentation follows.
+//
+// Represents the information about the access a user has on a specific data object across one or more access controls.
+type GroupedDataAccessReturnItemConnectionEdgesGroupedDataAccessReturnItemEdgeNodeGroupedDataAccessReturnItem struct {
+	GroupedDataAccessReturnItem `json:"-"`
+}
+
+// GetPermissions returns GroupedDataAccessReturnItemConnectionEdgesGroupedDataAccessReturnItemEdgeNodeGroupedDataAccessReturnItem.Permissions, and is useful for accessing the field via an interface.
+func (v *GroupedDataAccessReturnItemConnectionEdgesGroupedDataAccessReturnItemEdgeNodeGroupedDataAccessReturnItem) GetPermissions() []*string {
+	return v.GroupedDataAccessReturnItem.Permissions
+}
+
+// GetGlobalPermissions returns GroupedDataAccessReturnItemConnectionEdgesGroupedDataAccessReturnItemEdgeNodeGroupedDataAccessReturnItem.GlobalPermissions, and is useful for accessing the field via an interface.
+func (v *GroupedDataAccessReturnItemConnectionEdgesGroupedDataAccessReturnItemEdgeNodeGroupedDataAccessReturnItem) GetGlobalPermissions() []*string {
+	return v.GroupedDataAccessReturnItem.GlobalPermissions
+}
+
+// GetExpiresAt returns GroupedDataAccessReturnItemConnectionEdgesGroupedDataAccessReturnItemEdgeNodeGroupedDataAccessReturnItem.ExpiresAt, and is useful for accessing the field via an interface.
+func (v *GroupedDataAccessReturnItemConnectionEdgesGroupedDataAccessReturnItemEdgeNodeGroupedDataAccessReturnItem) GetExpiresAt() *time.Time {
+	return v.GroupedDataAccessReturnItem.ExpiresAt
+}
+
+// GetUser returns GroupedDataAccessReturnItemConnectionEdgesGroupedDataAccessReturnItemEdgeNodeGroupedDataAccessReturnItem.User, and is useful for accessing the field via an interface.
+func (v *GroupedDataAccessReturnItemConnectionEdgesGroupedDataAccessReturnItemEdgeNodeGroupedDataAccessReturnItem) GetUser() GroupedDataAccessReturnItemUser {
+	return v.GroupedDataAccessReturnItem.User
+}
+
+// GetNearestAccessControls returns GroupedDataAccessReturnItemConnectionEdgesGroupedDataAccessReturnItemEdgeNodeGroupedDataAccessReturnItem.NearestAccessControls, and is useful for accessing the field via an interface.
+func (v *GroupedDataAccessReturnItemConnectionEdgesGroupedDataAccessReturnItemEdgeNodeGroupedDataAccessReturnItem) GetNearestAccessControls() []*GroupedDataAccessReturnItemNearestAccessControlsAccessControl {
+	return v.GroupedDataAccessReturnItem.NearestAccessControls
+}
+
+func (v *GroupedDataAccessReturnItemConnectionEdgesGroupedDataAccessReturnItemEdgeNodeGroupedDataAccessReturnItem) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*GroupedDataAccessReturnItemConnectionEdgesGroupedDataAccessReturnItemEdgeNodeGroupedDataAccessReturnItem
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.GroupedDataAccessReturnItemConnectionEdgesGroupedDataAccessReturnItemEdgeNodeGroupedDataAccessReturnItem = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.GroupedDataAccessReturnItem)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalGroupedDataAccessReturnItemConnectionEdgesGroupedDataAccessReturnItemEdgeNodeGroupedDataAccessReturnItem struct {
+	Permissions []*string `json:"permissions"`
+
+	GlobalPermissions []*string `json:"globalPermissions"`
+
+	ExpiresAt *time.Time `json:"expiresAt"`
+
+	User GroupedDataAccessReturnItemUser `json:"user"`
+
+	NearestAccessControls []*GroupedDataAccessReturnItemNearestAccessControlsAccessControl `json:"nearestAccessControls"`
+}
+
+func (v *GroupedDataAccessReturnItemConnectionEdgesGroupedDataAccessReturnItemEdgeNodeGroupedDataAccessReturnItem) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *GroupedDataAccessReturnItemConnectionEdgesGroupedDataAccessReturnItemEdgeNodeGroupedDataAccessReturnItem) __premarshalJSON() (*__premarshalGroupedDataAccessReturnItemConnectionEdgesGroupedDataAccessReturnItemEdgeNodeGroupedDataAccessReturnItem, error) {
+	var retval __premarshalGroupedDataAccessReturnItemConnectionEdgesGroupedDataAccessReturnItemEdgeNodeGroupedDataAccessReturnItem
+
+	retval.Permissions = v.GroupedDataAccessReturnItem.Permissions
+	retval.GlobalPermissions = v.GroupedDataAccessReturnItem.GlobalPermissions
+	retval.ExpiresAt = v.GroupedDataAccessReturnItem.ExpiresAt
+	retval.User = v.GroupedDataAccessReturnItem.User
+	retval.NearestAccessControls = v.GroupedDataAccessReturnItem.NearestAccessControls
+	return &retval, nil
+}
+
+// GroupedDataAccessReturnItemConnectionPageInfo includes the requested fields of the GraphQL type PageInfo.
+type GroupedDataAccessReturnItemConnectionPageInfo struct {
+	PageInfo `json:"-"`
+}
+
+// GetHasNextPage returns GroupedDataAccessReturnItemConnectionPageInfo.HasNextPage, and is useful for accessing the field via an interface.
+func (v *GroupedDataAccessReturnItemConnectionPageInfo) GetHasNextPage() *bool {
+	return v.PageInfo.HasNextPage
+}
+
+// GetStartCursor returns GroupedDataAccessReturnItemConnectionPageInfo.StartCursor, and is useful for accessing the field via an interface.
+func (v *GroupedDataAccessReturnItemConnectionPageInfo) GetStartCursor() *string {
+	return v.PageInfo.StartCursor
+}
+
+func (v *GroupedDataAccessReturnItemConnectionPageInfo) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*GroupedDataAccessReturnItemConnectionPageInfo
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.GroupedDataAccessReturnItemConnectionPageInfo = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.PageInfo)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalGroupedDataAccessReturnItemConnectionPageInfo struct {
+	HasNextPage *bool `json:"hasNextPage"`
+
+	StartCursor *string `json:"startCursor"`
+}
+
+func (v *GroupedDataAccessReturnItemConnectionPageInfo) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *GroupedDataAccessReturnItemConnectionPageInfo) __premarshalJSON() (*__premarshalGroupedDataAccessReturnItemConnectionPageInfo, error) {
+	var retval __premarshalGroupedDataAccessReturnItemConnectionPageInfo
+
+	retval.HasNextPage = v.PageInfo.HasNextPage
+	retval.StartCursor = v.PageInfo.StartCursor
+	return &retval, nil
+}
+
+// GroupedDataAccessReturnItemConnectionResult includes the GraphQL fields of GroupedDataAccessReturnItemConnectionResult requested by the fragment GroupedDataAccessReturnItemConnectionResult.
+//
+// GroupedDataAccessReturnItemConnectionResult is implemented by the following types:
+// GroupedDataAccessReturnItemConnectionResultGroupedDataAccessReturnItemConnection
+// GroupedDataAccessReturnItemConnectionResultInvalidInputError
+// GroupedDataAccessReturnItemConnectionResultNotFoundError
+// GroupedDataAccessReturnItemConnectionResultPermissionDeniedError
+type GroupedDataAccessReturnItemConnectionResult interface {
+	implementsGraphQLInterfaceGroupedDataAccessReturnItemConnectionResult()
+}
+
+func (v *GroupedDataAccessReturnItemConnectionResultGroupedDataAccessReturnItemConnection) implementsGraphQLInterfaceGroupedDataAccessReturnItemConnectionResult() {
+}
+func (v *GroupedDataAccessReturnItemConnectionResultInvalidInputError) implementsGraphQLInterfaceGroupedDataAccessReturnItemConnectionResult() {
+}
+func (v *GroupedDataAccessReturnItemConnectionResultNotFoundError) implementsGraphQLInterfaceGroupedDataAccessReturnItemConnectionResult() {
+}
+func (v *GroupedDataAccessReturnItemConnectionResultPermissionDeniedError) implementsGraphQLInterfaceGroupedDataAccessReturnItemConnectionResult() {
+}
+
+func __unmarshalGroupedDataAccessReturnItemConnectionResult(b []byte, v *GroupedDataAccessReturnItemConnectionResult) error {
+	if string(b) == "null" {
+		return nil
+	}
+
+	var tn struct {
+		TypeName string `json:"__typename"`
+	}
+	err := json.Unmarshal(b, &tn)
+	if err != nil {
+		return err
+	}
+
+	switch tn.TypeName {
+	case "GroupedDataAccessReturnItemConnection":
+		*v = new(GroupedDataAccessReturnItemConnectionResultGroupedDataAccessReturnItemConnection)
+		return json.Unmarshal(b, *v)
+	case "InvalidInputError":
+		*v = new(GroupedDataAccessReturnItemConnectionResultInvalidInputError)
+		return json.Unmarshal(b, *v)
+	case "NotFoundError":
+		*v = new(GroupedDataAccessReturnItemConnectionResultNotFoundError)
+		return json.Unmarshal(b, *v)
+	case "PermissionDeniedError":
+		*v = new(GroupedDataAccessReturnItemConnectionResultPermissionDeniedError)
+		return json.Unmarshal(b, *v)
+	case "":
+		return fmt.Errorf(
+			"response was missing GroupedDataAccessReturnItemConnectionResult.__typename")
+	default:
+		return fmt.Errorf(
+			`unexpected concrete type for GroupedDataAccessReturnItemConnectionResult: "%v"`, tn.TypeName)
+	}
+}
+
+func __marshalGroupedDataAccessReturnItemConnectionResult(v *GroupedDataAccessReturnItemConnectionResult) ([]byte, error) {
+
+	var typename string
+	switch v := (*v).(type) {
+	case *GroupedDataAccessReturnItemConnectionResultGroupedDataAccessReturnItemConnection:
+		typename = "GroupedDataAccessReturnItemConnection"
+
+		premarshaled, err := v.__premarshalJSON()
+		if err != nil {
+			return nil, err
+		}
+		result := struct {
+			TypeName string `json:"__typename"`
+			*__premarshalGroupedDataAccessReturnItemConnectionResultGroupedDataAccessReturnItemConnection
+		}{typename, premarshaled}
+		return json.Marshal(result)
+	case *GroupedDataAccessReturnItemConnectionResultInvalidInputError:
+		typename = "InvalidInputError"
+
+		premarshaled, err := v.__premarshalJSON()
+		if err != nil {
+			return nil, err
+		}
+		result := struct {
+			TypeName string `json:"__typename"`
+			*__premarshalGroupedDataAccessReturnItemConnectionResultInvalidInputError
+		}{typename, premarshaled}
+		return json.Marshal(result)
+	case *GroupedDataAccessReturnItemConnectionResultNotFoundError:
+		typename = "NotFoundError"
+
+		premarshaled, err := v.__premarshalJSON()
+		if err != nil {
+			return nil, err
+		}
+		result := struct {
+			TypeName string `json:"__typename"`
+			*__premarshalGroupedDataAccessReturnItemConnectionResultNotFoundError
+		}{typename, premarshaled}
+		return json.Marshal(result)
+	case *GroupedDataAccessReturnItemConnectionResultPermissionDeniedError:
+		typename = "PermissionDeniedError"
+
+		premarshaled, err := v.__premarshalJSON()
+		if err != nil {
+			return nil, err
+		}
+		result := struct {
+			TypeName string `json:"__typename"`
+			*__premarshalGroupedDataAccessReturnItemConnectionResultPermissionDeniedError
+		}{typename, premarshaled}
+		return json.Marshal(result)
+	case nil:
+		return []byte("null"), nil
+	default:
+		return nil, fmt.Errorf(
+			`unexpected concrete type for GroupedDataAccessReturnItemConnectionResult: "%T"`, v)
+	}
+}
+
+// GroupedDataAccessReturnItemConnectionResult includes the GraphQL fields of GroupedDataAccessReturnItemConnection requested by the fragment GroupedDataAccessReturnItemConnectionResult.
+type GroupedDataAccessReturnItemConnectionResultGroupedDataAccessReturnItemConnection struct {
+	GroupedDataAccessReturnItemConnection `json:"-"`
+}
+
+// GetPageInfo returns GroupedDataAccessReturnItemConnectionResultGroupedDataAccessReturnItemConnection.PageInfo, and is useful for accessing the field via an interface.
+func (v *GroupedDataAccessReturnItemConnectionResultGroupedDataAccessReturnItemConnection) GetPageInfo() GroupedDataAccessReturnItemConnectionPageInfo {
+	return v.GroupedDataAccessReturnItemConnection.PageInfo
+}
+
+// GetEdges returns GroupedDataAccessReturnItemConnectionResultGroupedDataAccessReturnItemConnection.Edges, and is useful for accessing the field via an interface.
+func (v *GroupedDataAccessReturnItemConnectionResultGroupedDataAccessReturnItemConnection) GetEdges() []GroupedDataAccessReturnItemConnectionEdgesGroupedDataAccessReturnItemEdge {
+	return v.GroupedDataAccessReturnItemConnection.Edges
+}
+
+func (v *GroupedDataAccessReturnItemConnectionResultGroupedDataAccessReturnItemConnection) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*GroupedDataAccessReturnItemConnectionResultGroupedDataAccessReturnItemConnection
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.GroupedDataAccessReturnItemConnectionResultGroupedDataAccessReturnItemConnection = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.GroupedDataAccessReturnItemConnection)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalGroupedDataAccessReturnItemConnectionResultGroupedDataAccessReturnItemConnection struct {
+	PageInfo GroupedDataAccessReturnItemConnectionPageInfo `json:"pageInfo"`
+
+	Edges []GroupedDataAccessReturnItemConnectionEdgesGroupedDataAccessReturnItemEdge `json:"edges"`
+}
+
+func (v *GroupedDataAccessReturnItemConnectionResultGroupedDataAccessReturnItemConnection) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *GroupedDataAccessReturnItemConnectionResultGroupedDataAccessReturnItemConnection) __premarshalJSON() (*__premarshalGroupedDataAccessReturnItemConnectionResultGroupedDataAccessReturnItemConnection, error) {
+	var retval __premarshalGroupedDataAccessReturnItemConnectionResultGroupedDataAccessReturnItemConnection
+
+	retval.PageInfo = v.GroupedDataAccessReturnItemConnection.PageInfo
+	retval.Edges = v.GroupedDataAccessReturnItemConnection.Edges
+	return &retval, nil
+}
+
+// GroupedDataAccessReturnItemConnectionResult includes the GraphQL fields of InvalidInputError requested by the fragment GroupedDataAccessReturnItemConnectionResult.
+type GroupedDataAccessReturnItemConnectionResultInvalidInputError struct {
+	InvalidInputError `json:"-"`
+}
+
+// GetMessage returns GroupedDataAccessReturnItemConnectionResultInvalidInputError.Message, and is useful for accessing the field via an interface.
+func (v *GroupedDataAccessReturnItemConnectionResultInvalidInputError) GetMessage() string {
+	return v.InvalidInputError.Message
+}
+
+func (v *GroupedDataAccessReturnItemConnectionResultInvalidInputError) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*GroupedDataAccessReturnItemConnectionResultInvalidInputError
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.GroupedDataAccessReturnItemConnectionResultInvalidInputError = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.InvalidInputError)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalGroupedDataAccessReturnItemConnectionResultInvalidInputError struct {
+	Message string `json:"message"`
+}
+
+func (v *GroupedDataAccessReturnItemConnectionResultInvalidInputError) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *GroupedDataAccessReturnItemConnectionResultInvalidInputError) __premarshalJSON() (*__premarshalGroupedDataAccessReturnItemConnectionResultInvalidInputError, error) {
+	var retval __premarshalGroupedDataAccessReturnItemConnectionResultInvalidInputError
+
+	retval.Message = v.InvalidInputError.Message
+	return &retval, nil
+}
+
+// GroupedDataAccessReturnItemConnectionResult includes the GraphQL fields of NotFoundError requested by the fragment GroupedDataAccessReturnItemConnectionResult.
+type GroupedDataAccessReturnItemConnectionResultNotFoundError struct {
+	NotFoundError `json:"-"`
+}
+
+// GetMessage returns GroupedDataAccessReturnItemConnectionResultNotFoundError.Message, and is useful for accessing the field via an interface.
+func (v *GroupedDataAccessReturnItemConnectionResultNotFoundError) GetMessage() string {
+	return v.NotFoundError.Message
+}
+
+func (v *GroupedDataAccessReturnItemConnectionResultNotFoundError) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*GroupedDataAccessReturnItemConnectionResultNotFoundError
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.GroupedDataAccessReturnItemConnectionResultNotFoundError = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.NotFoundError)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalGroupedDataAccessReturnItemConnectionResultNotFoundError struct {
+	Message string `json:"message"`
+}
+
+func (v *GroupedDataAccessReturnItemConnectionResultNotFoundError) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *GroupedDataAccessReturnItemConnectionResultNotFoundError) __premarshalJSON() (*__premarshalGroupedDataAccessReturnItemConnectionResultNotFoundError, error) {
+	var retval __premarshalGroupedDataAccessReturnItemConnectionResultNotFoundError
+
+	retval.Message = v.NotFoundError.Message
+	return &retval, nil
+}
+
+// GroupedDataAccessReturnItemConnectionResult includes the GraphQL fields of PermissionDeniedError requested by the fragment GroupedDataAccessReturnItemConnectionResult.
+type GroupedDataAccessReturnItemConnectionResultPermissionDeniedError struct {
+	PermissionDeniedError `json:"-"`
+}
+
+// GetMessage returns GroupedDataAccessReturnItemConnectionResultPermissionDeniedError.Message, and is useful for accessing the field via an interface.
+func (v *GroupedDataAccessReturnItemConnectionResultPermissionDeniedError) GetMessage() string {
+	return v.PermissionDeniedError.Message
+}
+
+func (v *GroupedDataAccessReturnItemConnectionResultPermissionDeniedError) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*GroupedDataAccessReturnItemConnectionResultPermissionDeniedError
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.GroupedDataAccessReturnItemConnectionResultPermissionDeniedError = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.PermissionDeniedError)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalGroupedDataAccessReturnItemConnectionResultPermissionDeniedError struct {
+	Message string `json:"message"`
+}
+
+func (v *GroupedDataAccessReturnItemConnectionResultPermissionDeniedError) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *GroupedDataAccessReturnItemConnectionResultPermissionDeniedError) __premarshalJSON() (*__premarshalGroupedDataAccessReturnItemConnectionResultPermissionDeniedError, error) {
+	var retval __premarshalGroupedDataAccessReturnItemConnectionResultPermissionDeniedError
+
+	retval.Message = v.PermissionDeniedError.Message
+	return &retval, nil
+}
+
+// GroupedDataAccessReturnItemNearestAccessControlsAccessControl includes the requested fields of the GraphQL type AccessControl.
+// The GraphQL type's documentation follows.
+//
+// Represents an access control object in the system. An access control is the abstract model representing grants, masks, filters and groups (determined by the `action` field).
+type GroupedDataAccessReturnItemNearestAccessControlsAccessControl struct {
+	AccessControlSummary `json:"-"`
+}
+
+// GetId returns GroupedDataAccessReturnItemNearestAccessControlsAccessControl.Id, and is useful for accessing the field via an interface.
+func (v *GroupedDataAccessReturnItemNearestAccessControlsAccessControl) GetId() string {
+	return v.AccessControlSummary.Id
+}
+
+// GetName returns GroupedDataAccessReturnItemNearestAccessControlsAccessControl.Name, and is useful for accessing the field via an interface.
+func (v *GroupedDataAccessReturnItemNearestAccessControlsAccessControl) GetName() string {
+	return v.AccessControlSummary.Name
+}
+
+// GetAction returns GroupedDataAccessReturnItemNearestAccessControlsAccessControl.Action, and is useful for accessing the field via an interface.
+func (v *GroupedDataAccessReturnItemNearestAccessControlsAccessControl) GetAction() AccessControlAction {
+	return v.AccessControlSummary.Action
+}
+
+// GetState returns GroupedDataAccessReturnItemNearestAccessControlsAccessControl.State, and is useful for accessing the field via an interface.
+func (v *GroupedDataAccessReturnItemNearestAccessControlsAccessControl) GetState() AccessControlState {
+	return v.AccessControlSummary.State
+}
+
+// GetCategory returns GroupedDataAccessReturnItemNearestAccessControlsAccessControl.Category, and is useful for accessing the field via an interface.
+func (v *GroupedDataAccessReturnItemNearestAccessControlsAccessControl) GetCategory() *AccessControlSummaryCategoryGrantCategory {
+	return v.AccessControlSummary.Category
+}
+
+func (v *GroupedDataAccessReturnItemNearestAccessControlsAccessControl) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*GroupedDataAccessReturnItemNearestAccessControlsAccessControl
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.GroupedDataAccessReturnItemNearestAccessControlsAccessControl = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.AccessControlSummary)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalGroupedDataAccessReturnItemNearestAccessControlsAccessControl struct {
+	Id string `json:"id"`
+
+	Name string `json:"name"`
+
+	Action AccessControlAction `json:"action"`
+
+	State AccessControlState `json:"state"`
+
+	Category *AccessControlSummaryCategoryGrantCategory `json:"category"`
+}
+
+func (v *GroupedDataAccessReturnItemNearestAccessControlsAccessControl) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *GroupedDataAccessReturnItemNearestAccessControlsAccessControl) __premarshalJSON() (*__premarshalGroupedDataAccessReturnItemNearestAccessControlsAccessControl, error) {
+	var retval __premarshalGroupedDataAccessReturnItemNearestAccessControlsAccessControl
+
+	retval.Id = v.AccessControlSummary.Id
+	retval.Name = v.AccessControlSummary.Name
+	retval.Action = v.AccessControlSummary.Action
+	retval.State = v.AccessControlSummary.State
+	retval.Category = v.AccessControlSummary.Category
+	return &retval, nil
+}
+
+// GroupedDataAccessReturnItemUser includes the requested fields of the GraphQL type User.
+// The GraphQL type's documentation follows.
+//
+// Represents a user in Collibra Data Access. It can be a human user or a machine user (service account) which groups accounts in different data sources.
+type GroupedDataAccessReturnItemUser struct {
+	User `json:"-"`
+}
+
+// GetId returns GroupedDataAccessReturnItemUser.Id, and is useful for accessing the field via an interface.
+func (v *GroupedDataAccessReturnItemUser) GetId() string { return v.User.Id }
+
+// GetName returns GroupedDataAccessReturnItemUser.Name, and is useful for accessing the field via an interface.
+func (v *GroupedDataAccessReturnItemUser) GetName() string { return v.User.Name }
+
+// GetEmail returns GroupedDataAccessReturnItemUser.Email, and is useful for accessing the field via an interface.
+func (v *GroupedDataAccessReturnItemUser) GetEmail() *string { return v.User.Email }
+
+// GetType returns GroupedDataAccessReturnItemUser.Type, and is useful for accessing the field via an interface.
+func (v *GroupedDataAccessReturnItemUser) GetType() UserType { return v.User.Type }
+
+func (v *GroupedDataAccessReturnItemUser) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*GroupedDataAccessReturnItemUser
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.GroupedDataAccessReturnItemUser = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.User)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalGroupedDataAccessReturnItemUser struct {
+	Id string `json:"id"`
+
+	Name string `json:"name"`
+
+	Email *string `json:"email"`
+
+	Type UserType `json:"type"`
+}
+
+func (v *GroupedDataAccessReturnItemUser) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *GroupedDataAccessReturnItemUser) __premarshalJSON() (*__premarshalGroupedDataAccessReturnItemUser, error) {
+	var retval __premarshalGroupedDataAccessReturnItemUser
+
+	retval.Id = v.User.Id
+	retval.Name = v.User.Name
+	retval.Email = v.User.Email
+	retval.Type = v.User.Type
+	return &retval, nil
+}
+
 type ImportCommand struct {
 	UpsertDataObject            *DataObjectImport            `json:"upsertDataObject,omitempty"`
 	UpsertUser                  *UserImport                  `json:"upsertUser,omitempty"`
@@ -24056,6 +26053,7 @@ type JobInput struct {
 	EventTime    time.Time  `json:"eventTime"`
 	Status       *JobStatus `json:"status,omitempty"`
 	Errors       []string   `json:"errors,omitempty"`
+	EdgeJobId    *uuid.UUID `json:"edgeJobId,omitempty"`
 }
 
 // GetDataSourceId returns JobInput.DataSourceId, and is useful for accessing the field via an interface.
@@ -24069,6 +26067,9 @@ func (v *JobInput) GetStatus() *JobStatus { return v.Status }
 
 // GetErrors returns JobInput.Errors, and is useful for accessing the field via an interface.
 func (v *JobInput) GetErrors() []string { return v.Errors }
+
+// GetEdgeJobId returns JobInput.EdgeJobId, and is useful for accessing the field via an interface.
+func (v *JobInput) GetEdgeJobId() *uuid.UUID { return v.EdgeJobId }
 
 type JobStatus string
 
@@ -24090,10 +26091,15 @@ var AllJobStatus = []JobStatus{
 
 type JobsFilter struct {
 	DataSource *string `json:"dataSource,omitempty"`
+	// Limit to jobs that ran any of the given task types, using the same codes as Task.jobType (DS, IS, DA, DAF, DU, RP, TAG).
+	TaskTypes []string `json:"taskTypes,omitempty" doc:"Limit to jobs that ran any of the given task types, using the same codes as Task.jobType (DS, IS, DA, DAF, DU, RP, TAG)."`
 }
 
 // GetDataSource returns JobsFilter.DataSource, and is useful for accessing the field via an interface.
 func (v *JobsFilter) GetDataSource() *string { return v.DataSource }
+
+// GetTaskTypes returns JobsFilter.TaskTypes, and is useful for accessing the field via an interface.
+func (v *JobsFilter) GetTaskTypes() []string { return v.TaskTypes }
 
 // ListAccessControlAbacWhatScopeAccessControl includes the requested fields of the GraphQL type AccessControl.
 // The GraphQL type's documentation follows.
@@ -32093,6 +34099,7 @@ type QueryStatementImport struct {
 	Bytes               *int                        `json:"bytes,omitempty"`
 	Rows                *int                        `json:"rows,omitempty"`
 	Credits             *float64                    `json:"credits,omitempty"`
+	Executions          int                         `json:"executions"`
 }
 
 // GetExternalId returns QueryStatementImport.ExternalId, and is useful for accessing the field via an interface.
@@ -32132,6 +34139,9 @@ func (v *QueryStatementImport) GetRows() *int { return v.Rows }
 
 // GetCredits returns QueryStatementImport.Credits, and is useful for accessing the field via an interface.
 func (v *QueryStatementImport) GetCredits() *float64 { return v.Credits }
+
+// GetExecutions returns QueryStatementImport.Executions, and is useful for accessing the field via an interface.
+func (v *QueryStatementImport) GetExecutions() int { return v.Executions }
 
 // Role includes the GraphQL fields of Role requested by the fragment Role.
 // The GraphQL type's documentation follows.
@@ -35650,105 +37660,33 @@ var AllSubtaskStatus = []SubtaskStatus{
 	SubtaskStatusTimedout,
 }
 
-// SupportedCLIVersionResponse is returned by SupportedCLIVersion on success.
-type SupportedCLIVersionResponse struct {
-	SupportedCliVersion SupportedCLIVersionSupportedCliVersionSupportedCLIVersion `json:"supportedCliVersion"`
+// SupportedAgentVersion includes the GraphQL fields of SupportedCLIVersion requested by the fragment SupportedAgentVersion.
+type SupportedAgentVersion struct {
+	DeprecatedVersions *SupportedAgentVersionDeprecatedVersionsDeprecatedCLIVersion `json:"deprecatedVersions"`
+	SupportedVersions  string                                                       `json:"supportedVersions"`
 }
 
-// GetSupportedCliVersion returns SupportedCLIVersionResponse.SupportedCliVersion, and is useful for accessing the field via an interface.
-func (v *SupportedCLIVersionResponse) GetSupportedCliVersion() SupportedCLIVersionSupportedCliVersionSupportedCLIVersion {
-	return v.SupportedCliVersion
-}
-
-// SupportedCLIVersionSupportedCliVersionSupportedCLIVersion includes the requested fields of the GraphQL type SupportedCLIVersion.
-type SupportedCLIVersionSupportedCliVersionSupportedCLIVersion struct {
-	SupportedCliVersion `json:"-"`
-}
-
-// GetDeprecatedVersions returns SupportedCLIVersionSupportedCliVersionSupportedCLIVersion.DeprecatedVersions, and is useful for accessing the field via an interface.
-func (v *SupportedCLIVersionSupportedCliVersionSupportedCLIVersion) GetDeprecatedVersions() *SupportedCliVersionDeprecatedVersionsDeprecatedCLIVersion {
-	return v.SupportedCliVersion.DeprecatedVersions
-}
-
-// GetSupportedVersions returns SupportedCLIVersionSupportedCliVersionSupportedCLIVersion.SupportedVersions, and is useful for accessing the field via an interface.
-func (v *SupportedCLIVersionSupportedCliVersionSupportedCLIVersion) GetSupportedVersions() string {
-	return v.SupportedCliVersion.SupportedVersions
-}
-
-func (v *SupportedCLIVersionSupportedCliVersionSupportedCLIVersion) UnmarshalJSON(b []byte) error {
-
-	if string(b) == "null" {
-		return nil
-	}
-
-	var firstPass struct {
-		*SupportedCLIVersionSupportedCliVersionSupportedCLIVersion
-		graphql.NoUnmarshalJSON
-	}
-	firstPass.SupportedCLIVersionSupportedCliVersionSupportedCLIVersion = v
-
-	err := json.Unmarshal(b, &firstPass)
-	if err != nil {
-		return err
-	}
-
-	err = json.Unmarshal(
-		b, &v.SupportedCliVersion)
-	if err != nil {
-		return err
-	}
-	return nil
-}
-
-type __premarshalSupportedCLIVersionSupportedCliVersionSupportedCLIVersion struct {
-	DeprecatedVersions *SupportedCliVersionDeprecatedVersionsDeprecatedCLIVersion `json:"deprecatedVersions"`
-
-	SupportedVersions string `json:"supportedVersions"`
-}
-
-func (v *SupportedCLIVersionSupportedCliVersionSupportedCLIVersion) MarshalJSON() ([]byte, error) {
-	premarshaled, err := v.__premarshalJSON()
-	if err != nil {
-		return nil, err
-	}
-	return json.Marshal(premarshaled)
-}
-
-func (v *SupportedCLIVersionSupportedCliVersionSupportedCLIVersion) __premarshalJSON() (*__premarshalSupportedCLIVersionSupportedCliVersionSupportedCLIVersion, error) {
-	var retval __premarshalSupportedCLIVersionSupportedCliVersionSupportedCLIVersion
-
-	retval.DeprecatedVersions = v.SupportedCliVersion.DeprecatedVersions
-	retval.SupportedVersions = v.SupportedCliVersion.SupportedVersions
-	return &retval, nil
-}
-
-// SupportedCliVersion includes the GraphQL fields of SupportedCLIVersion requested by the fragment SupportedCliVersion.
-type SupportedCliVersion struct {
-	DeprecatedVersions *SupportedCliVersionDeprecatedVersionsDeprecatedCLIVersion `json:"deprecatedVersions"`
-	SupportedVersions  string                                                     `json:"supportedVersions"`
-}
-
-// GetDeprecatedVersions returns SupportedCliVersion.DeprecatedVersions, and is useful for accessing the field via an interface.
-func (v *SupportedCliVersion) GetDeprecatedVersions() *SupportedCliVersionDeprecatedVersionsDeprecatedCLIVersion {
+// GetDeprecatedVersions returns SupportedAgentVersion.DeprecatedVersions, and is useful for accessing the field via an interface.
+func (v *SupportedAgentVersion) GetDeprecatedVersions() *SupportedAgentVersionDeprecatedVersionsDeprecatedCLIVersion {
 	return v.DeprecatedVersions
 }
 
-// GetSupportedVersions returns SupportedCliVersion.SupportedVersions, and is useful for accessing the field via an interface.
-func (v *SupportedCliVersion) GetSupportedVersions() string { return v.SupportedVersions }
+// GetSupportedVersions returns SupportedAgentVersion.SupportedVersions, and is useful for accessing the field via an interface.
+func (v *SupportedAgentVersion) GetSupportedVersions() string { return v.SupportedVersions }
 
-// SupportedCliVersionDeprecatedVersionsDeprecatedCLIVersion includes the requested fields of the GraphQL type DeprecatedCLIVersion.
-type SupportedCliVersionDeprecatedVersionsDeprecatedCLIVersion struct {
+// SupportedAgentVersionDeprecatedVersionsDeprecatedCLIVersion includes the requested fields of the GraphQL type DeprecatedCLIVersion.
+type SupportedAgentVersionDeprecatedVersionsDeprecatedCLIVersion struct {
 	DeprecatedVersions string  `json:"deprecatedVersions"`
 	Msg                *string `json:"msg"`
 }
 
-// GetDeprecatedVersions returns SupportedCliVersionDeprecatedVersionsDeprecatedCLIVersion.DeprecatedVersions, and is useful for accessing the field via an interface.
-func (v *SupportedCliVersionDeprecatedVersionsDeprecatedCLIVersion) GetDeprecatedVersions() string {
+// GetDeprecatedVersions returns SupportedAgentVersionDeprecatedVersionsDeprecatedCLIVersion.DeprecatedVersions, and is useful for accessing the field via an interface.
+func (v *SupportedAgentVersionDeprecatedVersionsDeprecatedCLIVersion) GetDeprecatedVersions() string {
 	return v.DeprecatedVersions
 }
 
-// GetMsg returns SupportedCliVersionDeprecatedVersionsDeprecatedCLIVersion.Msg, and is useful for accessing the field via an interface.
-func (v *SupportedCliVersionDeprecatedVersionsDeprecatedCLIVersion) GetMsg() *string { return v.Msg }
+// GetMsg returns SupportedAgentVersionDeprecatedVersionsDeprecatedCLIVersion.Msg, and is useful for accessing the field via an interface.
+func (v *SupportedAgentVersionDeprecatedVersionsDeprecatedCLIVersion) GetMsg() *string { return v.Msg }
 
 // SyncData includes the GraphQL fields of SyncData requested by the fragment SyncData.
 // The GraphQL type's documentation follows.
@@ -37826,29 +39764,29 @@ var AllTaskStatus = []TaskStatus{
 	TaskStatusTimedout,
 }
 
-// TriggerDataSourceCliSyncResponse is returned by TriggerDataSourceCliSync on success.
-type TriggerDataSourceCliSyncResponse struct {
+// TriggerDataSourceAgentSyncResponse is returned by TriggerDataSourceAgentSync on success.
+type TriggerDataSourceAgentSyncResponse struct {
 	// Manually trigger a synchronization for a data source.
-	TriggerDataSourceCliSync TriggerDataSourceCliSyncTriggerDataSourceCliSyncDataSourceResult `json:"-"`
+	TriggerDataSourceAgentSync TriggerDataSourceAgentSyncTriggerDataSourceAgentSyncDataSourceResult `json:"-"`
 }
 
-// GetTriggerDataSourceCliSync returns TriggerDataSourceCliSyncResponse.TriggerDataSourceCliSync, and is useful for accessing the field via an interface.
-func (v *TriggerDataSourceCliSyncResponse) GetTriggerDataSourceCliSync() TriggerDataSourceCliSyncTriggerDataSourceCliSyncDataSourceResult {
-	return v.TriggerDataSourceCliSync
+// GetTriggerDataSourceAgentSync returns TriggerDataSourceAgentSyncResponse.TriggerDataSourceAgentSync, and is useful for accessing the field via an interface.
+func (v *TriggerDataSourceAgentSyncResponse) GetTriggerDataSourceAgentSync() TriggerDataSourceAgentSyncTriggerDataSourceAgentSyncDataSourceResult {
+	return v.TriggerDataSourceAgentSync
 }
 
-func (v *TriggerDataSourceCliSyncResponse) UnmarshalJSON(b []byte) error {
+func (v *TriggerDataSourceAgentSyncResponse) UnmarshalJSON(b []byte) error {
 
 	if string(b) == "null" {
 		return nil
 	}
 
 	var firstPass struct {
-		*TriggerDataSourceCliSyncResponse
-		TriggerDataSourceCliSync json.RawMessage `json:"triggerDataSourceCliSync"`
+		*TriggerDataSourceAgentSyncResponse
+		TriggerDataSourceAgentSync json.RawMessage `json:"triggerDataSourceAgentSync"`
 		graphql.NoUnmarshalJSON
 	}
-	firstPass.TriggerDataSourceCliSyncResponse = v
+	firstPass.TriggerDataSourceAgentSyncResponse = v
 
 	err := json.Unmarshal(b, &firstPass)
 	if err != nil {
@@ -37856,25 +39794,25 @@ func (v *TriggerDataSourceCliSyncResponse) UnmarshalJSON(b []byte) error {
 	}
 
 	{
-		dst := &v.TriggerDataSourceCliSync
-		src := firstPass.TriggerDataSourceCliSync
+		dst := &v.TriggerDataSourceAgentSync
+		src := firstPass.TriggerDataSourceAgentSync
 		if len(src) != 0 && string(src) != "null" {
-			err = __unmarshalTriggerDataSourceCliSyncTriggerDataSourceCliSyncDataSourceResult(
+			err = __unmarshalTriggerDataSourceAgentSyncTriggerDataSourceAgentSyncDataSourceResult(
 				src, dst)
 			if err != nil {
 				return fmt.Errorf(
-					"unable to unmarshal TriggerDataSourceCliSyncResponse.TriggerDataSourceCliSync: %w", err)
+					"unable to unmarshal TriggerDataSourceAgentSyncResponse.TriggerDataSourceAgentSync: %w", err)
 			}
 		}
 	}
 	return nil
 }
 
-type __premarshalTriggerDataSourceCliSyncResponse struct {
-	TriggerDataSourceCliSync json.RawMessage `json:"triggerDataSourceCliSync"`
+type __premarshalTriggerDataSourceAgentSyncResponse struct {
+	TriggerDataSourceAgentSync json.RawMessage `json:"triggerDataSourceAgentSync"`
 }
 
-func (v *TriggerDataSourceCliSyncResponse) MarshalJSON() ([]byte, error) {
+func (v *TriggerDataSourceAgentSyncResponse) MarshalJSON() ([]byte, error) {
 	premarshaled, err := v.__premarshalJSON()
 	if err != nil {
 		return nil, err
@@ -37882,102 +39820,102 @@ func (v *TriggerDataSourceCliSyncResponse) MarshalJSON() ([]byte, error) {
 	return json.Marshal(premarshaled)
 }
 
-func (v *TriggerDataSourceCliSyncResponse) __premarshalJSON() (*__premarshalTriggerDataSourceCliSyncResponse, error) {
-	var retval __premarshalTriggerDataSourceCliSyncResponse
+func (v *TriggerDataSourceAgentSyncResponse) __premarshalJSON() (*__premarshalTriggerDataSourceAgentSyncResponse, error) {
+	var retval __premarshalTriggerDataSourceAgentSyncResponse
 
 	{
 
-		dst := &retval.TriggerDataSourceCliSync
-		src := v.TriggerDataSourceCliSync
+		dst := &retval.TriggerDataSourceAgentSync
+		src := v.TriggerDataSourceAgentSync
 		var err error
-		*dst, err = __marshalTriggerDataSourceCliSyncTriggerDataSourceCliSyncDataSourceResult(
+		*dst, err = __marshalTriggerDataSourceAgentSyncTriggerDataSourceAgentSyncDataSourceResult(
 			&src)
 		if err != nil {
 			return nil, fmt.Errorf(
-				"unable to marshal TriggerDataSourceCliSyncResponse.TriggerDataSourceCliSync: %w", err)
+				"unable to marshal TriggerDataSourceAgentSyncResponse.TriggerDataSourceAgentSync: %w", err)
 		}
 	}
 	return &retval, nil
 }
 
-// TriggerDataSourceCliSyncTriggerDataSourceCliSyncAlreadyExistsError includes the requested fields of the GraphQL type AlreadyExistsError.
+// TriggerDataSourceAgentSyncTriggerDataSourceAgentSyncAlreadyExistsError includes the requested fields of the GraphQL type AlreadyExistsError.
 // The GraphQL type's documentation follows.
 //
 // Error when the user tries to create a resource that already exists.
-type TriggerDataSourceCliSyncTriggerDataSourceCliSyncAlreadyExistsError struct {
+type TriggerDataSourceAgentSyncTriggerDataSourceAgentSyncAlreadyExistsError struct {
 	Typename *string `json:"__typename"`
 }
 
-// GetTypename returns TriggerDataSourceCliSyncTriggerDataSourceCliSyncAlreadyExistsError.Typename, and is useful for accessing the field via an interface.
-func (v *TriggerDataSourceCliSyncTriggerDataSourceCliSyncAlreadyExistsError) GetTypename() *string {
+// GetTypename returns TriggerDataSourceAgentSyncTriggerDataSourceAgentSyncAlreadyExistsError.Typename, and is useful for accessing the field via an interface.
+func (v *TriggerDataSourceAgentSyncTriggerDataSourceAgentSyncAlreadyExistsError) GetTypename() *string {
 	return v.Typename
 }
 
-// TriggerDataSourceCliSyncTriggerDataSourceCliSyncDataSource includes the requested fields of the GraphQL type DataSource.
+// TriggerDataSourceAgentSyncTriggerDataSourceAgentSyncDataSource includes the requested fields of the GraphQL type DataSource.
 // The GraphQL type's documentation follows.
 //
 // Represents a data source in Collibra Data Access.
-type TriggerDataSourceCliSyncTriggerDataSourceCliSyncDataSource struct {
+type TriggerDataSourceAgentSyncTriggerDataSourceAgentSyncDataSource struct {
 	Typename   *string `json:"__typename"`
 	DataSource `json:"-"`
 }
 
-// GetTypename returns TriggerDataSourceCliSyncTriggerDataSourceCliSyncDataSource.Typename, and is useful for accessing the field via an interface.
-func (v *TriggerDataSourceCliSyncTriggerDataSourceCliSyncDataSource) GetTypename() *string {
+// GetTypename returns TriggerDataSourceAgentSyncTriggerDataSourceAgentSyncDataSource.Typename, and is useful for accessing the field via an interface.
+func (v *TriggerDataSourceAgentSyncTriggerDataSourceAgentSyncDataSource) GetTypename() *string {
 	return v.Typename
 }
 
-// GetId returns TriggerDataSourceCliSyncTriggerDataSourceCliSyncDataSource.Id, and is useful for accessing the field via an interface.
-func (v *TriggerDataSourceCliSyncTriggerDataSourceCliSyncDataSource) GetId() string {
+// GetId returns TriggerDataSourceAgentSyncTriggerDataSourceAgentSyncDataSource.Id, and is useful for accessing the field via an interface.
+func (v *TriggerDataSourceAgentSyncTriggerDataSourceAgentSyncDataSource) GetId() string {
 	return v.DataSource.Id
 }
 
-// GetName returns TriggerDataSourceCliSyncTriggerDataSourceCliSyncDataSource.Name, and is useful for accessing the field via an interface.
-func (v *TriggerDataSourceCliSyncTriggerDataSourceCliSyncDataSource) GetName() string {
+// GetName returns TriggerDataSourceAgentSyncTriggerDataSourceAgentSyncDataSource.Name, and is useful for accessing the field via an interface.
+func (v *TriggerDataSourceAgentSyncTriggerDataSourceAgentSyncDataSource) GetName() string {
 	return v.DataSource.Name
 }
 
-// GetType returns TriggerDataSourceCliSyncTriggerDataSourceCliSyncDataSource.Type, and is useful for accessing the field via an interface.
-func (v *TriggerDataSourceCliSyncTriggerDataSourceCliSyncDataSource) GetType() string {
+// GetType returns TriggerDataSourceAgentSyncTriggerDataSourceAgentSyncDataSource.Type, and is useful for accessing the field via an interface.
+func (v *TriggerDataSourceAgentSyncTriggerDataSourceAgentSyncDataSource) GetType() string {
 	return v.DataSource.Type
 }
 
-// GetDescription returns TriggerDataSourceCliSyncTriggerDataSourceCliSyncDataSource.Description, and is useful for accessing the field via an interface.
-func (v *TriggerDataSourceCliSyncTriggerDataSourceCliSyncDataSource) GetDescription() string {
+// GetDescription returns TriggerDataSourceAgentSyncTriggerDataSourceAgentSyncDataSource.Description, and is useful for accessing the field via an interface.
+func (v *TriggerDataSourceAgentSyncTriggerDataSourceAgentSyncDataSource) GetDescription() string {
 	return v.DataSource.Description
 }
 
-// GetCreatedAt returns TriggerDataSourceCliSyncTriggerDataSourceCliSyncDataSource.CreatedAt, and is useful for accessing the field via an interface.
-func (v *TriggerDataSourceCliSyncTriggerDataSourceCliSyncDataSource) GetCreatedAt() time.Time {
+// GetCreatedAt returns TriggerDataSourceAgentSyncTriggerDataSourceAgentSyncDataSource.CreatedAt, and is useful for accessing the field via an interface.
+func (v *TriggerDataSourceAgentSyncTriggerDataSourceAgentSyncDataSource) GetCreatedAt() time.Time {
 	return v.DataSource.CreatedAt
 }
 
-// GetModifiedAt returns TriggerDataSourceCliSyncTriggerDataSourceCliSyncDataSource.ModifiedAt, and is useful for accessing the field via an interface.
-func (v *TriggerDataSourceCliSyncTriggerDataSourceCliSyncDataSource) GetModifiedAt() time.Time {
+// GetModifiedAt returns TriggerDataSourceAgentSyncTriggerDataSourceAgentSyncDataSource.ModifiedAt, and is useful for accessing the field via an interface.
+func (v *TriggerDataSourceAgentSyncTriggerDataSourceAgentSyncDataSource) GetModifiedAt() time.Time {
 	return v.DataSource.ModifiedAt
 }
 
-// GetParent returns TriggerDataSourceCliSyncTriggerDataSourceCliSyncDataSource.Parent, and is useful for accessing the field via an interface.
-func (v *TriggerDataSourceCliSyncTriggerDataSourceCliSyncDataSource) GetParent() *DataSourceParentDataSource {
+// GetParent returns TriggerDataSourceAgentSyncTriggerDataSourceAgentSyncDataSource.Parent, and is useful for accessing the field via an interface.
+func (v *TriggerDataSourceAgentSyncTriggerDataSourceAgentSyncDataSource) GetParent() *DataSourceParentDataSource {
 	return v.DataSource.Parent
 }
 
-// GetEdgeSiteInfo returns TriggerDataSourceCliSyncTriggerDataSourceCliSyncDataSource.EdgeSiteInfo, and is useful for accessing the field via an interface.
-func (v *TriggerDataSourceCliSyncTriggerDataSourceCliSyncDataSource) GetEdgeSiteInfo() *DataSourceEdgeSiteInfoDataSourceLinkedEdgeSiteInfoResult {
+// GetEdgeSiteInfo returns TriggerDataSourceAgentSyncTriggerDataSourceAgentSyncDataSource.EdgeSiteInfo, and is useful for accessing the field via an interface.
+func (v *TriggerDataSourceAgentSyncTriggerDataSourceAgentSyncDataSource) GetEdgeSiteInfo() *DataSourceEdgeSiteInfoDataSourceLinkedEdgeSiteInfoResult {
 	return v.DataSource.EdgeSiteInfo
 }
 
-func (v *TriggerDataSourceCliSyncTriggerDataSourceCliSyncDataSource) UnmarshalJSON(b []byte) error {
+func (v *TriggerDataSourceAgentSyncTriggerDataSourceAgentSyncDataSource) UnmarshalJSON(b []byte) error {
 
 	if string(b) == "null" {
 		return nil
 	}
 
 	var firstPass struct {
-		*TriggerDataSourceCliSyncTriggerDataSourceCliSyncDataSource
+		*TriggerDataSourceAgentSyncTriggerDataSourceAgentSyncDataSource
 		graphql.NoUnmarshalJSON
 	}
-	firstPass.TriggerDataSourceCliSyncTriggerDataSourceCliSyncDataSource = v
+	firstPass.TriggerDataSourceAgentSyncTriggerDataSourceAgentSyncDataSource = v
 
 	err := json.Unmarshal(b, &firstPass)
 	if err != nil {
@@ -37992,7 +39930,7 @@ func (v *TriggerDataSourceCliSyncTriggerDataSourceCliSyncDataSource) UnmarshalJS
 	return nil
 }
 
-type __premarshalTriggerDataSourceCliSyncTriggerDataSourceCliSyncDataSource struct {
+type __premarshalTriggerDataSourceAgentSyncTriggerDataSourceAgentSyncDataSource struct {
 	Typename *string `json:"__typename"`
 
 	Id string `json:"id"`
@@ -38012,7 +39950,7 @@ type __premarshalTriggerDataSourceCliSyncTriggerDataSourceCliSyncDataSource stru
 	EdgeSiteInfo json.RawMessage `json:"edgeSiteInfo"`
 }
 
-func (v *TriggerDataSourceCliSyncTriggerDataSourceCliSyncDataSource) MarshalJSON() ([]byte, error) {
+func (v *TriggerDataSourceAgentSyncTriggerDataSourceAgentSyncDataSource) MarshalJSON() ([]byte, error) {
 	premarshaled, err := v.__premarshalJSON()
 	if err != nil {
 		return nil, err
@@ -38020,8 +39958,8 @@ func (v *TriggerDataSourceCliSyncTriggerDataSourceCliSyncDataSource) MarshalJSON
 	return json.Marshal(premarshaled)
 }
 
-func (v *TriggerDataSourceCliSyncTriggerDataSourceCliSyncDataSource) __premarshalJSON() (*__premarshalTriggerDataSourceCliSyncTriggerDataSourceCliSyncDataSource, error) {
-	var retval __premarshalTriggerDataSourceCliSyncTriggerDataSourceCliSyncDataSource
+func (v *TriggerDataSourceAgentSyncTriggerDataSourceAgentSyncDataSource) __premarshalJSON() (*__premarshalTriggerDataSourceAgentSyncTriggerDataSourceAgentSyncDataSource, error) {
+	var retval __premarshalTriggerDataSourceAgentSyncTriggerDataSourceAgentSyncDataSource
 
 	retval.Typename = v.Typename
 	retval.Id = v.DataSource.Id
@@ -38041,39 +39979,39 @@ func (v *TriggerDataSourceCliSyncTriggerDataSourceCliSyncDataSource) __premarsha
 				src)
 			if err != nil {
 				return nil, fmt.Errorf(
-					"unable to marshal TriggerDataSourceCliSyncTriggerDataSourceCliSyncDataSource.DataSource.EdgeSiteInfo: %w", err)
+					"unable to marshal TriggerDataSourceAgentSyncTriggerDataSourceAgentSyncDataSource.DataSource.EdgeSiteInfo: %w", err)
 			}
 		}
 	}
 	return &retval, nil
 }
 
-// TriggerDataSourceCliSyncTriggerDataSourceCliSyncDataSourceResult includes the requested fields of the GraphQL interface DataSourceResult.
+// TriggerDataSourceAgentSyncTriggerDataSourceAgentSyncDataSourceResult includes the requested fields of the GraphQL interface DataSourceResult.
 //
-// TriggerDataSourceCliSyncTriggerDataSourceCliSyncDataSourceResult is implemented by the following types:
-// TriggerDataSourceCliSyncTriggerDataSourceCliSyncAlreadyExistsError
-// TriggerDataSourceCliSyncTriggerDataSourceCliSyncDataSource
-// TriggerDataSourceCliSyncTriggerDataSourceCliSyncInvalidInputError
-// TriggerDataSourceCliSyncTriggerDataSourceCliSyncNotFoundError
-// TriggerDataSourceCliSyncTriggerDataSourceCliSyncPermissionDeniedError
-type TriggerDataSourceCliSyncTriggerDataSourceCliSyncDataSourceResult interface {
-	implementsGraphQLInterfaceTriggerDataSourceCliSyncTriggerDataSourceCliSyncDataSourceResult()
+// TriggerDataSourceAgentSyncTriggerDataSourceAgentSyncDataSourceResult is implemented by the following types:
+// TriggerDataSourceAgentSyncTriggerDataSourceAgentSyncAlreadyExistsError
+// TriggerDataSourceAgentSyncTriggerDataSourceAgentSyncDataSource
+// TriggerDataSourceAgentSyncTriggerDataSourceAgentSyncInvalidInputError
+// TriggerDataSourceAgentSyncTriggerDataSourceAgentSyncNotFoundError
+// TriggerDataSourceAgentSyncTriggerDataSourceAgentSyncPermissionDeniedError
+type TriggerDataSourceAgentSyncTriggerDataSourceAgentSyncDataSourceResult interface {
+	implementsGraphQLInterfaceTriggerDataSourceAgentSyncTriggerDataSourceAgentSyncDataSourceResult()
 	// GetTypename returns the receiver's concrete GraphQL type-name (see interface doc for possible values).
 	GetTypename() *string
 }
 
-func (v *TriggerDataSourceCliSyncTriggerDataSourceCliSyncAlreadyExistsError) implementsGraphQLInterfaceTriggerDataSourceCliSyncTriggerDataSourceCliSyncDataSourceResult() {
+func (v *TriggerDataSourceAgentSyncTriggerDataSourceAgentSyncAlreadyExistsError) implementsGraphQLInterfaceTriggerDataSourceAgentSyncTriggerDataSourceAgentSyncDataSourceResult() {
 }
-func (v *TriggerDataSourceCliSyncTriggerDataSourceCliSyncDataSource) implementsGraphQLInterfaceTriggerDataSourceCliSyncTriggerDataSourceCliSyncDataSourceResult() {
+func (v *TriggerDataSourceAgentSyncTriggerDataSourceAgentSyncDataSource) implementsGraphQLInterfaceTriggerDataSourceAgentSyncTriggerDataSourceAgentSyncDataSourceResult() {
 }
-func (v *TriggerDataSourceCliSyncTriggerDataSourceCliSyncInvalidInputError) implementsGraphQLInterfaceTriggerDataSourceCliSyncTriggerDataSourceCliSyncDataSourceResult() {
+func (v *TriggerDataSourceAgentSyncTriggerDataSourceAgentSyncInvalidInputError) implementsGraphQLInterfaceTriggerDataSourceAgentSyncTriggerDataSourceAgentSyncDataSourceResult() {
 }
-func (v *TriggerDataSourceCliSyncTriggerDataSourceCliSyncNotFoundError) implementsGraphQLInterfaceTriggerDataSourceCliSyncTriggerDataSourceCliSyncDataSourceResult() {
+func (v *TriggerDataSourceAgentSyncTriggerDataSourceAgentSyncNotFoundError) implementsGraphQLInterfaceTriggerDataSourceAgentSyncTriggerDataSourceAgentSyncDataSourceResult() {
 }
-func (v *TriggerDataSourceCliSyncTriggerDataSourceCliSyncPermissionDeniedError) implementsGraphQLInterfaceTriggerDataSourceCliSyncTriggerDataSourceCliSyncDataSourceResult() {
+func (v *TriggerDataSourceAgentSyncTriggerDataSourceAgentSyncPermissionDeniedError) implementsGraphQLInterfaceTriggerDataSourceAgentSyncTriggerDataSourceAgentSyncDataSourceResult() {
 }
 
-func __unmarshalTriggerDataSourceCliSyncTriggerDataSourceCliSyncDataSourceResult(b []byte, v *TriggerDataSourceCliSyncTriggerDataSourceCliSyncDataSourceResult) error {
+func __unmarshalTriggerDataSourceAgentSyncTriggerDataSourceAgentSyncDataSourceResult(b []byte, v *TriggerDataSourceAgentSyncTriggerDataSourceAgentSyncDataSourceResult) error {
 	if string(b) == "null" {
 		return nil
 	}
@@ -38088,42 +40026,42 @@ func __unmarshalTriggerDataSourceCliSyncTriggerDataSourceCliSyncDataSourceResult
 
 	switch tn.TypeName {
 	case "AlreadyExistsError":
-		*v = new(TriggerDataSourceCliSyncTriggerDataSourceCliSyncAlreadyExistsError)
+		*v = new(TriggerDataSourceAgentSyncTriggerDataSourceAgentSyncAlreadyExistsError)
 		return json.Unmarshal(b, *v)
 	case "DataSource":
-		*v = new(TriggerDataSourceCliSyncTriggerDataSourceCliSyncDataSource)
+		*v = new(TriggerDataSourceAgentSyncTriggerDataSourceAgentSyncDataSource)
 		return json.Unmarshal(b, *v)
 	case "InvalidInputError":
-		*v = new(TriggerDataSourceCliSyncTriggerDataSourceCliSyncInvalidInputError)
+		*v = new(TriggerDataSourceAgentSyncTriggerDataSourceAgentSyncInvalidInputError)
 		return json.Unmarshal(b, *v)
 	case "NotFoundError":
-		*v = new(TriggerDataSourceCliSyncTriggerDataSourceCliSyncNotFoundError)
+		*v = new(TriggerDataSourceAgentSyncTriggerDataSourceAgentSyncNotFoundError)
 		return json.Unmarshal(b, *v)
 	case "PermissionDeniedError":
-		*v = new(TriggerDataSourceCliSyncTriggerDataSourceCliSyncPermissionDeniedError)
+		*v = new(TriggerDataSourceAgentSyncTriggerDataSourceAgentSyncPermissionDeniedError)
 		return json.Unmarshal(b, *v)
 	case "":
 		return fmt.Errorf(
 			"response was missing DataSourceResult.__typename")
 	default:
 		return fmt.Errorf(
-			`unexpected concrete type for TriggerDataSourceCliSyncTriggerDataSourceCliSyncDataSourceResult: "%v"`, tn.TypeName)
+			`unexpected concrete type for TriggerDataSourceAgentSyncTriggerDataSourceAgentSyncDataSourceResult: "%v"`, tn.TypeName)
 	}
 }
 
-func __marshalTriggerDataSourceCliSyncTriggerDataSourceCliSyncDataSourceResult(v *TriggerDataSourceCliSyncTriggerDataSourceCliSyncDataSourceResult) ([]byte, error) {
+func __marshalTriggerDataSourceAgentSyncTriggerDataSourceAgentSyncDataSourceResult(v *TriggerDataSourceAgentSyncTriggerDataSourceAgentSyncDataSourceResult) ([]byte, error) {
 
 	var typename string
 	switch v := (*v).(type) {
-	case *TriggerDataSourceCliSyncTriggerDataSourceCliSyncAlreadyExistsError:
+	case *TriggerDataSourceAgentSyncTriggerDataSourceAgentSyncAlreadyExistsError:
 		typename = "AlreadyExistsError"
 
 		result := struct {
 			TypeName string `json:"__typename"`
-			*TriggerDataSourceCliSyncTriggerDataSourceCliSyncAlreadyExistsError
+			*TriggerDataSourceAgentSyncTriggerDataSourceAgentSyncAlreadyExistsError
 		}{typename, v}
 		return json.Marshal(result)
-	case *TriggerDataSourceCliSyncTriggerDataSourceCliSyncDataSource:
+	case *TriggerDataSourceAgentSyncTriggerDataSourceAgentSyncDataSource:
 		typename = "DataSource"
 
 		premarshaled, err := v.__premarshalJSON()
@@ -38132,10 +40070,10 @@ func __marshalTriggerDataSourceCliSyncTriggerDataSourceCliSyncDataSourceResult(v
 		}
 		result := struct {
 			TypeName string `json:"__typename"`
-			*__premarshalTriggerDataSourceCliSyncTriggerDataSourceCliSyncDataSource
+			*__premarshalTriggerDataSourceAgentSyncTriggerDataSourceAgentSyncDataSource
 		}{typename, premarshaled}
 		return json.Marshal(result)
-	case *TriggerDataSourceCliSyncTriggerDataSourceCliSyncInvalidInputError:
+	case *TriggerDataSourceAgentSyncTriggerDataSourceAgentSyncInvalidInputError:
 		typename = "InvalidInputError"
 
 		premarshaled, err := v.__premarshalJSON()
@@ -38144,10 +40082,10 @@ func __marshalTriggerDataSourceCliSyncTriggerDataSourceCliSyncDataSourceResult(v
 		}
 		result := struct {
 			TypeName string `json:"__typename"`
-			*__premarshalTriggerDataSourceCliSyncTriggerDataSourceCliSyncInvalidInputError
+			*__premarshalTriggerDataSourceAgentSyncTriggerDataSourceAgentSyncInvalidInputError
 		}{typename, premarshaled}
 		return json.Marshal(result)
-	case *TriggerDataSourceCliSyncTriggerDataSourceCliSyncNotFoundError:
+	case *TriggerDataSourceAgentSyncTriggerDataSourceAgentSyncNotFoundError:
 		typename = "NotFoundError"
 
 		premarshaled, err := v.__premarshalJSON()
@@ -38156,10 +40094,10 @@ func __marshalTriggerDataSourceCliSyncTriggerDataSourceCliSyncDataSourceResult(v
 		}
 		result := struct {
 			TypeName string `json:"__typename"`
-			*__premarshalTriggerDataSourceCliSyncTriggerDataSourceCliSyncNotFoundError
+			*__premarshalTriggerDataSourceAgentSyncTriggerDataSourceAgentSyncNotFoundError
 		}{typename, premarshaled}
 		return json.Marshal(result)
-	case *TriggerDataSourceCliSyncTriggerDataSourceCliSyncPermissionDeniedError:
+	case *TriggerDataSourceAgentSyncTriggerDataSourceAgentSyncPermissionDeniedError:
 		typename = "PermissionDeniedError"
 
 		premarshaled, err := v.__premarshalJSON()
@@ -38168,47 +40106,47 @@ func __marshalTriggerDataSourceCliSyncTriggerDataSourceCliSyncDataSourceResult(v
 		}
 		result := struct {
 			TypeName string `json:"__typename"`
-			*__premarshalTriggerDataSourceCliSyncTriggerDataSourceCliSyncPermissionDeniedError
+			*__premarshalTriggerDataSourceAgentSyncTriggerDataSourceAgentSyncPermissionDeniedError
 		}{typename, premarshaled}
 		return json.Marshal(result)
 	case nil:
 		return []byte("null"), nil
 	default:
 		return nil, fmt.Errorf(
-			`unexpected concrete type for TriggerDataSourceCliSyncTriggerDataSourceCliSyncDataSourceResult: "%T"`, v)
+			`unexpected concrete type for TriggerDataSourceAgentSyncTriggerDataSourceAgentSyncDataSourceResult: "%T"`, v)
 	}
 }
 
-// TriggerDataSourceCliSyncTriggerDataSourceCliSyncInvalidInputError includes the requested fields of the GraphQL type InvalidInputError.
+// TriggerDataSourceAgentSyncTriggerDataSourceAgentSyncInvalidInputError includes the requested fields of the GraphQL type InvalidInputError.
 // The GraphQL type's documentation follows.
 //
 // Error when some of the input parameters in the request are not valid.
-type TriggerDataSourceCliSyncTriggerDataSourceCliSyncInvalidInputError struct {
+type TriggerDataSourceAgentSyncTriggerDataSourceAgentSyncInvalidInputError struct {
 	Typename          *string `json:"__typename"`
 	InvalidInputError `json:"-"`
 }
 
-// GetTypename returns TriggerDataSourceCliSyncTriggerDataSourceCliSyncInvalidInputError.Typename, and is useful for accessing the field via an interface.
-func (v *TriggerDataSourceCliSyncTriggerDataSourceCliSyncInvalidInputError) GetTypename() *string {
+// GetTypename returns TriggerDataSourceAgentSyncTriggerDataSourceAgentSyncInvalidInputError.Typename, and is useful for accessing the field via an interface.
+func (v *TriggerDataSourceAgentSyncTriggerDataSourceAgentSyncInvalidInputError) GetTypename() *string {
 	return v.Typename
 }
 
-// GetMessage returns TriggerDataSourceCliSyncTriggerDataSourceCliSyncInvalidInputError.Message, and is useful for accessing the field via an interface.
-func (v *TriggerDataSourceCliSyncTriggerDataSourceCliSyncInvalidInputError) GetMessage() string {
+// GetMessage returns TriggerDataSourceAgentSyncTriggerDataSourceAgentSyncInvalidInputError.Message, and is useful for accessing the field via an interface.
+func (v *TriggerDataSourceAgentSyncTriggerDataSourceAgentSyncInvalidInputError) GetMessage() string {
 	return v.InvalidInputError.Message
 }
 
-func (v *TriggerDataSourceCliSyncTriggerDataSourceCliSyncInvalidInputError) UnmarshalJSON(b []byte) error {
+func (v *TriggerDataSourceAgentSyncTriggerDataSourceAgentSyncInvalidInputError) UnmarshalJSON(b []byte) error {
 
 	if string(b) == "null" {
 		return nil
 	}
 
 	var firstPass struct {
-		*TriggerDataSourceCliSyncTriggerDataSourceCliSyncInvalidInputError
+		*TriggerDataSourceAgentSyncTriggerDataSourceAgentSyncInvalidInputError
 		graphql.NoUnmarshalJSON
 	}
-	firstPass.TriggerDataSourceCliSyncTriggerDataSourceCliSyncInvalidInputError = v
+	firstPass.TriggerDataSourceAgentSyncTriggerDataSourceAgentSyncInvalidInputError = v
 
 	err := json.Unmarshal(b, &firstPass)
 	if err != nil {
@@ -38223,13 +40161,13 @@ func (v *TriggerDataSourceCliSyncTriggerDataSourceCliSyncInvalidInputError) Unma
 	return nil
 }
 
-type __premarshalTriggerDataSourceCliSyncTriggerDataSourceCliSyncInvalidInputError struct {
+type __premarshalTriggerDataSourceAgentSyncTriggerDataSourceAgentSyncInvalidInputError struct {
 	Typename *string `json:"__typename"`
 
 	Message string `json:"message"`
 }
 
-func (v *TriggerDataSourceCliSyncTriggerDataSourceCliSyncInvalidInputError) MarshalJSON() ([]byte, error) {
+func (v *TriggerDataSourceAgentSyncTriggerDataSourceAgentSyncInvalidInputError) MarshalJSON() ([]byte, error) {
 	premarshaled, err := v.__premarshalJSON()
 	if err != nil {
 		return nil, err
@@ -38237,44 +40175,44 @@ func (v *TriggerDataSourceCliSyncTriggerDataSourceCliSyncInvalidInputError) Mars
 	return json.Marshal(premarshaled)
 }
 
-func (v *TriggerDataSourceCliSyncTriggerDataSourceCliSyncInvalidInputError) __premarshalJSON() (*__premarshalTriggerDataSourceCliSyncTriggerDataSourceCliSyncInvalidInputError, error) {
-	var retval __premarshalTriggerDataSourceCliSyncTriggerDataSourceCliSyncInvalidInputError
+func (v *TriggerDataSourceAgentSyncTriggerDataSourceAgentSyncInvalidInputError) __premarshalJSON() (*__premarshalTriggerDataSourceAgentSyncTriggerDataSourceAgentSyncInvalidInputError, error) {
+	var retval __premarshalTriggerDataSourceAgentSyncTriggerDataSourceAgentSyncInvalidInputError
 
 	retval.Typename = v.Typename
 	retval.Message = v.InvalidInputError.Message
 	return &retval, nil
 }
 
-// TriggerDataSourceCliSyncTriggerDataSourceCliSyncNotFoundError includes the requested fields of the GraphQL type NotFoundError.
+// TriggerDataSourceAgentSyncTriggerDataSourceAgentSyncNotFoundError includes the requested fields of the GraphQL type NotFoundError.
 // The GraphQL type's documentation follows.
 //
 // Error when the user is requesting a resource that does not exist.
-type TriggerDataSourceCliSyncTriggerDataSourceCliSyncNotFoundError struct {
+type TriggerDataSourceAgentSyncTriggerDataSourceAgentSyncNotFoundError struct {
 	Typename      *string `json:"__typename"`
 	NotFoundError `json:"-"`
 }
 
-// GetTypename returns TriggerDataSourceCliSyncTriggerDataSourceCliSyncNotFoundError.Typename, and is useful for accessing the field via an interface.
-func (v *TriggerDataSourceCliSyncTriggerDataSourceCliSyncNotFoundError) GetTypename() *string {
+// GetTypename returns TriggerDataSourceAgentSyncTriggerDataSourceAgentSyncNotFoundError.Typename, and is useful for accessing the field via an interface.
+func (v *TriggerDataSourceAgentSyncTriggerDataSourceAgentSyncNotFoundError) GetTypename() *string {
 	return v.Typename
 }
 
-// GetMessage returns TriggerDataSourceCliSyncTriggerDataSourceCliSyncNotFoundError.Message, and is useful for accessing the field via an interface.
-func (v *TriggerDataSourceCliSyncTriggerDataSourceCliSyncNotFoundError) GetMessage() string {
+// GetMessage returns TriggerDataSourceAgentSyncTriggerDataSourceAgentSyncNotFoundError.Message, and is useful for accessing the field via an interface.
+func (v *TriggerDataSourceAgentSyncTriggerDataSourceAgentSyncNotFoundError) GetMessage() string {
 	return v.NotFoundError.Message
 }
 
-func (v *TriggerDataSourceCliSyncTriggerDataSourceCliSyncNotFoundError) UnmarshalJSON(b []byte) error {
+func (v *TriggerDataSourceAgentSyncTriggerDataSourceAgentSyncNotFoundError) UnmarshalJSON(b []byte) error {
 
 	if string(b) == "null" {
 		return nil
 	}
 
 	var firstPass struct {
-		*TriggerDataSourceCliSyncTriggerDataSourceCliSyncNotFoundError
+		*TriggerDataSourceAgentSyncTriggerDataSourceAgentSyncNotFoundError
 		graphql.NoUnmarshalJSON
 	}
-	firstPass.TriggerDataSourceCliSyncTriggerDataSourceCliSyncNotFoundError = v
+	firstPass.TriggerDataSourceAgentSyncTriggerDataSourceAgentSyncNotFoundError = v
 
 	err := json.Unmarshal(b, &firstPass)
 	if err != nil {
@@ -38289,13 +40227,13 @@ func (v *TriggerDataSourceCliSyncTriggerDataSourceCliSyncNotFoundError) Unmarsha
 	return nil
 }
 
-type __premarshalTriggerDataSourceCliSyncTriggerDataSourceCliSyncNotFoundError struct {
+type __premarshalTriggerDataSourceAgentSyncTriggerDataSourceAgentSyncNotFoundError struct {
 	Typename *string `json:"__typename"`
 
 	Message string `json:"message"`
 }
 
-func (v *TriggerDataSourceCliSyncTriggerDataSourceCliSyncNotFoundError) MarshalJSON() ([]byte, error) {
+func (v *TriggerDataSourceAgentSyncTriggerDataSourceAgentSyncNotFoundError) MarshalJSON() ([]byte, error) {
 	premarshaled, err := v.__premarshalJSON()
 	if err != nil {
 		return nil, err
@@ -38303,44 +40241,44 @@ func (v *TriggerDataSourceCliSyncTriggerDataSourceCliSyncNotFoundError) MarshalJ
 	return json.Marshal(premarshaled)
 }
 
-func (v *TriggerDataSourceCliSyncTriggerDataSourceCliSyncNotFoundError) __premarshalJSON() (*__premarshalTriggerDataSourceCliSyncTriggerDataSourceCliSyncNotFoundError, error) {
-	var retval __premarshalTriggerDataSourceCliSyncTriggerDataSourceCliSyncNotFoundError
+func (v *TriggerDataSourceAgentSyncTriggerDataSourceAgentSyncNotFoundError) __premarshalJSON() (*__premarshalTriggerDataSourceAgentSyncTriggerDataSourceAgentSyncNotFoundError, error) {
+	var retval __premarshalTriggerDataSourceAgentSyncTriggerDataSourceAgentSyncNotFoundError
 
 	retval.Typename = v.Typename
 	retval.Message = v.NotFoundError.Message
 	return &retval, nil
 }
 
-// TriggerDataSourceCliSyncTriggerDataSourceCliSyncPermissionDeniedError includes the requested fields of the GraphQL type PermissionDeniedError.
+// TriggerDataSourceAgentSyncTriggerDataSourceAgentSyncPermissionDeniedError includes the requested fields of the GraphQL type PermissionDeniedError.
 // The GraphQL type's documentation follows.
 //
 // Error when permission to the requested resource is denied.
-type TriggerDataSourceCliSyncTriggerDataSourceCliSyncPermissionDeniedError struct {
+type TriggerDataSourceAgentSyncTriggerDataSourceAgentSyncPermissionDeniedError struct {
 	Typename              *string `json:"__typename"`
 	PermissionDeniedError `json:"-"`
 }
 
-// GetTypename returns TriggerDataSourceCliSyncTriggerDataSourceCliSyncPermissionDeniedError.Typename, and is useful for accessing the field via an interface.
-func (v *TriggerDataSourceCliSyncTriggerDataSourceCliSyncPermissionDeniedError) GetTypename() *string {
+// GetTypename returns TriggerDataSourceAgentSyncTriggerDataSourceAgentSyncPermissionDeniedError.Typename, and is useful for accessing the field via an interface.
+func (v *TriggerDataSourceAgentSyncTriggerDataSourceAgentSyncPermissionDeniedError) GetTypename() *string {
 	return v.Typename
 }
 
-// GetMessage returns TriggerDataSourceCliSyncTriggerDataSourceCliSyncPermissionDeniedError.Message, and is useful for accessing the field via an interface.
-func (v *TriggerDataSourceCliSyncTriggerDataSourceCliSyncPermissionDeniedError) GetMessage() string {
+// GetMessage returns TriggerDataSourceAgentSyncTriggerDataSourceAgentSyncPermissionDeniedError.Message, and is useful for accessing the field via an interface.
+func (v *TriggerDataSourceAgentSyncTriggerDataSourceAgentSyncPermissionDeniedError) GetMessage() string {
 	return v.PermissionDeniedError.Message
 }
 
-func (v *TriggerDataSourceCliSyncTriggerDataSourceCliSyncPermissionDeniedError) UnmarshalJSON(b []byte) error {
+func (v *TriggerDataSourceAgentSyncTriggerDataSourceAgentSyncPermissionDeniedError) UnmarshalJSON(b []byte) error {
 
 	if string(b) == "null" {
 		return nil
 	}
 
 	var firstPass struct {
-		*TriggerDataSourceCliSyncTriggerDataSourceCliSyncPermissionDeniedError
+		*TriggerDataSourceAgentSyncTriggerDataSourceAgentSyncPermissionDeniedError
 		graphql.NoUnmarshalJSON
 	}
-	firstPass.TriggerDataSourceCliSyncTriggerDataSourceCliSyncPermissionDeniedError = v
+	firstPass.TriggerDataSourceAgentSyncTriggerDataSourceAgentSyncPermissionDeniedError = v
 
 	err := json.Unmarshal(b, &firstPass)
 	if err != nil {
@@ -38355,13 +40293,13 @@ func (v *TriggerDataSourceCliSyncTriggerDataSourceCliSyncPermissionDeniedError) 
 	return nil
 }
 
-type __premarshalTriggerDataSourceCliSyncTriggerDataSourceCliSyncPermissionDeniedError struct {
+type __premarshalTriggerDataSourceAgentSyncTriggerDataSourceAgentSyncPermissionDeniedError struct {
 	Typename *string `json:"__typename"`
 
 	Message string `json:"message"`
 }
 
-func (v *TriggerDataSourceCliSyncTriggerDataSourceCliSyncPermissionDeniedError) MarshalJSON() ([]byte, error) {
+func (v *TriggerDataSourceAgentSyncTriggerDataSourceAgentSyncPermissionDeniedError) MarshalJSON() ([]byte, error) {
 	premarshaled, err := v.__premarshalJSON()
 	if err != nil {
 		return nil, err
@@ -38369,8 +40307,8 @@ func (v *TriggerDataSourceCliSyncTriggerDataSourceCliSyncPermissionDeniedError) 
 	return json.Marshal(premarshaled)
 }
 
-func (v *TriggerDataSourceCliSyncTriggerDataSourceCliSyncPermissionDeniedError) __premarshalJSON() (*__premarshalTriggerDataSourceCliSyncTriggerDataSourceCliSyncPermissionDeniedError, error) {
-	var retval __premarshalTriggerDataSourceCliSyncTriggerDataSourceCliSyncPermissionDeniedError
+func (v *TriggerDataSourceAgentSyncTriggerDataSourceAgentSyncPermissionDeniedError) __premarshalJSON() (*__premarshalTriggerDataSourceAgentSyncTriggerDataSourceAgentSyncPermissionDeniedError, error) {
+	var retval __premarshalTriggerDataSourceAgentSyncTriggerDataSourceAgentSyncPermissionDeniedError
 
 	retval.Typename = v.Typename
 	retval.Message = v.PermissionDeniedError.Message
@@ -42750,6 +44688,23 @@ func (v *UsageMetaInputDetail) GetName() string { return v.Name }
 // GetDataObjectTypes returns UsageMetaInputDetail.DataObjectTypes, and is useful for accessing the field via an interface.
 func (v *UsageMetaInputDetail) GetDataObjectTypes() []string { return v.DataObjectTypes }
 
+// UsageMetadataDataSource includes the GraphQL fields of DataSource requested by the fragment UsageMetadataDataSource.
+// The GraphQL type's documentation follows.
+//
+// Represents a data source in Collibra Data Access.
+type UsageMetadataDataSource struct {
+	// The oldest query start time in the retained query history of this data source, or null when none is retained. Bounded by usage retention, so this is the start of the window that can still be inspected rather than the first use ever recorded.
+	UsageFirstUsed *time.Time `json:"usageFirstUsed"`
+	// The most recent query start time in the retained query history of this data source, or null when none is retained.
+	UsageLastUsed *time.Time `json:"usageLastUsed"`
+}
+
+// GetUsageFirstUsed returns UsageMetadataDataSource.UsageFirstUsed, and is useful for accessing the field via an interface.
+func (v *UsageMetadataDataSource) GetUsageFirstUsed() *time.Time { return v.UsageFirstUsed }
+
+// GetUsageLastUsed returns UsageMetadataDataSource.UsageLastUsed, and is useful for accessing the field via an interface.
+func (v *UsageMetadataDataSource) GetUsageLastUsed() *time.Time { return v.UsageLastUsed }
+
 // User includes the GraphQL fields of User requested by the fragment User.
 // The GraphQL type's documentation follows.
 //
@@ -42761,8 +44716,8 @@ type User struct {
 	Name string `json:"name" doc:"The display name for the user."`
 	// The email address for the user. This will be used to match new accounts. If the email address matches, the new accounts will be automatically added to the user.
 	Email *string `json:"email" doc:"The email address for the user. This will be used to match new accounts. If the email address matches, the new accounts will be automatically added to the user."`
-	// Whether this user is a human or machine user.
-	Type UserType `json:"type" doc:"Whether this user is a human or machine user."`
+	// Whether this user is a human user, a machine user (service account), or an internal DGC system account. System users are excluded from user lists and search by default.
+	Type UserType `json:"type" doc:"Whether this user is a human user, a machine user (service account), or an internal DGC system account. System users are excluded from user lists and search by default."`
 }
 
 // GetId returns User.Id, and is useful for accessing the field via an interface.
@@ -43283,8 +45238,8 @@ type UserFilterInput struct {
 	AccessControl *string  `json:"accessControl,omitempty"`
 	// The search string to use (will do a case-insensitive 'contains').
 	Search *string `json:"search,omitempty" doc:"The search string to use (will do a case-insensitive 'contains')."`
-	// Only return human or machine users.
-	Type *UserType `json:"type,omitempty" doc:"Only return human or machine users."`
+	// Only return users of the given type. System users are excluded unless this is explicitly set to System.
+	Type *UserType `json:"type,omitempty" doc:"Only return users of the given type. System users are excluded unless this is explicitly set to System."`
 	// Exclude a specific fixed list of users.
 	Exclude []string `json:"exclude,omitempty" doc:"Exclude a specific fixed list of users."`
 	// Only return users that have certain tags.
@@ -43395,11 +45350,14 @@ type UserType string
 const (
 	UserTypeHuman   UserType = "Human"
 	UserTypeMachine UserType = "Machine"
+	// An internal DGC system account. Excluded from user lists and search by default.
+	UserTypeSystem UserType = "System"
 )
 
 var AllUserType = []UserType{
 	UserTypeHuman,
 	UserTypeMachine,
+	UserTypeSystem,
 }
 
 // WhatAbacRule includes the GraphQL fields of WhatAbacRule requested by the fragment WhatAbacRule.
@@ -43728,6 +45686,14 @@ type __DataSourceMaskInformationInput struct {
 // GetId returns __DataSourceMaskInformationInput.Id, and is useful for accessing the field via an interface.
 func (v *__DataSourceMaskInformationInput) GetId() string { return v.Id }
 
+// __DataSourceUsageMetadataInput is used internally by genqlient
+type __DataSourceUsageMetadataInput struct {
+	DataSourceId string `json:"dataSourceId"`
+}
+
+// GetDataSourceId returns __DataSourceUsageMetadataInput.DataSourceId, and is useful for accessing the field via an interface.
+func (v *__DataSourceUsageMetadataInput) GetDataSourceId() string { return v.DataSourceId }
+
 // __DeactivateAccessControlInput is used internally by genqlient
 type __DeactivateAccessControlInput struct {
 	Id string `json:"id"`
@@ -43784,6 +45750,7 @@ func (v *__EndOfTargetsSyncInput) GetInput() EndOfTargetsSyncInput { return v.In
 type __FetchExportAccessControlsInput struct {
 	FlowId uuid.UUID `json:"flowId"`
 	After  *int      `json:"after,omitempty"`
+	Limit  int       `json:"limit"`
 }
 
 // GetFlowId returns __FetchExportAccessControlsInput.FlowId, and is useful for accessing the field via an interface.
@@ -43791,6 +45758,9 @@ func (v *__FetchExportAccessControlsInput) GetFlowId() uuid.UUID { return v.Flow
 
 // GetAfter returns __FetchExportAccessControlsInput.After, and is useful for accessing the field via an interface.
 func (v *__FetchExportAccessControlsInput) GetAfter() *int { return v.After }
+
+// GetLimit returns __FetchExportAccessControlsInput.Limit, and is useful for accessing the field via an interface.
+func (v *__FetchExportAccessControlsInput) GetLimit() int { return v.Limit }
 
 // __FinalizeExportFlowInput is used internally by genqlient
 type __FinalizeExportFlowInput struct {
@@ -43903,6 +45873,32 @@ func (v *__GetAccessControlWhoListInput) GetFilter() *AccessControlWhoListFilter
 
 // GetOrder returns __GetAccessControlWhoListInput.Order, and is useful for accessing the field via an interface.
 func (v *__GetAccessControlWhoListInput) GetOrder() []AccessControlWhoOrderByInput { return v.Order }
+
+// __GetDataObjectAccessListInput is used internally by genqlient
+type __GetDataObjectAccessListInput struct {
+	DataObjectId string                             `json:"dataObjectId"`
+	After        *string                            `json:"after,omitempty"`
+	Limit        *int                               `json:"limit,omitempty"`
+	Filter       *AccessFilterInput                 `json:"filter,omitempty"`
+	Order        []DataAccessReturnItemOrderByInput `json:"order,omitempty"`
+}
+
+// GetDataObjectId returns __GetDataObjectAccessListInput.DataObjectId, and is useful for accessing the field via an interface.
+func (v *__GetDataObjectAccessListInput) GetDataObjectId() string { return v.DataObjectId }
+
+// GetAfter returns __GetDataObjectAccessListInput.After, and is useful for accessing the field via an interface.
+func (v *__GetDataObjectAccessListInput) GetAfter() *string { return v.After }
+
+// GetLimit returns __GetDataObjectAccessListInput.Limit, and is useful for accessing the field via an interface.
+func (v *__GetDataObjectAccessListInput) GetLimit() *int { return v.Limit }
+
+// GetFilter returns __GetDataObjectAccessListInput.Filter, and is useful for accessing the field via an interface.
+func (v *__GetDataObjectAccessListInput) GetFilter() *AccessFilterInput { return v.Filter }
+
+// GetOrder returns __GetDataObjectAccessListInput.Order, and is useful for accessing the field via an interface.
+func (v *__GetDataObjectAccessListInput) GetOrder() []DataAccessReturnItemOrderByInput {
+	return v.Order
+}
 
 // __GetDataObjectInput is used internally by genqlient
 type __GetDataObjectInput struct {
@@ -44312,13 +46308,13 @@ type __SubmitImportObjectsInput struct {
 // GetInput returns __SubmitImportObjectsInput.Input, and is useful for accessing the field via an interface.
 func (v *__SubmitImportObjectsInput) GetInput() ImportCommands { return v.Input }
 
-// __TriggerDataSourceCliSyncInput is used internally by genqlient
-type __TriggerDataSourceCliSyncInput struct {
+// __TriggerDataSourceAgentSyncInput is used internally by genqlient
+type __TriggerDataSourceAgentSyncInput struct {
 	Request DataSourceSyncRequest `json:"request"`
 }
 
-// GetRequest returns __TriggerDataSourceCliSyncInput.Request, and is useful for accessing the field via an interface.
-func (v *__TriggerDataSourceCliSyncInput) GetRequest() DataSourceSyncRequest { return v.Request }
+// GetRequest returns __TriggerDataSourceAgentSyncInput.Request, and is useful for accessing the field via an interface.
+func (v *__TriggerDataSourceAgentSyncInput) GetRequest() DataSourceSyncRequest { return v.Request }
 
 // __TriggerExportFlowInput is used internally by genqlient
 type __TriggerExportFlowInput struct {
@@ -45337,6 +47333,57 @@ func DataSourceMaskInformation(
 	return data_, err_
 }
 
+// The query executed by DataSourceUsageMetadata.
+const DataSourceUsageMetadata_Operation = `
+query DataSourceUsageMetadata ($dataSourceId: ID!) {
+	dataSource(id: $dataSourceId) {
+		__typename
+		... UsageMetadataDataSource
+		... InvalidInputError
+		... NotFoundError
+		... PermissionDeniedError
+	}
+}
+fragment UsageMetadataDataSource on DataSource {
+	usageFirstUsed
+	usageLastUsed
+}
+fragment InvalidInputError on InvalidInputError {
+	message
+}
+fragment NotFoundError on NotFoundError {
+	message
+}
+fragment PermissionDeniedError on PermissionDeniedError {
+	message
+}
+`
+
+func DataSourceUsageMetadata(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	dataSourceId string,
+) (data_ *DataSourceUsageMetadataResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "DataSourceUsageMetadata",
+		Query:  DataSourceUsageMetadata_Operation,
+		Variables: &__DataSourceUsageMetadataInput{
+			DataSourceId: dataSourceId,
+		},
+	}
+
+	data_ = &DataSourceUsageMetadataResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
 // The mutation executed by DeactivateAccessControl.
 const DeactivateAccessControl_Operation = `
 mutation DeactivateAccessControl ($id: ID!) {
@@ -45814,8 +47861,8 @@ func EndOfTargetsSync(
 
 // The query executed by FetchExportAccessControls.
 const FetchExportAccessControls_Operation = `
-query FetchExportAccessControls ($flowId: UUID!, $after: Int) {
-	fetchExportAccessControls(flowId: $flowId, after: $after) {
+query FetchExportAccessControls ($flowId: UUID!, $after: Int, $limit: Int!) {
+	fetchExportAccessControls(flowId: $flowId, after: $after, limit: $limit) {
 		__typename
 		... ExportAccessControls
 		... PermissionDeniedError
@@ -45971,6 +48018,7 @@ func FetchExportAccessControls(
 	client_ graphql.Client,
 	flowId uuid.UUID,
 	after *int,
+	limit int,
 ) (data_ *FetchExportAccessControlsResponse, err_ error) {
 	req_ := &graphql.Request{
 		OpName: "FetchExportAccessControls",
@@ -45978,6 +48026,7 @@ func FetchExportAccessControls(
 		Variables: &__FetchExportAccessControlsInput{
 			FlowId: flowId,
 			After:  after,
+			Limit:  limit,
 		},
 	}
 
@@ -46635,6 +48684,114 @@ func GetDataObject(
 	return data_, err_
 }
 
+// The query executed by GetDataObjectAccessList.
+const GetDataObjectAccessList_Operation = `
+query GetDataObjectAccessList ($dataObjectId: ID!, $after: String, $limit: Int, $filter: AccessFilterInput, $order: [DataAccessReturnItemOrderByInput!]) {
+	dataObject(id: $dataObjectId) {
+		distinctAccess(after: $after, limit: $limit, filter: $filter, order: $order) {
+			__typename
+			... GroupedDataAccessReturnItemConnectionResult
+		}
+	}
+}
+fragment GroupedDataAccessReturnItemConnectionResult on GroupedDataAccessReturnItemConnectionResult {
+	... GroupedDataAccessReturnItemConnection
+	... PermissionDeniedError
+	... NotFoundError
+	... InvalidInputError
+}
+fragment GroupedDataAccessReturnItemConnection on GroupedDataAccessReturnItemConnection {
+	pageInfo {
+		... PageInfo
+	}
+	edges {
+		cursor
+		node {
+			... GroupedDataAccessReturnItem
+		}
+	}
+}
+fragment PermissionDeniedError on PermissionDeniedError {
+	message
+}
+fragment NotFoundError on NotFoundError {
+	message
+}
+fragment InvalidInputError on InvalidInputError {
+	message
+}
+fragment PageInfo on PageInfo {
+	hasNextPage
+	startCursor
+}
+fragment GroupedDataAccessReturnItem on GroupedDataAccessReturnItem {
+	permissions
+	globalPermissions
+	expiresAt
+	user {
+		... User
+	}
+	nearestAccessControls {
+		... AccessControlSummary
+	}
+}
+fragment User on User {
+	id
+	name
+	email
+	type
+}
+fragment AccessControlSummary on AccessControl {
+	id
+	name
+	action
+	state
+	category {
+		... GrantCategory
+	}
+}
+fragment GrantCategory on GrantCategory {
+	id
+	name
+	namePlural
+	isSystem
+	isDefault
+}
+`
+
+func GetDataObjectAccessList(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	dataObjectId string,
+	after *string,
+	limit *int,
+	filter *AccessFilterInput,
+	order []DataAccessReturnItemOrderByInput,
+) (data_ *GetDataObjectAccessListResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "GetDataObjectAccessList",
+		Query:  GetDataObjectAccessList_Operation,
+		Variables: &__GetDataObjectAccessListInput{
+			DataObjectId: dataObjectId,
+			After:        after,
+			Limit:        limit,
+			Filter:       filter,
+			Order:        order,
+		},
+	}
+
+	data_ = &GetDataObjectAccessListResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
 // The query executed by GetDataSource.
 const GetDataSource_Operation = `
 query GetDataSource ($id: ID!) {
@@ -46927,6 +49084,43 @@ func GetSubtaskOfTask(
 	}
 
 	data_ = &GetSubtaskOfTaskResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
+// The query executed by GetSupportedAgentVersion.
+const GetSupportedAgentVersion_Operation = `
+query GetSupportedAgentVersion {
+	supportedAgentVersion: supportedCliVersion {
+		... SupportedAgentVersion
+	}
+}
+fragment SupportedAgentVersion on SupportedCLIVersion {
+	deprecatedVersions {
+		deprecatedVersions
+		msg
+	}
+	supportedVersions
+}
+`
+
+func GetSupportedAgentVersion(
+	ctx_ context.Context,
+	client_ graphql.Client,
+) (data_ *GetSupportedAgentVersionResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "GetSupportedAgentVersion",
+		Query:  GetSupportedAgentVersion_Operation,
+	}
+
+	data_ = &GetSupportedAgentVersionResponse{}
 	resp_ := &graphql.Response{Data: data_}
 
 	err_ = client_.MakeRequest(
@@ -48834,47 +51028,10 @@ func SubmitImportObjects(
 	return data_, err_
 }
 
-// The query executed by SupportedCLIVersion.
-const SupportedCLIVersion_Operation = `
-query SupportedCLIVersion {
-	supportedCliVersion {
-		... SupportedCliVersion
-	}
-}
-fragment SupportedCliVersion on SupportedCLIVersion {
-	deprecatedVersions {
-		deprecatedVersions
-		msg
-	}
-	supportedVersions
-}
-`
-
-func SupportedCLIVersion(
-	ctx_ context.Context,
-	client_ graphql.Client,
-) (data_ *SupportedCLIVersionResponse, err_ error) {
-	req_ := &graphql.Request{
-		OpName: "SupportedCLIVersion",
-		Query:  SupportedCLIVersion_Operation,
-	}
-
-	data_ = &SupportedCLIVersionResponse{}
-	resp_ := &graphql.Response{Data: data_}
-
-	err_ = client_.MakeRequest(
-		ctx_,
-		req_,
-		resp_,
-	)
-
-	return data_, err_
-}
-
-// The mutation executed by TriggerDataSourceCliSync.
-const TriggerDataSourceCliSync_Operation = `
-mutation TriggerDataSourceCliSync ($request: DataSourceSyncRequest!) {
-	triggerDataSourceCliSync(request: $request) {
+// The mutation executed by TriggerDataSourceAgentSync.
+const TriggerDataSourceAgentSync_Operation = `
+mutation TriggerDataSourceAgentSync ($request: DataSourceSyncRequest!) {
+	triggerDataSourceAgentSync: triggerDataSourceCliSync(request: $request) {
 		__typename
 		... DataSource
 		... PermissionDeniedError
@@ -48912,20 +51069,20 @@ fragment InvalidInputError on InvalidInputError {
 }
 `
 
-func TriggerDataSourceCliSync(
+func TriggerDataSourceAgentSync(
 	ctx_ context.Context,
 	client_ graphql.Client,
 	request DataSourceSyncRequest,
-) (data_ *TriggerDataSourceCliSyncResponse, err_ error) {
+) (data_ *TriggerDataSourceAgentSyncResponse, err_ error) {
 	req_ := &graphql.Request{
-		OpName: "TriggerDataSourceCliSync",
-		Query:  TriggerDataSourceCliSync_Operation,
-		Variables: &__TriggerDataSourceCliSyncInput{
+		OpName: "TriggerDataSourceAgentSync",
+		Query:  TriggerDataSourceAgentSync_Operation,
+		Variables: &__TriggerDataSourceAgentSyncInput{
 			Request: request,
 		},
 	}
 
-	data_ = &TriggerDataSourceCliSyncResponse{}
+	data_ = &TriggerDataSourceAgentSyncResponse{}
 	resp_ := &graphql.Response{Data: data_}
 
 	err_ = client_.MakeRequest(

@@ -126,6 +126,27 @@ func (c *DataSourceClient) GetMaskingMetadata(ctx context.Context, id string) (*
 	}
 }
 
+// GetUsageMetadata returns the first and last usage timestamps of a DataSource.
+func (c *DataSourceClient) GetUsageMetadata(ctx context.Context, id string) (*types.UsageMetadataDataSource, error) {
+	result, err := schema.DataSourceUsageMetadata(ctx, c.client, id)
+	if err != nil {
+		return nil, types.NewErrClient(err)
+	}
+
+	switch ds := result.DataSource.(type) {
+	case *schema.DataSourceUsageMetadataDataSource:
+		return &ds.UsageMetadataDataSource, nil
+	case *schema.DataSourceUsageMetadataDataSourcePermissionDeniedError:
+		return nil, types.NewErrPermissionDenied("dataSource", ds.Message)
+	case *schema.DataSourceUsageMetadataDataSourceNotFoundError:
+		return nil, types.NewErrNotFound(id, ds.Typename, ds.Message)
+	case *schema.DataSourceUsageMetadataDataSourceInvalidInputError:
+		return nil, types.NewErrInvalidInput(ds.Message)
+	default:
+		return nil, fmt.Errorf("unexpected response type: %T", result.DataSource)
+	}
+}
+
 // DataSourceListOptions list options for listing DataSources.
 type DataSourceListOptions struct {
 	order  []types.DataSourceOrderByInput
@@ -148,25 +169,53 @@ func WithDataSourceListFilter(input *types.DataSourceFilterInput) func(options *
 }
 
 // WithDataSourceListSearch sets the search query of the returned DataSources in the ListDataSources call.
+// The search is a case-insensitive 'contains' and takes precedence over the search set through
+// WithDataSourceListFilter.
 func WithDataSourceListSearch(input *string) func(options *DataSourceListOptions) {
 	return func(options *DataSourceListOptions) {
 		options.search = input
 	}
 }
 
-// ListDataSources return a list of DataSources
-// The order of the list can be specified with WithDataSourceListOrder.
-// A filter can be specified with WithDataSourceListFilter.
-// A channel is returned that can be used to receive the list of DataSourceListItem.
-// To close the channel ensure to cancel the context.
-func (c *DataSourceClient) ListDataSources(ctx context.Context, ops ...func(*DataSourceListOptions)) iter.Seq2[*types.DataSource, error] { //nolint:dupl
+// newDataSourceListOptions applies the given options on top of the defaults.
+func newDataSourceListOptions(ops ...func(*DataSourceListOptions)) DataSourceListOptions {
 	options := DataSourceListOptions{}
 	for _, op := range ops {
 		op(&options)
 	}
 
+	return options
+}
+
+// listFilter returns the filter to send to the server, with the search option folded into it.
+// The filter provided through WithDataSourceListFilter is copied so it is not modified.
+func (o *DataSourceListOptions) listFilter() *types.DataSourceFilterInput {
+	if o.search == nil {
+		return o.filter
+	}
+
+	filter := types.DataSourceFilterInput{}
+	if o.filter != nil {
+		filter = *o.filter
+	}
+
+	filter.Search = o.search
+
+	return &filter
+}
+
+// ListDataSources return a list of DataSources
+// The order of the list can be specified with WithDataSourceListOrder.
+// A filter can be specified with WithDataSourceListFilter.
+// A search can be specified with WithDataSourceListSearch.
+// A channel is returned that can be used to receive the list of DataSourceListItem.
+// To close the channel ensure to cancel the context.
+func (c *DataSourceClient) ListDataSources(ctx context.Context, ops ...func(*DataSourceListOptions)) iter.Seq2[*types.DataSource, error] { //nolint:dupl
+	options := newDataSourceListOptions(ops...)
+	filter := options.listFilter()
+
 	loadPageFn := func(ctx context.Context, cursor *string) (*types.PageInfo, []types.DataSourceConnectionEdgesDataSourceEdge, error) {
-		output, err := schema.ListDataSources(ctx, c.client, cursor, new(internal.MaxPageSize), options.filter, options.order)
+		output, err := schema.ListDataSources(ctx, c.client, cursor, new(internal.MaxPageSize), filter, options.order)
 		if err != nil {
 			return nil, nil, types.NewErrClient(err)
 		}
@@ -234,25 +283,25 @@ func marshalSyncParameterValues(input types.SyncParameterValuesInput) (types.Syn
 	return types.SyncParameterValuesInput{DataSourceId: input.DataSourceId, Values: values}, nil
 }
 
-// TriggerDataSourceCliSync manually triggers a CLI synchronization for a DataSource.
+// TriggerDataSourceAgentSync manually triggers an agent synchronization for a DataSource.
 // Returns the updated DataSource if successful, otherwise returns an error.
-func (c *DataSourceClient) TriggerDataSourceCliSync(ctx context.Context, request types.DataSourceSyncRequest) (*types.DataSource, error) {
-	result, err := schema.TriggerDataSourceCliSync(ctx, c.client, request)
+func (c *DataSourceClient) TriggerDataSourceAgentSync(ctx context.Context, request types.DataSourceSyncRequest) (*types.DataSource, error) {
+	result, err := schema.TriggerDataSourceAgentSync(ctx, c.client, request)
 	if err != nil {
 		return nil, types.NewErrClient(err)
 	}
 
-	switch response := result.TriggerDataSourceCliSync.(type) {
-	case *schema.TriggerDataSourceCliSyncTriggerDataSourceCliSyncDataSource:
+	switch response := result.TriggerDataSourceAgentSync.(type) {
+	case *schema.TriggerDataSourceAgentSyncTriggerDataSourceAgentSyncDataSource:
 		return &response.DataSource, nil
-	case *schema.TriggerDataSourceCliSyncTriggerDataSourceCliSyncNotFoundError:
+	case *schema.TriggerDataSourceAgentSyncTriggerDataSourceAgentSyncNotFoundError:
 		return nil, types.NewErrNotFound(request.DataSourceId, response.Typename, response.Message)
-	case *schema.TriggerDataSourceCliSyncTriggerDataSourceCliSyncPermissionDeniedError:
-		return nil, types.NewErrPermissionDenied("triggerDataSourceCliSync", response.Message)
-	case *schema.TriggerDataSourceCliSyncTriggerDataSourceCliSyncInvalidInputError:
+	case *schema.TriggerDataSourceAgentSyncTriggerDataSourceAgentSyncPermissionDeniedError:
+		return nil, types.NewErrPermissionDenied("triggerDataSourceAgentSync", response.Message)
+	case *schema.TriggerDataSourceAgentSyncTriggerDataSourceAgentSyncInvalidInputError:
 		return nil, types.NewErrInvalidInput(response.Message)
 	default:
-		return nil, fmt.Errorf("unexpected response type: %T", result.TriggerDataSourceCliSync)
+		return nil, fmt.Errorf("unexpected response type: %T", result.TriggerDataSourceAgentSync)
 	}
 }
 

@@ -17,7 +17,7 @@ inputs:
   golangci-lint-version:
     description: Version of golangci-lint to run.
     required: false
-    default: v2.12.2
+    default: v2.13.1
 
 runs:
   using: composite

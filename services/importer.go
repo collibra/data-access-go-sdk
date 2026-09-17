@@ -104,11 +104,11 @@ func (c *ImporterClient) SubmitImportObjects(ctx context.Context, input types.Im
 	}
 }
 
-func (c *ImporterClient) SupportedCliVersion(ctx context.Context) (*types.SupportedCliVersion, error) {
-	result, err := schema.SupportedCLIVersion(ctx, c.client)
+func (c *ImporterClient) SupportedAgentVersion(ctx context.Context) (*types.SupportedAgentVersion, error) {
+	result, err := schema.GetSupportedAgentVersion(ctx, c.client)
 	if err != nil {
 		return nil, types.NewErrClient(err)
 	}
 
-	return &result.SupportedCliVersion.SupportedCliVersion, nil
+	return &result.SupportedAgentVersion.SupportedAgentVersion, nil
 }

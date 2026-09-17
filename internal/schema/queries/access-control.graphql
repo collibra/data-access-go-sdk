@@ -77,6 +77,16 @@ fragment WhatAbacRule on WhatAbacRule {
     ruleJson
 }
 
+fragment AccessControlSummary on AccessControl {
+    id
+    name
+    action
+    state
+    category {
+        ...GrantCategory
+    }
+}
+
 fragment AccessControlConnection on AccessControlConnection {
     ... on AccessControlConnection {
         pageInfo {

@@ -50,6 +50,52 @@ query ListDataObjects($after: String, $limit: Int, $filter: DataObjectFilterInpu
     }
 }
 
+fragment GroupedDataAccessReturnItem on GroupedDataAccessReturnItem {
+    permissions
+    globalPermissions
+    expiresAt
+    user {
+        ...User
+    }
+    nearestAccessControls {
+        ...AccessControlSummary
+    }
+}
+
+fragment GroupedDataAccessReturnItemConnection on GroupedDataAccessReturnItemConnection {
+    pageInfo {
+        ...PageInfo
+    }
+    edges {
+        cursor
+        node {
+            ...GroupedDataAccessReturnItem
+        }
+    }
+}
+
+fragment GroupedDataAccessReturnItemConnectionResult on GroupedDataAccessReturnItemConnectionResult {
+    ...GroupedDataAccessReturnItemConnection
+    ...PermissionDeniedError
+    ...NotFoundError
+    ...InvalidInputError
+}
+
+query GetDataObjectAccessList(
+    $dataObjectId: ID!,
+    $after: String,
+    $limit: Int,
+    $filter: AccessFilterInput,
+    $order: [DataAccessReturnItemOrderByInput!]
+) {
+    dataObject(id: $dataObjectId) {
+        distinctAccess(after: $after, limit: $limit, filter: $filter, order: $order) {
+            __typename
+            ...GroupedDataAccessReturnItemConnectionResult
+        }
+    }
+}
+
 query DataObjectByExternalId($fullname: String!, $dataSourceId: ID!, $includeDataSource: Boolean!) {
     dataObjects(filter: {
         fullNames: [$fullname]

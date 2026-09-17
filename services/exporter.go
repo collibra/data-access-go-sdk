@@ -2,8 +2,10 @@ package services
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"iter"
+	"net/http"
 	"time"
 
 	"github.com/Khan/genqlient/graphql"
@@ -12,6 +14,8 @@ import (
 
 	"github.com/collibra/data-access-go-sdk/types"
 )
+
+const defaultFetchExportAccessControlsLimit = 10
 
 type ExporterClient struct {
 	client graphql.Client
@@ -100,13 +104,24 @@ func (c *ExporterClient) FetchExportAccessControls(ctx context.Context, flowId u
 		}
 
 		after := options.StartSequenceId
+		limit := defaultFetchExportAccessControlsLimit
 
 		for {
-			result, err := schema.FetchExportAccessControls(ctx, c.client, flowId, &after)
+			result, err := schema.FetchExportAccessControls(ctx, c.client, flowId, &after, limit)
 			if err != nil {
+				if isRequestTimeout(err) && limit > 1 {
+					limit /= 2
+
+					continue
+				}
+
 				yield(nil, types.NewErrClient(err))
-				break
+
+				return
 			}
+
+			// The page succeeded; reset the page size for the next page.
+			limit = defaultFetchExportAccessControlsLimit
 
 			var controls *types.ExportAccessControls
 			var fetchErr error
@@ -162,4 +177,10 @@ func (c *ExporterClient) FetchExportAccessControls(ctx context.Context, flowId u
 			}
 		}
 	}
+}
+
+// isRequestTimeout reports whether err is (or wraps) an HTTP 408 Request Timeout.
+func isRequestTimeout(err error) bool {
+	var httpErr *graphql.HTTPError
+	return errors.As(err, &httpErr) && httpErr.StatusCode == http.StatusRequestTimeout
 }
