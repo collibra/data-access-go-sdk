@@ -30,17 +30,6 @@
         "golang"
       ],
       "enabled": false
-    },
-    {
-      "description": "Only bump Collibra-owned actions; third-party action versions follow the company-wide allowlist",
-      "matchManagers": [
-        "github-actions"
-      ],
-      "matchPackageNames": [
-        "**",
-        "!collibra/**"
-      ],
-      "enabled": false
     }
   ],
   "hashedBranchLength": 24,
