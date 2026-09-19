@@ -42743,7 +42743,8 @@ func (v *UpdateJobUpdateJob) __premarshalJSON() (*__premarshalUpdateJobUpdateJob
 
 // UpdateRoleAssigneesOnAccessControlResponse is returned by UpdateRoleAssigneesOnAccessControl on success.
 type UpdateRoleAssigneesOnAccessControlResponse struct {
-	// Update the assigned roles on a specific access control.
+	// Update the assigned roles on a specific access control. The `propagateToChildren` field applies only when updating
+	// the owners of a Row Filter/Grant. When set to `true` (default), added/removed owners will also be added/removed from all Filter Rules/Grant Variations.
 	UpdateRoleAssigneesOnAccessControl UpdateRoleAssigneesOnAccessControlUpdateRoleAssigneesOnAccessControlRoleResult `json:"-"`
 }
 
