@@ -11,7 +11,8 @@
     "group:allNonMajor"
   ],
   "enabledManagers": [
-    "gomod"
+    "gomod",
+    "github-actions"
   ],
   "packageRules": [
     {
