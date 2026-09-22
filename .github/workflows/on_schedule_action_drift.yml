@@ -1,0 +1,40 @@
+name: "Schedule: GitHub Actions drift check"
+run-name: "Schedule: GitHub Actions drift check"
+
+# Weekly check for actions pinned behind the newest allow-list SHA
+# (collibra/cicd-github-management's github-actions-allow-list/source-of-truth.yml).
+# Implementation lives in collibra/data-access-backend's tools/actiondrift.
+#
+# TODO(DEV-221060): the SHA below is a placeholder pinned to a pre-merge
+# commit of collibra/data-access-backend#1664. Replace it with the real
+# commit SHA once that PR merges to main.
+#
+# Scheduled for Monday 09:00 UTC, after github-actions-allow-list-sync.yml's
+# Monday 07:17 UTC run, so it reads a freshly-synced allow-list.
+
+on:
+  schedule:
+    - cron: "0 9 * * 1"
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  action_drift_check:
+    name: "Check for GitHub Actions drift"
+    runs-on:
+      - runs-on
+      - runner=sm
+      - env=production-eu
+      - tag=action-drift-check
+      - tag=job-${{ github.job }}-${{ github.run_id }}
+    steps:
+      - name: "Check for GitHub Actions drift"
+        uses: collibra/data-access-backend/.github/actions/action-drift-check@c0013e5caf6faa432a3da447e1c5df18d4fe1e65  # TODO(DEV-221060): placeholder, replace once #1664 merges
+        with:
+          token: ${{ secrets.COLLIBRA_GITHUB_TOKEN }}
