@@ -175,14 +175,6 @@ const (
 	AccessWhoSourceScim     AccessWhoSource = schema.AccessWhoSourceScim
 )
 
-type ActionType = schema.ActionType
-
-const (
-	ActionTypeRead  ActionType = schema.ActionTypeRead
-	ActionTypeWrite ActionType = schema.ActionTypeWrite
-	ActionTypeAdmin ActionType = schema.ActionTypeAdmin
-)
-
 type ActivateAccessControlActivateAccessControl = schema.ActivateAccessControlActivateAccessControl
 type ActivateAccessControlActivateAccessControlAccessControlResult = schema.ActivateAccessControlActivateAccessControlAccessControlResult
 type ActivateAccessControlActivateAccessControlInvalidInputError = schema.ActivateAccessControlActivateAccessControlInvalidInputError
@@ -762,7 +754,6 @@ const (
 	PermissionStatusNotRequired PermissionStatus = schema.PermissionStatusNotRequired
 )
 
-type QueryStatementImport = schema.QueryStatementImport
 type Role = schema.Role
 type RoleAssignment = schema.RoleAssignment
 type RoleAssignmentConnection = schema.RoleAssignmentConnection
@@ -819,7 +810,6 @@ type StartImportFlowStartImportFlowNotFoundError = schema.StartImportFlowStartIm
 type StartImportFlowStartImportFlowPermissionDeniedError = schema.StartImportFlowStartImportFlowPermissionDeniedError
 type StartImportFlowStartImportFlowSubtask = schema.StartImportFlowStartImportFlowSubtask
 type StartImportFlowStartImportFlowSubtaskReturnResult = schema.StartImportFlowStartImportFlowSubtaskReturnResult
-type StatementImportDataObject = schema.StatementImportDataObject
 type StructuredErrorInput = schema.StructuredErrorInput
 type SubmitImportObjectsResponse = schema.SubmitImportObjectsResponse
 type SubmitImportObjectsSubmitImportObjectsInvalidInputError = schema.SubmitImportObjectsSubmitImportObjectsInvalidInputError
@@ -1011,7 +1001,6 @@ var AllAccessRequestOutcome = []AccessRequestOutcome{AccessRequestOutcomeNone, A
 var AllAccessRequestStatus = []AccessRequestStatus{AccessRequestStatusCreated, AccessRequestStatusApproval, AccessRequestStatusImplementation, AccessRequestStatusClosed, AccessRequestStatusDatashareimplementation, AccessRequestStatusDatashareaccept}
 var AllAccessWhoItemType = []AccessWhoItemType{AccessWhoItemTypeWhogrant, AccessWhoItemTypeWhopromise}
 var AllAccessWhoSource = []AccessWhoSource{AccessWhoSourceInternal, AccessWhoSourceScim}
-var AllActionType = []ActionType{ActionTypeRead, ActionTypeWrite, ActionTypeAdmin}
 var AllBinaryExpressionAggregatorOperator = []BinaryExpressionAggregatorOperator{BinaryExpressionAggregatorOperatorAnd, BinaryExpressionAggregatorOperatorOr}
 var AllBinaryExpressionUnaryExpressionOperator = []BinaryExpressionUnaryExpressionOperator{BinaryExpressionUnaryExpressionOperatorNot}
 var AllDataComparisonExpressionComparisonOperator = []DataComparisonExpressionComparisonOperator{DataComparisonExpressionComparisonOperatorEqual, DataComparisonExpressionComparisonOperatorNotequal, DataComparisonExpressionComparisonOperatorLessthan, DataComparisonExpressionComparisonOperatorLessthanorequal, DataComparisonExpressionComparisonOperatorGreaterthan, DataComparisonExpressionComparisonOperatorGreaterthanorequal}
