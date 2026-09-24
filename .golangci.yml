@@ -179,6 +179,10 @@ linters:
         linters:
           - prealloc
           - wrapcheck
+      - path: (.+)_test\.go$
+        text: "SA1019" # tests intentionally exercise deprecated fields for backward-compat coverage
+        linters:
+          - staticcheck
     paths:
       - (.+)wire_gen\.go
       - internal/graphql/generated/generated.go
