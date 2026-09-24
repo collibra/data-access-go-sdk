@@ -4286,20 +4286,6 @@ var AllAccessWhoSource = []AccessWhoSource{
 	AccessWhoSourceScim,
 }
 
-type ActionType string
-
-const (
-	ActionTypeRead  ActionType = "Read"
-	ActionTypeWrite ActionType = "Write"
-	ActionTypeAdmin ActionType = "Admin"
-)
-
-var AllActionType = []ActionType{
-	ActionTypeRead,
-	ActionTypeWrite,
-	ActionTypeAdmin,
-}
-
 // ActivateAccessControlActivateAccessControl includes the requested fields of the GraphQL type AccessControl.
 // The GraphQL type's documentation follows.
 //
@@ -11319,8 +11305,8 @@ type DataSourceSyncRequest struct {
 	DataAccessToTargetSync bool `json:"dataAccessToTargetSync" doc:"Boolean to indicate if access to target needs to be synced or not."`
 	// Boolean to indicate if identities needs to be synced or not.
 	IdentitySync bool `json:"identitySync" doc:"Boolean to indicate if identities needs to be synced or not."`
-	// Boolean to indicate if usage needs to be synced or not.
-	DataUsageSync bool `json:"dataUsageSync" doc:"Boolean to indicate if usage needs to be synced or not."`
+	// Deprecated: no longer used; data usage sync is triggered by the shared Data Usage Service, not Data Access. Accepted and ignored for backward compatibility. Will be removed no earlier than release 2027.09.
+	DataUsageSync bool `json:"dataUsageSync" doc:"Deprecated: no longer used; data usage sync is triggered by the shared Data Usage Service, not Data Access. Accepted and ignored for backward compatibility. Will be removed no earlier than release 2027.09."`
 	// Optional: the ID of the data object to sync. That means that, if this is specified, the import will be run with `DeleteUntouched=false`, so no cleanup will be done of removed data objects.
 	DataObjectParent *string `json:"dataObjectParent,omitempty" doc:"Optional: the ID of the data object to sync. That means that, if this is specified, the import will be run with 'DeleteUntouched=false', so no cleanup will be done of removed data objects."`
 	// Optional: When DataObjectParent is provided, this boolean can indicate whether we need to ignore all the existing child data objects of the parent or not (also look for new descendants there).
@@ -24766,7 +24752,6 @@ type ImportCommand struct {
 	UpsertAccessControl         *AccessControlImport         `json:"upsertAccessControl,omitempty"`
 	UpsertAccessControlWhatItem *WhatItemImport              `json:"upsertAccessControlWhatItem,omitempty"`
 	UpsertAccessControlFeedback *AccessControlFeedbackImport `json:"upsertAccessControlFeedback,omitempty"`
-	QueryHistory                *QueryStatementImport        `json:"queryHistory,omitempty"`
 	AccessControlWhatFinished   *string                      `json:"accessControlWhatFinished,omitempty"`
 }
 
@@ -24788,9 +24773,6 @@ func (v *ImportCommand) GetUpsertAccessControlWhatItem() *WhatItemImport {
 func (v *ImportCommand) GetUpsertAccessControlFeedback() *AccessControlFeedbackImport {
 	return v.UpsertAccessControlFeedback
 }
-
-// GetQueryHistory returns ImportCommand.QueryHistory, and is useful for accessing the field via an interface.
-func (v *ImportCommand) GetQueryHistory() *QueryStatementImport { return v.QueryHistory }
 
 // GetAccessControlWhatFinished returns ImportCommand.AccessControlWhatFinished, and is useful for accessing the field via an interface.
 func (v *ImportCommand) GetAccessControlWhatFinished() *string { return v.AccessControlWhatFinished }
@@ -34086,63 +34068,6 @@ var AllPermissionStatus = []PermissionStatus{
 	PermissionStatusNotRequired,
 }
 
-type QueryStatementImport struct {
-	ExternalId          string                      `json:"externalId"`
-	AccessedDataObjects []StatementImportDataObject `json:"accessedDataObjects,omitempty"`
-	Query               string                      `json:"query"`
-	Success             bool                        `json:"success"`
-	Status              *string                     `json:"status,omitempty"`
-	User                *string                     `json:"user,omitempty"`
-	Role                *string                     `json:"role,omitempty"`
-	StartTime           time.Time                   `json:"startTime"`
-	EndTime             *time.Time                  `json:"endTime,omitempty"`
-	Bytes               *int                        `json:"bytes,omitempty"`
-	Rows                *int                        `json:"rows,omitempty"`
-	Credits             *float64                    `json:"credits,omitempty"`
-	Executions          int                         `json:"executions"`
-}
-
-// GetExternalId returns QueryStatementImport.ExternalId, and is useful for accessing the field via an interface.
-func (v *QueryStatementImport) GetExternalId() string { return v.ExternalId }
-
-// GetAccessedDataObjects returns QueryStatementImport.AccessedDataObjects, and is useful for accessing the field via an interface.
-func (v *QueryStatementImport) GetAccessedDataObjects() []StatementImportDataObject {
-	return v.AccessedDataObjects
-}
-
-// GetQuery returns QueryStatementImport.Query, and is useful for accessing the field via an interface.
-func (v *QueryStatementImport) GetQuery() string { return v.Query }
-
-// GetSuccess returns QueryStatementImport.Success, and is useful for accessing the field via an interface.
-func (v *QueryStatementImport) GetSuccess() bool { return v.Success }
-
-// GetStatus returns QueryStatementImport.Status, and is useful for accessing the field via an interface.
-func (v *QueryStatementImport) GetStatus() *string { return v.Status }
-
-// GetUser returns QueryStatementImport.User, and is useful for accessing the field via an interface.
-func (v *QueryStatementImport) GetUser() *string { return v.User }
-
-// GetRole returns QueryStatementImport.Role, and is useful for accessing the field via an interface.
-func (v *QueryStatementImport) GetRole() *string { return v.Role }
-
-// GetStartTime returns QueryStatementImport.StartTime, and is useful for accessing the field via an interface.
-func (v *QueryStatementImport) GetStartTime() time.Time { return v.StartTime }
-
-// GetEndTime returns QueryStatementImport.EndTime, and is useful for accessing the field via an interface.
-func (v *QueryStatementImport) GetEndTime() *time.Time { return v.EndTime }
-
-// GetBytes returns QueryStatementImport.Bytes, and is useful for accessing the field via an interface.
-func (v *QueryStatementImport) GetBytes() *int { return v.Bytes }
-
-// GetRows returns QueryStatementImport.Rows, and is useful for accessing the field via an interface.
-func (v *QueryStatementImport) GetRows() *int { return v.Rows }
-
-// GetCredits returns QueryStatementImport.Credits, and is useful for accessing the field via an interface.
-func (v *QueryStatementImport) GetCredits() *float64 { return v.Credits }
-
-// GetExecutions returns QueryStatementImport.Executions, and is useful for accessing the field via an interface.
-func (v *QueryStatementImport) GetExecutions() int { return v.Executions }
-
 // Role includes the GraphQL fields of Role requested by the fragment Role.
 // The GraphQL type's documentation follows.
 //
@@ -35318,7 +35243,8 @@ type RootParameterDefinitionInput struct {
 	IdentitySync         []ParameterDefinitionInput `json:"identitySync,omitempty"`
 	AccessToTargetSync   []ParameterDefinitionInput `json:"accessToTargetSync,omitempty"`
 	AccessFromTargetSync []ParameterDefinitionInput `json:"accessFromTargetSync,omitempty"`
-	UsageSync            []ParameterDefinitionInput `json:"usageSync,omitempty"`
+	// Deprecated: no longer used, data usage sync is managed by the shared Data Usage Service. Accepted and ignored for backward compatibility.
+	UsageSync []ParameterDefinitionInput `json:"usageSync,omitempty" doc:"Deprecated: no longer used, data usage sync is managed by the shared Data Usage Service. Accepted and ignored for backward compatibility."`
 }
 
 // GetGlobal returns RootParameterDefinitionInput.Global, and is useful for accessing the field via an interface.
@@ -37048,21 +36974,6 @@ func __marshalStartImportFlowStartImportFlowSubtaskReturnResult(v *StartImportFl
 			`unexpected concrete type for StartImportFlowStartImportFlowSubtaskReturnResult: "%T"`, v)
 	}
 }
-
-type StatementImportDataObject struct {
-	GlobalPermission *ActionType `json:"globalPermission,omitempty"`
-	FullName         string      `json:"fullName"`
-	Type             *string     `json:"type,omitempty"`
-}
-
-// GetGlobalPermission returns StatementImportDataObject.GlobalPermission, and is useful for accessing the field via an interface.
-func (v *StatementImportDataObject) GetGlobalPermission() *ActionType { return v.GlobalPermission }
-
-// GetFullName returns StatementImportDataObject.FullName, and is useful for accessing the field via an interface.
-func (v *StatementImportDataObject) GetFullName() string { return v.FullName }
-
-// GetType returns StatementImportDataObject.Type, and is useful for accessing the field via an interface.
-func (v *StatementImportDataObject) GetType() *string { return v.Type }
 
 type StructuredErrorInput struct {
 	Category           ErrorCategory             `json:"category"`
