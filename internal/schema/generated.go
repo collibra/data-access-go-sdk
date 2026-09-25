@@ -1103,8 +1103,8 @@ type AccessControlFilterInput struct {
 	CanEditInheritance *bool `json:"canEditInheritance,omitempty" doc:"Only return access controls where the inheritance (= linking to other access controls) is editable."`
 	// Only return access controls where the WHAT is editable.
 	CanEditWhat *bool `json:"canEditWhat,omitempty" doc:"Only return access controls where the WHAT is editable."`
-	// Only return access controls that can receive access requests — either the WHO is directly editable, or the role is SCIM-linked to a controlling group that Data Access can manage.
-	CanReceiveAccessRequests *bool          `json:"canReceiveAccessRequests,omitempty" doc:"Only return access controls that can receive access requests — either the WHO is directly editable, or the role is SCIM-linked to a controlling group that Data Access can manage."`
+	// Only return access controls that can receive access requests — either the role is internal (not externally managed) with an editable WHO, or the role is SCIM-linked to a controlling group that Data Access can manage.
+	CanReceiveAccessRequests *bool          `json:"canReceiveAccessRequests,omitempty" doc:"Only return access controls that can receive access requests — either the role is internal (not externally managed) with an editable WHO, or the role is SCIM-linked to a controlling group that Data Access can manage."`
 	CanLinkFrom              *CanLinkFilter `json:"canLinkFrom,omitempty"`
 	CanLinkTo                *CanLinkFilter `json:"canLinkTo,omitempty"`
 	// Exclude this explicit list of access controls.
