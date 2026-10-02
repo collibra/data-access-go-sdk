@@ -18,7 +18,8 @@ jobs:
     runs-on:
       - runs-on
       - runner=sm
-      - env=production-eu
+      - env=production-eu-v3
+      - volume=40gb
       - run-id=${{ github.run_id }}
       - tag=update-gql-schema
     steps:
