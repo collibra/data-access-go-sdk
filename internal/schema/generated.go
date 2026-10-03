@@ -1119,6 +1119,10 @@ type AccessControlFilterInput struct {
 	DataObjectInWhat *string `json:"dataObjectInWhat,omitempty" doc:"Only return the access controls that have the given data object in its WHAT list."`
 	// Only return the access controls that have the give access control as an incoming WHO list.
 	AccessControlInWhat *string `json:"accessControlInWhat,omitempty" doc:"Only return the access controls that have the give access control as an incoming WHO list."`
+	// Only return the access controls whose WHAT data objects are equal to or below the WHAT data objects of the given access control,
+	// with the same semantics as `AccessControl.overlappingAccessControls`. A `FilterRule` is returned when its parent `Filter` overlaps.
+	// Access controls already part of the given access control's WHAT are excluded.
+	OverlappingWith *string `json:"overlappingWith,omitempty" doc:"Only return the access controls whose WHAT data objects are equal to or below the WHAT data objects of the given access control, with the same semantics as 'AccessControl.overlappingAccessControls'. A 'FilterRule' is returned when its parent 'Filter' overlaps. Access controls already part of the given access control's WHAT are excluded."`
 	// Only return the access controls linked to any of the given Collibra asset IDs.
 	AssetIds             []string `json:"assetIds,omitempty" doc:"Only return the access controls linked to any of the given Collibra asset IDs."`
 	IsRoleAssignableOnly bool     `json:"isRoleAssignableOnly"`
@@ -1182,6 +1186,9 @@ func (v *AccessControlFilterInput) GetDataObjectInWhat() *string { return v.Data
 
 // GetAccessControlInWhat returns AccessControlFilterInput.AccessControlInWhat, and is useful for accessing the field via an interface.
 func (v *AccessControlFilterInput) GetAccessControlInWhat() *string { return v.AccessControlInWhat }
+
+// GetOverlappingWith returns AccessControlFilterInput.OverlappingWith, and is useful for accessing the field via an interface.
+func (v *AccessControlFilterInput) GetOverlappingWith() *string { return v.OverlappingWith }
 
 // GetAssetIds returns AccessControlFilterInput.AssetIds, and is useful for accessing the field via an interface.
 func (v *AccessControlFilterInput) GetAssetIds() []string { return v.AssetIds }
