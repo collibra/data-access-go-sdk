@@ -13,7 +13,8 @@ jobs:
     runs-on:
       - runs-on
       - runner=md
-      - env=production-eu
+      - env=production-eu-v3
+      - volume=40gb
       - run-id=${{ github.run_id }}
       - tag=validation-build
     steps:
