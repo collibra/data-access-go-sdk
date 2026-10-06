@@ -24038,8 +24038,8 @@ type GroupedDataAccessReturnItem struct {
 	ExpiresAt *time.Time `json:"expiresAt" doc:"The time the access for the user expires."`
 	// The user that has the access on the data object.
 	User GroupedDataAccessReturnItemUser `json:"user" doc:"The user that has the access on the data object."`
-	// The access controls that provide the access to the data object for the user.
-	NearestAccessControls []*GroupedDataAccessReturnItemNearestAccessControlsAccessControl `json:"nearestAccessControls" doc:"The access controls that provide the access to the data object for the user."`
+	// The access controls that provide the access to the data object for the user, limited to the first 100.
+	NearestAccessControls []*GroupedDataAccessReturnItemNearestAccessControlsAccessControl `json:"nearestAccessControls" doc:"The access controls that provide the access to the data object for the user, limited to the first 100."`
 }
 
 // GetPermissions returns GroupedDataAccessReturnItem.Permissions, and is useful for accessing the field via an interface.
