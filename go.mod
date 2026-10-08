@@ -14,8 +14,8 @@ require (
 	github.com/hashicorp/go-cleanhttp v0.5.2
 	github.com/hashicorp/go-retryablehttp v0.7.8
 	github.com/stretchr/testify v1.12.1
-	github.com/vektah/gqlparser/v2 v2.5.59
-	golang.org/x/tools v0.50.0
+	github.com/vektah/gqlparser/v2 v2.5.60
+	golang.org/x/tools v0.51.0
 	gopkg.in/yaml.v3 v3.0.1
 )
 
