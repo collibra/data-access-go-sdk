@@ -1196,16 +1196,37 @@ func (v *AccessControlFilterInput) GetAssetIds() []string { return v.AssetIds }
 // GetIsRoleAssignableOnly returns AccessControlFilterInput.IsRoleAssignableOnly, and is useful for accessing the field via an interface.
 func (v *AccessControlFilterInput) GetIsRoleAssignableOnly() bool { return v.IsRoleAssignableOnly }
 
+type AccessControlFinishedImport struct {
+	AccessControlExternalId string `json:"accessControlExternalId"`
+	// Set when the WHO was streamed. Without it, the WHO links are left untouched.
+	Who *StreamedPartFinishedImport `json:"who,omitempty" doc:"Set when the WHO was streamed. Without it, the WHO links are left untouched."`
+	// Set when the WHAT items were streamed. Without it, the WHAT links are left untouched.
+	What *StreamedPartFinishedImport `json:"what,omitempty" doc:"Set when the WHAT items were streamed. Without it, the WHAT links are left untouched."`
+}
+
+// GetAccessControlExternalId returns AccessControlFinishedImport.AccessControlExternalId, and is useful for accessing the field via an interface.
+func (v *AccessControlFinishedImport) GetAccessControlExternalId() string {
+	return v.AccessControlExternalId
+}
+
+// GetWho returns AccessControlFinishedImport.Who, and is useful for accessing the field via an interface.
+func (v *AccessControlFinishedImport) GetWho() *StreamedPartFinishedImport { return v.Who }
+
+// GetWhat returns AccessControlFinishedImport.What, and is useful for accessing the field via an interface.
+func (v *AccessControlFinishedImport) GetWhat() *StreamedPartFinishedImport { return v.What }
+
 type AccessControlImport struct {
-	ExternalId              string                `json:"externalId"`
-	Name                    string                `json:"name"`
-	NamingHint              string                `json:"namingHint"`
-	Type                    *string               `json:"type,omitempty"`
-	Action                  AccessControlAction   `json:"action"`
-	Policy                  *string               `json:"policy,omitempty"`
-	Who                     WhoItemImport         `json:"who"`
-	WhoUnknown              bool                  `json:"whoUnknown"`
-	WhatUnknown             bool                  `json:"whatUnknown"`
+	ExternalId  string              `json:"externalId"`
+	Name        string              `json:"name"`
+	NamingHint  string              `json:"namingHint"`
+	Type        *string             `json:"type,omitempty"`
+	Action      AccessControlAction `json:"action"`
+	Policy      *string             `json:"policy,omitempty"`
+	Who         WhoItemImport       `json:"who"`
+	WhoUnknown  bool                `json:"whoUnknown"`
+	WhatUnknown bool                `json:"whatUnknown"`
+	// When set, all WHO items (users, access controls and data share recipients) are sent as separate upsertAccessControlWho commands followed by accessControlFinished with who set, and who is ignored.
+	WhoStreamed             *bool                 `json:"whoStreamed,omitempty" doc:"When set, all WHO items (users, access controls and data share recipients) are sent as separate upsertAccessControlWho commands followed by accessControlFinished with who set, and who is ignored."`
 	NotInternalizable       bool                  `json:"notInternalizable"`
 	WhoLocked               bool                  `json:"whoLocked"`
 	WhoLockedReason         *string               `json:"whoLockedReason,omitempty"`
@@ -1252,6 +1273,9 @@ func (v *AccessControlImport) GetWhoUnknown() bool { return v.WhoUnknown }
 
 // GetWhatUnknown returns AccessControlImport.WhatUnknown, and is useful for accessing the field via an interface.
 func (v *AccessControlImport) GetWhatUnknown() bool { return v.WhatUnknown }
+
+// GetWhoStreamed returns AccessControlImport.WhoStreamed, and is useful for accessing the field via an interface.
+func (v *AccessControlImport) GetWhoStreamed() *bool { return v.WhoStreamed }
 
 // GetNotInternalizable returns AccessControlImport.NotInternalizable, and is useful for accessing the field via an interface.
 func (v *AccessControlImport) GetNotInternalizable() bool { return v.NotInternalizable }
@@ -24760,6 +24784,10 @@ type ImportCommand struct {
 	UpsertAccessControlWhatItem *WhatItemImport              `json:"upsertAccessControlWhatItem,omitempty"`
 	UpsertAccessControlFeedback *AccessControlFeedbackImport `json:"upsertAccessControlFeedback,omitempty"`
 	AccessControlWhatFinished   *string                      `json:"accessControlWhatFinished,omitempty"`
+	// Adds WHO items to an access control imported with whoStreamed set.
+	UpsertAccessControlWho *WhoImport `json:"upsertAccessControlWho,omitempty" doc:"Adds WHO items to an access control imported with whoStreamed set."`
+	// Signals that all streamed items of an access control were sent, so the streamed items that were not sent are removed.
+	AccessControlFinished *AccessControlFinishedImport `json:"accessControlFinished,omitempty" doc:"Signals that all streamed items of an access control were sent, so the streamed items that were not sent are removed."`
 }
 
 // GetUpsertDataObject returns ImportCommand.UpsertDataObject, and is useful for accessing the field via an interface.
@@ -24783,6 +24811,14 @@ func (v *ImportCommand) GetUpsertAccessControlFeedback() *AccessControlFeedbackI
 
 // GetAccessControlWhatFinished returns ImportCommand.AccessControlWhatFinished, and is useful for accessing the field via an interface.
 func (v *ImportCommand) GetAccessControlWhatFinished() *string { return v.AccessControlWhatFinished }
+
+// GetUpsertAccessControlWho returns ImportCommand.UpsertAccessControlWho, and is useful for accessing the field via an interface.
+func (v *ImportCommand) GetUpsertAccessControlWho() *WhoImport { return v.UpsertAccessControlWho }
+
+// GetAccessControlFinished returns ImportCommand.AccessControlFinished, and is useful for accessing the field via an interface.
+func (v *ImportCommand) GetAccessControlFinished() *AccessControlFinishedImport {
+	return v.AccessControlFinished
+}
 
 type ImportCommands struct {
 	FlowId   uuid.UUID       `json:"flowId"`
@@ -36982,6 +37018,14 @@ func __marshalStartImportFlowStartImportFlowSubtaskReturnResult(v *StartImportFl
 	}
 }
 
+type StreamedPartFinishedImport struct {
+	// The number of chunks sent for the part, numbered with chunkIndex 0 up to chunkCount - 1. When fewer arrived, the existing links are kept and the access control is marked incomplete.
+	ChunkCount int `json:"chunkCount" doc:"The number of chunks sent for the part, numbered with chunkIndex 0 up to chunkCount - 1. When fewer arrived, the existing links are kept and the access control is marked incomplete."`
+}
+
+// GetChunkCount returns StreamedPartFinishedImport.ChunkCount, and is useful for accessing the field via an interface.
+func (v *StreamedPartFinishedImport) GetChunkCount() int { return v.ChunkCount }
+
 type StructuredErrorInput struct {
 	Category           ErrorCategory             `json:"category"`
 	Message            string                    `json:"message"`
@@ -45366,6 +45410,8 @@ type WhatItemImport struct {
 	AccessControlExternalId string                    `json:"accessControlExternalId"`
 	DataObject              DataObjectReferenceImport `json:"dataObject"`
 	Permissions             []string                  `json:"permissions,omitempty"`
+	// The position of the item among the WHAT items of the access control, starting at 0. Required to finish the WHAT with accessControlFinished.
+	ChunkIndex *int `json:"chunkIndex,omitempty" doc:"The position of the item among the WHAT items of the access control, starting at 0. Required to finish the WHAT with accessControlFinished."`
 }
 
 // GetAccessControlExternalId returns WhatItemImport.AccessControlExternalId, and is useful for accessing the field via an interface.
@@ -45376,6 +45422,9 @@ func (v *WhatItemImport) GetDataObject() DataObjectReferenceImport { return v.Da
 
 // GetPermissions returns WhatItemImport.Permissions, and is useful for accessing the field via an interface.
 func (v *WhatItemImport) GetPermissions() []string { return v.Permissions }
+
+// GetChunkIndex returns WhatItemImport.ChunkIndex, and is useful for accessing the field via an interface.
+func (v *WhatItemImport) GetChunkIndex() *int { return v.ChunkIndex }
 
 // WhoAbacRule includes the GraphQL fields of WhoAbacRule requested by the fragment WhoAbacRule.
 // The GraphQL type's documentation follows.
@@ -45425,6 +45474,31 @@ func (v *WhoAbacRuleInput) GetType() AccessWhoItemType { return v.Type }
 
 // GetPromiseDuration returns WhoAbacRuleInput.PromiseDuration, and is useful for accessing the field via an interface.
 func (v *WhoAbacRuleInput) GetPromiseDuration() *int64 { return v.PromiseDuration }
+
+type WhoImport struct {
+	AccessControlExternalId string `json:"accessControlExternalId"`
+	// The position of the chunk among the WHO chunks of the access control, starting at 0.
+	ChunkIndex int      `json:"chunkIndex" doc:"The position of the chunk among the WHO chunks of the access control, starting at 0."`
+	Users      []string `json:"users,omitempty"`
+	// External IDs of the access controls (including groups) to inherit from. An access control that is imported later in the same import is linked once the import finishes.
+	AccessControls      []string `json:"accessControls,omitempty" doc:"External IDs of the access controls (including groups) to inherit from. An access control that is imported later in the same import is linked once the import finishes."`
+	DataShareRecipients []string `json:"dataShareRecipients,omitempty"`
+}
+
+// GetAccessControlExternalId returns WhoImport.AccessControlExternalId, and is useful for accessing the field via an interface.
+func (v *WhoImport) GetAccessControlExternalId() string { return v.AccessControlExternalId }
+
+// GetChunkIndex returns WhoImport.ChunkIndex, and is useful for accessing the field via an interface.
+func (v *WhoImport) GetChunkIndex() int { return v.ChunkIndex }
+
+// GetUsers returns WhoImport.Users, and is useful for accessing the field via an interface.
+func (v *WhoImport) GetUsers() []string { return v.Users }
+
+// GetAccessControls returns WhoImport.AccessControls, and is useful for accessing the field via an interface.
+func (v *WhoImport) GetAccessControls() []string { return v.AccessControls }
+
+// GetDataShareRecipients returns WhoImport.DataShareRecipients, and is useful for accessing the field via an interface.
+func (v *WhoImport) GetDataShareRecipients() []string { return v.DataShareRecipients }
 
 type WhoItemImport struct {
 	Users          []string `json:"users,omitempty"`
