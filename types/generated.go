@@ -27,13 +27,15 @@ type AccessControl = schema.AccessControl
 type AccessControlAction = schema.AccessControlAction
 
 const (
-	AccessControlActionGrant          AccessControlAction = schema.AccessControlActionGrant
-	AccessControlActionMask           AccessControlAction = schema.AccessControlActionMask
-	AccessControlActionFilter         AccessControlAction = schema.AccessControlActionFilter
-	AccessControlActionShare          AccessControlAction = schema.AccessControlActionShare
-	AccessControlActionGroup          AccessControlAction = schema.AccessControlActionGroup
-	AccessControlActionFilterrule     AccessControlAction = schema.AccessControlActionFilterrule
-	AccessControlActionGrantvariation AccessControlAction = schema.AccessControlActionGrantvariation
+	AccessControlActionGrant              AccessControlAction = schema.AccessControlActionGrant
+	AccessControlActionMask               AccessControlAction = schema.AccessControlActionMask
+	AccessControlActionFilter             AccessControlAction = schema.AccessControlActionFilter
+	AccessControlActionShare              AccessControlAction = schema.AccessControlActionShare
+	AccessControlActionGroup              AccessControlAction = schema.AccessControlActionGroup
+	AccessControlActionFilterrule         AccessControlAction = schema.AccessControlActionFilterrule
+	AccessControlActionGrantvariation     AccessControlAction = schema.AccessControlActionGrantvariation
+	AccessControlActionDelegationboundary AccessControlAction = schema.AccessControlActionDelegationboundary
+	AccessControlActionDelegatedrole      AccessControlAction = schema.AccessControlActionDelegatedrole
 )
 
 type AccessControlCategoryGrantCategory = schema.AccessControlCategoryGrantCategory
@@ -712,6 +714,8 @@ type NextSyncJobForEdgeDataSourceNextSyncJobForEdgeDataSourceSyncJob = schema.Ne
 type NextSyncJobForEdgeDataSourceNextSyncJobForEdgeDataSourceSyncJobResult = schema.NextSyncJobForEdgeDataSourceNextSyncJobForEdgeDataSourceSyncJobResult
 type NextSyncJobForEdgeDataSourceResponse = schema.NextSyncJobForEdgeDataSourceResponse
 type NotFoundError = schema.NotFoundError
+type OAuthAuthorizationParameterInput = schema.OAuthAuthorizationParameterInput
+type OAuthDefinitionInput = schema.OAuthDefinitionInput
 type ObjectTypeTaskResult = schema.ObjectTypeTaskResult
 type PageInfo = schema.PageInfo
 type ParameterDataType = schema.ParameterDataType
@@ -982,6 +986,7 @@ const (
 	UserTypeHuman   UserType = schema.UserTypeHuman
 	UserTypeMachine UserType = schema.UserTypeMachine
 	UserTypeSystem  UserType = schema.UserTypeSystem
+	UserTypeAgent   UserType = schema.UserTypeAgent
 )
 
 type WhatAbacRule = schema.WhatAbacRule
@@ -996,7 +1001,7 @@ type WhoItemInput = schema.WhoItemInput
 type WhoItemRemoveInput = schema.WhoItemRemoveInput
 
 var AllAbacComparisonExpressionComparisonOperator = []AbacComparisonExpressionComparisonOperator{AbacComparisonExpressionComparisonOperatorPropertyequals, AbacComparisonExpressionComparisonOperatorPropertyin, AbacComparisonExpressionComparisonOperatorHastag, AbacComparisonExpressionComparisonOperatorInheritstag, AbacComparisonExpressionComparisonOperatorContainstag, AbacComparisonExpressionComparisonOperatorPropertystartswith, AbacComparisonExpressionComparisonOperatorPropertyendswith, AbacComparisonExpressionComparisonOperatorPropertycontains}
-var AllAccessControlAction = []AccessControlAction{AccessControlActionGrant, AccessControlActionMask, AccessControlActionFilter, AccessControlActionShare, AccessControlActionGroup, AccessControlActionFilterrule, AccessControlActionGrantvariation}
+var AllAccessControlAction = []AccessControlAction{AccessControlActionGrant, AccessControlActionMask, AccessControlActionFilter, AccessControlActionShare, AccessControlActionGroup, AccessControlActionFilterrule, AccessControlActionGrantvariation, AccessControlActionDelegationboundary, AccessControlActionDelegatedrole}
 var AllAccessControlLock = []AccessControlLock{AccessControlLockWholock, AccessControlLockInheritancelock, AccessControlLockWhatlock, AccessControlLockNamelock, AccessControlLockDeletelock, AccessControlLockOwnerlock}
 var AllAccessControlLockType = []AccessControlLockType{AccessControlLockTypeImportexport, AccessControlLockTypeUseronly, AccessControlLockTypeScim}
 var AllAccessControlState = []AccessControlState{AccessControlStateActive, AccessControlStateInactive, AccessControlStateDeleted}
@@ -1021,4 +1026,4 @@ var AllSort = []Sort{SortAsc, SortDesc}
 var AllSubtaskStatus = []SubtaskStatus{SubtaskStatusStarted, SubtaskStatusQueued, SubtaskStatusDataretrieve, SubtaskStatusInprogress, SubtaskStatusCompleted, SubtaskStatusFailed, SubtaskStatusTimedout}
 var AllSyncStatus = []SyncStatus{SyncStatusNotconnected, SyncStatusFailed, SyncStatusOutofdate, SyncStatusInprogress, SyncStatusSynced, SyncStatusOutofsync}
 var AllTaskStatus = []TaskStatus{TaskStatusStarted, TaskStatusDataretrieve, TaskStatusDataupload, TaskStatusQueued, TaskStatusDataprocessing, TaskStatusCompleted, TaskStatusFailed, TaskStatusSkipped, TaskStatusTimedout}
-var AllUserType = []UserType{UserTypeHuman, UserTypeMachine, UserTypeSystem}
+var AllUserType = []UserType{UserTypeHuman, UserTypeMachine, UserTypeSystem, UserTypeAgent}

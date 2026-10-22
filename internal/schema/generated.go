@@ -287,6 +287,10 @@ const (
 	AccessControlActionFilterrule AccessControlAction = "FilterRule"
 	// For a per-access-request grant variation that accumulates approvals from the parent role, masks, and filter rules.
 	AccessControlActionGrantvariation AccessControlAction = "GrantVariation"
+	// The access an agent may use on behalf of users. Grants nothing on its own.
+	AccessControlActionDelegationboundary AccessControlAction = "DelegationBoundary"
+	// A per-conversation role holding an agent's access on behalf of one user.
+	AccessControlActionDelegatedrole AccessControlAction = "DelegatedRole"
 )
 
 var AllAccessControlAction = []AccessControlAction{
@@ -297,6 +301,8 @@ var AllAccessControlAction = []AccessControlAction{
 	AccessControlActionGroup,
 	AccessControlActionFilterrule,
 	AccessControlActionGrantvariation,
+	AccessControlActionDelegationboundary,
+	AccessControlActionDelegatedrole,
 }
 
 // AccessControlCategoryGrantCategory includes the requested fields of the GraphQL type GrantCategory.
@@ -1103,8 +1109,8 @@ type AccessControlFilterInput struct {
 	CanEditInheritance *bool `json:"canEditInheritance,omitempty" doc:"Only return access controls where the inheritance (= linking to other access controls) is editable."`
 	// Only return access controls where the WHAT is editable.
 	CanEditWhat *bool `json:"canEditWhat,omitempty" doc:"Only return access controls where the WHAT is editable."`
-	// Only return access controls that can receive access requests — either the role is internal (not externally managed) with an editable WHO, or the role is SCIM-linked to a controlling group that Data Access can manage.
-	CanReceiveAccessRequests *bool          `json:"canReceiveAccessRequests,omitempty" doc:"Only return access controls that can receive access requests — either the role is internal (not externally managed) with an editable WHO, or the role is SCIM-linked to a controlling group that Data Access can manage."`
+	// Only return access controls that can receive access requests — either the role or group is internal (not externally managed) with an editable WHO, or it is SCIM-linked to a controlling group that Data Access can manage, even when it is locked or can't be internalized itself.
+	CanReceiveAccessRequests *bool          `json:"canReceiveAccessRequests,omitempty" doc:"Only return access controls that can receive access requests — either the role or group is internal (not externally managed) with an editable WHO, or it is SCIM-linked to a controlling group that Data Access can manage, even when it is locked or can't be internalized itself."`
 	CanLinkFrom              *CanLinkFilter `json:"canLinkFrom,omitempty"`
 	CanLinkTo                *CanLinkFilter `json:"canLinkTo,omitempty"`
 	// Exclude this explicit list of access controls.
@@ -9596,6 +9602,8 @@ type DataObjectFilterInput struct {
 	IncludeDataSource *bool `json:"includeDataSource,omitempty" doc:"If true, also data top-level data object of type 'datasource' is included."`
 	AsOwner           *bool `json:"asOwner,omitempty"`
 	CanUse            *bool `json:"canUse,omitempty"`
+	// Used together with `canUse`: the action of the access control the data objects are selected for.
+	CanUseForAccessControlAction *AccessControlAction `json:"canUseForAccessControlAction,omitempty" doc:"Used together with 'canUse': the action of the access control the data objects are selected for."`
 	// Limit the data objects for which any of the given users is an owner.
 	Owners []string `json:"owners,omitempty" doc:"Limit the data objects for which any of the given users is an owner."`
 	// If true, also deleted (unknown) data objects are included.
@@ -9644,6 +9652,11 @@ func (v *DataObjectFilterInput) GetAsOwner() *bool { return v.AsOwner }
 
 // GetCanUse returns DataObjectFilterInput.CanUse, and is useful for accessing the field via an interface.
 func (v *DataObjectFilterInput) GetCanUse() *bool { return v.CanUse }
+
+// GetCanUseForAccessControlAction returns DataObjectFilterInput.CanUseForAccessControlAction, and is useful for accessing the field via an interface.
+func (v *DataObjectFilterInput) GetCanUseForAccessControlAction() *AccessControlAction {
+	return v.CanUseForAccessControlAction
+}
 
 // GetOwners returns DataObjectFilterInput.Owners, and is useful for accessing the field via an interface.
 func (v *DataObjectFilterInput) GetOwners() []string { return v.Owners }
@@ -33873,6 +33886,53 @@ type NotFoundError struct {
 // GetMessage returns NotFoundError.Message, and is useful for accessing the field via an interface.
 func (v *NotFoundError) GetMessage() string { return v.Message }
 
+type OAuthAuthorizationParameterInput struct {
+	Key   string `json:"key"`
+	Value string `json:"value"`
+}
+
+// GetKey returns OAuthAuthorizationParameterInput.Key, and is useful for accessing the field via an interface.
+func (v *OAuthAuthorizationParameterInput) GetKey() string { return v.Key }
+
+// GetValue returns OAuthAuthorizationParameterInput.Value, and is useful for accessing the field via an interface.
+func (v *OAuthAuthorizationParameterInput) GetValue() string { return v.Value }
+
+type OAuthDefinitionInput struct {
+	// Authorize endpoint. May contain {client-parameter-key} placeholders.
+	AuthorizationUrl string `json:"authorizationUrl" doc:"Authorize endpoint. May contain {client-parameter-key} placeholders."`
+	// Token endpoint. May contain {client-parameter-key} placeholders.
+	TokenUrl string   `json:"tokenUrl" doc:"Token endpoint. May contain {client-parameter-key} placeholders."`
+	Scopes   []string `json:"scopes"`
+	// Extra static query parameters for the authorize request, e.g. prompt=select_account.
+	AuthorizationParameters []OAuthAuthorizationParameterInput `json:"authorizationParameters,omitempty" doc:"Extra static query parameters for the authorize request, e.g. prompt=select_account."`
+	// Extra non-secret OAuth app settings entered in Data Access. Client ID and secret are implicit.
+	ClientParameters []ParameterDefinitionInput `json:"clientParameters,omitempty" doc:"Extra non-secret OAuth app settings entered in Data Access. Client ID and secret are implicit."`
+	// Key of the connection parameter that receives the minted access token.
+	AccessTokenParameter string `json:"accessTokenParameter" doc:"Key of the connection parameter that receives the minted access token."`
+}
+
+// GetAuthorizationUrl returns OAuthDefinitionInput.AuthorizationUrl, and is useful for accessing the field via an interface.
+func (v *OAuthDefinitionInput) GetAuthorizationUrl() string { return v.AuthorizationUrl }
+
+// GetTokenUrl returns OAuthDefinitionInput.TokenUrl, and is useful for accessing the field via an interface.
+func (v *OAuthDefinitionInput) GetTokenUrl() string { return v.TokenUrl }
+
+// GetScopes returns OAuthDefinitionInput.Scopes, and is useful for accessing the field via an interface.
+func (v *OAuthDefinitionInput) GetScopes() []string { return v.Scopes }
+
+// GetAuthorizationParameters returns OAuthDefinitionInput.AuthorizationParameters, and is useful for accessing the field via an interface.
+func (v *OAuthDefinitionInput) GetAuthorizationParameters() []OAuthAuthorizationParameterInput {
+	return v.AuthorizationParameters
+}
+
+// GetClientParameters returns OAuthDefinitionInput.ClientParameters, and is useful for accessing the field via an interface.
+func (v *OAuthDefinitionInput) GetClientParameters() []ParameterDefinitionInput {
+	return v.ClientParameters
+}
+
+// GetAccessTokenParameter returns OAuthDefinitionInput.AccessTokenParameter, and is useful for accessing the field via an interface.
+func (v *OAuthDefinitionInput) GetAccessTokenParameter() string { return v.AccessTokenParameter }
+
 // ObjectTypeTaskResult includes the GraphQL fields of TaskResult requested by the fragment ObjectTypeTaskResult.
 // The GraphQL type's documentation follows.
 //
@@ -35288,6 +35348,8 @@ type RootParameterDefinitionInput struct {
 	AccessFromTargetSync []ParameterDefinitionInput `json:"accessFromTargetSync,omitempty"`
 	// Deprecated: no longer used, data usage sync is managed by the shared Data Usage Service. Accepted and ignored for backward compatibility.
 	UsageSync []ParameterDefinitionInput `json:"usageSync,omitempty" doc:"Deprecated: no longer used, data usage sync is managed by the shared Data Usage Service. Accepted and ignored for backward compatibility."`
+	// OAuth flow that mints the connector's access token. Null when the connector does not support delegated OAuth credentials.
+	Oauth *OAuthDefinitionInput `json:"oauth,omitempty" doc:"OAuth flow that mints the connector's access token. Null when the connector does not support delegated OAuth credentials."`
 }
 
 // GetGlobal returns RootParameterDefinitionInput.Global, and is useful for accessing the field via an interface.
@@ -35320,6 +35382,9 @@ func (v *RootParameterDefinitionInput) GetAccessFromTargetSync() []ParameterDefi
 
 // GetUsageSync returns RootParameterDefinitionInput.UsageSync, and is useful for accessing the field via an interface.
 func (v *RootParameterDefinitionInput) GetUsageSync() []ParameterDefinitionInput { return v.UsageSync }
+
+// GetOauth returns RootParameterDefinitionInput.Oauth, and is useful for accessing the field via an interface.
+func (v *RootParameterDefinitionInput) GetOauth() *OAuthDefinitionInput { return v.Oauth }
 
 type ScimAssignmentInput struct {
 	DataSourceId string  `json:"dataSourceId"`
@@ -45315,12 +45380,15 @@ const (
 	UserTypeMachine UserType = "Machine"
 	// An internal DGC system account. Excluded from user lists and search by default.
 	UserTypeSystem UserType = "System"
+	// An AI agent acting on behalf of users within its delegation boundary.
+	UserTypeAgent UserType = "Agent"
 )
 
 var AllUserType = []UserType{
 	UserTypeHuman,
 	UserTypeMachine,
 	UserTypeSystem,
+	UserTypeAgent,
 }
 
 // WhatAbacRule includes the GraphQL fields of WhatAbacRule requested by the fragment WhatAbacRule.
