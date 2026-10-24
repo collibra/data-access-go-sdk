@@ -1103,8 +1103,8 @@ type AccessControlFilterInput struct {
 	CanEditInheritance *bool `json:"canEditInheritance,omitempty" doc:"Only return access controls where the inheritance (= linking to other access controls) is editable."`
 	// Only return access controls where the WHAT is editable.
 	CanEditWhat *bool `json:"canEditWhat,omitempty" doc:"Only return access controls where the WHAT is editable."`
-	// Only return access controls that can receive access requests — either the role is internal (not externally managed) with an editable WHO, or the role is SCIM-linked to a controlling group that Data Access can manage.
-	CanReceiveAccessRequests *bool          `json:"canReceiveAccessRequests,omitempty" doc:"Only return access controls that can receive access requests — either the role is internal (not externally managed) with an editable WHO, or the role is SCIM-linked to a controlling group that Data Access can manage."`
+	// Only return access controls that can receive access requests — either the role or group is internal (not externally managed) with an editable WHO, or it is SCIM-linked to a controlling group that Data Access can manage, even when it is locked or can't be internalized itself.
+	CanReceiveAccessRequests *bool          `json:"canReceiveAccessRequests,omitempty" doc:"Only return access controls that can receive access requests — either the role or group is internal (not externally managed) with an editable WHO, or it is SCIM-linked to a controlling group that Data Access can manage, even when it is locked or can't be internalized itself."`
 	CanLinkFrom              *CanLinkFilter `json:"canLinkFrom,omitempty"`
 	CanLinkTo                *CanLinkFilter `json:"canLinkTo,omitempty"`
 	// Exclude this explicit list of access controls.
@@ -9596,6 +9596,8 @@ type DataObjectFilterInput struct {
 	IncludeDataSource *bool `json:"includeDataSource,omitempty" doc:"If true, also data top-level data object of type 'datasource' is included."`
 	AsOwner           *bool `json:"asOwner,omitempty"`
 	CanUse            *bool `json:"canUse,omitempty"`
+	// Used together with `canUse`: the action of the access control the data objects are selected for.
+	CanUseForAccessControlAction *AccessControlAction `json:"canUseForAccessControlAction,omitempty" doc:"Used together with 'canUse': the action of the access control the data objects are selected for."`
 	// Limit the data objects for which any of the given users is an owner.
 	Owners []string `json:"owners,omitempty" doc:"Limit the data objects for which any of the given users is an owner."`
 	// If true, also deleted (unknown) data objects are included.
@@ -9644,6 +9646,11 @@ func (v *DataObjectFilterInput) GetAsOwner() *bool { return v.AsOwner }
 
 // GetCanUse returns DataObjectFilterInput.CanUse, and is useful for accessing the field via an interface.
 func (v *DataObjectFilterInput) GetCanUse() *bool { return v.CanUse }
+
+// GetCanUseForAccessControlAction returns DataObjectFilterInput.CanUseForAccessControlAction, and is useful for accessing the field via an interface.
+func (v *DataObjectFilterInput) GetCanUseForAccessControlAction() *AccessControlAction {
+	return v.CanUseForAccessControlAction
+}
 
 // GetOwners returns DataObjectFilterInput.Owners, and is useful for accessing the field via an interface.
 func (v *DataObjectFilterInput) GetOwners() []string { return v.Owners }
