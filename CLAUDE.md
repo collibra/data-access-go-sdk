@@ -1,39 +1,28 @@
 # CLAUDE.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+Go SDK (package `sdk`) for the Collibra Data Access GraphQL API.
 
 ## Commands
 
-```bash
-make build          # go build ./...
-make test           # run tests with gotestsum
-make test-coverage  # run tests with coverage (output in .tests/)
-make lint           # run golangci-lint + go fmt check
-make fix-lint       # auto-fix lint issues
-make gql            # regenerate GraphQL code (genqlient + alias tool + doctags tool)
-make fetch-schema   # fetch GraphQL schema from Collibra server (needs COLLIBRA_USERNAME, COLLIBRA_PASSWORD)
-```
+- `make test` and `go test ./services/...` run against a live Collibra and fail unless `COLLIBRA_URL`,
+  `COLLIBRA_USER` and `COLLIBRA_PASSWORD` are set. Without a server: `go test . ./internal/...` and, in `services/`, the tests
+  that don't use a suite: `go test ./services/ -run 'TestMarshalSyncParameterValues|TestDataSourceListFilter'`.
+- `make gql` needs `internal/schema/schema.graphql`, which is gitignored: run `make fetch-schema` first. It reads
+  `COLLIBRA_URL`, `COLLIBRA_USERNAME` and `COLLIBRA_PASSWORD`; note USERNAME here against USER for the tests.
+- One test: `go test ./services/ -run TestDataSourceServiceTestSuite/TestDataSources`.
 
-To run a single test:
-```bash
-go test ./services/... -run TestDataSourceClientTestSuite/TestCreateDataSource
-```
+## Generated code
 
-## Architecture
+`internal/schema/generated.go` (about 2 MB) and `types/generated.go` come from `make gql`. Never edit them and never
+read them whole; grep for a symbol. The nightly `update-gql-schema.yml` workflow regenerates both and opens an
+auto-merging PR, so hand edits get overwritten.
 
-This is a Go SDK (package `sdk`) for the Collibra Data Access GraphQL API. The module is `github.com/collibra/data-access-go-sdk`.
+## Adding an operation
 
-### Layers
-
-**`client.go` (root)** — Public entry point. `NewClient(url, ...opts)` returns `*CollibraClient`. Service clients are accessed through methods like `.AccessControl()`, `.DataSource()`, etc.
-
-**`services/`** — One file per domain (access_control, data_source, data_object, importer, exporter, job, user, roles, grant_category, site). Tests use `testify/suite`.
-
-**`types/`** — Exported types re-aliased from `internal/schema/generated.go` via the `agen` code generator. `errors.go` defines sentinel errors.
-
-### Key patterns
-
-- **Functional options**: `WithUsername`, `WithPassword`, `WithLogger`, `WithMaxRetries`, etc. on `NewClient`.
-- **Pagination**: Use `internal.PaginationExecutor` — takes a fetch function and returns an `iter.Seq2` iterator.
-- **Error wrapping**: GraphQL client errors are wrapped in `ErrClient`. Check domain errors with `errors.Is`.
-- **Adding a new operation**: write `.graphql` file in `internal/schema/queries/`, run `make gql`, add method to the relevant service in `services/`.
+1. Write the query or mutation in `internal/schema/queries/<domain>.graphql`, spreading the error fragments from
+   `errors.graphql` that the API can return (`...PermissionDeniedError`, `...NotFoundError`, `...InvalidInputError`).
+2. `make gql`.
+3. Add the method to `services/<domain>.go`. Wrap a transport failure in `types.NewErrClient(err)`, type-switch on the
+   result union mapping each error member to `types.NewErrNotFound`, `NewErrPermissionDenied` or `NewErrInvalidInput`,
+   and give the `default` case an error for the unexpected type.
+4. A new domain also needs a `singletonClient` field, a constructor line and an accessor in `client.go`.
