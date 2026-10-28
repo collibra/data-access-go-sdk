@@ -36,7 +36,7 @@ func (suite *GrantCategoryServiceTestSuite) TestGrantCategory() {
 
 	var createdGrantCategory *schema.GrantCategoryDetails
 
-	suite.Run("Create Grant Category", func() {
+	isCreated := suite.Run("Create Grant Category", func() {
 		name := "Test Category " + uuid.New().String()
 		namePlural := name + "s"
 		description := "Test Category Description"
@@ -58,7 +58,7 @@ func (suite *GrantCategoryServiceTestSuite) TestGrantCategory() {
 
 		suite.Require().NoError(err, "Failed to create GrantCategory")
 
-		suite.NotNil(createdGrant)
+		suite.Require().NotNil(createdGrant)
 		suite.Equal(name, createdGrant.Name)
 		suite.Equal(description, createdGrant.Description)
 		suite.Equal(icon, createdGrant.Icon)
@@ -67,13 +67,11 @@ func (suite *GrantCategoryServiceTestSuite) TestGrantCategory() {
 
 		createdGrantCategory = createdGrant
 	})
+	if !isCreated {
+		return
+	}
 
 	suite.Run("Get Grant Category", func() {
-		// Skip the test if no grant category was created in previous test
-		if createdGrantCategory == nil {
-			suite.T().Skip("No GrantCategory created to test GetGrantCategory")
-		}
-
 		retrievedGrantCategory, err := grantCategoryClient.GetGrantCategory(ctx, createdGrantCategory.Id)
 
 		suite.Require().NoError(err, "Failed to get GrantCategory with id %s: %v", createdGrantCategory.Id, err)
