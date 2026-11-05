@@ -1,5 +1,5 @@
-github.com/Khan/genqlient v0.8.2-0.20260825022638-8d029a3f38e6 h1:FP5WUPkGrgDJ5PBQsRITqH31GRBiDnu2yETIlIV2ym0=
-github.com/Khan/genqlient v0.8.2-0.20260825022638-8d029a3f38e6/go.mod h1:/bTwfOk5FaWdKIQZEHTmG458d1rksAZflBz4T35Yi4E=
+github.com/Khan/genqlient v0.8.2-0.20261104225529-0eb54329625c h1:KSA/Nz4nEgE+epvtC9gkMxlOjvgphyAnTdoDFP60E54=
+github.com/Khan/genqlient v0.8.2-0.20261104225529-0eb54329625c/go.mod h1:/bTwfOk5FaWdKIQZEHTmG458d1rksAZflBz4T35Yi4E=
 github.com/Masterminds/semver/v3 v3.5.0 h1:kQceYJfbupGfZOKZQg0kou0DgAKhzDg2NZPAwZ/2OOE=
 github.com/Masterminds/semver/v3 v3.5.0/go.mod h1:4V+yj/TJE1HU9XfppCwVMZq3I84lprf4nC11bSS5beM=
 github.com/agnivade/levenshtein v1.2.2 h1:fI8RgiztYX1Nn5pBHHqQ9EMCCklhrmXqPRIedFmx5M4=

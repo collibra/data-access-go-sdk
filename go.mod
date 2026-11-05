@@ -8,7 +8,7 @@ require (
 	// This is a temporary pseudo-version used because an official release
 	// containing a necessary fix is not yet available. It will be replaced
 	// with an official version once it is released.
-	github.com/Khan/genqlient v0.8.2-0.20260825022638-8d029a3f38e6
+	github.com/Khan/genqlient v0.8.2-0.20261104225529-0eb54329625c
 	github.com/Masterminds/semver/v3 v3.5.0
 	github.com/google/uuid v1.6.0
 	github.com/hashicorp/go-cleanhttp v0.5.2
