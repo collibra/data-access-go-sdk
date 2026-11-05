@@ -188,6 +188,12 @@ type AddSubtaskEventAddSubtaskEventSubtask = schema.AddSubtaskEventAddSubtaskEve
 type AddSubtaskEventResponse = schema.AddSubtaskEventResponse
 type AddTaskEventAddTaskEventTask = schema.AddTaskEventAddTaskEventTask
 type AddTaskEventResponse = schema.AddTaskEventResponse
+type AddValidationReportAddValidationReport = schema.AddValidationReportAddValidationReport
+type AddValidationReportAddValidationReportInvalidInputError = schema.AddValidationReportAddValidationReportInvalidInputError
+type AddValidationReportAddValidationReportNotFoundError = schema.AddValidationReportAddValidationReportNotFoundError
+type AddValidationReportAddValidationReportPermissionDeniedError = schema.AddValidationReportAddValidationReportPermissionDeniedError
+type AddValidationReportAddValidationReportValidationReportResult = schema.AddValidationReportAddValidationReportValidationReportResult
+type AddValidationReportResponse = schema.AddValidationReportResponse
 type BinaryExpressionAggregatorOperator = schema.BinaryExpressionAggregatorOperator
 
 const (
@@ -202,6 +208,14 @@ const (
 )
 
 type CanLinkFilter = schema.CanLinkFilter
+type CapabilityStatus = schema.CapabilityStatus
+
+const (
+	CapabilityStatusEnabled  CapabilityStatus = schema.CapabilityStatusEnabled
+	CapabilityStatusDegraded CapabilityStatus = schema.CapabilityStatusDegraded
+	CapabilityStatusDisabled CapabilityStatus = schema.CapabilityStatusDisabled
+)
+
 type CatalogAssetInput = schema.CatalogAssetInput
 type CreateAccessControlCreateAccessControl = schema.CreateAccessControlCreateAccessControl
 type CreateAccessControlCreateAccessControlAccessControlWithOptionalAccessRequests = schema.CreateAccessControlCreateAccessControlAccessControlWithOptionalAccessRequests
@@ -454,6 +468,15 @@ type ExportedItem = schema.ExportedItem
 type ExportedItemExportAccessControl = schema.ExportedItemExportAccessControl
 type ExportedItemExportColumnMask = schema.ExportedItemExportColumnMask
 type ExportedItemExportRowFilter = schema.ExportedItemExportRowFilter
+type FeatureId = schema.FeatureId
+
+const (
+	FeatureIdColumnMasks FeatureId = schema.FeatureIdColumnMasks
+	FeatureIdRowFilters  FeatureId = schema.FeatureIdRowFilters
+	FeatureIdGrants      FeatureId = schema.FeatureIdGrants
+)
+
+type FeatureValidationInput = schema.FeatureValidationInput
 type FetchExportAccessControlsFetchExportAccessControls = schema.FetchExportAccessControlsFetchExportAccessControls
 type FetchExportAccessControlsFetchExportAccessControlsExportAccessControlsResult = schema.FetchExportAccessControlsFetchExportAccessControlsExportAccessControlsResult
 type FetchExportAccessControlsFetchExportAccessControlsInvalidInputError = schema.FetchExportAccessControlsFetchExportAccessControlsInvalidInputError
@@ -572,6 +595,13 @@ type GroupedDataAccessReturnItemConnectionResultNotFoundError = schema.GroupedDa
 type GroupedDataAccessReturnItemConnectionResultPermissionDeniedError = schema.GroupedDataAccessReturnItemConnectionResultPermissionDeniedError
 type GroupedDataAccessReturnItemNearestAccessControlsAccessControl = schema.GroupedDataAccessReturnItemNearestAccessControlsAccessControl
 type GroupedDataAccessReturnItemUser = schema.GroupedDataAccessReturnItemUser
+type Impact = schema.Impact
+
+const (
+	ImpactHardBlocker     Impact = schema.ImpactHardBlocker
+	ImpactDisablesFeature Impact = schema.ImpactDisablesFeature
+)
+
 type ImportCommand = schema.ImportCommand
 type ImportCommands = schema.ImportCommands
 type ImportFlowOptions = schema.ImportFlowOptions
@@ -747,6 +777,8 @@ const (
 )
 
 type Permission = schema.Permission
+type PermissionCheck = schema.PermissionCheck
+type PermissionCheckDetailsPermissionKeyValue = schema.PermissionCheckDetailsPermissionKeyValue
 type PermissionCheckInput = schema.PermissionCheckInput
 type PermissionDeniedError = schema.PermissionDeniedError
 type PermissionKeyValueInput = schema.PermissionKeyValueInput
@@ -759,6 +791,9 @@ const (
 	PermissionStatusNotRequired PermissionStatus = schema.PermissionStatusNotRequired
 )
 
+type RequirementCheck = schema.RequirementCheck
+type RequirementCheckAlternativesPermissionCheck = schema.RequirementCheckAlternativesPermissionCheck
+type RequirementCheckInput = schema.RequirementCheckInput
 type Role = schema.Role
 type RoleAssignment = schema.RoleAssignment
 type RoleAssignmentConnection = schema.RoleAssignmentConnection
@@ -870,6 +905,7 @@ const (
 	SyncStatusOutofsync    SyncStatus = schema.SyncStatusOutofsync
 )
 
+type SyncerValidationInput = schema.SyncerValidationInput
 type TagFilter = schema.TagFilter
 type TagImport = schema.TagImport
 type Task = schema.Task
@@ -989,6 +1025,18 @@ const (
 	UserTypeAgent   UserType = schema.UserTypeAgent
 )
 
+type ValidationReport = schema.ValidationReport
+type ValidationReportGlobalChecksRequirementCheck = schema.ValidationReportGlobalChecksRequirementCheck
+type ValidationReportInput = schema.ValidationReportInput
+type ValidationReportResult = schema.ValidationReportResult
+type ValidationReportResultInvalidInputError = schema.ValidationReportResultInvalidInputError
+type ValidationReportResultNotFoundError = schema.ValidationReportResultNotFoundError
+type ValidationReportResultPermissionDeniedError = schema.ValidationReportResultPermissionDeniedError
+type ValidationReportResultValidationReport = schema.ValidationReportResultValidationReport
+type ValidationReportSyncersSyncerValidation = schema.ValidationReportSyncersSyncerValidation
+type ValidationReportSyncersSyncerValidationFeaturesFeatureValidation = schema.ValidationReportSyncersSyncerValidationFeaturesFeatureValidation
+type ValidationReportSyncersSyncerValidationFeaturesFeatureValidationRequirementsRequirementCheck = schema.ValidationReportSyncersSyncerValidationFeaturesFeatureValidationRequirementsRequirementCheck
+type ValidationReportSyncersSyncerValidationRequirementsRequirementCheck = schema.ValidationReportSyncersSyncerValidationRequirementsRequirementCheck
 type WhatAbacRule = schema.WhatAbacRule
 type WhatAbacRuleInput = schema.WhatAbacRuleInput
 type WhatDataObjectRemoveInput = schema.WhatDataObjectRemoveInput
@@ -1011,12 +1059,15 @@ var AllAccessWhoItemType = []AccessWhoItemType{AccessWhoItemTypeWhogrant, Access
 var AllAccessWhoSource = []AccessWhoSource{AccessWhoSourceInternal, AccessWhoSourceScim}
 var AllBinaryExpressionAggregatorOperator = []BinaryExpressionAggregatorOperator{BinaryExpressionAggregatorOperatorAnd, BinaryExpressionAggregatorOperatorOr}
 var AllBinaryExpressionUnaryExpressionOperator = []BinaryExpressionUnaryExpressionOperator{BinaryExpressionUnaryExpressionOperatorNot}
+var AllCapabilityStatus = []CapabilityStatus{CapabilityStatusEnabled, CapabilityStatusDegraded, CapabilityStatusDisabled}
 var AllDataComparisonExpressionComparisonOperator = []DataComparisonExpressionComparisonOperator{DataComparisonExpressionComparisonOperatorEqual, DataComparisonExpressionComparisonOperatorNotequal, DataComparisonExpressionComparisonOperatorLessthan, DataComparisonExpressionComparisonOperatorLessthanorequal, DataComparisonExpressionComparisonOperatorGreaterthan, DataComparisonExpressionComparisonOperatorGreaterthanorequal}
 var AllDataComparisonExpressionEntityType = []DataComparisonExpressionEntityType{DataComparisonExpressionEntityTypeDataobject, DataComparisonExpressionEntityTypeColumnreferencebyname}
 var AllDataSourceFeatures = []DataSourceFeatures{DataSourceFeaturesGrants, DataSourceFeaturesColumnmasking, DataSourceFeaturesRowfiltering, DataSourceFeaturesDatasharing, DataSourceFeaturesGroupediting}
 var AllDataTypeOrigin = []DataTypeOrigin{DataTypeOriginInternal, DataTypeOriginExternal, DataTypeOriginShared}
 var AllEntityType = []EntityType{EntityTypeAccesscontrol, EntityTypeAccess, EntityTypeAccessrequest, EntityTypeUser, EntityTypeDataobject, EntityTypeDatasource, EntityTypeDatausage, EntityTypeTag, EntityTypeRole, EntityTypeRoleassignment, EntityTypeAccount, EntityTypeDatasharerecipient}
 var AllErrorCategory = []ErrorCategory{ErrorCategoryPermissionDenied, ErrorCategoryNotFound, ErrorCategoryInvalidConfig, ErrorCategorySourceError, ErrorCategoryTransient, ErrorCategoryUnknown}
+var AllFeatureId = []FeatureId{FeatureIdColumnMasks, FeatureIdRowFilters, FeatureIdGrants}
+var AllImpact = []Impact{ImpactHardBlocker, ImpactDisablesFeature}
 var AllJobStatus = []JobStatus{JobStatusStarted, JobStatusInprogress, JobStatusCompleted, JobStatusFailed, JobStatusTimedout}
 var AllParameterDataType = []ParameterDataType{ParameterDataTypeString, ParameterDataTypeInteger, ParameterDataTypeFloat, ParameterDataTypeBoolean, ParameterDataTypeTimestamp, ParameterDataTypeObject}
 var AllParameterSource = []ParameterSource{ParameterSourceAgent, ParameterSourceAgentruntime, ParameterSourceConnector, ParameterSourceConnectorsecure}
