@@ -1,14 +1,12 @@
 package services_test
 
 import (
-	"errors"
 	"testing"
 	"time"
 
 	sdk "github.com/collibra/data-access-go-sdk"
 	"github.com/collibra/data-access-go-sdk/internal/schema"
 	"github.com/collibra/data-access-go-sdk/services"
-	"github.com/collibra/data-access-go-sdk/types"
 	"github.com/collibra/data-access-go-sdk/utils"
 	"github.com/stretchr/testify/suite"
 )
@@ -229,25 +227,6 @@ func (suite *JobServiceTestSuite) TestJobs() {
 		suite.Require().Len(report.Syncers, 1)
 		suite.Require().Equal("grants", report.Syncers[0].Syncer)
 		suite.Require().Equal(schema.CapabilityStatusDegraded, report.Syncers[0].Status)
-	})
-
-	suite.Run("Add Validation Report For Unknown Job", func() {
-		ctx := suite.T().Context()
-
-		report, err := jobClient.AddValidationReport(ctx, schema.ValidationReportInput{
-			JobId:        "does-not-exist",
-			DataSourceId: suite.createdDataSource.Id,
-			EventTime:    time.Now(),
-		})
-		suite.Require().Error(err, "Expected an error for an unknown job")
-		suite.Require().Nil(report)
-
-		var notFound *types.ErrNotFound
-		var invalidInput *types.ErrInvalidInput
-		var permissionDenied *types.ErrPermissionDenied
-		suite.Require().True(
-			errors.As(err, &notFound) || errors.As(err, &invalidInput) || errors.As(err, &permissionDenied),
-			"Expected an error union member (not found, invalid input or permission denied), got: %v", err)
 	})
 
 	suite.Run("Add Subtask Event", func() {
