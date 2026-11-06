@@ -5168,6 +5168,478 @@ type AddTaskEventResponse struct {
 // GetAddTaskEvent returns AddTaskEventResponse.AddTaskEvent, and is useful for accessing the field via an interface.
 func (v *AddTaskEventResponse) GetAddTaskEvent() AddTaskEventAddTaskEventTask { return v.AddTaskEvent }
 
+// AddValidationReportAddValidationReport includes the requested fields of the GraphQL type ValidationReport.
+// The GraphQL type's documentation follows.
+//
+// The full capability tree produced by the agent before a sync.
+type AddValidationReportAddValidationReport struct {
+	Typename                               *string `json:"__typename"`
+	ValidationReportResultValidationReport `json:"-"`
+}
+
+// GetTypename returns AddValidationReportAddValidationReport.Typename, and is useful for accessing the field via an interface.
+func (v *AddValidationReportAddValidationReport) GetTypename() *string { return v.Typename }
+
+// GetEventTime returns AddValidationReportAddValidationReport.EventTime, and is useful for accessing the field via an interface.
+func (v *AddValidationReportAddValidationReport) GetEventTime() time.Time {
+	return v.ValidationReportResultValidationReport.ValidationReport.EventTime
+}
+
+// GetGlobalChecks returns AddValidationReportAddValidationReport.GlobalChecks, and is useful for accessing the field via an interface.
+func (v *AddValidationReportAddValidationReport) GetGlobalChecks() []ValidationReportGlobalChecksRequirementCheck {
+	return v.ValidationReportResultValidationReport.ValidationReport.GlobalChecks
+}
+
+// GetSyncers returns AddValidationReportAddValidationReport.Syncers, and is useful for accessing the field via an interface.
+func (v *AddValidationReportAddValidationReport) GetSyncers() []ValidationReportSyncersSyncerValidation {
+	return v.ValidationReportResultValidationReport.ValidationReport.Syncers
+}
+
+func (v *AddValidationReportAddValidationReport) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*AddValidationReportAddValidationReport
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.AddValidationReportAddValidationReport = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.ValidationReportResultValidationReport)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalAddValidationReportAddValidationReport struct {
+	Typename *string `json:"__typename"`
+
+	EventTime time.Time `json:"eventTime"`
+
+	GlobalChecks []ValidationReportGlobalChecksRequirementCheck `json:"globalChecks"`
+
+	Syncers []ValidationReportSyncersSyncerValidation `json:"syncers"`
+}
+
+func (v *AddValidationReportAddValidationReport) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *AddValidationReportAddValidationReport) __premarshalJSON() (*__premarshalAddValidationReportAddValidationReport, error) {
+	var retval __premarshalAddValidationReportAddValidationReport
+
+	retval.Typename = v.Typename
+	retval.EventTime = v.ValidationReportResultValidationReport.ValidationReport.EventTime
+	retval.GlobalChecks = v.ValidationReportResultValidationReport.ValidationReport.GlobalChecks
+	retval.Syncers = v.ValidationReportResultValidationReport.ValidationReport.Syncers
+	return &retval, nil
+}
+
+// AddValidationReportAddValidationReportInvalidInputError includes the requested fields of the GraphQL type InvalidInputError.
+// The GraphQL type's documentation follows.
+//
+// Error when some of the input parameters in the request are not valid.
+type AddValidationReportAddValidationReportInvalidInputError struct {
+	Typename                                *string `json:"__typename"`
+	ValidationReportResultInvalidInputError `json:"-"`
+}
+
+// GetTypename returns AddValidationReportAddValidationReportInvalidInputError.Typename, and is useful for accessing the field via an interface.
+func (v *AddValidationReportAddValidationReportInvalidInputError) GetTypename() *string {
+	return v.Typename
+}
+
+// GetMessage returns AddValidationReportAddValidationReportInvalidInputError.Message, and is useful for accessing the field via an interface.
+func (v *AddValidationReportAddValidationReportInvalidInputError) GetMessage() string {
+	return v.ValidationReportResultInvalidInputError.InvalidInputError.Message
+}
+
+func (v *AddValidationReportAddValidationReportInvalidInputError) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*AddValidationReportAddValidationReportInvalidInputError
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.AddValidationReportAddValidationReportInvalidInputError = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.ValidationReportResultInvalidInputError)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalAddValidationReportAddValidationReportInvalidInputError struct {
+	Typename *string `json:"__typename"`
+
+	Message string `json:"message"`
+}
+
+func (v *AddValidationReportAddValidationReportInvalidInputError) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *AddValidationReportAddValidationReportInvalidInputError) __premarshalJSON() (*__premarshalAddValidationReportAddValidationReportInvalidInputError, error) {
+	var retval __premarshalAddValidationReportAddValidationReportInvalidInputError
+
+	retval.Typename = v.Typename
+	retval.Message = v.ValidationReportResultInvalidInputError.InvalidInputError.Message
+	return &retval, nil
+}
+
+// AddValidationReportAddValidationReportNotFoundError includes the requested fields of the GraphQL type NotFoundError.
+// The GraphQL type's documentation follows.
+//
+// Error when the user is requesting a resource that does not exist.
+type AddValidationReportAddValidationReportNotFoundError struct {
+	Typename                            *string `json:"__typename"`
+	ValidationReportResultNotFoundError `json:"-"`
+}
+
+// GetTypename returns AddValidationReportAddValidationReportNotFoundError.Typename, and is useful for accessing the field via an interface.
+func (v *AddValidationReportAddValidationReportNotFoundError) GetTypename() *string {
+	return v.Typename
+}
+
+// GetMessage returns AddValidationReportAddValidationReportNotFoundError.Message, and is useful for accessing the field via an interface.
+func (v *AddValidationReportAddValidationReportNotFoundError) GetMessage() string {
+	return v.ValidationReportResultNotFoundError.NotFoundError.Message
+}
+
+func (v *AddValidationReportAddValidationReportNotFoundError) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*AddValidationReportAddValidationReportNotFoundError
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.AddValidationReportAddValidationReportNotFoundError = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.ValidationReportResultNotFoundError)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalAddValidationReportAddValidationReportNotFoundError struct {
+	Typename *string `json:"__typename"`
+
+	Message string `json:"message"`
+}
+
+func (v *AddValidationReportAddValidationReportNotFoundError) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *AddValidationReportAddValidationReportNotFoundError) __premarshalJSON() (*__premarshalAddValidationReportAddValidationReportNotFoundError, error) {
+	var retval __premarshalAddValidationReportAddValidationReportNotFoundError
+
+	retval.Typename = v.Typename
+	retval.Message = v.ValidationReportResultNotFoundError.NotFoundError.Message
+	return &retval, nil
+}
+
+// AddValidationReportAddValidationReportPermissionDeniedError includes the requested fields of the GraphQL type PermissionDeniedError.
+// The GraphQL type's documentation follows.
+//
+// Error when permission to the requested resource is denied.
+type AddValidationReportAddValidationReportPermissionDeniedError struct {
+	Typename                                    *string `json:"__typename"`
+	ValidationReportResultPermissionDeniedError `json:"-"`
+}
+
+// GetTypename returns AddValidationReportAddValidationReportPermissionDeniedError.Typename, and is useful for accessing the field via an interface.
+func (v *AddValidationReportAddValidationReportPermissionDeniedError) GetTypename() *string {
+	return v.Typename
+}
+
+// GetMessage returns AddValidationReportAddValidationReportPermissionDeniedError.Message, and is useful for accessing the field via an interface.
+func (v *AddValidationReportAddValidationReportPermissionDeniedError) GetMessage() string {
+	return v.ValidationReportResultPermissionDeniedError.PermissionDeniedError.Message
+}
+
+func (v *AddValidationReportAddValidationReportPermissionDeniedError) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*AddValidationReportAddValidationReportPermissionDeniedError
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.AddValidationReportAddValidationReportPermissionDeniedError = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.ValidationReportResultPermissionDeniedError)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalAddValidationReportAddValidationReportPermissionDeniedError struct {
+	Typename *string `json:"__typename"`
+
+	Message string `json:"message"`
+}
+
+func (v *AddValidationReportAddValidationReportPermissionDeniedError) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *AddValidationReportAddValidationReportPermissionDeniedError) __premarshalJSON() (*__premarshalAddValidationReportAddValidationReportPermissionDeniedError, error) {
+	var retval __premarshalAddValidationReportAddValidationReportPermissionDeniedError
+
+	retval.Typename = v.Typename
+	retval.Message = v.ValidationReportResultPermissionDeniedError.PermissionDeniedError.Message
+	return &retval, nil
+}
+
+// AddValidationReportAddValidationReportValidationReportResult includes the requested fields of the GraphQL interface ValidationReportResult.
+//
+// AddValidationReportAddValidationReportValidationReportResult is implemented by the following types:
+// AddValidationReportAddValidationReportInvalidInputError
+// AddValidationReportAddValidationReportNotFoundError
+// AddValidationReportAddValidationReportPermissionDeniedError
+// AddValidationReportAddValidationReport
+type AddValidationReportAddValidationReportValidationReportResult interface {
+	implementsGraphQLInterfaceAddValidationReportAddValidationReportValidationReportResult()
+	// GetTypename returns the receiver's concrete GraphQL type-name (see interface doc for possible values).
+	GetTypename() *string
+	ValidationReportResult
+}
+
+func (v *AddValidationReportAddValidationReportInvalidInputError) implementsGraphQLInterfaceAddValidationReportAddValidationReportValidationReportResult() {
+}
+func (v *AddValidationReportAddValidationReportNotFoundError) implementsGraphQLInterfaceAddValidationReportAddValidationReportValidationReportResult() {
+}
+func (v *AddValidationReportAddValidationReportPermissionDeniedError) implementsGraphQLInterfaceAddValidationReportAddValidationReportValidationReportResult() {
+}
+func (v *AddValidationReportAddValidationReport) implementsGraphQLInterfaceAddValidationReportAddValidationReportValidationReportResult() {
+}
+
+func __unmarshalAddValidationReportAddValidationReportValidationReportResult(b []byte, v *AddValidationReportAddValidationReportValidationReportResult) error {
+	if string(b) == "null" {
+		return nil
+	}
+
+	var tn struct {
+		TypeName string `json:"__typename"`
+	}
+	err := json.Unmarshal(b, &tn)
+	if err != nil {
+		return err
+	}
+
+	switch tn.TypeName {
+	case "InvalidInputError":
+		*v = new(AddValidationReportAddValidationReportInvalidInputError)
+		return json.Unmarshal(b, *v)
+	case "NotFoundError":
+		*v = new(AddValidationReportAddValidationReportNotFoundError)
+		return json.Unmarshal(b, *v)
+	case "PermissionDeniedError":
+		*v = new(AddValidationReportAddValidationReportPermissionDeniedError)
+		return json.Unmarshal(b, *v)
+	case "ValidationReport":
+		*v = new(AddValidationReportAddValidationReport)
+		return json.Unmarshal(b, *v)
+	case "":
+		return fmt.Errorf(
+			"response was missing ValidationReportResult.__typename")
+	default:
+		return fmt.Errorf(
+			`unexpected concrete type for AddValidationReportAddValidationReportValidationReportResult: "%v"`, tn.TypeName)
+	}
+}
+
+func __marshalAddValidationReportAddValidationReportValidationReportResult(v *AddValidationReportAddValidationReportValidationReportResult) ([]byte, error) {
+
+	var typename string
+	switch v := (*v).(type) {
+	case *AddValidationReportAddValidationReportInvalidInputError:
+		typename = "InvalidInputError"
+
+		premarshaled, err := v.__premarshalJSON()
+		if err != nil {
+			return nil, err
+		}
+		result := struct {
+			TypeName string `json:"__typename"`
+			*__premarshalAddValidationReportAddValidationReportInvalidInputError
+		}{typename, premarshaled}
+		return json.Marshal(result)
+	case *AddValidationReportAddValidationReportNotFoundError:
+		typename = "NotFoundError"
+
+		premarshaled, err := v.__premarshalJSON()
+		if err != nil {
+			return nil, err
+		}
+		result := struct {
+			TypeName string `json:"__typename"`
+			*__premarshalAddValidationReportAddValidationReportNotFoundError
+		}{typename, premarshaled}
+		return json.Marshal(result)
+	case *AddValidationReportAddValidationReportPermissionDeniedError:
+		typename = "PermissionDeniedError"
+
+		premarshaled, err := v.__premarshalJSON()
+		if err != nil {
+			return nil, err
+		}
+		result := struct {
+			TypeName string `json:"__typename"`
+			*__premarshalAddValidationReportAddValidationReportPermissionDeniedError
+		}{typename, premarshaled}
+		return json.Marshal(result)
+	case *AddValidationReportAddValidationReport:
+		typename = "ValidationReport"
+
+		premarshaled, err := v.__premarshalJSON()
+		if err != nil {
+			return nil, err
+		}
+		result := struct {
+			TypeName string `json:"__typename"`
+			*__premarshalAddValidationReportAddValidationReport
+		}{typename, premarshaled}
+		return json.Marshal(result)
+	case nil:
+		return []byte("null"), nil
+	default:
+		return nil, fmt.Errorf(
+			`unexpected concrete type for AddValidationReportAddValidationReportValidationReportResult: "%T"`, v)
+	}
+}
+
+// AddValidationReportResponse is returned by AddValidationReport on success.
+type AddValidationReportResponse struct {
+	AddValidationReport *AddValidationReportAddValidationReportValidationReportResult `json:"-"`
+}
+
+// GetAddValidationReport returns AddValidationReportResponse.AddValidationReport, and is useful for accessing the field via an interface.
+func (v *AddValidationReportResponse) GetAddValidationReport() *AddValidationReportAddValidationReportValidationReportResult {
+	return v.AddValidationReport
+}
+
+func (v *AddValidationReportResponse) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*AddValidationReportResponse
+		AddValidationReport json.RawMessage `json:"addValidationReport"`
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.AddValidationReportResponse = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	{
+		dst := &v.AddValidationReport
+		src := firstPass.AddValidationReport
+		if len(src) != 0 && string(src) != "null" {
+			*dst = new(AddValidationReportAddValidationReportValidationReportResult)
+			err = __unmarshalAddValidationReportAddValidationReportValidationReportResult(
+				src, *dst)
+			if err != nil {
+				return fmt.Errorf(
+					"unable to unmarshal AddValidationReportResponse.AddValidationReport: %w", err)
+			}
+		}
+	}
+	return nil
+}
+
+type __premarshalAddValidationReportResponse struct {
+	AddValidationReport json.RawMessage `json:"addValidationReport"`
+}
+
+func (v *AddValidationReportResponse) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *AddValidationReportResponse) __premarshalJSON() (*__premarshalAddValidationReportResponse, error) {
+	var retval __premarshalAddValidationReportResponse
+
+	{
+
+		dst := &retval.AddValidationReport
+		src := v.AddValidationReport
+		if src != nil {
+			var err error
+			*dst, err = __marshalAddValidationReportAddValidationReportValidationReportResult(
+				src)
+			if err != nil {
+				return nil, fmt.Errorf(
+					"unable to marshal AddValidationReportResponse.AddValidationReport: %w", err)
+			}
+		}
+	}
+	return &retval, nil
+}
+
 // The aggregator operators for the boolean expressions.
 type BinaryExpressionAggregatorOperator string
 
@@ -5218,6 +5690,23 @@ func (v *CanLinkFilter) GetWhoAccessControls() []string { return v.WhoAccessCont
 
 // GetWhatAccessControls returns CanLinkFilter.WhatAccessControls, and is useful for accessing the field via an interface.
 func (v *CanLinkFilter) GetWhatAccessControls() []string { return v.WhatAccessControls }
+
+type CapabilityStatus string
+
+const (
+	// All good.
+	CapabilityStatusEnabled CapabilityStatus = "ENABLED"
+	// A feature is off but the syncer still runs.
+	CapabilityStatusDegraded CapabilityStatus = "DEGRADED"
+	// The syncer cannot run.
+	CapabilityStatusDisabled CapabilityStatus = "DISABLED"
+)
+
+var AllCapabilityStatus = []CapabilityStatus{
+	CapabilityStatusEnabled,
+	CapabilityStatusDegraded,
+	CapabilityStatusDisabled,
+}
 
 type CatalogAssetInput struct {
 	AssetId     uuid.UUID `json:"assetId"`
@@ -17260,6 +17749,39 @@ func (v *ExportedItemExportRowFilter) __premarshalJSON() (*__premarshalExportedI
 	return &retval, nil
 }
 
+type FeatureId string
+
+const (
+	FeatureIdColumnMasks FeatureId = "COLUMN_MASKS"
+	FeatureIdRowFilters  FeatureId = "ROW_FILTERS"
+	FeatureIdGrants      FeatureId = "GRANTS"
+)
+
+var AllFeatureId = []FeatureId{
+	FeatureIdColumnMasks,
+	FeatureIdRowFilters,
+	FeatureIdGrants,
+}
+
+type FeatureValidationInput struct {
+	FeatureId        FeatureId               `json:"featureId"`
+	FeatureExtension *string                 `json:"featureExtension,omitempty"`
+	Status           CapabilityStatus        `json:"status"`
+	Requirements     []RequirementCheckInput `json:"requirements,omitempty"`
+}
+
+// GetFeatureId returns FeatureValidationInput.FeatureId, and is useful for accessing the field via an interface.
+func (v *FeatureValidationInput) GetFeatureId() FeatureId { return v.FeatureId }
+
+// GetFeatureExtension returns FeatureValidationInput.FeatureExtension, and is useful for accessing the field via an interface.
+func (v *FeatureValidationInput) GetFeatureExtension() *string { return v.FeatureExtension }
+
+// GetStatus returns FeatureValidationInput.Status, and is useful for accessing the field via an interface.
+func (v *FeatureValidationInput) GetStatus() CapabilityStatus { return v.Status }
+
+// GetRequirements returns FeatureValidationInput.Requirements, and is useful for accessing the field via an interface.
+func (v *FeatureValidationInput) GetRequirements() []RequirementCheckInput { return v.Requirements }
+
 // FetchExportAccessControlsFetchExportAccessControls includes the requested fields of the GraphQL type ExportAccessControls.
 type FetchExportAccessControlsFetchExportAccessControls struct {
 	Typename             *string `json:"__typename"`
@@ -24788,6 +25310,20 @@ func (v *GroupedDataAccessReturnItemUser) __premarshalJSON() (*__premarshalGroup
 	retval.Email = v.User.Email
 	retval.Type = v.User.Type
 	return &retval, nil
+}
+
+type Impact string
+
+const (
+	// A missing permission disables the whole syncer.
+	ImpactHardBlocker Impact = "HARD_BLOCKER"
+	// A missing permission only turns off the feature.
+	ImpactDisablesFeature Impact = "DISABLES_FEATURE"
+)
+
+var AllImpact = []Impact{
+	ImpactHardBlocker,
+	ImpactDisablesFeature,
 }
 
 type ImportCommand struct {
@@ -34100,6 +34636,57 @@ func (v *Permission) GetName() string { return v.Name }
 // GetDescription returns Permission.Description, and is useful for accessing the field via an interface.
 func (v *Permission) GetDescription() string { return v.Description }
 
+// PermissionCheck includes the GraphQL fields of PermissionCheck requested by the fragment PermissionCheck.
+// The GraphQL type's documentation follows.
+//
+// One concrete permission the agent verified against the target system.
+type PermissionCheck struct {
+	DisplayName string           `json:"displayName"`
+	Status      PermissionStatus `json:"status"`
+	Privilege   *string          `json:"privilege"`
+	Resource    *string          `json:"resource"`
+	Principal   *string          `json:"principal"`
+	// Remediation text, e.g. the exact GRANT statement to run.
+	Hint    *string                                    `json:"hint" doc:"Remediation text, e.g. the exact GRANT statement to run."`
+	Details []PermissionCheckDetailsPermissionKeyValue `json:"details"`
+}
+
+// GetDisplayName returns PermissionCheck.DisplayName, and is useful for accessing the field via an interface.
+func (v *PermissionCheck) GetDisplayName() string { return v.DisplayName }
+
+// GetStatus returns PermissionCheck.Status, and is useful for accessing the field via an interface.
+func (v *PermissionCheck) GetStatus() PermissionStatus { return v.Status }
+
+// GetPrivilege returns PermissionCheck.Privilege, and is useful for accessing the field via an interface.
+func (v *PermissionCheck) GetPrivilege() *string { return v.Privilege }
+
+// GetResource returns PermissionCheck.Resource, and is useful for accessing the field via an interface.
+func (v *PermissionCheck) GetResource() *string { return v.Resource }
+
+// GetPrincipal returns PermissionCheck.Principal, and is useful for accessing the field via an interface.
+func (v *PermissionCheck) GetPrincipal() *string { return v.Principal }
+
+// GetHint returns PermissionCheck.Hint, and is useful for accessing the field via an interface.
+func (v *PermissionCheck) GetHint() *string { return v.Hint }
+
+// GetDetails returns PermissionCheck.Details, and is useful for accessing the field via an interface.
+func (v *PermissionCheck) GetDetails() []PermissionCheckDetailsPermissionKeyValue { return v.Details }
+
+// PermissionCheckDetailsPermissionKeyValue includes the requested fields of the GraphQL type PermissionKeyValue.
+// The GraphQL type's documentation follows.
+//
+// A single string entry of a free-form permission-detail map.
+type PermissionCheckDetailsPermissionKeyValue struct {
+	Key   string `json:"key"`
+	Value string `json:"value"`
+}
+
+// GetKey returns PermissionCheckDetailsPermissionKeyValue.Key, and is useful for accessing the field via an interface.
+func (v *PermissionCheckDetailsPermissionKeyValue) GetKey() string { return v.Key }
+
+// GetValue returns PermissionCheckDetailsPermissionKeyValue.Value, and is useful for accessing the field via an interface.
+func (v *PermissionCheckDetailsPermissionKeyValue) GetValue() string { return v.Value }
+
 type PermissionCheckInput struct {
 	DisplayName string                    `json:"displayName"`
 	Status      PermissionStatus          `json:"status"`
@@ -34170,6 +34757,155 @@ var AllPermissionStatus = []PermissionStatus{
 	PermissionStatusUnknown,
 	PermissionStatusNotRequired,
 }
+
+// RequirementCheck includes the GraphQL fields of RequirementCheck requested by the fragment RequirementCheck.
+// The GraphQL type's documentation follows.
+//
+// A rolled-up requirement. With alternatives it is GRANTED if any alternative is GRANTED; the alternatives carry their individual statuses for display.
+type RequirementCheck struct {
+	Status       PermissionStatus                              `json:"status"`
+	Impact       Impact                                        `json:"impact"`
+	Reason       *string                                       `json:"reason"`
+	Alternatives []RequirementCheckAlternativesPermissionCheck `json:"alternatives"`
+}
+
+// GetStatus returns RequirementCheck.Status, and is useful for accessing the field via an interface.
+func (v *RequirementCheck) GetStatus() PermissionStatus { return v.Status }
+
+// GetImpact returns RequirementCheck.Impact, and is useful for accessing the field via an interface.
+func (v *RequirementCheck) GetImpact() Impact { return v.Impact }
+
+// GetReason returns RequirementCheck.Reason, and is useful for accessing the field via an interface.
+func (v *RequirementCheck) GetReason() *string { return v.Reason }
+
+// GetAlternatives returns RequirementCheck.Alternatives, and is useful for accessing the field via an interface.
+func (v *RequirementCheck) GetAlternatives() []RequirementCheckAlternativesPermissionCheck {
+	return v.Alternatives
+}
+
+// RequirementCheckAlternativesPermissionCheck includes the requested fields of the GraphQL type PermissionCheck.
+// The GraphQL type's documentation follows.
+//
+// One concrete permission the agent verified against the target system.
+type RequirementCheckAlternativesPermissionCheck struct {
+	PermissionCheck `json:"-"`
+}
+
+// GetDisplayName returns RequirementCheckAlternativesPermissionCheck.DisplayName, and is useful for accessing the field via an interface.
+func (v *RequirementCheckAlternativesPermissionCheck) GetDisplayName() string {
+	return v.PermissionCheck.DisplayName
+}
+
+// GetStatus returns RequirementCheckAlternativesPermissionCheck.Status, and is useful for accessing the field via an interface.
+func (v *RequirementCheckAlternativesPermissionCheck) GetStatus() PermissionStatus {
+	return v.PermissionCheck.Status
+}
+
+// GetPrivilege returns RequirementCheckAlternativesPermissionCheck.Privilege, and is useful for accessing the field via an interface.
+func (v *RequirementCheckAlternativesPermissionCheck) GetPrivilege() *string {
+	return v.PermissionCheck.Privilege
+}
+
+// GetResource returns RequirementCheckAlternativesPermissionCheck.Resource, and is useful for accessing the field via an interface.
+func (v *RequirementCheckAlternativesPermissionCheck) GetResource() *string {
+	return v.PermissionCheck.Resource
+}
+
+// GetPrincipal returns RequirementCheckAlternativesPermissionCheck.Principal, and is useful for accessing the field via an interface.
+func (v *RequirementCheckAlternativesPermissionCheck) GetPrincipal() *string {
+	return v.PermissionCheck.Principal
+}
+
+// GetHint returns RequirementCheckAlternativesPermissionCheck.Hint, and is useful for accessing the field via an interface.
+func (v *RequirementCheckAlternativesPermissionCheck) GetHint() *string {
+	return v.PermissionCheck.Hint
+}
+
+// GetDetails returns RequirementCheckAlternativesPermissionCheck.Details, and is useful for accessing the field via an interface.
+func (v *RequirementCheckAlternativesPermissionCheck) GetDetails() []PermissionCheckDetailsPermissionKeyValue {
+	return v.PermissionCheck.Details
+}
+
+func (v *RequirementCheckAlternativesPermissionCheck) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*RequirementCheckAlternativesPermissionCheck
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.RequirementCheckAlternativesPermissionCheck = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.PermissionCheck)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalRequirementCheckAlternativesPermissionCheck struct {
+	DisplayName string `json:"displayName"`
+
+	Status PermissionStatus `json:"status"`
+
+	Privilege *string `json:"privilege"`
+
+	Resource *string `json:"resource"`
+
+	Principal *string `json:"principal"`
+
+	Hint *string `json:"hint"`
+
+	Details []PermissionCheckDetailsPermissionKeyValue `json:"details"`
+}
+
+func (v *RequirementCheckAlternativesPermissionCheck) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *RequirementCheckAlternativesPermissionCheck) __premarshalJSON() (*__premarshalRequirementCheckAlternativesPermissionCheck, error) {
+	var retval __premarshalRequirementCheckAlternativesPermissionCheck
+
+	retval.DisplayName = v.PermissionCheck.DisplayName
+	retval.Status = v.PermissionCheck.Status
+	retval.Privilege = v.PermissionCheck.Privilege
+	retval.Resource = v.PermissionCheck.Resource
+	retval.Principal = v.PermissionCheck.Principal
+	retval.Hint = v.PermissionCheck.Hint
+	retval.Details = v.PermissionCheck.Details
+	return &retval, nil
+}
+
+type RequirementCheckInput struct {
+	Status       PermissionStatus       `json:"status"`
+	Impact       Impact                 `json:"impact"`
+	Reason       *string                `json:"reason,omitempty"`
+	Alternatives []PermissionCheckInput `json:"alternatives,omitempty"`
+}
+
+// GetStatus returns RequirementCheckInput.Status, and is useful for accessing the field via an interface.
+func (v *RequirementCheckInput) GetStatus() PermissionStatus { return v.Status }
+
+// GetImpact returns RequirementCheckInput.Impact, and is useful for accessing the field via an interface.
+func (v *RequirementCheckInput) GetImpact() Impact { return v.Impact }
+
+// GetReason returns RequirementCheckInput.Reason, and is useful for accessing the field via an interface.
+func (v *RequirementCheckInput) GetReason() *string { return v.Reason }
+
+// GetAlternatives returns RequirementCheckInput.Alternatives, and is useful for accessing the field via an interface.
+func (v *RequirementCheckInput) GetAlternatives() []PermissionCheckInput { return v.Alternatives }
 
 // Role includes the GraphQL fields of Role requested by the fragment Role.
 // The GraphQL type's documentation follows.
@@ -39021,6 +39757,25 @@ var AllSyncStatus = []SyncStatus{
 	SyncStatusSynced,
 	SyncStatusOutofsync,
 }
+
+type SyncerValidationInput struct {
+	Syncer       string                   `json:"syncer"`
+	Status       CapabilityStatus         `json:"status"`
+	Features     []FeatureValidationInput `json:"features,omitempty"`
+	Requirements []RequirementCheckInput  `json:"requirements,omitempty"`
+}
+
+// GetSyncer returns SyncerValidationInput.Syncer, and is useful for accessing the field via an interface.
+func (v *SyncerValidationInput) GetSyncer() string { return v.Syncer }
+
+// GetStatus returns SyncerValidationInput.Status, and is useful for accessing the field via an interface.
+func (v *SyncerValidationInput) GetStatus() CapabilityStatus { return v.Status }
+
+// GetFeatures returns SyncerValidationInput.Features, and is useful for accessing the field via an interface.
+func (v *SyncerValidationInput) GetFeatures() []FeatureValidationInput { return v.Features }
+
+// GetRequirements returns SyncerValidationInput.Requirements, and is useful for accessing the field via an interface.
+func (v *SyncerValidationInput) GetRequirements() []RequirementCheckInput { return v.Requirements }
 
 // Specifies the filter options to filter lists of tags.
 type TagFilter struct {
@@ -45391,6 +46146,697 @@ var AllUserType = []UserType{
 	UserTypeAgent,
 }
 
+// ValidationReport includes the GraphQL fields of ValidationReport requested by the fragment ValidationReport.
+// The GraphQL type's documentation follows.
+//
+// The full capability tree produced by the agent before a sync.
+type ValidationReport struct {
+	EventTime time.Time `json:"eventTime"`
+	// Connection-level requirements.
+	GlobalChecks []ValidationReportGlobalChecksRequirementCheck `json:"globalChecks" doc:"Connection-level requirements."`
+	Syncers      []ValidationReportSyncersSyncerValidation      `json:"syncers"`
+}
+
+// GetEventTime returns ValidationReport.EventTime, and is useful for accessing the field via an interface.
+func (v *ValidationReport) GetEventTime() time.Time { return v.EventTime }
+
+// GetGlobalChecks returns ValidationReport.GlobalChecks, and is useful for accessing the field via an interface.
+func (v *ValidationReport) GetGlobalChecks() []ValidationReportGlobalChecksRequirementCheck {
+	return v.GlobalChecks
+}
+
+// GetSyncers returns ValidationReport.Syncers, and is useful for accessing the field via an interface.
+func (v *ValidationReport) GetSyncers() []ValidationReportSyncersSyncerValidation { return v.Syncers }
+
+// ValidationReportGlobalChecksRequirementCheck includes the requested fields of the GraphQL type RequirementCheck.
+// The GraphQL type's documentation follows.
+//
+// A rolled-up requirement. With alternatives it is GRANTED if any alternative is GRANTED; the alternatives carry their individual statuses for display.
+type ValidationReportGlobalChecksRequirementCheck struct {
+	RequirementCheck `json:"-"`
+}
+
+// GetStatus returns ValidationReportGlobalChecksRequirementCheck.Status, and is useful for accessing the field via an interface.
+func (v *ValidationReportGlobalChecksRequirementCheck) GetStatus() PermissionStatus {
+	return v.RequirementCheck.Status
+}
+
+// GetImpact returns ValidationReportGlobalChecksRequirementCheck.Impact, and is useful for accessing the field via an interface.
+func (v *ValidationReportGlobalChecksRequirementCheck) GetImpact() Impact {
+	return v.RequirementCheck.Impact
+}
+
+// GetReason returns ValidationReportGlobalChecksRequirementCheck.Reason, and is useful for accessing the field via an interface.
+func (v *ValidationReportGlobalChecksRequirementCheck) GetReason() *string {
+	return v.RequirementCheck.Reason
+}
+
+// GetAlternatives returns ValidationReportGlobalChecksRequirementCheck.Alternatives, and is useful for accessing the field via an interface.
+func (v *ValidationReportGlobalChecksRequirementCheck) GetAlternatives() []RequirementCheckAlternativesPermissionCheck {
+	return v.RequirementCheck.Alternatives
+}
+
+func (v *ValidationReportGlobalChecksRequirementCheck) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*ValidationReportGlobalChecksRequirementCheck
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.ValidationReportGlobalChecksRequirementCheck = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.RequirementCheck)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalValidationReportGlobalChecksRequirementCheck struct {
+	Status PermissionStatus `json:"status"`
+
+	Impact Impact `json:"impact"`
+
+	Reason *string `json:"reason"`
+
+	Alternatives []RequirementCheckAlternativesPermissionCheck `json:"alternatives"`
+}
+
+func (v *ValidationReportGlobalChecksRequirementCheck) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *ValidationReportGlobalChecksRequirementCheck) __premarshalJSON() (*__premarshalValidationReportGlobalChecksRequirementCheck, error) {
+	var retval __premarshalValidationReportGlobalChecksRequirementCheck
+
+	retval.Status = v.RequirementCheck.Status
+	retval.Impact = v.RequirementCheck.Impact
+	retval.Reason = v.RequirementCheck.Reason
+	retval.Alternatives = v.RequirementCheck.Alternatives
+	return &retval, nil
+}
+
+type ValidationReportInput struct {
+	JobId        string                  `json:"jobId"`
+	DataSourceId string                  `json:"dataSourceId"`
+	EventTime    time.Time               `json:"eventTime"`
+	GlobalChecks []RequirementCheckInput `json:"globalChecks,omitempty"`
+	Syncers      []SyncerValidationInput `json:"syncers,omitempty"`
+}
+
+// GetJobId returns ValidationReportInput.JobId, and is useful for accessing the field via an interface.
+func (v *ValidationReportInput) GetJobId() string { return v.JobId }
+
+// GetDataSourceId returns ValidationReportInput.DataSourceId, and is useful for accessing the field via an interface.
+func (v *ValidationReportInput) GetDataSourceId() string { return v.DataSourceId }
+
+// GetEventTime returns ValidationReportInput.EventTime, and is useful for accessing the field via an interface.
+func (v *ValidationReportInput) GetEventTime() time.Time { return v.EventTime }
+
+// GetGlobalChecks returns ValidationReportInput.GlobalChecks, and is useful for accessing the field via an interface.
+func (v *ValidationReportInput) GetGlobalChecks() []RequirementCheckInput { return v.GlobalChecks }
+
+// GetSyncers returns ValidationReportInput.Syncers, and is useful for accessing the field via an interface.
+func (v *ValidationReportInput) GetSyncers() []SyncerValidationInput { return v.Syncers }
+
+// ValidationReportResult includes the GraphQL fields of ValidationReportResult requested by the fragment ValidationReportResult.
+//
+// ValidationReportResult is implemented by the following types:
+// ValidationReportResultInvalidInputError
+// ValidationReportResultNotFoundError
+// ValidationReportResultPermissionDeniedError
+// ValidationReportResultValidationReport
+type ValidationReportResult interface {
+	implementsGraphQLInterfaceValidationReportResult()
+}
+
+func (v *ValidationReportResultInvalidInputError) implementsGraphQLInterfaceValidationReportResult() {
+}
+func (v *ValidationReportResultNotFoundError) implementsGraphQLInterfaceValidationReportResult() {}
+func (v *ValidationReportResultPermissionDeniedError) implementsGraphQLInterfaceValidationReportResult() {
+}
+func (v *ValidationReportResultValidationReport) implementsGraphQLInterfaceValidationReportResult() {}
+
+func __unmarshalValidationReportResult(b []byte, v *ValidationReportResult) error {
+	if string(b) == "null" {
+		return nil
+	}
+
+	var tn struct {
+		TypeName string `json:"__typename"`
+	}
+	err := json.Unmarshal(b, &tn)
+	if err != nil {
+		return err
+	}
+
+	switch tn.TypeName {
+	case "InvalidInputError":
+		*v = new(ValidationReportResultInvalidInputError)
+		return json.Unmarshal(b, *v)
+	case "NotFoundError":
+		*v = new(ValidationReportResultNotFoundError)
+		return json.Unmarshal(b, *v)
+	case "PermissionDeniedError":
+		*v = new(ValidationReportResultPermissionDeniedError)
+		return json.Unmarshal(b, *v)
+	case "ValidationReport":
+		*v = new(ValidationReportResultValidationReport)
+		return json.Unmarshal(b, *v)
+	case "":
+		return fmt.Errorf(
+			"response was missing ValidationReportResult.__typename")
+	default:
+		return fmt.Errorf(
+			`unexpected concrete type for ValidationReportResult: "%v"`, tn.TypeName)
+	}
+}
+
+func __marshalValidationReportResult(v *ValidationReportResult) ([]byte, error) {
+
+	var typename string
+	switch v := (*v).(type) {
+	case *ValidationReportResultInvalidInputError:
+		typename = "InvalidInputError"
+
+		premarshaled, err := v.__premarshalJSON()
+		if err != nil {
+			return nil, err
+		}
+		result := struct {
+			TypeName string `json:"__typename"`
+			*__premarshalValidationReportResultInvalidInputError
+		}{typename, premarshaled}
+		return json.Marshal(result)
+	case *ValidationReportResultNotFoundError:
+		typename = "NotFoundError"
+
+		premarshaled, err := v.__premarshalJSON()
+		if err != nil {
+			return nil, err
+		}
+		result := struct {
+			TypeName string `json:"__typename"`
+			*__premarshalValidationReportResultNotFoundError
+		}{typename, premarshaled}
+		return json.Marshal(result)
+	case *ValidationReportResultPermissionDeniedError:
+		typename = "PermissionDeniedError"
+
+		premarshaled, err := v.__premarshalJSON()
+		if err != nil {
+			return nil, err
+		}
+		result := struct {
+			TypeName string `json:"__typename"`
+			*__premarshalValidationReportResultPermissionDeniedError
+		}{typename, premarshaled}
+		return json.Marshal(result)
+	case *ValidationReportResultValidationReport:
+		typename = "ValidationReport"
+
+		premarshaled, err := v.__premarshalJSON()
+		if err != nil {
+			return nil, err
+		}
+		result := struct {
+			TypeName string `json:"__typename"`
+			*__premarshalValidationReportResultValidationReport
+		}{typename, premarshaled}
+		return json.Marshal(result)
+	case nil:
+		return []byte("null"), nil
+	default:
+		return nil, fmt.Errorf(
+			`unexpected concrete type for ValidationReportResult: "%T"`, v)
+	}
+}
+
+// ValidationReportResult includes the GraphQL fields of InvalidInputError requested by the fragment ValidationReportResult.
+type ValidationReportResultInvalidInputError struct {
+	InvalidInputError `json:"-"`
+}
+
+// GetMessage returns ValidationReportResultInvalidInputError.Message, and is useful for accessing the field via an interface.
+func (v *ValidationReportResultInvalidInputError) GetMessage() string {
+	return v.InvalidInputError.Message
+}
+
+func (v *ValidationReportResultInvalidInputError) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*ValidationReportResultInvalidInputError
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.ValidationReportResultInvalidInputError = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.InvalidInputError)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalValidationReportResultInvalidInputError struct {
+	Message string `json:"message"`
+}
+
+func (v *ValidationReportResultInvalidInputError) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *ValidationReportResultInvalidInputError) __premarshalJSON() (*__premarshalValidationReportResultInvalidInputError, error) {
+	var retval __premarshalValidationReportResultInvalidInputError
+
+	retval.Message = v.InvalidInputError.Message
+	return &retval, nil
+}
+
+// ValidationReportResult includes the GraphQL fields of NotFoundError requested by the fragment ValidationReportResult.
+type ValidationReportResultNotFoundError struct {
+	NotFoundError `json:"-"`
+}
+
+// GetMessage returns ValidationReportResultNotFoundError.Message, and is useful for accessing the field via an interface.
+func (v *ValidationReportResultNotFoundError) GetMessage() string { return v.NotFoundError.Message }
+
+func (v *ValidationReportResultNotFoundError) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*ValidationReportResultNotFoundError
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.ValidationReportResultNotFoundError = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.NotFoundError)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalValidationReportResultNotFoundError struct {
+	Message string `json:"message"`
+}
+
+func (v *ValidationReportResultNotFoundError) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *ValidationReportResultNotFoundError) __premarshalJSON() (*__premarshalValidationReportResultNotFoundError, error) {
+	var retval __premarshalValidationReportResultNotFoundError
+
+	retval.Message = v.NotFoundError.Message
+	return &retval, nil
+}
+
+// ValidationReportResult includes the GraphQL fields of PermissionDeniedError requested by the fragment ValidationReportResult.
+type ValidationReportResultPermissionDeniedError struct {
+	PermissionDeniedError `json:"-"`
+}
+
+// GetMessage returns ValidationReportResultPermissionDeniedError.Message, and is useful for accessing the field via an interface.
+func (v *ValidationReportResultPermissionDeniedError) GetMessage() string {
+	return v.PermissionDeniedError.Message
+}
+
+func (v *ValidationReportResultPermissionDeniedError) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*ValidationReportResultPermissionDeniedError
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.ValidationReportResultPermissionDeniedError = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.PermissionDeniedError)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalValidationReportResultPermissionDeniedError struct {
+	Message string `json:"message"`
+}
+
+func (v *ValidationReportResultPermissionDeniedError) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *ValidationReportResultPermissionDeniedError) __premarshalJSON() (*__premarshalValidationReportResultPermissionDeniedError, error) {
+	var retval __premarshalValidationReportResultPermissionDeniedError
+
+	retval.Message = v.PermissionDeniedError.Message
+	return &retval, nil
+}
+
+// ValidationReportResult includes the GraphQL fields of ValidationReport requested by the fragment ValidationReportResult.
+type ValidationReportResultValidationReport struct {
+	ValidationReport `json:"-"`
+}
+
+// GetEventTime returns ValidationReportResultValidationReport.EventTime, and is useful for accessing the field via an interface.
+func (v *ValidationReportResultValidationReport) GetEventTime() time.Time {
+	return v.ValidationReport.EventTime
+}
+
+// GetGlobalChecks returns ValidationReportResultValidationReport.GlobalChecks, and is useful for accessing the field via an interface.
+func (v *ValidationReportResultValidationReport) GetGlobalChecks() []ValidationReportGlobalChecksRequirementCheck {
+	return v.ValidationReport.GlobalChecks
+}
+
+// GetSyncers returns ValidationReportResultValidationReport.Syncers, and is useful for accessing the field via an interface.
+func (v *ValidationReportResultValidationReport) GetSyncers() []ValidationReportSyncersSyncerValidation {
+	return v.ValidationReport.Syncers
+}
+
+func (v *ValidationReportResultValidationReport) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*ValidationReportResultValidationReport
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.ValidationReportResultValidationReport = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.ValidationReport)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalValidationReportResultValidationReport struct {
+	EventTime time.Time `json:"eventTime"`
+
+	GlobalChecks []ValidationReportGlobalChecksRequirementCheck `json:"globalChecks"`
+
+	Syncers []ValidationReportSyncersSyncerValidation `json:"syncers"`
+}
+
+func (v *ValidationReportResultValidationReport) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *ValidationReportResultValidationReport) __premarshalJSON() (*__premarshalValidationReportResultValidationReport, error) {
+	var retval __premarshalValidationReportResultValidationReport
+
+	retval.EventTime = v.ValidationReport.EventTime
+	retval.GlobalChecks = v.ValidationReport.GlobalChecks
+	retval.Syncers = v.ValidationReport.Syncers
+	return &retval, nil
+}
+
+// ValidationReportSyncersSyncerValidation includes the requested fields of the GraphQL type SyncerValidation.
+// The GraphQL type's documentation follows.
+//
+// The capability status of one syncer, its features and its syncer-level requirements.
+type ValidationReportSyncersSyncerValidation struct {
+	Syncer string           `json:"syncer"`
+	Status CapabilityStatus `json:"status"`
+	// Syncer-level requirements not tied to a feature.
+	Requirements []ValidationReportSyncersSyncerValidationRequirementsRequirementCheck `json:"requirements"`
+	Features     []ValidationReportSyncersSyncerValidationFeaturesFeatureValidation    `json:"features"`
+}
+
+// GetSyncer returns ValidationReportSyncersSyncerValidation.Syncer, and is useful for accessing the field via an interface.
+func (v *ValidationReportSyncersSyncerValidation) GetSyncer() string { return v.Syncer }
+
+// GetStatus returns ValidationReportSyncersSyncerValidation.Status, and is useful for accessing the field via an interface.
+func (v *ValidationReportSyncersSyncerValidation) GetStatus() CapabilityStatus { return v.Status }
+
+// GetRequirements returns ValidationReportSyncersSyncerValidation.Requirements, and is useful for accessing the field via an interface.
+func (v *ValidationReportSyncersSyncerValidation) GetRequirements() []ValidationReportSyncersSyncerValidationRequirementsRequirementCheck {
+	return v.Requirements
+}
+
+// GetFeatures returns ValidationReportSyncersSyncerValidation.Features, and is useful for accessing the field via an interface.
+func (v *ValidationReportSyncersSyncerValidation) GetFeatures() []ValidationReportSyncersSyncerValidationFeaturesFeatureValidation {
+	return v.Features
+}
+
+// ValidationReportSyncersSyncerValidationFeaturesFeatureValidation includes the requested fields of the GraphQL type FeatureValidation.
+// The GraphQL type's documentation follows.
+//
+// The capability status of one cross-source feature within a syncer.
+type ValidationReportSyncersSyncerValidationFeaturesFeatureValidation struct {
+	FeatureId FeatureId `json:"featureId"`
+	// Free-form discriminator for source-specific features.
+	FeatureExtension *string                                                                                        `json:"featureExtension"`
+	Status           CapabilityStatus                                                                               `json:"status"`
+	Requirements     []ValidationReportSyncersSyncerValidationFeaturesFeatureValidationRequirementsRequirementCheck `json:"requirements"`
+}
+
+// GetFeatureId returns ValidationReportSyncersSyncerValidationFeaturesFeatureValidation.FeatureId, and is useful for accessing the field via an interface.
+func (v *ValidationReportSyncersSyncerValidationFeaturesFeatureValidation) GetFeatureId() FeatureId {
+	return v.FeatureId
+}
+
+// GetFeatureExtension returns ValidationReportSyncersSyncerValidationFeaturesFeatureValidation.FeatureExtension, and is useful for accessing the field via an interface.
+func (v *ValidationReportSyncersSyncerValidationFeaturesFeatureValidation) GetFeatureExtension() *string {
+	return v.FeatureExtension
+}
+
+// GetStatus returns ValidationReportSyncersSyncerValidationFeaturesFeatureValidation.Status, and is useful for accessing the field via an interface.
+func (v *ValidationReportSyncersSyncerValidationFeaturesFeatureValidation) GetStatus() CapabilityStatus {
+	return v.Status
+}
+
+// GetRequirements returns ValidationReportSyncersSyncerValidationFeaturesFeatureValidation.Requirements, and is useful for accessing the field via an interface.
+func (v *ValidationReportSyncersSyncerValidationFeaturesFeatureValidation) GetRequirements() []ValidationReportSyncersSyncerValidationFeaturesFeatureValidationRequirementsRequirementCheck {
+	return v.Requirements
+}
+
+// ValidationReportSyncersSyncerValidationFeaturesFeatureValidationRequirementsRequirementCheck includes the requested fields of the GraphQL type RequirementCheck.
+// The GraphQL type's documentation follows.
+//
+// A rolled-up requirement. With alternatives it is GRANTED if any alternative is GRANTED; the alternatives carry their individual statuses for display.
+type ValidationReportSyncersSyncerValidationFeaturesFeatureValidationRequirementsRequirementCheck struct {
+	RequirementCheck `json:"-"`
+}
+
+// GetStatus returns ValidationReportSyncersSyncerValidationFeaturesFeatureValidationRequirementsRequirementCheck.Status, and is useful for accessing the field via an interface.
+func (v *ValidationReportSyncersSyncerValidationFeaturesFeatureValidationRequirementsRequirementCheck) GetStatus() PermissionStatus {
+	return v.RequirementCheck.Status
+}
+
+// GetImpact returns ValidationReportSyncersSyncerValidationFeaturesFeatureValidationRequirementsRequirementCheck.Impact, and is useful for accessing the field via an interface.
+func (v *ValidationReportSyncersSyncerValidationFeaturesFeatureValidationRequirementsRequirementCheck) GetImpact() Impact {
+	return v.RequirementCheck.Impact
+}
+
+// GetReason returns ValidationReportSyncersSyncerValidationFeaturesFeatureValidationRequirementsRequirementCheck.Reason, and is useful for accessing the field via an interface.
+func (v *ValidationReportSyncersSyncerValidationFeaturesFeatureValidationRequirementsRequirementCheck) GetReason() *string {
+	return v.RequirementCheck.Reason
+}
+
+// GetAlternatives returns ValidationReportSyncersSyncerValidationFeaturesFeatureValidationRequirementsRequirementCheck.Alternatives, and is useful for accessing the field via an interface.
+func (v *ValidationReportSyncersSyncerValidationFeaturesFeatureValidationRequirementsRequirementCheck) GetAlternatives() []RequirementCheckAlternativesPermissionCheck {
+	return v.RequirementCheck.Alternatives
+}
+
+func (v *ValidationReportSyncersSyncerValidationFeaturesFeatureValidationRequirementsRequirementCheck) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*ValidationReportSyncersSyncerValidationFeaturesFeatureValidationRequirementsRequirementCheck
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.ValidationReportSyncersSyncerValidationFeaturesFeatureValidationRequirementsRequirementCheck = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.RequirementCheck)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalValidationReportSyncersSyncerValidationFeaturesFeatureValidationRequirementsRequirementCheck struct {
+	Status PermissionStatus `json:"status"`
+
+	Impact Impact `json:"impact"`
+
+	Reason *string `json:"reason"`
+
+	Alternatives []RequirementCheckAlternativesPermissionCheck `json:"alternatives"`
+}
+
+func (v *ValidationReportSyncersSyncerValidationFeaturesFeatureValidationRequirementsRequirementCheck) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *ValidationReportSyncersSyncerValidationFeaturesFeatureValidationRequirementsRequirementCheck) __premarshalJSON() (*__premarshalValidationReportSyncersSyncerValidationFeaturesFeatureValidationRequirementsRequirementCheck, error) {
+	var retval __premarshalValidationReportSyncersSyncerValidationFeaturesFeatureValidationRequirementsRequirementCheck
+
+	retval.Status = v.RequirementCheck.Status
+	retval.Impact = v.RequirementCheck.Impact
+	retval.Reason = v.RequirementCheck.Reason
+	retval.Alternatives = v.RequirementCheck.Alternatives
+	return &retval, nil
+}
+
+// ValidationReportSyncersSyncerValidationRequirementsRequirementCheck includes the requested fields of the GraphQL type RequirementCheck.
+// The GraphQL type's documentation follows.
+//
+// A rolled-up requirement. With alternatives it is GRANTED if any alternative is GRANTED; the alternatives carry their individual statuses for display.
+type ValidationReportSyncersSyncerValidationRequirementsRequirementCheck struct {
+	RequirementCheck `json:"-"`
+}
+
+// GetStatus returns ValidationReportSyncersSyncerValidationRequirementsRequirementCheck.Status, and is useful for accessing the field via an interface.
+func (v *ValidationReportSyncersSyncerValidationRequirementsRequirementCheck) GetStatus() PermissionStatus {
+	return v.RequirementCheck.Status
+}
+
+// GetImpact returns ValidationReportSyncersSyncerValidationRequirementsRequirementCheck.Impact, and is useful for accessing the field via an interface.
+func (v *ValidationReportSyncersSyncerValidationRequirementsRequirementCheck) GetImpact() Impact {
+	return v.RequirementCheck.Impact
+}
+
+// GetReason returns ValidationReportSyncersSyncerValidationRequirementsRequirementCheck.Reason, and is useful for accessing the field via an interface.
+func (v *ValidationReportSyncersSyncerValidationRequirementsRequirementCheck) GetReason() *string {
+	return v.RequirementCheck.Reason
+}
+
+// GetAlternatives returns ValidationReportSyncersSyncerValidationRequirementsRequirementCheck.Alternatives, and is useful for accessing the field via an interface.
+func (v *ValidationReportSyncersSyncerValidationRequirementsRequirementCheck) GetAlternatives() []RequirementCheckAlternativesPermissionCheck {
+	return v.RequirementCheck.Alternatives
+}
+
+func (v *ValidationReportSyncersSyncerValidationRequirementsRequirementCheck) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*ValidationReportSyncersSyncerValidationRequirementsRequirementCheck
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.ValidationReportSyncersSyncerValidationRequirementsRequirementCheck = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.RequirementCheck)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalValidationReportSyncersSyncerValidationRequirementsRequirementCheck struct {
+	Status PermissionStatus `json:"status"`
+
+	Impact Impact `json:"impact"`
+
+	Reason *string `json:"reason"`
+
+	Alternatives []RequirementCheckAlternativesPermissionCheck `json:"alternatives"`
+}
+
+func (v *ValidationReportSyncersSyncerValidationRequirementsRequirementCheck) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *ValidationReportSyncersSyncerValidationRequirementsRequirementCheck) __premarshalJSON() (*__premarshalValidationReportSyncersSyncerValidationRequirementsRequirementCheck, error) {
+	var retval __premarshalValidationReportSyncersSyncerValidationRequirementsRequirementCheck
+
+	retval.Status = v.RequirementCheck.Status
+	retval.Impact = v.RequirementCheck.Impact
+	retval.Reason = v.RequirementCheck.Reason
+	retval.Alternatives = v.RequirementCheck.Alternatives
+	return &retval, nil
+}
+
 // WhatAbacRule includes the GraphQL fields of WhatAbacRule requested by the fragment WhatAbacRule.
 // The GraphQL type's documentation follows.
 //
@@ -45674,6 +47120,14 @@ type __AddTaskEventInput struct {
 
 // GetInput returns __AddTaskEventInput.Input, and is useful for accessing the field via an interface.
 func (v *__AddTaskEventInput) GetInput() TaskEventInput { return v.Input }
+
+// __AddValidationReportInput is used internally by genqlient
+type __AddValidationReportInput struct {
+	Input ValidationReportInput `json:"input"`
+}
+
+// GetInput returns __AddValidationReportInput.Input, and is useful for accessing the field via an interface.
+func (v *__AddValidationReportInput) GetInput() ValidationReportInput { return v.Input }
 
 // __CreateAccessControlInput is used internally by genqlient
 type __CreateAccessControlInput struct {
@@ -46744,6 +48198,97 @@ func AddTaskEvent(
 	}
 
 	data_ = &AddTaskEventResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
+// The mutation executed by AddValidationReport.
+const AddValidationReport_Operation = `
+mutation AddValidationReport ($input: ValidationReportInput!) {
+	addValidationReport(input: $input) {
+		__typename
+		... ValidationReportResult
+	}
+}
+fragment ValidationReportResult on ValidationReportResult {
+	... ValidationReport
+	... NotFoundError
+	... PermissionDeniedError
+	... InvalidInputError
+}
+fragment ValidationReport on ValidationReport {
+	eventTime
+	globalChecks {
+		... RequirementCheck
+	}
+	syncers {
+		syncer
+		status
+		requirements {
+			... RequirementCheck
+		}
+		features {
+			featureId
+			featureExtension
+			status
+			requirements {
+				... RequirementCheck
+			}
+		}
+	}
+}
+fragment NotFoundError on NotFoundError {
+	message
+}
+fragment PermissionDeniedError on PermissionDeniedError {
+	message
+}
+fragment InvalidInputError on InvalidInputError {
+	message
+}
+fragment RequirementCheck on RequirementCheck {
+	status
+	impact
+	reason
+	alternatives {
+		... PermissionCheck
+	}
+}
+fragment PermissionCheck on PermissionCheck {
+	displayName
+	status
+	privilege
+	resource
+	principal
+	hint
+	details {
+		key
+		value
+	}
+}
+`
+
+func AddValidationReport(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	input ValidationReportInput,
+) (data_ *AddValidationReportResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "AddValidationReport",
+		Query:  AddValidationReport_Operation,
+		Variables: &__AddValidationReportInput{
+			Input: input,
+		},
+	}
+
+	data_ = &AddValidationReportResponse{}
 	resp_ := &graphql.Response{Data: data_}
 
 	err_ = client_.MakeRequest(

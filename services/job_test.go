@@ -196,6 +196,39 @@ func (suite *JobServiceTestSuite) TestJobs() {
 		suite.Require().True(found, "Created task not found in the list")
 	})
 
+	suite.Run("Add Validation Report", func() {
+		ctx := suite.T().Context()
+
+		if createdJob == nil {
+			suite.T().Skip("Skipping test as createdJob is nil")
+		}
+
+		reason := "missing SELECT on schema"
+		report, err := jobClient.AddValidationReport(ctx, schema.ValidationReportInput{
+			JobId:        createdJob.Id,
+			DataSourceId: suite.createdDataSource.Id,
+			EventTime:    time.Now(),
+			GlobalChecks: []schema.RequirementCheckInput{
+				{Status: schema.PermissionStatusGranted, Impact: schema.ImpactHardBlocker},
+			},
+			Syncers: []schema.SyncerValidationInput{
+				{
+					Syncer: "grants",
+					Status: schema.CapabilityStatusDegraded,
+					Requirements: []schema.RequirementCheckInput{
+						{Status: schema.PermissionStatusMissing, Impact: schema.ImpactDisablesFeature, Reason: &reason},
+					},
+				},
+			},
+		})
+		suite.Require().NoError(err, "Failed to add validation report")
+		suite.Require().NotNil(report, "Validation report is nil")
+		suite.Require().Len(report.GlobalChecks, 1)
+		suite.Require().Len(report.Syncers, 1)
+		suite.Require().Equal("grants", report.Syncers[0].Syncer)
+		suite.Require().Equal(schema.CapabilityStatusDegraded, report.Syncers[0].Status)
+	})
+
 	suite.Run("Add Subtask Event", func() {
 		ctx := suite.T().Context()
 

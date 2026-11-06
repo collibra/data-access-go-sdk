@@ -91,6 +91,57 @@ fragment Subtask on Subtask {
     flowCommandsRemoved
 }
 
+fragment PermissionCheck on PermissionCheck {
+    displayName
+    status
+    privilege
+    resource
+    principal
+    hint
+    details {
+        key
+        value
+    }
+}
+
+fragment RequirementCheck on RequirementCheck {
+    status
+    impact
+    reason
+    alternatives {
+        ... PermissionCheck
+    }
+}
+
+fragment ValidationReport on ValidationReport {
+    eventTime
+    globalChecks {
+        ... RequirementCheck
+    }
+    syncers {
+        syncer
+        status
+        requirements {
+            ... RequirementCheck
+        }
+        features {
+            featureId
+            featureExtension
+            status
+            requirements {
+                ... RequirementCheck
+            }
+        }
+    }
+}
+
+fragment ValidationReportResult on ValidationReportResult {
+    ... ValidationReport
+    ... NotFoundError
+    ... PermissionDeniedError
+    ... InvalidInputError
+}
+
 query GetJob($id: ID!) {
     job(jobId: $id) {
         ... Job
@@ -138,6 +189,12 @@ mutation UpdateJob($id: String!, $input: JobInput!) {
 mutation AddTaskEvent($input: TaskEventInput!) {
     addTaskEvent(input: $input) {
         ... Task
+    }
+}
+
+mutation AddValidationReport($input: ValidationReportInput!) {
+    addValidationReport(input: $input) {
+        ... ValidationReportResult
     }
 }
 

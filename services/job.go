@@ -159,6 +159,30 @@ func (c *JobClient) AddTaskEvent(ctx context.Context, input types.TaskEventInput
 	return &result.AddTaskEvent.Task, nil
 }
 
+func (c *JobClient) AddValidationReport(ctx context.Context, input types.ValidationReportInput) (*types.ValidationReport, error) {
+	result, err := schema.AddValidationReport(ctx, c.client, input)
+	if err != nil {
+		return nil, types.NewErrClient(err)
+	}
+
+	if result.AddValidationReport == nil {
+		return nil, types.NewErrClient(errors.New("no response from addValidationReport"))
+	}
+
+	switch response := (*result.AddValidationReport).(type) {
+	case *schema.AddValidationReportAddValidationReport:
+		return &response.ValidationReport, nil
+	case *schema.AddValidationReportAddValidationReportPermissionDeniedError:
+		return nil, types.NewErrPermissionDenied("addValidationReport", response.Message)
+	case *schema.AddValidationReportAddValidationReportInvalidInputError:
+		return nil, types.NewErrInvalidInput(response.Message)
+	case *schema.AddValidationReportAddValidationReportNotFoundError:
+		return nil, types.NewErrNotFound(input.JobId, response.Typename, response.Message)
+	default:
+		return nil, types.NewErrClient(fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
 // AddSubtaskEvent adds a subtask event.
 func (c *JobClient) AddSubtaskEvent(ctx context.Context, input types.SubtaskInput) (*types.Subtask, error) {
 	result, err := schema.AddSubtaskEvent(ctx, c.client, input)
