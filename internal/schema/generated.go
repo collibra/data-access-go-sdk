@@ -15387,6 +15387,30 @@ func (v *ExportAccessControl) GetCommonDataObject() *string { return v.CommonDat
 // GetOwners returns ExportAccessControl.Owners, and is useful for accessing the field via an interface.
 func (v *ExportAccessControl) GetOwners() []ExportAccessControlOwnersExportOwner { return v.Owners }
 
+// ExportAccessControlCounts includes the GraphQL fields of ExportAccessControlCounts requested by the fragment ExportAccessControlCounts.
+type ExportAccessControlCounts struct {
+	Grants  int `json:"grants"`
+	Groups  int `json:"groups"`
+	Shares  int `json:"shares"`
+	Masks   int `json:"masks"`
+	Filters int `json:"filters"`
+}
+
+// GetGrants returns ExportAccessControlCounts.Grants, and is useful for accessing the field via an interface.
+func (v *ExportAccessControlCounts) GetGrants() int { return v.Grants }
+
+// GetGroups returns ExportAccessControlCounts.Groups, and is useful for accessing the field via an interface.
+func (v *ExportAccessControlCounts) GetGroups() int { return v.Groups }
+
+// GetShares returns ExportAccessControlCounts.Shares, and is useful for accessing the field via an interface.
+func (v *ExportAccessControlCounts) GetShares() int { return v.Shares }
+
+// GetMasks returns ExportAccessControlCounts.Masks, and is useful for accessing the field via an interface.
+func (v *ExportAccessControlCounts) GetMasks() int { return v.Masks }
+
+// GetFilters returns ExportAccessControlCounts.Filters, and is useful for accessing the field via an interface.
+func (v *ExportAccessControlCounts) GetFilters() int { return v.Filters }
+
 // ExportAccessControlDeleteWhatExportWhatItem includes the requested fields of the GraphQL type ExportWhatItem.
 type ExportAccessControlDeleteWhatExportWhatItem struct {
 	ExportWhatItem `json:"-"`
@@ -37264,9 +37288,10 @@ var AllSort = []Sort{
 
 // StartExportFlow includes the GraphQL fields of StartExportFlow requested by the fragment StartExportFlow.
 type StartExportFlow struct {
-	FlowId         uuid.UUID `json:"flowId"`
-	LastSequenceId int       `json:"lastSequenceId"`
-	StartTime      time.Time `json:"startTime"`
+	FlowId              uuid.UUID                                                   `json:"flowId"`
+	LastSequenceId      int                                                         `json:"lastSequenceId"`
+	StartTime           time.Time                                                   `json:"startTime"`
+	AccessControlCounts StartExportFlowAccessControlCountsExportAccessControlCounts `json:"accessControlCounts"`
 }
 
 // GetFlowId returns StartExportFlow.FlowId, and is useful for accessing the field via an interface.
@@ -37277,6 +37302,97 @@ func (v *StartExportFlow) GetLastSequenceId() int { return v.LastSequenceId }
 
 // GetStartTime returns StartExportFlow.StartTime, and is useful for accessing the field via an interface.
 func (v *StartExportFlow) GetStartTime() time.Time { return v.StartTime }
+
+// GetAccessControlCounts returns StartExportFlow.AccessControlCounts, and is useful for accessing the field via an interface.
+func (v *StartExportFlow) GetAccessControlCounts() StartExportFlowAccessControlCountsExportAccessControlCounts {
+	return v.AccessControlCounts
+}
+
+// StartExportFlowAccessControlCountsExportAccessControlCounts includes the requested fields of the GraphQL type ExportAccessControlCounts.
+type StartExportFlowAccessControlCountsExportAccessControlCounts struct {
+	ExportAccessControlCounts `json:"-"`
+}
+
+// GetGrants returns StartExportFlowAccessControlCountsExportAccessControlCounts.Grants, and is useful for accessing the field via an interface.
+func (v *StartExportFlowAccessControlCountsExportAccessControlCounts) GetGrants() int {
+	return v.ExportAccessControlCounts.Grants
+}
+
+// GetGroups returns StartExportFlowAccessControlCountsExportAccessControlCounts.Groups, and is useful for accessing the field via an interface.
+func (v *StartExportFlowAccessControlCountsExportAccessControlCounts) GetGroups() int {
+	return v.ExportAccessControlCounts.Groups
+}
+
+// GetShares returns StartExportFlowAccessControlCountsExportAccessControlCounts.Shares, and is useful for accessing the field via an interface.
+func (v *StartExportFlowAccessControlCountsExportAccessControlCounts) GetShares() int {
+	return v.ExportAccessControlCounts.Shares
+}
+
+// GetMasks returns StartExportFlowAccessControlCountsExportAccessControlCounts.Masks, and is useful for accessing the field via an interface.
+func (v *StartExportFlowAccessControlCountsExportAccessControlCounts) GetMasks() int {
+	return v.ExportAccessControlCounts.Masks
+}
+
+// GetFilters returns StartExportFlowAccessControlCountsExportAccessControlCounts.Filters, and is useful for accessing the field via an interface.
+func (v *StartExportFlowAccessControlCountsExportAccessControlCounts) GetFilters() int {
+	return v.ExportAccessControlCounts.Filters
+}
+
+func (v *StartExportFlowAccessControlCountsExportAccessControlCounts) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*StartExportFlowAccessControlCountsExportAccessControlCounts
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.StartExportFlowAccessControlCountsExportAccessControlCounts = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.ExportAccessControlCounts)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalStartExportFlowAccessControlCountsExportAccessControlCounts struct {
+	Grants int `json:"grants"`
+
+	Groups int `json:"groups"`
+
+	Shares int `json:"shares"`
+
+	Masks int `json:"masks"`
+
+	Filters int `json:"filters"`
+}
+
+func (v *StartExportFlowAccessControlCountsExportAccessControlCounts) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *StartExportFlowAccessControlCountsExportAccessControlCounts) __premarshalJSON() (*__premarshalStartExportFlowAccessControlCountsExportAccessControlCounts, error) {
+	var retval __premarshalStartExportFlowAccessControlCountsExportAccessControlCounts
+
+	retval.Grants = v.ExportAccessControlCounts.Grants
+	retval.Groups = v.ExportAccessControlCounts.Groups
+	retval.Shares = v.ExportAccessControlCounts.Shares
+	retval.Masks = v.ExportAccessControlCounts.Masks
+	retval.Filters = v.ExportAccessControlCounts.Filters
+	return &retval, nil
+}
 
 type StartImportFlowInput struct {
 	JobId     string             `json:"jobId"`
@@ -41192,6 +41308,11 @@ func (v *TriggerExportFlowStartExportFlow) GetStartTime() time.Time {
 	return v.StartExportFlow.StartTime
 }
 
+// GetAccessControlCounts returns TriggerExportFlowStartExportFlow.AccessControlCounts, and is useful for accessing the field via an interface.
+func (v *TriggerExportFlowStartExportFlow) GetAccessControlCounts() StartExportFlowAccessControlCountsExportAccessControlCounts {
+	return v.StartExportFlow.AccessControlCounts
+}
+
 func (v *TriggerExportFlowStartExportFlow) UnmarshalJSON(b []byte) error {
 
 	if string(b) == "null" {
@@ -41225,6 +41346,8 @@ type __premarshalTriggerExportFlowStartExportFlow struct {
 	LastSequenceId int `json:"lastSequenceId"`
 
 	StartTime time.Time `json:"startTime"`
+
+	AccessControlCounts StartExportFlowAccessControlCountsExportAccessControlCounts `json:"accessControlCounts"`
 }
 
 func (v *TriggerExportFlowStartExportFlow) MarshalJSON() ([]byte, error) {
@@ -41242,6 +41365,7 @@ func (v *TriggerExportFlowStartExportFlow) __premarshalJSON() (*__premarshalTrig
 	retval.FlowId = v.StartExportFlow.FlowId
 	retval.LastSequenceId = v.StartExportFlow.LastSequenceId
 	retval.StartTime = v.StartExportFlow.StartTime
+	retval.AccessControlCounts = v.StartExportFlow.AccessControlCounts
 	return &retval, nil
 }
 
@@ -52715,6 +52839,9 @@ fragment StartExportFlow on StartExportFlow {
 	flowId
 	lastSequenceId
 	startTime
+	accessControlCounts {
+		... ExportAccessControlCounts
+	}
 }
 fragment PermissionDeniedError on PermissionDeniedError {
 	message
@@ -52724,6 +52851,13 @@ fragment NotFoundError on NotFoundError {
 }
 fragment InvalidInputError on InvalidInputError {
 	message
+}
+fragment ExportAccessControlCounts on ExportAccessControlCounts {
+	grants
+	groups
+	shares
+	masks
+	filters
 }
 `
 

@@ -432,6 +432,7 @@ const (
 )
 
 type ExportAccessControl = schema.ExportAccessControl
+type ExportAccessControlCounts = schema.ExportAccessControlCounts
 type ExportAccessControlDeleteWhatExportWhatItem = schema.ExportAccessControlDeleteWhatExportWhatItem
 type ExportAccessControlDeletedWhoExportWhoItem = schema.ExportAccessControlDeletedWhoExportWhoItem
 type ExportAccessControlOwnersExportOwner = schema.ExportAccessControlOwnersExportOwner
@@ -843,6 +844,7 @@ const (
 )
 
 type StartExportFlow = schema.StartExportFlow
+type StartExportFlowAccessControlCountsExportAccessControlCounts = schema.StartExportFlowAccessControlCountsExportAccessControlCounts
 type StartImportFlowInput = schema.StartImportFlowInput
 type StartImportFlowResponse = schema.StartImportFlowResponse
 type StartImportFlowStartImportFlowInvalidInputError = schema.StartImportFlowStartImportFlowInvalidInputError

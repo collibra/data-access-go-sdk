@@ -2,6 +2,17 @@ fragment StartExportFlow on StartExportFlow {
     flowId
     lastSequenceId
     startTime
+    accessControlCounts {
+        ... ExportAccessControlCounts
+    }
+}
+
+fragment ExportAccessControlCounts on ExportAccessControlCounts {
+    grants
+    groups
+    shares
+    masks
+    filters
 }
 
 fragment ExportWhoItem on ExportWhoItem {
