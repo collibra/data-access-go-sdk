@@ -74,6 +74,8 @@ const (
 	AbacComparisonExpressionComparisonOperatorPropertyendswith AbacComparisonExpressionComparisonOperator = "PropertyEndsWith"
 	// To check if the value contains a certain string.
 	AbacComparisonExpressionComparisonOperatorPropertycontains AbacComparisonExpressionComparisonOperator = "PropertyContains"
+	// To check if a direct child of the object has one of the given values for the property named by the leftOperand (case-insensitive). Only `name` is supported for now. WHAT rules only.
+	AbacComparisonExpressionComparisonOperatorContainschild AbacComparisonExpressionComparisonOperator = "ContainsChild"
 )
 
 var AllAbacComparisonExpressionComparisonOperator = []AbacComparisonExpressionComparisonOperator{
@@ -85,6 +87,7 @@ var AllAbacComparisonExpressionComparisonOperator = []AbacComparisonExpressionCo
 	AbacComparisonExpressionComparisonOperatorPropertystartswith,
 	AbacComparisonExpressionComparisonOperatorPropertyendswith,
 	AbacComparisonExpressionComparisonOperatorPropertycontains,
+	AbacComparisonExpressionComparisonOperatorContainschild,
 }
 
 // Input object to create an ABAC expression. Exactly one of the fields should be specified, depending on the type.
