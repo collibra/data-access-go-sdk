@@ -16853,10 +16853,15 @@ func (v *ExportFilterRuleWhoExportWhoItem) __premarshalJSON() (*__premarshalExpo
 
 type ExportFlowOptions struct {
 	OnlyOutOfSync *bool `json:"onlyOutOfSync,omitempty"`
+	// Whether the exporting connector understands diff-based WHO exports. Unset means it does not.
+	SupportsDiffExport *bool `json:"supportsDiffExport,omitempty" doc:"Whether the exporting connector understands diff-based WHO exports. Unset means it does not."`
 }
 
 // GetOnlyOutOfSync returns ExportFlowOptions.OnlyOutOfSync, and is useful for accessing the field via an interface.
 func (v *ExportFlowOptions) GetOnlyOutOfSync() *bool { return v.OnlyOutOfSync }
+
+// GetSupportsDiffExport returns ExportFlowOptions.SupportsDiffExport, and is useful for accessing the field via an interface.
+func (v *ExportFlowOptions) GetSupportsDiffExport() *bool { return v.SupportsDiffExport }
 
 // ExportOwner includes the GraphQL fields of ExportOwner requested by the fragment ExportOwner.
 type ExportOwner struct {
