@@ -28,8 +28,8 @@ func NewExporterClient(client graphql.Client) *ExporterClient {
 }
 
 type ExportOptions struct {
-	OnlyOutOfSync      bool
-	SupportsDiffExport bool
+	OnlyOutOfSync               bool
+	SupportsDiffActionsOnExport []types.AccessControlAction
 }
 
 func WithExportOutOfSyncOnly() func(options *ExportOptions) {
@@ -38,9 +38,9 @@ func WithExportOutOfSyncOnly() func(options *ExportOptions) {
 	}
 }
 
-func WithSupportsDiffExport() func(options *ExportOptions) {
+func WithSupportsDiffExport(actions ...types.AccessControlAction) func(options *ExportOptions) {
 	return func(options *ExportOptions) {
-		options.SupportsDiffExport = true
+		options.SupportsDiffActionsOnExport = actions
 	}
 }
 
@@ -52,8 +52,8 @@ func (c *ExporterClient) StartExportFlow(ctx context.Context, flowId uuid.UUID, 
 	}
 
 	result, err := schema.TriggerExportFlow(ctx, c.client, flowId, types.ExportFlowOptions{
-		OnlyOutOfSync:      &options.OnlyOutOfSync,
-		SupportsDiffExport: &options.SupportsDiffExport,
+		OnlyOutOfSync:     &options.OnlyOutOfSync,
+		DiffExportActions: options.SupportsDiffActionsOnExport,
 	})
 	if err != nil {
 		return nil, types.NewErrClient(err)
