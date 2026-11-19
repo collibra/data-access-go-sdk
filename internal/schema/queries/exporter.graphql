@@ -46,6 +46,7 @@ fragment ExportAccessControl on ExportAccessControl {
     description
     namingHint
     externalId
+    whoExportMode
     who {
         ... ExportWhoItem
     }
@@ -91,6 +92,7 @@ fragment ExportColumnMask on ExportColumnMask {
         type
     }
     delete
+    whoExportMode
     who {
         ... ExportWhoItem
     }
@@ -126,6 +128,7 @@ fragment ExportFilterRule on ExportFilterRule {
     namingHint
     externalId
     rowFilterId
+    whoExportMode
     who {
         ... ExportWhoItem
     }

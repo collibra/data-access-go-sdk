@@ -456,6 +456,13 @@ type ExportFilterRule = schema.ExportFilterRule
 type ExportFilterRuleDeletedWhoExportWhoItem = schema.ExportFilterRuleDeletedWhoExportWhoItem
 type ExportFilterRuleWhoExportWhoItem = schema.ExportFilterRuleWhoExportWhoItem
 type ExportFlowOptions = schema.ExportFlowOptions
+type ExportMode = schema.ExportMode
+
+const (
+	ExportModeFull ExportMode = schema.ExportModeFull
+	ExportModeDiff ExportMode = schema.ExportModeDiff
+)
+
 type ExportOwner = schema.ExportOwner
 type ExportRowFilter = schema.ExportRowFilter
 type ExportRowFilterDeletedRulesExportDeletedFilterRule = schema.ExportRowFilterDeletedRulesExportDeletedFilterRule
@@ -1069,6 +1076,7 @@ var AllDataSourceFeatures = []DataSourceFeatures{DataSourceFeaturesGrants, DataS
 var AllDataTypeOrigin = []DataTypeOrigin{DataTypeOriginInternal, DataTypeOriginExternal, DataTypeOriginShared}
 var AllEntityType = []EntityType{EntityTypeAccesscontrol, EntityTypeAccess, EntityTypeAccessrequest, EntityTypeUser, EntityTypeDataobject, EntityTypeDatasource, EntityTypeDatausage, EntityTypeTag, EntityTypeRole, EntityTypeRoleassignment, EntityTypeAccount, EntityTypeDatasharerecipient}
 var AllErrorCategory = []ErrorCategory{ErrorCategoryPermissionDenied, ErrorCategoryNotFound, ErrorCategoryInvalidConfig, ErrorCategorySourceError, ErrorCategoryTransient, ErrorCategoryUnknown}
+var AllExportMode = []ExportMode{ExportModeFull, ExportModeDiff}
 var AllFeatureId = []FeatureId{FeatureIdColumnMasks, FeatureIdRowFilters, FeatureIdGrants}
 var AllImpact = []Impact{ImpactHardBlocker, ImpactDisablesFeature}
 var AllJobStatus = []JobStatus{JobStatusStarted, JobStatusInprogress, JobStatusCompleted, JobStatusFailed, JobStatusTimedout}

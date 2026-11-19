@@ -1128,6 +1128,8 @@ type AccessControlFilterInput struct {
 	DataObjectInWhat *string `json:"dataObjectInWhat,omitempty" doc:"Only return the access controls that have the given data object in its WHAT list."`
 	// Only return the access controls that have the give access control as an incoming WHO list.
 	AccessControlInWhat *string `json:"accessControlInWhat,omitempty" doc:"Only return the access controls that have the give access control as an incoming WHO list."`
+	// Only return the access controls that have the given access control in their WHO list, directly or through a chain of active grants, grant variations, delegated roles and groups.
+	AccessControlInWho *string `json:"accessControlInWho,omitempty" doc:"Only return the access controls that have the given access control in their WHO list, directly or through a chain of active grants, grant variations, delegated roles and groups."`
 	// Only return the access controls whose WHAT data objects are equal to or below the WHAT data objects of the given access control,
 	// with the same semantics as `AccessControl.overlappingAccessControls`. A `FilterRule` is returned when its parent `Filter` overlaps.
 	// Access controls already part of the given access control's WHAT are excluded.
@@ -1195,6 +1197,9 @@ func (v *AccessControlFilterInput) GetDataObjectInWhat() *string { return v.Data
 
 // GetAccessControlInWhat returns AccessControlFilterInput.AccessControlInWhat, and is useful for accessing the field via an interface.
 func (v *AccessControlFilterInput) GetAccessControlInWhat() *string { return v.AccessControlInWhat }
+
+// GetAccessControlInWho returns AccessControlFilterInput.AccessControlInWho, and is useful for accessing the field via an interface.
+func (v *AccessControlFilterInput) GetAccessControlInWho() *string { return v.AccessControlInWho }
 
 // GetOverlappingWith returns AccessControlFilterInput.OverlappingWith, and is useful for accessing the field via an interface.
 func (v *AccessControlFilterInput) GetOverlappingWith() *string { return v.OverlappingWith }
@@ -15300,11 +15305,13 @@ var AllErrorCategory = []ErrorCategory{
 
 // ExportAccessControl includes the GraphQL fields of ExportAccessControl requested by the fragment ExportAccessControl.
 type ExportAccessControl struct {
-	Id                string                                        `json:"id"`
-	Name              string                                        `json:"name"`
-	Description       string                                        `json:"description"`
-	NamingHint        string                                        `json:"namingHint"`
-	ExternalId        *string                                       `json:"externalId"`
+	Id          string  `json:"id"`
+	Name        string  `json:"name"`
+	Description string  `json:"description"`
+	NamingHint  string  `json:"namingHint"`
+	ExternalId  *string `json:"externalId"`
+	// FULL: who is every beneficiary. DIFF: who is only the beneficiaries the connector is not yet guaranteed to have; deletedWho is unchanged.
+	WhoExportMode     ExportMode                                    `json:"whoExportMode" doc:"FULL: who is every beneficiary. DIFF: who is only the beneficiaries the connector is not yet guaranteed to have; deletedWho is unchanged."`
 	Who               ExportAccessControlWhoExportWhoItem           `json:"who"`
 	DeletedWho        *ExportAccessControlDeletedWhoExportWhoItem   `json:"deletedWho"`
 	Action            AccessControlAction                           `json:"action"`
@@ -15337,6 +15344,9 @@ func (v *ExportAccessControl) GetNamingHint() string { return v.NamingHint }
 
 // GetExternalId returns ExportAccessControl.ExternalId, and is useful for accessing the field via an interface.
 func (v *ExportAccessControl) GetExternalId() *string { return v.ExternalId }
+
+// GetWhoExportMode returns ExportAccessControl.WhoExportMode, and is useful for accessing the field via an interface.
+func (v *ExportAccessControl) GetWhoExportMode() ExportMode { return v.WhoExportMode }
 
 // GetWho returns ExportAccessControl.Who, and is useful for accessing the field via an interface.
 func (v *ExportAccessControl) GetWho() ExportAccessControlWhoExportWhoItem { return v.Who }
@@ -15872,6 +15882,11 @@ func (v *ExportAccessControlsAccessControlsExportAccessControl) GetExternalId() 
 	return v.ExportedItemExportAccessControl.ExportAccessControl.ExternalId
 }
 
+// GetWhoExportMode returns ExportAccessControlsAccessControlsExportAccessControl.WhoExportMode, and is useful for accessing the field via an interface.
+func (v *ExportAccessControlsAccessControlsExportAccessControl) GetWhoExportMode() ExportMode {
+	return v.ExportedItemExportAccessControl.ExportAccessControl.WhoExportMode
+}
+
 // GetWho returns ExportAccessControlsAccessControlsExportAccessControl.Who, and is useful for accessing the field via an interface.
 func (v *ExportAccessControlsAccessControlsExportAccessControl) GetWho() ExportAccessControlWhoExportWhoItem {
 	return v.ExportedItemExportAccessControl.ExportAccessControl.Who
@@ -15990,6 +16005,8 @@ type __premarshalExportAccessControlsAccessControlsExportAccessControl struct {
 
 	ExternalId *string `json:"externalId"`
 
+	WhoExportMode ExportMode `json:"whoExportMode"`
+
 	Who ExportAccessControlWhoExportWhoItem `json:"who"`
 
 	DeletedWho *ExportAccessControlDeletedWhoExportWhoItem `json:"deletedWho"`
@@ -16040,6 +16057,7 @@ func (v *ExportAccessControlsAccessControlsExportAccessControl) __premarshalJSON
 	retval.Description = v.ExportedItemExportAccessControl.ExportAccessControl.Description
 	retval.NamingHint = v.ExportedItemExportAccessControl.ExportAccessControl.NamingHint
 	retval.ExternalId = v.ExportedItemExportAccessControl.ExportAccessControl.ExternalId
+	retval.WhoExportMode = v.ExportedItemExportAccessControl.ExportAccessControl.WhoExportMode
 	retval.Who = v.ExportedItemExportAccessControl.ExportAccessControl.Who
 	retval.DeletedWho = v.ExportedItemExportAccessControl.ExportAccessControl.DeletedWho
 	retval.Action = v.ExportedItemExportAccessControl.ExportAccessControl.Action
@@ -16081,6 +16099,11 @@ func (v *ExportAccessControlsAccessControlsExportColumnMask) GetMaskDetails() Ex
 // GetDelete returns ExportAccessControlsAccessControlsExportColumnMask.Delete, and is useful for accessing the field via an interface.
 func (v *ExportAccessControlsAccessControlsExportColumnMask) GetDelete() bool {
 	return v.ExportedItemExportColumnMask.ExportColumnMask.Delete
+}
+
+// GetWhoExportMode returns ExportAccessControlsAccessControlsExportColumnMask.WhoExportMode, and is useful for accessing the field via an interface.
+func (v *ExportAccessControlsAccessControlsExportColumnMask) GetWhoExportMode() ExportMode {
+	return v.ExportedItemExportColumnMask.ExportColumnMask.WhoExportMode
 }
 
 // GetWho returns ExportAccessControlsAccessControlsExportColumnMask.Who, and is useful for accessing the field via an interface.
@@ -16127,6 +16150,8 @@ type __premarshalExportAccessControlsAccessControlsExportColumnMask struct {
 
 	Delete bool `json:"delete"`
 
+	WhoExportMode ExportMode `json:"whoExportMode"`
+
 	Who ExportColumnMaskWhoExportWhoItem `json:"who"`
 
 	DeletedWho *ExportColumnMaskDeletedWhoExportWhoItem `json:"deletedWho"`
@@ -16147,6 +16172,7 @@ func (v *ExportAccessControlsAccessControlsExportColumnMask) __premarshalJSON() 
 	retval.ColumnMaskReferences = v.ExportedItemExportColumnMask.ExportColumnMask.ColumnMaskReferences
 	retval.MaskDetails = v.ExportedItemExportColumnMask.ExportColumnMask.MaskDetails
 	retval.Delete = v.ExportedItemExportColumnMask.ExportColumnMask.Delete
+	retval.WhoExportMode = v.ExportedItemExportColumnMask.ExportColumnMask.WhoExportMode
 	retval.Who = v.ExportedItemExportColumnMask.ExportColumnMask.Who
 	retval.DeletedWho = v.ExportedItemExportColumnMask.ExportColumnMask.DeletedWho
 	return &retval, nil
@@ -16350,8 +16376,10 @@ type ExportColumnMask struct {
 	ColumnMaskReferences []ExportColumnMaskColumnMaskReferencesExportColumnMaskReference `json:"columnMaskReferences"`
 	MaskDetails          ExportColumnMaskMaskDetailsExportMaskDetails                    `json:"maskDetails"`
 	Delete               bool                                                            `json:"delete"`
-	Who                  ExportColumnMaskWhoExportWhoItem                                `json:"who"`
-	DeletedWho           *ExportColumnMaskDeletedWhoExportWhoItem                        `json:"deletedWho"`
+	// FULL: who is every beneficiary. DIFF: who is only the beneficiaries the connector is not yet guaranteed to have; deletedWho is unchanged.
+	WhoExportMode ExportMode                               `json:"whoExportMode" doc:"FULL: who is every beneficiary. DIFF: who is only the beneficiaries the connector is not yet guaranteed to have; deletedWho is unchanged."`
+	Who           ExportColumnMaskWhoExportWhoItem         `json:"who"`
+	DeletedWho    *ExportColumnMaskDeletedWhoExportWhoItem `json:"deletedWho"`
 }
 
 // GetColumnMaskReferences returns ExportColumnMask.ColumnMaskReferences, and is useful for accessing the field via an interface.
@@ -16366,6 +16394,9 @@ func (v *ExportColumnMask) GetMaskDetails() ExportColumnMaskMaskDetailsExportMas
 
 // GetDelete returns ExportColumnMask.Delete, and is useful for accessing the field via an interface.
 func (v *ExportColumnMask) GetDelete() bool { return v.Delete }
+
+// GetWhoExportMode returns ExportColumnMask.WhoExportMode, and is useful for accessing the field via an interface.
+func (v *ExportColumnMask) GetWhoExportMode() ExportMode { return v.WhoExportMode }
 
 // GetWho returns ExportColumnMask.Who, and is useful for accessing the field via an interface.
 func (v *ExportColumnMask) GetWho() ExportColumnMaskWhoExportWhoItem { return v.Who }
@@ -16671,12 +16702,14 @@ func (v *ExportFilterDetail) GetDelete() bool { return v.Delete }
 
 // ExportFilterRule includes the GraphQL fields of ExportFilterRule requested by the fragment ExportFilterRule.
 type ExportFilterRule struct {
-	Id             string                                   `json:"id"`
-	Name           string                                   `json:"name"`
-	Description    string                                   `json:"description"`
-	NamingHint     string                                   `json:"namingHint"`
-	ExternalId     *string                                  `json:"externalId"`
-	RowFilterId    string                                   `json:"rowFilterId"`
+	Id          string  `json:"id"`
+	Name        string  `json:"name"`
+	Description string  `json:"description"`
+	NamingHint  string  `json:"namingHint"`
+	ExternalId  *string `json:"externalId"`
+	RowFilterId string  `json:"rowFilterId"`
+	// FULL: who is every beneficiary. DIFF: who is only the beneficiaries the connector is not yet guaranteed to have; deletedWho is unchanged.
+	WhoExportMode  ExportMode                               `json:"whoExportMode" doc:"FULL: who is every beneficiary. DIFF: who is only the beneficiaries the connector is not yet guaranteed to have; deletedWho is unchanged."`
 	Who            ExportFilterRuleWhoExportWhoItem         `json:"who"`
 	DeletedWho     *ExportFilterRuleDeletedWhoExportWhoItem `json:"deletedWho"`
 	FilterCriteria *string                                  `json:"filterCriteria"`
@@ -16700,6 +16733,9 @@ func (v *ExportFilterRule) GetExternalId() *string { return v.ExternalId }
 
 // GetRowFilterId returns ExportFilterRule.RowFilterId, and is useful for accessing the field via an interface.
 func (v *ExportFilterRule) GetRowFilterId() string { return v.RowFilterId }
+
+// GetWhoExportMode returns ExportFilterRule.WhoExportMode, and is useful for accessing the field via an interface.
+func (v *ExportFilterRule) GetWhoExportMode() ExportMode { return v.WhoExportMode }
 
 // GetWho returns ExportFilterRule.Who, and is useful for accessing the field via an interface.
 func (v *ExportFilterRule) GetWho() ExportFilterRuleWhoExportWhoItem { return v.Who }
@@ -16853,15 +16889,29 @@ func (v *ExportFilterRuleWhoExportWhoItem) __premarshalJSON() (*__premarshalExpo
 
 type ExportFlowOptions struct {
 	OnlyOutOfSync *bool `json:"onlyOutOfSync,omitempty"`
-	// Whether the exporting connector understands diff-based WHO exports. Unset means it does not.
-	SupportsDiffExport *bool `json:"supportsDiffExport,omitempty" doc:"Whether the exporting connector understands diff-based WHO exports. Unset means it does not."`
+	// The access control actions of which the exporting connector understands diff-based WHO exports: who then only holds the beneficiaries to add. Grant also covers grant variations and delegated roles, and Filter covers its rules. A connector that lists an action must keep its own state for rebuilding such an object. Unset or empty means none.
+	DiffExportActions []AccessControlAction `json:"diffExportActions,omitempty" doc:"The access control actions of which the exporting connector understands diff-based WHO exports: who then only holds the beneficiaries to add. Grant also covers grant variations and delegated roles, and Filter covers its rules. A connector that lists an action must keep its own state for rebuilding such an object. Unset or empty means none."`
 }
 
 // GetOnlyOutOfSync returns ExportFlowOptions.OnlyOutOfSync, and is useful for accessing the field via an interface.
 func (v *ExportFlowOptions) GetOnlyOutOfSync() *bool { return v.OnlyOutOfSync }
 
-// GetSupportsDiffExport returns ExportFlowOptions.SupportsDiffExport, and is useful for accessing the field via an interface.
-func (v *ExportFlowOptions) GetSupportsDiffExport() *bool { return v.SupportsDiffExport }
+// GetDiffExportActions returns ExportFlowOptions.DiffExportActions, and is useful for accessing the field via an interface.
+func (v *ExportFlowOptions) GetDiffExportActions() []AccessControlAction { return v.DiffExportActions }
+
+type ExportMode string
+
+const (
+	// The export carries the complete state.
+	ExportModeFull ExportMode = "FULL"
+	// The export carries only what changed since the connector last confirmed.
+	ExportModeDiff ExportMode = "DIFF"
+)
+
+var AllExportMode = []ExportMode{
+	ExportModeFull,
+	ExportModeDiff,
+}
 
 // ExportOwner includes the GraphQL fields of ExportOwner requested by the fragment ExportOwner.
 type ExportOwner struct {
@@ -17036,6 +17086,11 @@ func (v *ExportRowFilterRulesExportFilterRule) GetRowFilterId() string {
 	return v.ExportFilterRule.RowFilterId
 }
 
+// GetWhoExportMode returns ExportRowFilterRulesExportFilterRule.WhoExportMode, and is useful for accessing the field via an interface.
+func (v *ExportRowFilterRulesExportFilterRule) GetWhoExportMode() ExportMode {
+	return v.ExportFilterRule.WhoExportMode
+}
+
 // GetWho returns ExportRowFilterRulesExportFilterRule.Who, and is useful for accessing the field via an interface.
 func (v *ExportRowFilterRulesExportFilterRule) GetWho() ExportFilterRuleWhoExportWhoItem {
 	return v.ExportFilterRule.Who
@@ -17092,6 +17147,8 @@ type __premarshalExportRowFilterRulesExportFilterRule struct {
 
 	RowFilterId string `json:"rowFilterId"`
 
+	WhoExportMode ExportMode `json:"whoExportMode"`
+
 	Who ExportFilterRuleWhoExportWhoItem `json:"who"`
 
 	DeletedWho *ExportFilterRuleDeletedWhoExportWhoItem `json:"deletedWho"`
@@ -17118,6 +17175,7 @@ func (v *ExportRowFilterRulesExportFilterRule) __premarshalJSON() (*__premarshal
 	retval.NamingHint = v.ExportFilterRule.NamingHint
 	retval.ExternalId = v.ExportFilterRule.ExternalId
 	retval.RowFilterId = v.ExportFilterRule.RowFilterId
+	retval.WhoExportMode = v.ExportFilterRule.WhoExportMode
 	retval.Who = v.ExportFilterRule.Who
 	retval.DeletedWho = v.ExportFilterRule.DeletedWho
 	retval.FilterCriteria = v.ExportFilterRule.FilterCriteria
@@ -17435,6 +17493,11 @@ func (v *ExportedItemExportAccessControl) GetExternalId() *string {
 	return v.ExportAccessControl.ExternalId
 }
 
+// GetWhoExportMode returns ExportedItemExportAccessControl.WhoExportMode, and is useful for accessing the field via an interface.
+func (v *ExportedItemExportAccessControl) GetWhoExportMode() ExportMode {
+	return v.ExportAccessControl.WhoExportMode
+}
+
 // GetWho returns ExportedItemExportAccessControl.Who, and is useful for accessing the field via an interface.
 func (v *ExportedItemExportAccessControl) GetWho() ExportAccessControlWhoExportWhoItem {
 	return v.ExportAccessControl.Who
@@ -17545,6 +17608,8 @@ type __premarshalExportedItemExportAccessControl struct {
 
 	ExternalId *string `json:"externalId"`
 
+	WhoExportMode ExportMode `json:"whoExportMode"`
+
 	Who ExportAccessControlWhoExportWhoItem `json:"who"`
 
 	DeletedWho *ExportAccessControlDeletedWhoExportWhoItem `json:"deletedWho"`
@@ -17594,6 +17659,7 @@ func (v *ExportedItemExportAccessControl) __premarshalJSON() (*__premarshalExpor
 	retval.Description = v.ExportAccessControl.Description
 	retval.NamingHint = v.ExportAccessControl.NamingHint
 	retval.ExternalId = v.ExportAccessControl.ExternalId
+	retval.WhoExportMode = v.ExportAccessControl.WhoExportMode
 	retval.Who = v.ExportAccessControl.Who
 	retval.DeletedWho = v.ExportAccessControl.DeletedWho
 	retval.Action = v.ExportAccessControl.Action
@@ -17630,6 +17696,11 @@ func (v *ExportedItemExportColumnMask) GetMaskDetails() ExportColumnMaskMaskDeta
 
 // GetDelete returns ExportedItemExportColumnMask.Delete, and is useful for accessing the field via an interface.
 func (v *ExportedItemExportColumnMask) GetDelete() bool { return v.ExportColumnMask.Delete }
+
+// GetWhoExportMode returns ExportedItemExportColumnMask.WhoExportMode, and is useful for accessing the field via an interface.
+func (v *ExportedItemExportColumnMask) GetWhoExportMode() ExportMode {
+	return v.ExportColumnMask.WhoExportMode
+}
 
 // GetWho returns ExportedItemExportColumnMask.Who, and is useful for accessing the field via an interface.
 func (v *ExportedItemExportColumnMask) GetWho() ExportColumnMaskWhoExportWhoItem {
@@ -17673,6 +17744,8 @@ type __premarshalExportedItemExportColumnMask struct {
 
 	Delete bool `json:"delete"`
 
+	WhoExportMode ExportMode `json:"whoExportMode"`
+
 	Who ExportColumnMaskWhoExportWhoItem `json:"who"`
 
 	DeletedWho *ExportColumnMaskDeletedWhoExportWhoItem `json:"deletedWho"`
@@ -17692,6 +17765,7 @@ func (v *ExportedItemExportColumnMask) __premarshalJSON() (*__premarshalExported
 	retval.ColumnMaskReferences = v.ExportColumnMask.ColumnMaskReferences
 	retval.MaskDetails = v.ExportColumnMask.MaskDetails
 	retval.Delete = v.ExportColumnMask.Delete
+	retval.WhoExportMode = v.ExportColumnMask.WhoExportMode
 	retval.Who = v.ExportColumnMask.Who
 	retval.DeletedWho = v.ExportColumnMask.DeletedWho
 	return &retval, nil
@@ -49635,6 +49709,7 @@ fragment ExportAccessControl on ExportAccessControl {
 	description
 	namingHint
 	externalId
+	whoExportMode
 	who {
 		... ExportWhoItem
 	}
@@ -49679,6 +49754,7 @@ fragment ExportColumnMask on ExportColumnMask {
 		type
 	}
 	delete
+	whoExportMode
 	who {
 		... ExportWhoItem
 	}
@@ -49740,6 +49816,7 @@ fragment ExportFilterRule on ExportFilterRule {
 	namingHint
 	externalId
 	rowFilterId
+	whoExportMode
 	who {
 		... ExportWhoItem
 	}
