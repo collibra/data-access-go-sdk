@@ -76,6 +76,8 @@ const (
 	AbacComparisonExpressionComparisonOperatorPropertycontains AbacComparisonExpressionComparisonOperator = "PropertyContains"
 	// To check if a direct child of the object has one of the given values for the property named by the leftOperand (case-insensitive). Only `name` is supported for now. WHAT rules only.
 	AbacComparisonExpressionComparisonOperatorContainschild AbacComparisonExpressionComparisonOperator = "ContainsChild"
+	// To check if a direct child of the object has a certain tag; a tag on the object itself does not count. WHAT rules only. The leftOperand is the tag key; the rightOperand is the tag value or values.
+	AbacComparisonExpressionComparisonOperatorContainschildwithtag AbacComparisonExpressionComparisonOperator = "ContainsChildWithTag"
 )
 
 var AllAbacComparisonExpressionComparisonOperator = []AbacComparisonExpressionComparisonOperator{
@@ -88,6 +90,7 @@ var AllAbacComparisonExpressionComparisonOperator = []AbacComparisonExpressionCo
 	AbacComparisonExpressionComparisonOperatorPropertyendswith,
 	AbacComparisonExpressionComparisonOperatorPropertycontains,
 	AbacComparisonExpressionComparisonOperatorContainschild,
+	AbacComparisonExpressionComparisonOperatorContainschildwithtag,
 }
 
 // Input object to create an ABAC expression. Exactly one of the fields should be specified, depending on the type.
@@ -1040,14 +1043,16 @@ func (v *AccessControlDataSourceInput) GetDataSource() string { return v.DataSou
 func (v *AccessControlDataSourceInput) GetType() *string { return v.Type }
 
 type AccessControlFeedbackImport struct {
-	AccessControlId    string                      `json:"accessControlId"`
-	ActualName         string                      `json:"actualName"`
-	ExternalId         *string                     `json:"externalId,omitempty"`
-	Type               *string                     `json:"type,omitempty"`
-	Errors             []string                    `json:"errors,omitempty"`
-	Warnings           []string                    `json:"warnings,omitempty"`
-	State              *AccessControlFeedbackState `json:"state,omitempty"`
-	FilterRuleFeedback []FilterRuleFeedbackImport  `json:"filterRuleFeedback,omitempty"`
+	AccessControlId string                      `json:"accessControlId"`
+	ActualName      string                      `json:"actualName"`
+	ExternalId      *string                     `json:"externalId,omitempty"`
+	Type            *string                     `json:"type,omitempty"`
+	Errors          []string                    `json:"errors,omitempty"`
+	Warnings        []string                    `json:"warnings,omitempty"`
+	State           *AccessControlFeedbackState `json:"state,omitempty"`
+	// Diff-based alternative to `state`. Ignored when `state` is also set.
+	WhoDelta           *AccessControlWhoFeedbackDelta `json:"whoDelta,omitempty" doc:"Diff-based alternative to 'state'. Ignored when 'state' is also set."`
+	FilterRuleFeedback []FilterRuleFeedbackImport     `json:"filterRuleFeedback,omitempty"`
 	// Categorised errors sent alongside the free-text errors. The free-text errors remain as a fallback.
 	StructuredErrors []StructuredErrorInput `json:"structuredErrors,omitempty" doc:"Categorised errors sent alongside the free-text errors. The free-text errors remain as a fallback."`
 }
@@ -1072,6 +1077,9 @@ func (v *AccessControlFeedbackImport) GetWarnings() []string { return v.Warnings
 
 // GetState returns AccessControlFeedbackImport.State, and is useful for accessing the field via an interface.
 func (v *AccessControlFeedbackImport) GetState() *AccessControlFeedbackState { return v.State }
+
+// GetWhoDelta returns AccessControlFeedbackImport.WhoDelta, and is useful for accessing the field via an interface.
+func (v *AccessControlFeedbackImport) GetWhoDelta() *AccessControlWhoFeedbackDelta { return v.WhoDelta }
 
 // GetFilterRuleFeedback returns AccessControlFeedbackImport.FilterRuleFeedback, and is useful for accessing the field via an interface.
 func (v *AccessControlFeedbackImport) GetFilterRuleFeedback() []FilterRuleFeedbackImport {
@@ -2312,6 +2320,26 @@ func (v *AccessControlWhoAbacRulesWhoAbacRule) __premarshalJSON() (*__premarshal
 	retval.Type = v.WhoAbacRule.Type
 	retval.RuleJson = v.WhoAbacRule.RuleJson
 	return &retval, nil
+}
+
+// Feedback as deltas, intended for an access control exported diff-based. Confirm the verified outcome for the items of the
+// export you received, not what you changed: an item of `addWho` that is present goes in `confirmedAdded` even if it
+// already was, and an item of `deletedWho` that is absent goes in `confirmedRemoved`. Confirm nothing you could not verify;
+// it is re-sent on the next export. An omitted list is empty, `inheritFrom` entries are read as in `state`, and an item in
+// both lists rejects the feedback.
+type AccessControlWhoFeedbackDelta struct {
+	ConfirmedAdded   *AccessControlWhoFeedbackState `json:"confirmedAdded,omitempty"`
+	ConfirmedRemoved *AccessControlWhoFeedbackState `json:"confirmedRemoved,omitempty"`
+}
+
+// GetConfirmedAdded returns AccessControlWhoFeedbackDelta.ConfirmedAdded, and is useful for accessing the field via an interface.
+func (v *AccessControlWhoFeedbackDelta) GetConfirmedAdded() *AccessControlWhoFeedbackState {
+	return v.ConfirmedAdded
+}
+
+// GetConfirmedRemoved returns AccessControlWhoFeedbackDelta.ConfirmedRemoved, and is useful for accessing the field via an interface.
+func (v *AccessControlWhoFeedbackDelta) GetConfirmedRemoved() *AccessControlWhoFeedbackState {
+	return v.ConfirmedRemoved
 }
 
 type AccessControlWhoFeedbackState struct {
@@ -18380,6 +18408,8 @@ type FilterRuleFeedbackImport struct {
 	ActualName *string                     `json:"actualName,omitempty"`
 	ExternalId *string                     `json:"externalId,omitempty"`
 	State      *AccessControlFeedbackState `json:"state,omitempty"`
+	// Diff-based alternative to `state`. Ignored when `state` is also set.
+	WhoDelta *AccessControlWhoFeedbackDelta `json:"whoDelta,omitempty" doc:"Diff-based alternative to 'state'. Ignored when 'state' is also set."`
 }
 
 // GetRuleId returns FilterRuleFeedbackImport.RuleId, and is useful for accessing the field via an interface.
@@ -18393,6 +18423,9 @@ func (v *FilterRuleFeedbackImport) GetExternalId() *string { return v.ExternalId
 
 // GetState returns FilterRuleFeedbackImport.State, and is useful for accessing the field via an interface.
 func (v *FilterRuleFeedbackImport) GetState() *AccessControlFeedbackState { return v.State }
+
+// GetWhoDelta returns FilterRuleFeedbackImport.WhoDelta, and is useful for accessing the field via an interface.
+func (v *FilterRuleFeedbackImport) GetWhoDelta() *AccessControlWhoFeedbackDelta { return v.WhoDelta }
 
 // FinalizeExportFlowResponse is returned by FinalizeExportFlow on success.
 type FinalizeExportFlowResponse struct {
