@@ -2015,8 +2015,10 @@ type AccessControlTypeInput struct {
 	Description *string `json:"description,omitempty" doc:"A description of the access control type"`
 	// the name or base64 encoded version of the icon to use for this access control
 	Icon *string `json:"icon,omitempty" doc:"the name or base64 encoded version of the icon to use for this access control"`
-	// Boolean to indicate if the access control represents a named entity (like a role or a policy) in the data source. False, typically means some kind of ACL system (nameless bindings).
-	IsNamedEntity *bool `json:"isNamedEntity,omitempty" doc:"Boolean to indicate if the access control represents a named entity (like a role or a policy) in the data source. False, typically means some kind of ACL system (nameless bindings)."`
+	// Boolean to indicate if access controls of this type exist in the data source as objects with a name and members (like a role or a policy), so other access controls can refer to them.
+	// False means they are sets of nameless bindings (an ACL system): they cannot be referred to and overlap other access controls on the same data object.
+	// Collibra Data Access derives all ACL-specific behaviour from this flag, never from the type name.
+	IsNamedEntity *bool `json:"isNamedEntity,omitempty" doc:"Boolean to indicate if access controls of this type exist in the data source as objects with a name and members (like a role or a policy), so other access controls can refer to them. False means they are sets of nameless bindings (an ACL system): they cannot be referred to and overlap other access controls on the same data object. Collibra Data Access derives all ACL-specific behaviour from this flag, never from the type name."`
 	// Boolean to indicate whether the access control can be created from the web application or not
 	CanBeCreated *bool `json:"canBeCreated,omitempty" doc:"Boolean to indicate whether the access control can be created from the web application or not"`
 	// Boolean to indicate that this (named entity) is something the user has to ‘assume’ to get these permissions. Typically, a role.
